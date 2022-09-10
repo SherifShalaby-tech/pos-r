@@ -13,6 +13,18 @@ return [
     |
     */
 
+    'use now'=>'استخدم الان',
+    'view_all_recipe'=>'عرض الوصفات',
+    'add_manual_recipe'=>'اضافة وصفة',
+    'view_all_production'=>'عرض المواد المصنعة',
+    'add_manual_production'=>'تصنيع مادة جديدة',
+    'add_new_recipe'=>'اضافة وصفة جديدة',
+    'add_recipe'=>'اضافة وصفة',
+    'add_new_production'=>'عملية تصنيع جديدة',
+    'sendTo'=>'ارسال الي',
+    'edit_recipe'=>'تعديل عملية التصنيع',
+    ''=>'',
+
     'dashboard' => 'نظرة عامة',
     'username' => 'اسم المستخدم',
     'password' => 'كلمة المرور',

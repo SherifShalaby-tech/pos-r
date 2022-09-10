@@ -40,7 +40,8 @@ class StorePosController extends Controller
         $store_poses = StorePos::get();
 
         $query = StorePos::leftjoin('transactions', function ($join) {
-            $join->on('store_pos.id', 'transactions.store_pos_id')->whereIn('type', ['sell', 'sell_return']);
+            $join->on('store_pos.id', 'transactions.store_pos_id')
+                ->whereIn('type', ['sell', 'sell_return']);
         })
             ->leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id');
         $query->select(
@@ -54,7 +55,9 @@ class StorePosController extends Controller
             DB::raw('SUM(IF(transactions.type="sell" AND transactions.payment_status="pending", final_total, 0)) as pay_later_sales')
 
         );
-
+        if(auth()->user()->id != 1) {
+            $query->where('store_pos.user_id', '!=', 1);
+        }
         $store_poses = $query->groupBy('store_pos.id')->get();
 
         return view('store_pos.index')->with(compact(

@@ -22,6 +22,9 @@
         .mCSB_dragger_bar {
             width: 10px !important;
         }
+        input.form-control.v_sub_sku,input.form-control.v_name {
+            min-width: 150px;
+        }
     </style>
 </head>
 

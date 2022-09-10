@@ -205,6 +205,101 @@ class SellController extends Controller
             ])
                 ->groupBy('transactions.id');
 
+//            {
+//                data: "transaction_date",
+//                        name: "transaction_date"
+//                    },
+//            {
+//                data: "invoice_no",
+//                        name: "invoice_no"
+//                    },
+//            {
+//                data: "store_name",
+//                        name: "stores.name"
+//                    },
+//            {
+//                data: "customer_name",
+//                        name: "customers.name"
+//                    },
+//            {
+//                data: "mobile_number",
+//                        name: "customers.mobile_number"
+//                    },
+//            {
+//                data: "status",
+//                        name: "transactions.status"
+//                    },
+//            {
+//                data: "payment_status",
+//                        name: "transactions.payment_status"
+//                    },
+//            {
+//                data: "method",
+//                        name: "transaction_payments.method"
+//                    },
+//            {
+//                data: "ref_number",
+//                        name: "transaction_payments.ref_number"
+//                    },
+//            {
+//                data: "received_currency_symbol",
+//                        name: "received_currency_symbol",
+//                        searchable: false
+//                    },
+//            {
+//                data: "final_total",
+//                        name: "final_total"
+//                    },
+//            {
+//                data: "paid",
+//                        name: "transaction_payments.amount",
+//                        searchable: false
+//                    },
+//            {
+//                data: "due",
+//                        name: "transaction_payments.amount",
+//                        searchable: false
+//                    },
+//            {
+//                data: "paid_on",
+//                        name: "transaction_payments.paid_on"
+//                    },
+//            {
+//                data: "created_by",
+//                        name: "users.name"
+//                    },
+//            {
+//                data: "deliveryman",
+//                        name: "deliveryman.employee_name"
+//                    },
+//            @if (session('system_mode') == 'restaurant')
+//            {
+//                data: "service_fee_value",
+//                            name: "service_fee_value"
+//                        }, {
+//                data: "canceled_by",
+//                            name: "canceled_by"
+//                        },
+//                    @endif {
+//                data: "commissions",
+//                        name: "commissions",
+//                        orderable: false,
+//                        searchable: false,
+//                    },
+//                    {
+//                        data: "products",
+//                        name: "products.name"
+//                    },
+//                    {
+//                        data: "sku",
+//                        name: "products.sku",
+//                        visible: false
+//                    },
+//                    {
+//                        data: "sub_sku",
+//                        name: "variations.sub_sku",
+//                        visible: false
+//                    }
             return DataTables::of($sales)
                 // ->setTotalRecords(100)
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')

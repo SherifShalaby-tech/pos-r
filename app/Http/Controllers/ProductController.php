@@ -505,7 +505,7 @@ class ProductController extends Controller
             ['sell_price' => ['required', 'max:25', 'decimal']],
         );
 
-//        try {
+        try {
             $discount_customers = $this->getDiscountCustomerFromType($request->discount_customer_types);
 
             $product_data = [
@@ -580,13 +580,13 @@ class ProductController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-//        } catch (\Exception $e) {
-//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//            $output = [
-//                'success' => false,
-//                'msg' => __('lang.something_went_wrong')
-//            ];
-//        }
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
 
         return $output;
     }
@@ -1124,6 +1124,8 @@ class ProductController extends Controller
         ));
     }
 
+
+    //
     /**
      * get raw material details
      *
@@ -1133,7 +1135,17 @@ class ProductController extends Controller
     public function getRawMaterialDetail($raw_material_id)
     {
         $raw_material = Product::find($raw_material_id);
-
+        if(\request()->has('type')){
+            $unitraw_material_d=[];
+            $unitraw_material_d['name']=null;
+            $unitraw_material_d['id']=null;
+            $unitraw_material = $raw_material->units->first();
+            if($unitraw_material != null){
+                $unitraw_material_d['name']=$unitraw_material->name;
+                $unitraw_material_d['id']=$unitraw_material->id;
+            }
+            return ['raw_material' => $unitraw_material_d];
+        }
         return ['raw_material' => $raw_material];
     }
 }

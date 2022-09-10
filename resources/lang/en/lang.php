@@ -12,6 +12,20 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+    'use now' => 'Use Now',
+    'view_all_recipe' => 'View recipes',
+    'add_manual_recipe' => 'Add recipe',
+    'view_all_production' => 'view Produce Primary material',
+    'add_manual_production' => 'Produce Primary material',
+    'add_new_recipe' => 'Add new Recipe',
+    'add_recipe' => 'Add recipe',
+    'add_new_production' => 'Produce Primary material',
+    'sendTo'=>'Send To',
+    'edit_recipe'=>'edit Produce process',
+    'edit_production'=>'edit Produce Primary material',
+    'production'=>'Produce Primary material',
+
+
     'number_vs_base_unit'=>'Units equation',
     'dashboard' => 'Dashboard',
     'username' => 'Username',
@@ -19,6 +33,8 @@ return [
     'email' => 'Email',
     'login' => 'Login',
     'developed_by' => 'Developed by',
+
+
 
     'submit' => 'Submit',
     'save' => 'Save',

@@ -10,6 +10,7 @@ use App\Models\MoneySafe;
 use App\Models\ProductClass;
 use App\Models\Store;
 use App\Models\StorePos;
+use App\Models\Supplier;
 use App\Models\System;
 use App\Models\Unit;
 use App\Models\User;

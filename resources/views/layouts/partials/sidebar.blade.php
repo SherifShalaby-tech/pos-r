@@ -82,6 +82,39 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 href="{{action('ConsumptionController@create')}}">{{__('lang.add_manual_consumption')}}</a>
                         </li>
                         @endcan
+
+                        @can('raw_material_module.recipe.view')
+                            <li
+                                class="@if(request()->segment(1) == 'recipe' && empty(request()->segment(2))) active @endif">
+                                <a
+                                    href="{{action('RecipeController@index')}}">{{__('lang.view_all_recipe')}}</a>
+                            </li>
+                        @endcan
+
+                        @can('raw_material_module.recipe.create_and_edit')
+                            <li
+                                class="@if(request()->segment(1) == 'recipe' && request()->segment(2) == 'create')) active @endif">
+                                <a
+                                    href="{{action('RecipeController@create')}}">{{__('lang.add_manual_recipe')}}</a>
+                            </li>
+                        @endcan
+
+
+                        @can('raw_material_module.production.view')
+                            <li
+                                class="@if(request()->segment(1) == 'production' && empty(request()->segment(2))) active @endif">
+                                <a
+                                    href="{{route('productions.index')}}">{{__('lang.view_all_production')}}</a>
+                            </li>
+                        @endcan
+
+                        @can('raw_material_module.production.create_and_edit')
+                            <li
+                                class="@if(request()->segment(1) == 'production' && request()->segment(2) == 'create')) active @endif">
+                                <a
+                                    href="{{route('recipeUesd.show.sendUesd',1)}}">{{__('lang.add_manual_production')}}</a>
+                            </li>
+                        @endcan
                         @can('raw_material_module.consumption.create_and_edit')
                         <li
                             class="@if(request()->segment(1) == 'consumption' && empty(request()->segment(2))) active @endif">
