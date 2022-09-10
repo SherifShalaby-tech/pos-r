@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Consumption;
 use App\Models\ConsumptionDetail;
 use App\Models\ConsumptionProduct;
+use App\Models\ConsumptionProduction;
 use App\Models\Customer;
 use App\Models\CustomerBalanceAdjustment;
 use App\Models\CustomerImportantDate;
@@ -1806,6 +1807,65 @@ class TransactionUtil extends Util
         foreach ($sell_lines as $line) {
             $line_product = Product::find($line->product_id);
             $consumption_products = ConsumptionProduct::where('variation_id', $line->variation_id)->get();
+            foreach ($consumption_products as $consumption_product) {
+                $raw_material = Product::find($consumption_product->raw_material_id);
+
+                if ($line_product->automatic_consumption == 1) {
+                    $consumption = Consumption::firstOrNew(['transaction_id' => $transaction->id, 'raw_material_id' => $raw_material->id]);
+                    $consumption->store_id = $transaction->store_id;
+                    $consumption->transaction_id = $transaction->id;
+                    $consumption->raw_material_id = $raw_material->id;
+                    $consumption->consumption_no = uniqid('CONA');
+                    $consumption->date_and_time = $transaction->transaction_date;
+                    $consumption->created_by = Auth::user()->id;
+                    $consumption->save();
+
+                    $old_qty = 0;
+                    $total_quantity = 0;
+                    $consumption_detail_exist = ConsumptionDetail::where(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id])->first();
+                    if (!empty($consumption_detail_exist)) {
+                        $old_qty = $consumption_detail_exist->quantity;
+                    }
+
+                    $consumption_detail = ConsumptionDetail::firstOrNew(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id]);
+                    $consumption_detail->consumption_id = $consumption->id;
+                    $consumption_detail->product_id = $line->product_id;
+                    $consumption_detail->variation_id = $line->variation_id;
+                    $consumption_detail->unit_id = $consumption_product->unit_id;
+                    $consumption_detail->quantity = $consumption_product->amount_used * $line->quantity;
+
+                    $consumption_detail->save();
+
+                    $raw_material_unit = Unit::find($raw_material->units->pluck('id')[0]);
+                    $consumption_unit = Unit::find($consumption_product->unit_id);
+                    $base_unit_multiplier = 1;
+                    if ($raw_material_unit->id != $consumption_unit->id) {
+                        $base_unit_multiplier = $consumption_unit->base_unit_multiplier;
+                    }
+                    $total_quantity = $line->quantity * $consumption_product->amount_used * $base_unit_multiplier;
+                    $old_qty = $old_qty * $base_unit_multiplier;
+
+                    $variation_rw = Variation::where('product_id', $raw_material->id)->first();
+                    $this->productUtil->decreaseProductQuantity($raw_material->id, $variation_rw->id, $transaction->store_id, $total_quantity, $old_qty);
+                }
+            }
+        }
+    }
+
+    /**
+     * create or update raw material consumption Recipe
+     *
+     * @param object $transaction
+     * @param array $consumption_details
+     * @return void
+     */
+    public function createOrUpdateRawMaterialConsumptionForRecipe($transaction,$consumption_details)
+    {
+        $sell_lines = $consumption_details;
+
+        foreach ($sell_lines as $line) {
+            $line_product = Product::find($line['raw_material_id']);
+            $consumption_products = ConsumptionProduction::where('raw_material_id',$line['raw_material_id'])->get();
             foreach ($consumption_products as $consumption_product) {
                 $raw_material = Product::find($consumption_product->raw_material_id);
 

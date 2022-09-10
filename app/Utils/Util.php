@@ -2,6 +2,8 @@
 
 namespace App\Utils;
 
+use App\Models\ConsumptionProduction;
+use App\Models\ConsumptionRecipe;
 use App\Models\Currency;
 use App\Models\ExchangeRate;
 use App\Models\Invoice;
@@ -99,6 +101,74 @@ class Util
     public function calc_percentage_base($number, $percent)
     {
         return ($number * 100) / (100 + $percent);
+    }
+    public function createOrUpdateRawMaterialToRecipe($recipe_id, $consumption_details)
+    {
+        $keep_consumption_product = [];
+        if (!empty($consumption_details)) {
+            foreach ($consumption_details as $v) {
+                if (!empty($v['raw_material_id'])) {
+                    if (!empty($v['id'])) {
+                        $consumtion_product = ConsumptionRecipe::find($v['id']);
+                        $consumtion_product->raw_material_id = $v['raw_material_id'];
+                        $consumtion_product->recipe_id = $recipe_id;
+                        $consumtion_product->amount_used = $this->num_uf($v['amount_used']);
+                        $consumtion_product->unit_id = $v['unit_id'];
+                        $consumtion_product->save();
+                        $keep_consumption_product[] = $v['id'];
+                    } else {
+                        $consumtion_product_data['raw_material_id'] = $v['raw_material_id'];
+                        $consumtion_product_data['recipe_id'] = $recipe_id;
+                        $consumtion_product_data['amount_used'] = $v['amount_used'];
+                        $consumtion_product_data['unit_id'] = $v['unit_id'];
+                        $consumtion_product = ConsumptionRecipe::create($consumtion_product_data);
+                        $keep_consumption_product[] = $consumtion_product->id;
+                    }
+                }
+            }
+        }
+
+        if (!empty($keep_consumption_product)) {
+            //delete the consumption product removed by user
+            ConsumptionRecipe::where('recipe_id', $recipe_id)->whereNotIn('id', $keep_consumption_product)->delete();
+        }
+
+        return true;
+    }
+
+
+    public function createOrUpdateRawMaterialToProduction($production_id, $consumption_details,$is_update=false)
+    {
+        $keep_consumption_product = [];
+        if (!empty($consumption_details)) {
+            foreach ($consumption_details as $v) {
+                if (!empty($v['raw_material_id'])) {
+                    if (!empty($v['id']) && $is_update) {
+                        $consumtion_product = ConsumptionProduction::find($v['id']);
+                        $consumtion_product->raw_material_id = $v['raw_material_id'];
+                        $consumtion_product->production_id = $production_id;
+                        $consumtion_product->amount_used = $this->num_uf($v['amount_used']);
+                        $consumtion_product->unit_id = $v['unit_id'];
+                        $consumtion_product->save();
+                        $keep_consumption_product[] = $v['id'];
+                    } else {
+                        $consumtion_product_data['raw_material_id'] = $v['raw_material_id'];
+                        $consumtion_product_data['production_id'] = $production_id;
+                        $consumtion_product_data['amount_used'] = $v['amount_used'];
+                        $consumtion_product_data['unit_id'] = $v['unit_id'];
+                        $consumtion_product = ConsumptionProduction::create($consumtion_product_data);
+                        $keep_consumption_product[] = $consumtion_product->id;
+                    }
+                }
+            }
+        }
+
+        if (!empty($keep_consumption_product)) {
+            //delete the consumption product removed by user
+            ConsumptionProduction::where('production_id', $production_id)->whereNotIn('id', $keep_consumption_product)->delete();
+        }
+
+        return true;
     }
 
     /**

@@ -397,6 +397,7 @@ class RawMaterialController extends Controller
         $grades = Grade::orderBy('name', 'asc')->pluck('name', 'id');
         $stores  = Store::all();
         $suppliers = Supplier::pluck('name', 'id');
+        $units_js=$units->pluck('base_unit_multiplier', 'id');
 
 
         return view('raw_material.edit')->with(compact(
@@ -410,6 +411,7 @@ class RawMaterialController extends Controller
             'grades',
             'stores',
             'suppliers',
+            'units_js'
         ));
     }
 

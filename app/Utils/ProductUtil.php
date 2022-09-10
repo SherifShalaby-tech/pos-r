@@ -104,6 +104,12 @@ class ProductUtil extends Util
 
             $number = 'RetP' . $year . $month . $count;
         }
+        if ($type == 'production') {
+            $count = Transaction::where('type', $type)->whereDay('transaction_date', $day)->count() + $i;
+
+            $number = 'PMP' . $year . $month .$day. $count;
+        }
+
         if ($type == 'remove_stock') {
             $count = Transaction::where('type', $type)->whereMonth('transaction_date', $month)->count() + $i;
 
@@ -967,6 +973,90 @@ class ProductUtil extends Util
                     'convert_status_expire' => $line['convert_status_expire'],
                 ];
 
+                $add_stock = AddStockLine::create($add_stock_data);
+                $qty =  $this->num_uf($line['quantity']);
+                $keep_lines_ids[] = $add_stock->id;
+                $this->updateProductQuantityStore($line['product_id'], $line['variation_id'], $transaction->store_id,  $qty, 0);
+            }
+        }
+
+        if (!empty($keep_lines_ids)) {
+            $deleted_lines = AddStockLine::where('transaction_id', $transaction->id)->whereNotIn('id', $keep_lines_ids)->get();
+            foreach ($deleted_lines as $deleted_line) {
+                if ($deleted_line->quantity_sold != 0) {
+                    $product_name = Product::find($deleted_line->product_id)->name ?? '';
+                    return ['mismatch' => true, 'product_name' => $product_name, 'quantity' => 0];
+                }
+                $this->decreaseProductQuantity($deleted_line['product_id'], $deleted_line['variation_id'], $transaction->store_id, $deleted_line['quantity'], 0);
+                $deleted_line->delete();
+            }
+        }
+        return true;
+    }
+    /**
+     * createOrUpdateAddStockLines
+     *
+     * @param [mix] $add_stocks
+     * @param [mix] $transaction
+     * @return void
+     */
+    public function createOrUpdateAddStockLinesToProduction($add_stocks, $transaction)
+    {
+
+
+        $keep_lines_ids = [];
+        foreach ($add_stocks as $item) {
+           $product= Product::where('id',$item->raw_material_id)->first();
+           $Variation= Variation::where('product_id',$item->raw_material_id)->first();
+          $add_stock_line= AddStockLine::where('transaction_id',$transaction->id)
+               ->where('product_id',$item->raw_material_id)->where('variation_id',$Variation->id)->first();
+
+          $line=[
+                'transaction_id'=>$transaction->id,
+                'product_id'=>$item->raw_material_id,
+                'variation_id'=>$Variation->id,
+                'quantity'=>$item->amount_used,
+                'quantity_sold'=>$item->amount_used,
+                'purchase_price'=>$product->purchase_price,
+                'final_cost'=>0.0000,
+                'sub_total'=>$item->amount_used*$product->purchase_price
+            ];
+            if($add_stock_line){
+                $line['add_stock_line_id']=$add_stock_line->id;
+            }
+            if (!empty($line['add_stock_line_id'])) {
+                $add_stock = AddStockLine::find($line['add_stock_line_id']);
+                $add_stock->product_id = $line['product_id'];
+                $add_stock->variation_id = $line['variation_id'];
+                $old_qty = $add_stock->quantity;
+                $add_stock->quantity = $this->num_uf($line['quantity']);
+                $add_stock->purchase_price = $this->num_uf($line['purchase_price']);
+                $add_stock->final_cost = $this->num_uf($line['final_cost']);
+                $add_stock->sub_total = $this->num_uf($line['sub_total']);
+                $add_stock->batch_number = $line['batch_number'];
+                $add_stock->manufacturing_date = !empty($line['manufacturing_date']) ? $this->uf_date($line['manufacturing_date']) : null;
+                $add_stock->expiry_date = !empty($line['expiry_date']) ? $this->uf_date($line['expiry_date']) : null;
+                $add_stock->expiry_warning = $line['expiry_warning'];
+                $add_stock->convert_status_expire = $line['convert_status_expire'];
+                $add_stock->save();
+                $keep_lines_ids[] = $line['add_stock_line_id'];
+                $qty =  $this->num_uf($line['quantity']);
+                $this->decreaseProductQuantity($line['product_id'], $line['variation_id'], $transaction->store_id,  $qty, $old_qty);
+            } else {
+                $add_stock_data = [
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $line['product_id'],
+                    'variation_id' => $line['variation_id'],
+                    'quantity' => $this->num_uf($line['quantity']),
+                    'purchase_price' => $this->num_uf($line['purchase_price']),
+                    'final_cost' => $this->num_uf($line['final_cost']),
+                    'sub_total' => $this->num_uf($line['sub_total']),
+                    'batch_number' => $line['batch_number'],
+                    'manufacturing_date' => !empty($line['manufacturing_date']) ? $this->uf_date($line['manufacturing_date']) : null,
+                    'expiry_date' => !empty($line['expiry_date']) ? $this->uf_date($line['expiry_date']) : null,
+                    'expiry_warning' => $line['expiry_warning'],
+                    'convert_status_expire' => $line['convert_status_expire'],
+                ];
                 $add_stock = AddStockLine::create($add_stock_data);
                 $qty =  $this->num_uf($line['quantity']);
                 $keep_lines_ids[] = $add_stock->id;

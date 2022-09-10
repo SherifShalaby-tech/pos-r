@@ -272,7 +272,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
     @can('product_module.purchase_price.create_and_edit')
         <div class="col-md-4">
             <div class="form-group">
-                {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', []) !!}
+                {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
                 {!! Form::text('purchase_price', !empty($recent_product) ? @num_format($recent_product->purchase_price) : null, ['class' => 'form-control', 'placeholder' => session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
             </div>
         </div>

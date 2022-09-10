@@ -75,7 +75,7 @@ class OrderController extends BaseController
      */
     public function store(Request $request)
     {
-        return'001544';
+
         $input = $request->all();
         $validator = Validator::make($input, [
             'customer_name' => 'required',
@@ -88,7 +88,7 @@ class OrderController extends BaseController
         try {
             $online_customer_type = CustomerType::firstOrCreate(['name' => 'Online customers', 'created_by' => 1]);
             $customer = Customer::firstOrCreate(['mobile_number' => $input['phone_number']], ['name' => $input['customer_name'], 'customer_type_id' =>  !empty($online_customer_type) ? $online_customer_type->id : 0, 'address' => $input['address']]);
-            $store = Store::where('id', $input['store']['pos_model_id'])->first();
+            $store = Store::where('id', $input['store']['id'])->first();
             $store_pos = StorePos::where('store_id', $store->id)->first();
 
             $staff_note = null;
@@ -152,7 +152,7 @@ class OrderController extends BaseController
             }
 
             foreach ($input['order_details'] as $line) {
-                $variation = Variation::find($line['variation_pos_model_id']);
+                $variation = Variation::find($line['variation_id']);
                 $product = Product::find($variation->product_id);
                 $transaction_sell_line = new TransactionSellLine();
                 $transaction_sell_line->transaction_id = $transaction->id;
@@ -183,7 +183,7 @@ class OrderController extends BaseController
             return $this->handleResponse(new OrderResource($transaction), 'Order created!');
         } catch (\Exception $e) {
             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            return $this->handleError($e->getMessage(), [__('lang.something_went_wrong')], 503);
+            return $this->handleError('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage(), [__('lang.something_went_wrong')], 503);
         }
     }
 

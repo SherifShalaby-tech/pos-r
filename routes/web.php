@@ -57,6 +57,16 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('raw-material/add-stock', 'AddStockController@index');
     Route::get('raw-material/add-product-row', 'RawMaterialController@addProductRow');
     Route::resource('raw-material', RawMaterialController::class);
+//    sendUesd
+    Route::get('recipe/get-raw-recipe-details/{raw_recipe_id}', 'RecipeController@getRecipeDetail');
+    Route::post('recipe_uesd/send_uesd', 'RecipeController@sendUesd')->name('recipeUesd.sendUesd');
+    Route::get('recipe_uesd/send/{id?}', 'RecipeController@used')->name('recipeUesd.show.sendUesd');
+    Route::get('productions', 'RecipeController@ProductionIndex')->name('productions.index');
+    Route::get('productions/edit/{id}', 'RecipeController@editProduction')->name('productions.edit');
+    Route::put('productions/edit/{id}', 'RecipeController@updateProduction')->name('productions.update');
+    Route::delete('productions/delete/{id}', 'RecipeController@destroyProduction')->name('productions.delete');
+
+    Route::resource('recipe', RecipeController::class);
 
     Route::get('consumption/get-sufficient-suggestions/{raw_material_id}', 'ConsumptionController@getSufficientSuggestions');
     Route::get('consumption/get-raw-material-details', 'ConsumptionController@getConsumptionDetailRow');
