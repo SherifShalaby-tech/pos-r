@@ -7,7 +7,7 @@
     <div class="col-md-12  no-print">
         <div class="card">
             <div class="card-header d-flex align-items-center">
-                @can('product_module.production.create_and_edit')
+                @can('raw_material_module.production.create_and_edit')
                 <a style="color: white" href="{{route('recipeUesd.show.sendUesd',1)}}"
                      class="btn btn-info"><i class="dripicons-plus"></i>
                     @lang('lang.add_new_production')</a>
