@@ -123,7 +123,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
-                                            {!! Form::text('sell_price',  !empty($recipe) ?  @num_format($recipe->purchase_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
+                                            {!! Form::text('sell_price',  !empty($recipe) ?  @num_format($recipe->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
                                         </div>
                                     </div>
                                 @endcan
@@ -163,7 +163,6 @@
 
             $("#submit-btn").on("click", function (e) {
                 e.preventDefault();
-                if ($("#product-edit-form").valid()) {
 
                     $.ajax({
                         type: "POST",
@@ -172,9 +171,11 @@
                         success: function (response) {
                             if (response.success) {
                                 swal("Success", response.msg, "success");
-                                setTimeout(() => {
-                                    window.close();
-                                }, 1000);
+
+                            }
+                            if (!response.success) {
+
+                                swal("Error", response.msg, "error");
                             }
                         },
                         error: function (response) {
@@ -184,7 +185,7 @@
                         },
                     });
 
-                }
+
             });
             /*$("#submit-btn").on("click", function (e) {
                 e.preventDefault();

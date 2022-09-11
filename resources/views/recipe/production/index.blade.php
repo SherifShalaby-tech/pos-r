@@ -22,6 +22,8 @@
                                 <th>@lang('lang.raw_material')</th>
                                 <th>@lang('lang.unit')</th>
                                 <th>@lang('lang.cost')</th>
+                                <th>@lang('lang.sell_price')</th>
+
                                 <th>@lang('lang.quantity')</th>
                                 <th>@lang('lang.manufacturing_date')</th>
                                 <th>@lang('lang.created_by')</th>
@@ -41,6 +43,7 @@
 
                                 <td>{{$recipe->unit_name}}</td>
                                 <td>{{ number_format($recipe->purchase_price,3,'.','')}}</td>
+                                <td>{{ number_format($recipe->sell_price,3,'.','')}}</td>
                                 <td>
                                   {{$recipe->quantity_product}}
                                 </td>
