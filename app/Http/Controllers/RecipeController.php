@@ -242,7 +242,7 @@ class RecipeController extends Controller
     public function sendUesd(Request $request)
     {
 
-         try {
+//         try {
         $data = $request->except('_token');
         $data['po_no'] = Carbon::now()->toDateString();
         if (!empty($data['po_no'])) {
@@ -291,6 +291,12 @@ class RecipeController extends Controller
            'is_raw_material' => 1,
         ];
         $storepos=StorePos::where('user_id',Auth::user()->id)->first();
+        if(!$storepos)
+            return [
+                'success' => false,
+                'msg' => __('lang.StorePosReq')
+            ];
+
         $transaction_data_sell = [
             'store_id' => $storepos->store_id,
             'customer_id' => null,
@@ -365,6 +371,75 @@ class RecipeController extends Controller
         ]);
         if (!empty($request->consumption_details)) {
             $this->commonUtil->createOrUpdateRawMaterialToProduction($production->id, $request->consumption_details);
+            $price_one=$data['sell_price']/$data['quantity_product'];
+            $recipe=Recipe::whereId($data['recipe_id'])->first();
+            $variation=Variation::where('product_id',$recipe->material_id)->first();
+            $transaction_sell_line=[
+                                    0=>[
+                                        "is_service" => "1",
+                                        "product_id" => $variation->product_id,
+                                        "variation_id" => $variation->id,
+                                        "price_hidden" => $this->productUtil->num_uf($price_one),
+                                        "purchase_price" => $this->productUtil->num_uf($data['purchase_price_per_unit']),
+                                        "tax_id" => null,
+                                        "tax_method" => null,
+                                        "tax_rate" => "0.00",
+                                        "item_tax" => "0",
+                                        "coupon_discount" => "0",
+                                        "coupon_discount_type" => null,
+                                        "coupon_discount_amount" => "0",
+                                        "promotion_purchase_condition" => "0",
+                                        "promotion_purchase_condition_amount" => "0",
+                                        "promotion_discount" => "0",
+                                        "promotion_discount_type" => "0",
+                                        "promotion_discount_amount" => "0",
+                                        "quantity" =>$this->productUtil->num_uf($data['quantity_product']),
+                                        "sell_price" => $this->productUtil->num_uf($price_one),
+                                        "product_discount_type" => "fixed",
+                                        "product_discount_value" => "0",
+                                        "product_discount_amount" => "0.00",
+                                        "sub_total" => $this->productUtil->num_uf($data['sell_price']),
+                                    ]
+            ];
+
+            //            foreach ($request->consumption_details as $consumption_detail){
+            //                dd($consumption_detail);
+            //
+            //                //  "amount_used" => "20.00"
+            //                $Product =Product::where('id',$consumption_detail['raw_material_id'])->first();
+            //                $variation =Variation::where('product_id',$consumption_detail['raw_material_id'])->first();
+            //                $price_one=number_format($consumption_detail['subprice']/$consumption_detail['amount_used'], 2, '.', '');
+            //                dd($Product);
+            //                $transaction_sell_line=[
+            //                    "is_service" => "1",
+            //                    "product_id" => $Product->id,
+            //                    "variation_id" => $variation->id,
+            //                    "price_hidden" => $price_one,
+            //                    "purchase_price" => "120.00",
+            //                    "tax_id" => null,
+            //                    "tax_method" => null,
+            //                    "tax_rate" => "0.00",
+            //                    "item_tax" => "0",
+            //                    "coupon_discount" => "0",
+            //                    "coupon_discount_type" => null,
+            //                    "coupon_discount_amount" => "0",
+            //                    "promotion_purchase_condition" => "0",
+            //                    "promotion_purchase_condition_amount" => "0",
+            //                    "promotion_discount" => "0",
+            //                    "promotion_discount_type" => "0",
+            //                    "promotion_discount_amount" => "0",
+            //                    "quantity" => $consumption_detail['amount_used'],
+            //                    "sell_price" => $consumption_detail['subprice'],
+            //                    "product_discount_type" => "fixed",
+            //                    "product_discount_value" => "0",
+            //                    "product_discount_amount" => "0.00",
+            //                    "sub_total" => ,
+            //                ];
+            //            }
+
+            $this->transactionUtil->createOrUpdateTransactionSellLine($transaction_sell, $transaction_sell_line);
+            $this->transactionUtil->createOrUpdateRawMaterialConsumptionForRecipe($transaction_sell,$request->consumption_details,$recipe->automatic_consumption);
+
         }
         $transaction->produce_id=$production->id;
         $transaction_sell->produce_id=$production->id;
@@ -403,19 +478,19 @@ class RecipeController extends Controller
                 'bank_deposit_date' =>  null,
                 'bank_name' => null,
             ];
-            $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
+            $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction_sell, $payment_data);
 
 
                 $user_id = $request->source_id;
 
                 if (!empty($user_id)) {
-                    $this->cashRegisterUtil->addPayments($transaction, $payment_data, 'debit', $user_id);
+                    $this->cashRegisterUtil->addPayments($transaction_sell, $payment_data, 'debit', $user_id);
                 }
 
 
 
 
-        $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
+        $this->transactionUtil->updateTransactionPaymentStatus($transaction_sell->id);
 
 
 
@@ -423,10 +498,6 @@ class RecipeController extends Controller
         foreach ($transaction->add_stock_lines as $line) {
             Product::where('id', $line->product_id)->update(['active' => 1]);
         }
-
-
-        $this->transactionUtil->createOrUpdateRawMaterialConsumptionForRecipe($transaction_sell,$request->consumption_details);
-
         DB::commit();
 
 
@@ -435,13 +506,13 @@ class RecipeController extends Controller
             'success' => true,
             'msg' => __('lang.success')
         ];
-         } catch (\Exception $e) {
-             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-             $output = [
-                 'success' => false,
-                 'msg' => __('lang.something_went_wrong')
-             ];
-         }
+//         } catch (\Exception $e) {
+//             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//             $output = [
+//                 'success' => false,
+//                 'msg' => __('lang.something_went_wrong')
+//             ];
+//         }
 
         return  $output;
     }
@@ -620,6 +691,7 @@ class RecipeController extends Controller
                                         ]);
                 if (!empty($request->consumption_details)) {
                     $this->commonUtil->createOrUpdateRawMaterialToProduction($id, $request->consumption_details,true);
+
                     //$this->productUtil->createOrUpdateAddStockLinesToProduction($request->consumption_details, $transaction_sell);
 
 

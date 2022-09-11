@@ -24,6 +24,7 @@ return [
     'edit_recipe'=>'edit Produce process',
     'edit_production'=>'edit Produce Primary material',
     'production'=>'Produce Primary material',
+    'StorePosReq'=>'For production, points of sale must be assigned to the user',
 
 
     'number_vs_base_unit'=>'Units equation',

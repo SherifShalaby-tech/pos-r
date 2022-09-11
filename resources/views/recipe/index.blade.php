@@ -7,7 +7,7 @@
     <div class="col-md-12  no-print">
         <div class="card">
             <div class="card-header d-flex align-items-center">
-                @can('product_module.recipe.create_and_edit')
+                @can('raw_material_module.recipe.create_and_edit')
                 <a style="color: white" href="{{action('RecipeController@create')}}"
                      class="btn btn-info"><i class="dripicons-plus"></i>
                     @lang('lang.add_recipe')</a>
@@ -62,7 +62,7 @@
                                         </button>
                                         <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
                                             user="menu">
-                                            @can('product_module.recipe.create_and_edit')
+                                            @can('raw_material_module.recipe.create_and_edit')
                                             <li>
 
                                                 <a href="{{action('RecipeController@edit', $recipe->id)}}" class="btn "><i
@@ -80,7 +80,7 @@
 
                                             <li class="divider"></li>
                                             @endcan
-                                            @can('product_module.recipe.delete')
+                                            @can('raw_material_module.recipe.delete')
                                             <li>
                                                 <a data-href="{{action('RecipeController@destroy', $recipe->id)}}"
                                                     data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"

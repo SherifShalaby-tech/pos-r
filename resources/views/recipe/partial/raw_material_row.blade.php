@@ -23,7 +23,10 @@
         !empty($consumption_product) ? $consumption_product->unit_id : false, ['class' => 'selectpicker form-control hide
         raw_material_unit_id', 'data-live-search'=>"true", 'placeholder' => __('lang.please_select')]) !!}
     </td>
-    <td> <label for="" class="cost_label"></label></td>
+    <td>
+        <label for="" class="cost_label"></label>
+        <input  type="hidden" class="cost_input" name="consumption_details[{{$row_id}}][subprice]">
+    </td>
     <td>
         <button type="button" class="btn btn-xs btn-danger remove_row remove_raw_material_btn"><i class="fa fa-times"></i></button>
     </td>

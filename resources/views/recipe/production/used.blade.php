@@ -171,9 +171,9 @@
                             success: function (response) {
                                 if (response.success) {
                                     swal("Success", response.msg, "success");
-                                    setTimeout(() => {
-                                        window.close();
-                                    }, 1000);
+
+                                }if (!response.success) {
+                                    swal("Error", response.msg, "error");
                                 }
                             },
                             error: function (response) {
@@ -234,6 +234,9 @@
                     $(this)
                         .find(".cost_label")
                         .text(__currency_trans_from_en(raw_material_total, false));
+                    $(this)
+                        .find(".cost_input")
+                        .val(__currency_trans_from_en(raw_material_total, false));
                 });
                 var purchase_price_per_unit =__read_number($('#purchase_price_per_unit'));
                 var other_cost =__read_number($('#other_cost'));
@@ -273,6 +276,9 @@
                                 $(this)
                                     .find(".cost_label")
                                     .text(__currency_trans_from_en(raw_material_total, false));
+                                $(this)
+                                    .find(".cost_input")
+                                    .val(__currency_trans_from_en(raw_material_total, false));
                             });
                             let other_cost = __read_number($("#other_cost"));
                             total_raw_material_price += other_cost;
@@ -547,6 +553,9 @@
                     $(this)
                         .find(".cost_label")
                         .text(__currency_trans_from_en(raw_material_total, false));
+                    $(this)
+                        .find(".cost_input")
+                        .val(__currency_trans_from_en(raw_material_total, false));
                 });
                 let other_cost = __read_number($("#other_cost"));
                 total_raw_material_price += other_cost;

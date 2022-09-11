@@ -150,7 +150,6 @@ class TransactionUtil extends Util
     public function createOrUpdateTransactionSellLine($transaction, $transaction_sell_lines)
     {
         $keep_sell_lines = [];
-
         foreach ($transaction_sell_lines as $line) {
             $old_quantity = 0;
             if (!empty($transaction_sell_line['transaction_sell_line_id'])) {
@@ -1807,9 +1806,9 @@ class TransactionUtil extends Util
         foreach ($sell_lines as $line) {
             $line_product = Product::find($line->product_id);
             $consumption_products = ConsumptionProduct::where('variation_id', $line->variation_id)->get();
+            dd($consumption_products);
             foreach ($consumption_products as $consumption_product) {
                 $raw_material = Product::find($consumption_product->raw_material_id);
-
                 if ($line_product->automatic_consumption == 1) {
                     $consumption = Consumption::firstOrNew(['transaction_id' => $transaction->id, 'raw_material_id' => $raw_material->id]);
                     $consumption->store_id = $transaction->store_id;
@@ -1859,18 +1858,21 @@ class TransactionUtil extends Util
      * @param array $consumption_details
      * @return void
      */
-    public function createOrUpdateRawMaterialConsumptionForRecipe($transaction,$consumption_details)
+    public function createOrUpdateRawMaterialConsumptionForRecipe($transaction,$consumption_details,$line_product_automatic_consumption)
     {
         $sell_lines = $consumption_details;
-
         foreach ($sell_lines as $line) {
+            $variation= Variation::where('product_id',$line['raw_material_id'])->first();
+
             $line_product = Product::find($line['raw_material_id']);
             $consumption_products = ConsumptionProduction::where('raw_material_id',$line['raw_material_id'])->get();
             foreach ($consumption_products as $consumption_product) {
                 $raw_material = Product::find($consumption_product->raw_material_id);
-
-                if ($line_product->automatic_consumption == 1) {
-                    $consumption = Consumption::firstOrNew(['transaction_id' => $transaction->id, 'raw_material_id' => $raw_material->id]);
+                if ($line_product_automatic_consumption == 1) {
+                    $consumption = Consumption::firstOrNew([
+                        'transaction_id' => $transaction->id,
+                        'raw_material_id' => $raw_material->id
+                    ]);
                     $consumption->store_id = $transaction->store_id;
                     $consumption->transaction_id = $transaction->id;
                     $consumption->raw_material_id = $raw_material->id;
@@ -1879,37 +1881,41 @@ class TransactionUtil extends Util
                     $consumption->created_by = Auth::user()->id;
                     $consumption->save();
 
-                    $old_qty = 0;
-                    $total_quantity = 0;
-                    $consumption_detail_exist = ConsumptionDetail::where(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id])->first();
-                    if (!empty($consumption_detail_exist)) {
-                        $old_qty = $consumption_detail_exist->quantity;
-                    }
-
-                    $consumption_detail = ConsumptionDetail::firstOrNew(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id]);
-                    $consumption_detail->consumption_id = $consumption->id;
-                    $consumption_detail->product_id = $line->product_id;
-                    $consumption_detail->variation_id = $line->variation_id;
-                    $consumption_detail->unit_id = $consumption_product->unit_id;
-                    $consumption_detail->quantity = $consumption_product->amount_used * $line->quantity;
-
-                    $consumption_detail->save();
-
-                    $raw_material_unit = Unit::find($raw_material->units->pluck('id')[0]);
-                    $consumption_unit = Unit::find($consumption_product->unit_id);
-                    $base_unit_multiplier = 1;
-                    if ($raw_material_unit->id != $consumption_unit->id) {
-                        $base_unit_multiplier = $consumption_unit->base_unit_multiplier;
-                    }
-                    $total_quantity = $line->quantity * $consumption_product->amount_used * $base_unit_multiplier;
-                    $old_qty = $old_qty * $base_unit_multiplier;
+                   $consumption_d= ConsumptionDetail::firstOrNew([
+                        'consumption_id'=>$consumption->id,
+                        'product_id'=>  $line_product->id,
+                        'variation_id'=>$variation->id
+                    ]);
+                    $old_amount=$consumption_d->quantity;
+                    $new_amount=$line['amount_used'];
+                    $def_amount=$new_amount-$old_amount;
+                    $consumption_d->quantity=$new_amount;
+                    $consumption_d->unit_id=$consumption_product->unit_id;
+                    $consumption_d->save();
 
                     $variation_rw = Variation::where('product_id', $raw_material->id)->first();
-                    $this->productUtil->decreaseProductQuantity($raw_material->id, $variation_rw->id, $transaction->store_id, $total_quantity, $old_qty);
+                    if ($line_product->is_service != 1) {
+                        $details = ProductStore::where('variation_id', $variation->id)
+                            ->where('product_id', $line_product->id)
+                            ->where('store_id', $transaction->store_id)
+                            ->first();
+                        if (empty($details)) {
+                            $details = ProductStore::create([
+                                'product_id' =>  $line_product->id,
+                                'store_id' => $transaction->store_id,
+                                'variation_id' => $variation->id,
+                                'qty_available' => 0
+                            ]);
+                        }
+
+                        $details->decrement('qty_available', $def_amount);
+                    }
+
                 }
             }
         }
     }
+
     /**
      * create of update the customer important dates
      *
