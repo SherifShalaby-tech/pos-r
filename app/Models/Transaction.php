@@ -66,6 +66,12 @@ class Transaction extends Model  implements HasMedia
         return $this->belongsTo(Transaction::class, 'return_parent_id', 'id');
     }
 
+
+    public function productions()
+    {
+        return $this->hasManyThrough(Production::class, ProductionTransaction::class, 'transaction_id', 'id', 'id', 'production_id');
+
+    }
     public function parent_sale()
     {
         return $this->belongsTo(Transaction::class, 'parent_sale_id', 'id');

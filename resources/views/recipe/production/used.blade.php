@@ -116,7 +116,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
-                                        {!! Form::text('purchase_price',  !empty($recipe) ?  @num_format($recipe->purchase_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.cost'), 'required']) !!}
+                                        {!! Form::text('purchase_price',  !empty($recipe) ?  @num_format($recipe->purchase_price) : null, ['class' => 'form-control', 'placeholder' => session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">

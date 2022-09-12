@@ -25,6 +25,7 @@ return [
     'edit_production'=>'edit Produce Primary material',
     'production'=>'Produce Primary material',
     'StorePosReq'=>'For production, points of sale must be assigned to the user',
+    'productions'=>'Produce Primary material ',
 
 
     'number_vs_base_unit'=>'Units equation',
@@ -317,7 +318,7 @@ return [
     'type' => 'Type',
     'generate' => 'Generate',
     'not_used' => 'Not Used',
-    'used' => 'Used',
+    'used' => 'Use',
     'affected_by_products' => 'Affected By Products',
     'reactivate' => 'Reactivate',
     'suspend' => 'Suspend',

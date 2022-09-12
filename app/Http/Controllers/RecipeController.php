@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddStockLine;
+use App\Models\CashRegisterTransaction;
+use App\Models\ConsumptionProduction;
 use App\Models\MoneySafe;
+use App\Models\MoneySafeTransaction;
 use App\Models\Product;
 use App\Models\Production;
+use App\Models\ProductStore;
 use App\Models\Recipe;
 use App\Models\Store;
 use App\Models\StorePos;
 use App\Models\Supplier;
 use App\Models\System;
 use App\Models\Transaction;
+use App\Models\TransactionSellLine;
 use App\Models\Unit;
 use App\Models\User;
 use App\Models\Variation;
@@ -75,7 +81,6 @@ class RecipeController extends Controller
                 'users.name as created_by_name',
                 'edited.name as edited_by_name',
         )->get();
-
         return view('recipe.index')->with(compact(
             'recipes'
         ));
@@ -88,7 +93,7 @@ class RecipeController extends Controller
     public function ProductionIndex()
     {
         $recipes = Production::leftjoin('users', 'productions.created_by', 'users.id')
-            ->leftjoin('users as edited', 'productions.edited_by', 'users.id')
+            ->leftjoin('users as edited', 'productions.edited_by', 'edited.id')
             ->leftjoin('recipes', 'productions.recipe_id', 'recipes.id')
             ->leftjoin('products', 'recipes.material_id', 'products.id')
             ->leftjoin('variations', 'variations.product_id', 'products.id')
@@ -242,7 +247,7 @@ class RecipeController extends Controller
     public function sendUesd(Request $request)
     {
 
-//         try {
+         try {
         $data = $request->except('_token');
         $data['po_no'] = Carbon::now()->toDateString();
         if (!empty($data['po_no'])) {
@@ -369,14 +374,15 @@ class RecipeController extends Controller
             'edited_by'=>null,
             'created_by'=>Auth::user()->id,
         ]);
+        $recipe=Recipe::whereid($request->recipe_id)->first();
+        $variation= Variation::where('product_id',$recipe->material_id)->first();
+
         if (!empty($request->consumption_details)) {
             $this->commonUtil->createOrUpdateRawMaterialToProduction($production->id, $request->consumption_details);
             $price_one=$data['sell_price']/$data['quantity_product'];
-            $recipe=Recipe::whereId($data['recipe_id'])->first();
-            $variation=Variation::where('product_id',$recipe->material_id)->first();
             $transaction_sell_line=[
                                     0=>[
-                                        "is_service" => "1",
+                                        "is_service" => "0",
                                         "product_id" => $variation->product_id,
                                         "variation_id" => $variation->id,
                                         "price_hidden" => $this->productUtil->num_uf($price_one),
@@ -401,53 +407,12 @@ class RecipeController extends Controller
                                         "sub_total" => $this->productUtil->num_uf($data['sell_price']),
                                     ]
             ];
-
-            //            foreach ($request->consumption_details as $consumption_detail){
-            //                dd($consumption_detail);
-            //
-            //                //  "amount_used" => "20.00"
-            //                $Product =Product::where('id',$consumption_detail['raw_material_id'])->first();
-            //                $variation =Variation::where('product_id',$consumption_detail['raw_material_id'])->first();
-            //                $price_one=number_format($consumption_detail['subprice']/$consumption_detail['amount_used'], 2, '.', '');
-            //                dd($Product);
-            //                $transaction_sell_line=[
-            //                    "is_service" => "1",
-            //                    "product_id" => $Product->id,
-            //                    "variation_id" => $variation->id,
-            //                    "price_hidden" => $price_one,
-            //                    "purchase_price" => "120.00",
-            //                    "tax_id" => null,
-            //                    "tax_method" => null,
-            //                    "tax_rate" => "0.00",
-            //                    "item_tax" => "0",
-            //                    "coupon_discount" => "0",
-            //                    "coupon_discount_type" => null,
-            //                    "coupon_discount_amount" => "0",
-            //                    "promotion_purchase_condition" => "0",
-            //                    "promotion_purchase_condition_amount" => "0",
-            //                    "promotion_discount" => "0",
-            //                    "promotion_discount_type" => "0",
-            //                    "promotion_discount_amount" => "0",
-            //                    "quantity" => $consumption_detail['amount_used'],
-            //                    "sell_price" => $consumption_detail['subprice'],
-            //                    "product_discount_type" => "fixed",
-            //                    "product_discount_value" => "0",
-            //                    "product_discount_amount" => "0.00",
-            //                    "sub_total" => ,
-            //                ];
-            //            }
-
             $this->transactionUtil->createOrUpdateTransactionSellLine($transaction_sell, $transaction_sell_line);
             $this->transactionUtil->createOrUpdateRawMaterialConsumptionForRecipe($transaction_sell,$request->consumption_details,$recipe->automatic_consumption);
 
         }
-        $transaction->produce_id=$production->id;
-        $transaction_sell->produce_id=$production->id;
-        $transaction->save();
-        $transaction_sell->save();
 
-        $recipe=Recipe::whereid($request->recipe_id)->first();
-        $variation= Variation::where('product_id',$recipe->material_id)->first();
+        $production->transactions()->attach([$transaction->id,$transaction_sell->id]);
 
         $add_stock_lines= [ 0 =>[
                 "is_service" => "0",
@@ -487,12 +452,7 @@ class RecipeController extends Controller
                     $this->cashRegisterUtil->addPayments($transaction_sell, $payment_data, 'debit', $user_id);
                 }
 
-
-
-
         $this->transactionUtil->updateTransactionPaymentStatus($transaction_sell->id);
-
-
 
         //update product status to active if not //added quick product from purchase order
         foreach ($transaction->add_stock_lines as $line) {
@@ -500,19 +460,17 @@ class RecipeController extends Controller
         }
         DB::commit();
 
-
-
         $output = [
             'success' => true,
             'msg' => __('lang.success')
         ];
-//         } catch (\Exception $e) {
-//             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//             $output = [
-//                 'success' => false,
-//                 'msg' => __('lang.something_went_wrong')
-//             ];
-//         }
+         } catch (\Exception $e) {
+             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+             $output = [
+                 'success' => false,
+                 'msg' => __('lang.something_went_wrong')
+             ];
+         }
 
         return  $output;
     }
@@ -526,7 +484,6 @@ class RecipeController extends Controller
     public function edit($id)
     {
         $recipe = Recipe::find($id);
-        //return $recipe-> consumption_products;
 
         $raw_materials  = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
@@ -561,6 +518,8 @@ class RecipeController extends Controller
                 'active' => !empty($request->active) ? 1 : 0,
                 'created_by' => Auth::user()->id
             ];
+
+
             DB::beginTransaction();
             $recipe=  Recipe::findOrFail($id); //where('id', $id)->update($data);
             $recipe->update($data);
@@ -591,19 +550,24 @@ class RecipeController extends Controller
      */
     public function editProduction ($id)
     {
-        $recipe = Production::with('consumption_products')->find($id);
-//        return $recipe;
+        $production = Production::with('consumption_products')->find($id);
+        $recipe = Recipe::where('id',$production->recipe_id)->first();
+
 
         $raw_materials  = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $recipes=  DB::table('recipes')
             ->join('products','products.id','recipes.material_id')
             ->join('variations','products.id','variations.product_id')
-            ->select('recipes.id','recipes.name','products.name as product_name','variations.name as variation_name')
+            ->select('recipes.id',
+                'recipes.name',
+                'products.name as product_name',
+                'variations.name as variation_name')
             ->get();
         $stores = Store::getDropdown();
         return view('recipe.production.edit')->with(compact(
             'recipe',
+            'production',
             'recipes',
                    'stores',
             'raw_materials',
@@ -638,6 +602,11 @@ class RecipeController extends Controller
                     ]);
 
                 }
+
+                    $production=Production::where('id',$id)->first();
+
+
+
                 $transaction_data = [
                     'store_id' => $data['store_id'],
                     'supplier_id' => $supplier->id,
@@ -651,6 +620,14 @@ class RecipeController extends Controller
 
                 ];
                 $storepos=StorePos::where('user_id',Auth::user()->id)->first();
+                if(!$storepos)
+                    return [
+                        'success' => false,
+                        'msg' => __('lang.StorePosReq')
+                    ];
+
+
+
                 $transaction_data_sell = [
                     'store_id' => $storepos->store_id,
                     'store_pos_id' => $storepos->id,
@@ -667,11 +644,27 @@ class RecipeController extends Controller
                     'remaining_deposit_balance' => $this->commonUtil->num_uf(0),
                     'add_to_deposit' => $this->commonUtil->num_uf(0),
                 ];
-//                Transaction::where('produce_id',$id)->delete();
-                DB::beginTransaction();
-                $transaction = Transaction::where('produce_id',$id)->where('type','sell')->first();
+            $recipe=Recipe::whereid($request->recipe_id)->first();
+            $variation= Variation::where('product_id',$recipe->material_id)->first();
 
-                $transaction_sell = Transaction::where('produce_id',$id)->where('type','sell')->first();
+            DB::beginTransaction();
+                $production-> update([
+                    'store_id'=>$request->store_id,
+                    'recipe_id'=>$request->recipe_id,
+                    'quantity_product'=>$request->quantity_product,
+                    'other_cost'=>$request->other_cost,
+                    'purchase_price'=>$request->purchase_price,
+                    'sell_price'=>$request->sell_price,
+                    'edited_by'=>Auth::user()->id,
+                ]);
+                $transaction = Transaction::wherehas('productions',function ($qu) use ($id){
+                    $qu->where('productions.id',$id);
+                })->where('type','add_stock')->first();
+
+                $transaction_sell = Transaction::wherehas('productions',function ($qu) use ($id){
+                    $qu->where('productions.id',$id);
+                })->where('type','sell')->first();
+
                 if($transaction){
                     $transaction->update($transaction_data);
                 }
@@ -679,27 +672,52 @@ class RecipeController extends Controller
                     $transaction_sell->update($transaction_data_sell);
                 }
 
-                $production=Production::where('id',$id)->update([
-                                            'store_id'=>$request->store_id,
-                                            'transaction_id'=>$transaction->id,
-                                            'recipe_id'=>$request->recipe_id,
-                                            'quantity_product'=>$request->quantity_product,
-                                            'other_cost'=>$request->other_cost,
-                                            'purchase_price'=>$request->purchase_price,
-                                            'sell_price'=>$request->sell_price,
-                                            'edited_by'=>Auth::user()->id,
-                                        ]);
                 if (!empty($request->consumption_details)) {
-                    $this->commonUtil->createOrUpdateRawMaterialToProduction($id, $request->consumption_details,true);
+                    $this->commonUtil->createOrUpdateRawMaterialToProduction($production->id, $request->consumption_details);
+                    $price_one=$data['sell_price']/$data['quantity_product'];
+                    $transaction_sell_line_m = TransactionSellLine::where('transaction_id',$transaction_sell->id)->first();
 
-                    //$this->productUtil->createOrUpdateAddStockLinesToProduction($request->consumption_details, $transaction_sell);
+                    $transaction_sell_line=[
+                        0=>[
+                            "is_service" => "0",
+                            "product_id" => $variation->product_id,
+                            "variation_id" => $variation->id,
+                            "price_hidden" => $this->productUtil->num_uf($price_one),
+                            "purchase_price" => $this->productUtil->num_uf($data['purchase_price_per_unit']),
+                            "tax_id" => null,
+                            "tax_method" => null,
+                            "tax_rate" => "0.00",
+                            "item_tax" => "0",
+                            "coupon_discount" => "0",
+                            "coupon_discount_type" => null,
+                            "coupon_discount_amount" => "0",
+                            "promotion_purchase_condition" => "0",
+                            "promotion_purchase_condition_amount" => "0",
+                            "promotion_discount" => "0",
+                            "promotion_discount_type" => "0",
+                            "promotion_discount_amount" => "0",
+                            "quantity" =>$this->productUtil->num_uf($data['quantity_product']),
+                            "sell_price" => $this->productUtil->num_uf($price_one),
+                            "product_discount_type" => "fixed",
+                            "product_discount_value" => "0",
+                            "product_discount_amount" => "0.00",
+                            "sub_total" => $this->productUtil->num_uf($data['sell_price']),
+                        ]
+                    ];
+                    if($transaction_sell_line_m)
+                        $transaction_sell_line[0]['transaction_sell_line_id'] = $transaction_sell_line_m->id;
 
+
+
+                    $this->transactionUtil->createOrUpdateTransactionSellLine($transaction_sell, $transaction_sell_line);
+                    $this->transactionUtil->createOrUpdateRawMaterialConsumptionForRecipe($transaction_sell,$request->consumption_details,$recipe->automatic_consumption);
 
                 }
-                $recipe=Recipe::whereid($request->recipe_id)->first();
-                $variation= Variation::where('product_id',$recipe->material_id)->first();
 
-                $add_stock_lines= [ 0 =>[
+                $add_stock_line_id=  AddStockLine::where('transaction_id',$transaction->id)->first();
+
+                $add_stock_lines= [
+                    0 =>[
                     "is_service" => "0",
                     "product_id" => $recipe->material_id,
                     "variation_id" => $variation->id,
@@ -714,6 +732,8 @@ class RecipeController extends Controller
                     "convert_status_expire" => null
                 ]
                 ];
+                if($add_stock_line_id)
+                    $add_stock_lines[0]['add_stock_line_id']=$add_stock_line_id->id;
                 $this->productUtil->createOrUpdateAddStockLines($add_stock_lines, $transaction);
 
 
@@ -749,8 +769,6 @@ class RecipeController extends Controller
                     Product::where('id', $line->product_id)->update(['active' => 1]);
                 }
 
-
-                $this->transactionUtil->createOrUpdateRawMaterialConsumptionForRecipe($transaction_sell,$request->consumption_details);
 
                 DB::commit();
 
@@ -803,8 +821,67 @@ class RecipeController extends Controller
     public function destroyProduction($id)
     {
         try {
+            $add_stock = Transaction::wherehas('productions',function ($qu) use ($id){
+                $qu->where('productions.id',$id);
+            })->where('type','add_stock')->first();
+
+            $transaction_sell = Transaction::wherehas('productions',function ($qu) use ($id){
+                $qu->where('productions.id',$id);
+            })->where('type','sell')->first();
+            $add_stock_lines = $add_stock ? $add_stock->add_stock_lines: [];
+            DB::beginTransaction();
+                $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction_sell->id)->get();
+                foreach ($transaction_sell_lines as $transaction_sell_line) {
+//                    if ($transaction_sell->status == 'final') {
+//                        $product = Product::find($transaction_sell_line->product_id);
+//                        if (!$product->is_service) {
+//
+//                            $this->productUtil
+//                                ->updateProductQuantityStore(
+//                                            $transaction_sell_line->product_id,
+//                                            $transaction_sell_line->variation_id, $transaction_sell->store_id,
+//                                 $transaction_sell_line->quantity - $transaction_sell_line->quantity_returned);
+//
+//                        }
+//                    }
+                    $transaction_sell_line->delete();
+                }
+                if ($add_stock->status != 'received') {
+                    $add_stock_lines->delete();
+                } else {
+                    $delete_add_stock_line_ids = [];
+
+                    foreach ($add_stock_lines as $line) {
+                        $delete_add_stock_line_ids[] = $line->id;
+                        $this->productUtil->decreaseProductQuantity($line->product_id, $line->variation_id, $add_stock->store_id, $line->quantity);
+                    }
+
+                    if (!empty($delete_add_stock_line_ids)) {
+                        AddStockLine::where('transaction_id', $id)->whereIn('id', $delete_add_stock_line_ids)->delete();
+                    }
+                }
+                $ConsumptionProduction=ConsumptionProduction::where('production_id',$id)->get();
+
+
+                    foreach ($ConsumptionProduction as $item_con){
+                        $variation=Variation::where('product_id',$item_con->raw_material_id)->first();
+                        $this->productUtil
+                                ->updateProductQuantityStore(
+                                    $item_con->raw_material_id,
+                                    $variation->id
+                                            , $transaction_sell->store_id,
+                                  $item_con->amount_used);
+
+                    }
+                Transaction::where('return_parent_id', $transaction_sell->id)->delete();
+                Transaction::where('parent_sale_id', $transaction_sell->id)->delete();
+                CashRegisterTransaction::wherein('transaction_id', [$add_stock->id,$transaction_sell->id])->delete();
+                MoneySafeTransaction::where('transaction_id', $add_stock->id)->delete();
+                $add_stock->delete();
+
             Production::find($id)->delete();
-            Transaction::where('produce_id',$id)->delete();
+            DB::commit();
+
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
@@ -867,7 +944,6 @@ class RecipeController extends Controller
                  'raw_material_units' => $raw_material_units,
                  'raw_materials'=>$raw_materials]);
           }
-//        dd($view);
         return ['view' => $view,'recipe'=>$raw_recipe->toarray()];
     }
 }

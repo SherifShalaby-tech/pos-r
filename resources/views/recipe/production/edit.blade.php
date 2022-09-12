@@ -13,7 +13,7 @@
                         </div>
                         <div class="card-body">
                             <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                            {!! Form::open(['url' =>route('productions.update', $recipe->id),
+                            {!! Form::open(['url' =>route('productions.update', $production->id),
  'id' =>'product-edit-form', 'method'=>'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
                             <div class="row">
                                 <div class="col-md-4">
@@ -25,7 +25,7 @@
                                                 data-live-search='true' style='width: 30%;' placeholder ="{{__('lang.please_select')}}"
                                         ">
                                         @foreach($recipes as $item)
-                                            <option value="{{$item->id}}" @isset($recipe) @if($item->id == $recipe ->id) selected @endif @endisset>{{$item->variation_name != 'Default' ?:$item->product_name }} ({{$item->name}})</option>
+                                            <option value="{{$item->id}}" @isset($production) @if($item->id == $production ->id) selected @endif @endisset>{{$item->variation_name != 'Default' ?:$item->product_name }} ({{$item->name}})</option>
 
                                             @endforeach
 
@@ -37,8 +37,8 @@
                                     <div class="col-7">
                                         <div class="form-group">
                                             {!! Form::label('quantity_product', __('lang.quantity'), []) !!}
-                                            {!! Form::number('quantity_product',!empty($recipe) ?
-                                        number_format($recipe->quantity_product,5,'.','') :
+                                            {!! Form::number('quantity_product',!empty($production) ?
+                                        number_format($production->quantity_product,5,'.','') :
                                         null,
                                             ['class' => 'form-control', 'placeholder' =>
                                             __('lang.quantity_product')]) !!}
@@ -87,50 +87,50 @@
                                         </tr>
                                         </thead>
                                         <tbody id="body-table-material">
-                                        @isset($recipe)
-                                            @foreach ($recipe->consumption_products as $consumption_product)
+                                        @isset($production)
+                                            @foreach ($production->consumption_products as $consumption_product)
 
 
                                                 @include('recipe.partial.raw_material_row', [
                                                       'row_id' => $loop->index,
                                                 'consumption_product' => $consumption_product,
-                                                'quantity_product'=>$recipe->quantity_product])
+                                                'quantity_product'=>$production->quantity_product])
                                             @endforeach
                                         @endisset
                                         </tbody>
                                     </table>
-                                    <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="{{$recipe->consumption_products->count()}}">
+                                    <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="{{$production->consumption_products->count()}}">
                                 </div>
                                 @can('product_module.purchase_price.create_and_edit')
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
-                                            {!! Form::text('other_cost', !empty($recipe) ? @num_format($recipe->other_cost) : null, ['class' => 'form-control', 'placeholder' => __('lang.other_cost')]) !!}
+                                            {!! Form::text('other_cost', !empty($production) ? @num_format($production->other_cost) : null, ['class' => 'form-control', 'placeholder' => __('lang.other_cost')]) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('purchase_price_per_unit', __('lang.cost_per_unit')  . ' *', []) !!}
-                                            {!! Form::text('purchase_price_per_unit',  !empty($recipe) ?  @num_format($recipe->purchase_price/$recipe->quantity_product) : null, ['class' => 'form-control', 'placeholder' =>  __('lang.cost_per_unit'), 'required']) !!}
+                                            {!! Form::text('purchase_price_per_unit',  !empty($production) ?  @num_format($production->purchase_price/$production->quantity_product) : null, ['class' => 'form-control', 'placeholder' =>  __('lang.cost_per_unit'), 'required']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
-                                            {!! Form::text('purchase_price',  !empty($recipe) ?  @num_format($recipe->purchase_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.cost'), 'required']) !!}
+                                            {!! Form::text('purchase_price',  !empty($production) ?  @num_format($production->purchase_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.cost'), 'required']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
-                                            {!! Form::text('sell_price',  !empty($recipe) ?  @num_format($recipe->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
+                                            {!! Form::text('sell_price',  !empty($production) ?  @num_format($production->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
                                         </div>
                                     </div>
                                 @endcan
 
                                 <input type="hidden" name="is_raw_material" id="is_raw_material" value="1">
                                 <input type="hidden" name="row_id" id="row_id"
-                                       value="{{$recipe->consumption_products->count()}}">
+                                       value="{{$production->consumption_products->count()}}">
                             </div>
 
 

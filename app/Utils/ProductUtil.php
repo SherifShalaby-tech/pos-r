@@ -1310,7 +1310,9 @@ class ProductUtil extends Util
                 $product_store->qty_available = 0;
             }
 
-            $product_store->qty_available += $qty_difference;
+                $product_store->qty_available += $qty_difference;
+
+
             $product_store->save();
         }
 
