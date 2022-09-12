@@ -1806,7 +1806,6 @@ class TransactionUtil extends Util
         foreach ($sell_lines as $line) {
             $line_product = Product::find($line->product_id);
             $consumption_products = ConsumptionProduct::where('variation_id', $line->variation_id)->get();
-            dd($consumption_products);
             foreach ($consumption_products as $consumption_product) {
                 $raw_material = Product::find($consumption_product->raw_material_id);
                 if ($line_product->automatic_consumption == 1) {
