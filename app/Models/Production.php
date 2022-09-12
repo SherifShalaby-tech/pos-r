@@ -32,5 +32,13 @@ class Production extends Model
     {
         return $this->belongsTo(Recipe::class, 'recipe_id', 'id');
     }
+    public function transactions()
+    {
+        return $this->belongsToMany(Transaction::class, ProductionTransaction::class,  'production_id', 'transaction_id');
+
+//        return $this->hasManyThrough(Transaction::class, ProductionTransaction::class, 'production_id', 'transaction_id');
+
+    }
+
 
 }
