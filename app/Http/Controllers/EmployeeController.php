@@ -12,6 +12,7 @@ use App\Models\NumberOfLeave;
 use App\Models\Product;
 use App\Models\Store;
 use App\Models\System;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Utils\NotificationUtil;
 use App\Utils\TransactionUtil;
@@ -693,9 +694,17 @@ class EmployeeController extends Controller
                 $employee = Employee::find($id);
 
                 $user = User::find($employee->user_id);
-                $user->delete();
-                $employee->delete();
 
+                if($employee){
+                    Transaction::where('deliveryman_id',$employee->id)->update([
+                        'deliveryman_id'=>null
+                    ]);
+                    $employee->delete();
+                }
+                if($user){
+                    $user->delete();
+
+                }
                 $output = [
                     'success' => true,
                     'msg' => __("lang.deleted_success")
@@ -705,7 +714,7 @@ class EmployeeController extends Controller
 
                 $output = [
                     'success' => false,
-                    'msg' => '__("messages.something_went_wrong")'
+                    'msg' => __("messages.something_went_wrong")
                 ];
             }
 
