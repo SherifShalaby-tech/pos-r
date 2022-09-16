@@ -557,7 +557,6 @@ class CustomerController extends Controller
         $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
         $balance = $this->transactionUtil->getCustomerBalance($customer->id)['balance'];
         $referred_by = $customer->referred_by_users($customer->id);
-
         return view('customer.show')->with(compact(
             'sales',
             'sale_returns',
