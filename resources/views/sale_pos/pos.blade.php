@@ -67,7 +67,7 @@
                                                     <option value="">No Tax</option>
                                                     @foreach ($taxes as $tax)
                                                         <option data-rate="{{ $tax['rate'] }}"
-                                                            @if (!empty($transaction) && $transaction->tax_id == $tax['id']) selected @endif
+                                                            @if ((!empty($transaction) && $transaction->tax_id == $tax['id'] ) || App\Models\System::getProperty('def_pos_tax_id') == $tax['id']  ) selected @endif
                                                             value="{{ $tax['id'] }}">{{ $tax['name'] }}</option>
                                                     @endforeach
                                                 </select>
