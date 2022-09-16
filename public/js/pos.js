@@ -1963,7 +1963,9 @@ $(document).ready(function () {
     });
 });
 $(document).on("shown.bs.modal", "#contact_details_modal", function () {
+    getCustomerPointDetails();
     customer_sales_table.ajax.reload();
+
 });
 $(document).on("shown.bs.modal", "#recentTransaction", function () {
     recent_transaction_table.ajax.reload();
