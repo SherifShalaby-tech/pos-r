@@ -8,6 +8,7 @@
             margin: 2px 5px;
             text-align: center !important;
             overflow: initial;
+            width: auto !important;
         }
     </style>
 
