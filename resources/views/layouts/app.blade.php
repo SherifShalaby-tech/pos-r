@@ -25,7 +25,9 @@
         input.form-control.v_sub_sku,input.form-control.v_name {
             min-width: 150px;
         }
+
     </style>
+    @yield('styles')
 </head>
 
 <body onload="myFunction()">
