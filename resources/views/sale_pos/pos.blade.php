@@ -1,6 +1,17 @@
 @extends('layouts.app')
 @section('title', __('lang.pos'))
+@section('styles')
+    <style>
+        .btn-group-custom .btn {
+            font-size: 13px !important;
+            min-width: 13% !important;
+            margin: 2px 5px;
+            text-align: center !important;
+            overflow: initial;
+        }
+    </style>
 
+@endsection
 @section('content')
     <section class="forms pos-section no-print">
         <div class="container-fluid">
