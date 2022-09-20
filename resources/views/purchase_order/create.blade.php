@@ -67,6 +67,11 @@
                                         data-container=".view_modal"><i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
+                            <div class="col-md-2">
+                                @include(
+                                    'quotation.partial.product_selection'
+                                )
+                            </div>
                         </div>
                         <br>
                         <div class="row">
@@ -142,7 +147,16 @@
 
 @section('javascript')
 <script src="{{asset('js/purchase.js')}}"></script>
+<script src="{{ asset('js/product_selection_purchase.js') }}"></script>
 <script type="text/javascript">
+    $(document).on('click', '#add-selected-btn', function() {
+        $('#select_products_modal').modal('hide');
+        $.each(product_selected, function(index, value) {
+            get_label_product_row(value.product_id, value.variation_id);
+        });
+        product_selected = [];
+        product_table.ajax.reload();
+    })
     $('#store_id').change(function () {
         let store_id = $(this).val();
 

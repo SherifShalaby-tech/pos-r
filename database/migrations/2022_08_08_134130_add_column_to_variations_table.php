@@ -14,7 +14,7 @@ class AddColumnToVariationsTable extends Migration
     public function up()
     {
         Schema::table('variations', function (Blueprint $table) {
-            $table->Integer('number_vs_base_unit');
+            $table->Integer('number_vs_base_unit')->nullable();
         });
     }
 

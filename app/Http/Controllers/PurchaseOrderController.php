@@ -3,11 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Imports\PurchaseOrderLineImport;
+use App\Models\Brand;
+use App\Models\Category;
+use App\Models\Color;
+use App\Models\Customer;
+use App\Models\CustomerType;
+use App\Models\Grade;
 use App\Models\Product;
+use App\Models\ProductClass;
 use App\Models\PurchaseOrderLine;
+use App\Models\Size;
 use App\Models\Store;
 use App\Models\Supplier;
+use App\Models\Tax;
 use App\Models\Transaction;
+use App\Models\Unit;
 use App\Models\User;
 use App\Models\Variation;
 use App\Utils\NotificationUtil;
@@ -22,6 +32,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Tag\Sup;
+use Yajra\DataTables\Facades\DataTables;
 
 class PurchaseOrderController extends Controller
 {
@@ -99,10 +110,33 @@ class PurchaseOrderController extends Controller
         $stores = Store::getDropdown();
 
         $po_no = $this->productUtil->getNumberByType('purchase_order');
+        $product_classes = ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
+        $categories = Category::whereNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
+        $sub_categories = Category::whereNotNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
+        $brands = Brand::orderBy('name', 'asc')->pluck('name', 'id');
+        $units = Unit::orderBy('name', 'asc')->pluck('name', 'id');
+        $colors = Color::orderBy('name', 'asc')->pluck('name', 'id');
+        $sizes = Size::orderBy('name', 'asc')->pluck('name', 'id');
+        $grades = Grade::orderBy('name', 'asc')->pluck('name', 'id');
+        $taxes_array = Tax::orderBy('name', 'asc')->pluck('name', 'id');
+        $customer_types = CustomerType::orderBy('name', 'asc')->pluck('name', 'id');
+        $users = User::Notview()->pluck('name', 'id');
 
         return view('purchase_order.create')->with(compact(
             'suppliers',
             'stores',
+            'product_classes',
+            'categories',
+            'sub_categories',
+            'brands',
+            'units',
+            'colors',
+            'sizes',
+            'grades',
+            'taxes_array',
+            'customer_types',
+            'users',
+
             'po_no'
         ));
     }
@@ -338,7 +372,7 @@ class PurchaseOrderController extends Controller
 
     public function getProducts()
     {
-        if (request()->ajax()) {
+//        if (request()->ajax()) {
 
             $term = request()->term;
 
@@ -372,11 +406,11 @@ class PurchaseOrderController extends Controller
             if (!empty(request()->store_id)) {
                 $q->where('product_stores.store_id', request()->store_id);
             }
-            if (!empty(request()->is_raw_material)) {
-                $q->where('products.is_raw_material', 1);
-            } else {
-                $q->where('products.is_raw_material', 0);
-            }
+//            if (!empty(request()->is_raw_material)) {
+//                $q->where('products.is_raw_material', 1);
+//            } else {
+//                $q->where('products.is_raw_material', 0);
+//            }
             $products = $q->groupBy('variation_id')->get();
 
             $products_array = [];
@@ -428,7 +462,7 @@ class PurchaseOrderController extends Controller
             }
 
             return json_encode($result);
-        }
+//        }
     }
 
 
@@ -637,4 +671,274 @@ class PurchaseOrderController extends Controller
 
         return redirect()->back()->with('status', $output);
     }
+    public function getProduct(Request $request)
+    {
+        if (request()->ajax()) {
+
+            $products = Product::Active()->leftjoin('variations', function ($join) {
+                $join->on('products.id', 'variations.product_id')
+                    ->whereNull('variations.deleted_at');
+            })
+                ->leftjoin('add_stock_lines', function ($join) {
+                    $join->on('variations.id', 'add_stock_lines.variation_id')->where('add_stock_lines.expiry_date', '>=', date('Y-m-d'));
+                })
+                ->leftjoin('colors', 'variations.color_id', 'colors.id')
+                ->leftjoin('sizes', 'variations.size_id', 'sizes.id')
+                ->leftjoin('grades', 'variations.grade_id', 'grades.id')
+                ->leftjoin('units', 'variations.unit_id', 'units.id')
+                ->leftjoin('product_classes', 'products.product_class_id', 'product_classes.id')
+                ->leftjoin('categories', 'products.category_id', 'categories.id')
+                ->leftjoin('categories as sub_categories', 'products.sub_category_id', 'sub_categories.id')
+                ->leftjoin('brands', 'products.brand_id', 'brands.id')
+                ->leftjoin('supplier_products', 'products.id', 'supplier_products.product_id')
+                ->leftjoin('users', 'products.created_by', 'users.id')
+                ->leftjoin('users as edited', 'products.edited_by', 'users.id')
+                ->leftjoin('taxes', 'products.tax_id', 'taxes.id')
+                ->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id');
+
+            $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
+
+            $store_query = '';
+            if (!empty($store_id)) {
+                // $products->where('product_stores.store_id', $store_id);
+                $store_query = 'AND store_id=' . $store_id;
+            }
+
+            if (!empty(request()->product_id)) {
+                $products->where('products.id', request()->product_id);
+            }
+
+            if (!empty(request()->product_class_id)) {
+                $products->where('products.product_class_id', request()->product_class_id);
+            }
+
+            if (!empty(request()->category_id)) {
+                $products->where('products.category_id', request()->category_id);
+            }
+
+            if (!empty(request()->sub_category_id)) {
+                $products->where('products.sub_category_id', request()->sub_category_id);
+            }
+
+            if (!empty(request()->tax_id)) {
+                $products->where('tax_id', request()->tax_id);
+            }
+
+            if (!empty(request()->brand_id)) {
+                $products->where('products.brand_id', request()->brand_id);
+            }
+
+            if (!empty(request()->supplier_id)) {
+                $products->where('supplier_products.supplier_id', request()->supplier_id);
+            }
+
+            if (!empty(request()->unit_id)) {
+                $products->where('variations.unit_id', request()->unit_id);
+            }
+
+            if (!empty(request()->color_id)) {
+                $products->where('variations.color_id', request()->color_id);
+            }
+
+            if (!empty(request()->size_id)) {
+                $products->where('variations.size_id', request()->size_id);
+            }
+
+            if (!empty(request()->grade_id)) {
+                $products->where('variations.grade_id', request()->grade_id);
+            }
+
+            if (!empty(request()->customer_type_id)) {
+                $products->whereJsonContains('show_to_customer_types', request()->customer_type_id);
+            }
+
+            if (!empty(request()->created_by)) {
+                $products->where('products.created_by', request()->created_by);
+            }
+            if (request()->active == '1' || request()->active == '0') {
+                $products->where('products.active', request()->active);
+            }
+
+
+            $is_add_stock = request()->is_add_stock;
+            $products = $products->select(
+                'products.*',
+                'add_stock_lines.batch_number',
+                'variations.sub_sku',
+                'product_classes.name as product_class',
+                'categories.name as category',
+                'sub_categories.name as sub_category',
+                'brands.name as brand',
+                'colors.name as color',
+                'sizes.name as size',
+                'grades.name as grade',
+                'units.name as unit',
+                'taxes.name as tax',
+                'variations.id as variation_id',
+                'variations.name as variation_name',
+                'variations.default_purchase_price',
+                'variations.default_sell_price',
+                'add_stock_lines.expiry_date as exp_date',
+                'users.name as created_by_name',
+                'edited.name as edited_by_name',
+                DB::raw('(SELECT SUM(product_stores.qty_available) FROM product_stores JOIN variations as v ON product_stores.variation_id=v.id WHERE v.id=variations.id ' . $store_query . ') as current_stock'),
+            )->with(['supplier'])
+                ->groupBy('variations.id');
+            return DataTables::of($products)
+                ->addColumn('image', function ($row) {
+                    $image = $row->getFirstMediaUrl('product');
+                    if (!empty($image)) {
+                        return '<img src="' . $image . '" height="50px" width="50px">';
+                    } else {
+                        return '<img src="' . asset('/uploads/' . session('logo')) . '" height="50px" width="50px">';
+                    }
+                })
+                ->editColumn('variation_name', '@if($variation_name != "Default"){{$variation_name}} @else {{$name}}
+                @endif')
+                ->editColumn('sub_sku', '{{$sub_sku}}')
+                ->addColumn('product_class', '{{$product_class}}')
+                ->addColumn('category', '{{$category}}')
+                ->addColumn('sub_category', '{{$sub_category}}')
+                ->addColumn('purchase_history', function ($row) {
+                    $html = '<a data-href="' . action('ProductController@getPurchaseHistory', $row->id) . '"
+                    data-container=".view_modal" class="btn btn-modal">' . __('lang.view') . '</a>';
+                    return $html;
+                })
+                ->editColumn('supplier_name', function ($row) {
+                    return $row->supplier->name ?? '';
+                })
+                ->editColumn('batch_number', '{{$batch_number}}')
+                ->editColumn('default_sell_price', '{{@num_format($default_sell_price)}}')
+                ->addColumn('tax', '{{$tax}}')
+                ->editColumn('brand', '{{$brand}}')
+                ->editColumn('unit', '{{$unit}}')
+                ->editColumn('color', '{{$color}}')
+                ->editColumn('size', '{{$size}}')
+                ->editColumn('grade', '{{$grade}}')
+                ->editColumn('current_stock', '@if($is_service){{@num_format(0)}} @else{{@num_format($current_stock)}}@endif')
+                ->addColumn('current_stock_value', function ($row) {
+                    return $this->productUtil->num_f($row->current_stock * $row->default_purchase_price);
+                })
+                ->addColumn('customer_type', function ($row) {
+                    return $row->customer_type;
+                })
+                ->editColumn('exp_date', '@if(!empty($exp_date)){{@format_date($exp_date)}}@endif')
+                ->addColumn('manufacturing_date', '@if(!empty($manufacturing_date)){{@format_date($manufacturing_date)}}@endif')
+                ->editColumn('discount', '{{@num_format($discount)}}')
+                ->editColumn('default_purchase_price', '{{@num_format($default_purchase_price)}}')
+                ->editColumn('active', function ($row) {
+                    if ($row->active) {
+                        return __('lang.yes');
+                    } else {
+                        return __('lang.no');
+                    }
+                })
+                ->editColumn('created_by', '{{$created_by_name}}')
+                ->addColumn('supplier', function ($row) {
+                    $query = Transaction::leftjoin('add_stock_lines', 'transactions.id', '=', 'add_stock_lines.transaction_id')
+                        ->leftjoin('suppliers', 'transactions.supplier_id', '=', 'suppliers.id')
+                        ->where('transactions.type', 'add_stock')
+                        ->where('add_stock_lines.product_id', $row->id)
+                        ->select('suppliers.name')
+                        ->orderBy('transactions.id', 'desc')
+                        ->first();
+                    return $query->name ?? '';
+                })
+                ->addColumn('selection_checkbox', function ($row) use ($is_add_stock) {
+
+                            $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+
+
+
+                    return $html;
+                })
+                ->addColumn(
+                    'action',
+                    function ($row) {
+                        $html =
+                            '<div class="btn-group">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">' . __('lang.action') .
+                            '<span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">';
+
+                        if (auth()->user()->can('product_module.product.view')) {
+                            $html .=
+                                '<li><a data-href="' . action('ProductController@show', $row->id) . '"
+                                data-container=".view_modal" class="btn btn-modal"><i class="fa fa-eye"></i>
+                                ' . __('lang.view') . '</a></li>';
+                        }
+                        $html .= '<li class="divider"></li>';
+                        if (auth()->user()->can('product_module.product.create_and_edit')) {
+                            $html .=
+                                '<li><a href="' . action('ProductController@edit', $row->id) . '" class="btn"
+                            target="_blank"><i class="dripicons-document-edit"></i> ' . __('lang.edit') . '</a></li>';
+                        }
+                        $html .= '<li class="divider"></li>';
+                        if (auth()->user()->can('stock.add_stock.create_and_edit')) {
+                            $html .=
+                                '<li><a target="_blank" href="' . action('AddStockController@create', ['variation_id' => $row->variation_id, 'product_id' => $row->id]) . '" class="btn"
+                            target="_blank"><i class="fa fa-plus"></i> ' . __('lang.add_new_stock') . '</a></li>';
+                        }
+                        $html .= '<li class="divider"></li>';
+                        if (auth()->user()->can('product_module.product.delete')) {
+                            $html .=
+                                '<li>
+                            <a data-href="' . action('ProductController@destroy', $row->variation_id) . '"
+                                data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
+                                class="btn text-red delete_product"><i class="fa fa-trash"></i>
+                                ' . __('lang.delete') . '</a>
+                        </li>';
+                        }
+
+                        $html .= '</ul></div>';
+
+                        return $html;
+                    }
+                )
+
+                ->setRowAttr([
+                    'data-href' => function ($row) {
+                        if (auth()->user()->can("product.view")) {
+                            return  action('ProductController@show', [$row->id]);
+                        } else {
+                            return '';
+                        }
+                    }
+                ])
+                ->rawColumns([
+                    'selection_checkbox',
+                    'image',
+                    'variation_name',
+                    'sku',
+                    'product_class',
+                    'category',
+                    'sub_category',
+                    'purchase_history',
+                    'batch_number',
+                    'sell_price',
+                    'tax',
+                    'brand',
+                    'unit',
+                    'color',
+                    'size',
+                    'grade',
+                    'is_service',
+                    'customer_type',
+                    'expiry',
+                    'manufacturing_date',
+                    'discount',
+                    'purchase_price',
+                    'created_by',
+                    'action',
+                ])
+                ->make(true);
+        }
+
+
+
+    }
+
 }

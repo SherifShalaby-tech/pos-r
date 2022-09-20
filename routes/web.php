@@ -143,6 +143,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::post('purchase-order/save-import', 'PurchaseOrderController@saveImport');
     Route::get('purchase-order/import', 'PurchaseOrderController@getImport');
+    Route::get('purchase-order/product', 'PurchaseOrderController@getProduct');
     Route::get('purchase-order/get-products', 'PurchaseOrderController@getProducts');
     Route::get('purchase-order/add-product-row', 'PurchaseOrderController@addProductRow');
     Route::get('purchase-order/get-po-number', 'PurchaseOrderController@getPoNumber');
