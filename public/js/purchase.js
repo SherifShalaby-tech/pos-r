@@ -39,9 +39,9 @@ $(document).ready(function () {
     }
 });
 
-function get_label_product_row(product_id, variation_id,index) {
+function get_label_product_row(product_id, variation_id) {
     if (product_id) {
-        var row_count = $("table#product_table tbody tr").length+index;
+        var row_count = $("table#product_table tbody tr").length;
 
         $.ajax({
             method: "GET",
