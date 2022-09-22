@@ -39,9 +39,10 @@ $(document).ready(function () {
     }
 });
 
-function get_label_product_row(product_id, variation_id) {
+function get_label_product_row(product_id, variation_id,index) {
     if (product_id) {
-        var row_count = $("table#product_table tbody tr").length;
+        var row_count = $("table#product_table tbody tr").length+index;
+
         $.ajax({
             method: "GET",
             url: "/purchase-order/add-product-row",
@@ -56,7 +57,9 @@ function get_label_product_row(product_id, variation_id) {
                 calculate_sub_totals()
             },
         });
+
     }
+
 }
 function calculate_sub_totals() {
     var total = 0;

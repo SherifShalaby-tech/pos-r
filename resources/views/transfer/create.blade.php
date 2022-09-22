@@ -122,8 +122,10 @@
 <script type="text/javascript">
     $(document).on('click', '#add-selected-btn', function(){
         $('#select_products_modal').modal('hide');
+        var varpluse = 0;
         $.each(product_selected, function(index, value){
-            get_label_product_row(value.product_id, value.variation_id);
+            get_label_product_row(value.product_id, value.variation_id,varpluse);
+            varpluse++;
         });
         product_selected = [];
         product_table.ajax.reload();
