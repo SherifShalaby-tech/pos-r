@@ -35,7 +35,7 @@ $(document).ready(function () {
                     $(this).val(null);
                     get_label_product_row(
                         ui.item.product_id,
-                        ui.item.variation_id
+                        ui.item.variation_id,0
                     );
                 },
             })
@@ -47,7 +47,7 @@ $(document).ready(function () {
     }
 });
 
-function get_label_product_row(product_id, variation_id) {
+function get_label_product_row(product_id, variation_id,index_plus) {
     //Get item addition method
     var sender_store_id = parseInt($("#sender_store_id").val());
     if (isNaN(sender_store_id)) {
@@ -79,7 +79,7 @@ function get_label_product_row(product_id, variation_id) {
         });
 
     if (add_via_ajax) {
-        var row_count = $("table#product_table tbody tr").length;
+        var row_count = $("table#product_table tbody tr").length+index_plus;
         $.ajax({
             method: "GET",
             url: "/transfer/add-product-row?sender_store_id=" + sender_store_id,
