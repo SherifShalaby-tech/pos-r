@@ -184,7 +184,7 @@
                     }
                 },
                 columnDefs: [{
-                    "targets": [0, 3, 15],
+                    "targets": [0, 3, 13, 15],
                     "orderable": false,
                     "searchable": false
                 }],
