@@ -349,10 +349,10 @@ function get_label_product_row(
             var row_count = parseInt($("#row_count").val());
             $("#row_count").val(row_count + 1);
         }
-
+        var extensions =null;
         $.ajax({
             method: "GET",
-            url: "/pos/add-product-row",
+            url: "/pos/get-product-row-extension",
             dataType: "json",
             async: false,
             data: {
@@ -372,17 +372,102 @@ function get_label_product_row(
                     swal("Error", result.msg, "error");
                     return;
                 }
-                $("table#product_table tbody").prepend(result.html_content);
-                $("input#search_product").val("");
-                $("input#search_product").focus();
-                check_for_sale_promotion();
-                calculate_sub_totals();
-                reset_row_numbering();
-                getCustomerPointDetails();
+                if(result.success&&(result.html_content==0||result.html_content == '')){
+                    get_ajax_add_row_product(product_id,row_count,variation_id,store_id
+                        ,customer_id,currency_id,edit_quantity,weighing_scale_barcode)
+                }else{
+                    $('#product_extension_tbody').html(result.html_content);
+                    $('#product_extension').addClass('view_modal no-print show');
+                    $('#product_extension').show();
+
+
+                }
             },
         });
-    }
+       }
 }
+$('#save_btn_product_extension').click(function () {
+    var extensions_ids = $('input[name^=extensions_checkboxs]').map(function(idx, elem) {
+        if($(elem).is(':checked')){
+            return $(elem).val();
+        }
+    }).get();
+    var extensions_quantity = $('input[name^=extensions_quantity]').map(function(idx, elem) {
+        if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
+            return $(elem).val();
+        }
+    }).get();
+    var extensions_sell_prices = $('input[name^=extensions_sell_price]').map(function(idx, elem) {
+        if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
+            return $(elem).val();
+        }
+    }).get();
+        let product_id= $('#extension_product_id').val();
+        let row_count= $('#extension_row_count').val();
+        let variation_id= $('#extension_variation_id').val();
+        let store_id = $("#store_id").val();
+        let customer_id = $("#customer_id").val();
+        let currency_id = $("#received_currency_id").val();
+        var edit_quantity= $('#extension_edit_quantity').val();
+        var weighing_scale_barcode= $('#extension_weighing_scale_barcode').val();
+        $('#product_extension').removeClass('view_modal no-print show');
+        $('#product_extension').hide();
+        get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+            ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
+            extensions_sell_prices);
+
+});
+function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+                                  ,edit_quantity,weighing_scale_barcode,extensions_ids=[]
+                                  ,extensions_quantity=[],extensions_sell_prices=[]) {
+
+    $.ajax({
+        method: "GET",
+        url: "/pos/add-product-row",
+        dataType: "json",
+        async: false,
+        data: {
+            product_id: product_id,
+            row_count: row_count,
+            variation_id: variation_id,
+            store_id: store_id,
+            customer_id: customer_id,
+            currency_id: currency_id,
+            edit_quantity: edit_quantity,
+            extensions_ids: extensions_ids,
+            extensions_quantity: extensions_quantity,
+            extensions_sell_prices: extensions_sell_prices,
+            weighing_scale_barcode: weighing_scale_barcode,
+            dining_table_id: $("#dining_table_id").val(),
+            is_direct_sale: $("#is_direct_sale").val(),
+        },
+        success: function (result) {
+            if (!result.success) {
+                swal("Error", result.msg, "error");
+                return;
+            }
+            $("table#product_table tbody").prepend(result.html_content);
+            $("input#search_product").val("");
+            $("input#search_product").focus();
+            check_for_sale_promotion();
+            calculate_sub_totals();
+            reset_row_numbering();
+            getCustomerPointDetails();
+        },
+});
+
+
+
+}
+$(document).on('change','.extensions_quantity',function () {
+    var quantity =$(this).val();
+    var row_id = $(this).attr('id-row');
+    var rice_per_one = $('#extensions_sell_price_per_one_'+row_id).val();
+    __write_number(
+        $('#extensions_sell_price_'+row_id),
+        rice_per_one * quantity
+    );
+});
 function reset_row_numbering() {
     $("#product_table > tbody  > tr").each((ele, tr) => {
         $(tr)
@@ -538,7 +623,6 @@ function calculate_sub_totals() {
         let sell_price = __read_number($(tr).find(".sell_price"));
         let price_hidden = __read_number($(tr).find(".price_hidden"));
         let sub_total = 0;
-        console.log(sell_price)
         if (sell_price > price_hidden) {
             let price_discount = (sell_price - price_hidden);
 
@@ -553,7 +637,6 @@ function calculate_sub_totals() {
             );
             $(tr).find(".plus_sign_text").text("+");
             sub_total = sell_price * quantity;
-            console.log(sub_total)
         } else if (sell_price < price_hidden) {
             let price_discount = (price_hidden - sell_price);
             $(tr).find(".product_discount_type").val("fixed");
@@ -565,7 +648,6 @@ function calculate_sub_totals() {
                 $(tr).find(".product_discount_amount"),
                 price_discount / exchange_rate
             );
-            console.log(exchange_rate, 'exchange_rate');
             $(tr).find(".plus_sign_text").text("-");
             sub_total = price_hidden * quantity;
         } else {
@@ -2523,17 +2605,14 @@ $(document).ready(function () {
             suffixKeyCodes: [13], // enter-key expected at the end of a scan
             reactToPaste: true, // Compatibility to built-in scanners in paste-mode (as opposed to keyboard-mode)
             onScan: function (sCode, iQty) {
-                console.log("Scanned: " + iQty + "x " + sCode);
                 $("input#weighing_scale_barcode").val(sCode);
                 $("button#weighing_scale_submit").trigger("click");
             },
             onScanError: function (oDebug) {
-                console.log(oDebug);
             },
             minLength: 2,
             onKeyDetect: function (iKeyCode) {
                 // output all potentially relevant key events - great for debugging!
-                console.log("Pressed: " + iKeyCode);
             },
         });
 
@@ -2886,6 +2965,5 @@ $(document).on("change", "#upload_documents", function (event) {
             });
         }
     } else {
-        console.log("nada");
     }
 });

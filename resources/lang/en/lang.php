@@ -12,6 +12,12 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+    'product_extension'=>'Extras with the product',
+    'extension'=>'Extensions',
+    'product_for_extension'=>'Product customization',
+    'add_extension'=>'Add product Extension',
+    'sell_default_price'=>'Default Selling Price',
+
     'use now' => 'Use Now',
     'view_all_recipe' => 'View recipes',
     'add_manual_recipe' => 'Add recipe',

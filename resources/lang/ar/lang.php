@@ -12,7 +12,11 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'product_extension'=>'اضافات مع المنتج',
+    'extension'=>'الاضافات',
+    'product_for_extension'=>'تخصيص منتج',
+    'add_extension'=>'اضافة اضافات المنتج',
+    'sell_default_price'=>'سعر البيع الافتراضي',
     'use now'=>'استخدم الان',
     'view_all_recipe'=>'عرض الوصفات',
     'add_manual_recipe'=>'اضافة وصفة',

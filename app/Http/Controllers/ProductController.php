@@ -20,6 +20,7 @@ use App\Models\Tax;
 use App\Models\Transaction;
 use App\Models\Unit;
 use App\Models\User;
+use App\Models\Extension;
 use App\Models\Variation;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
@@ -445,10 +446,13 @@ class ProductController extends Controller
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $suppliers = Supplier::pluck('name', 'id');
 
+        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
+
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
                 'suppliers',
+                'extensions',
                 'raw_materials',
                 'raw_material_units',
                 'product_classes',
@@ -472,6 +476,7 @@ class ProductController extends Controller
             'raw_materials',
             'raw_material_units',
             'product_classes',
+            'extensions',
             'categories',
             'sub_categories',
             'brands',
@@ -505,7 +510,7 @@ class ProductController extends Controller
             ['sell_price' => ['required', 'max:25', 'decimal']],
         );
 
-        try {
+//        try {
             $discount_customers = $this->getDiscountCustomerFromType($request->discount_customer_types);
 
             $product_data = [
@@ -557,11 +562,20 @@ class ProductController extends Controller
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateRawMaterialToProduct($variation->id, $request->consumption_details);
+                    $this->productUtil->createOrUpdateRawMaterialToProduct(
+                        $variation->id,
+                        $request->consumption_details);
                 }
             }
+            if (!empty($request->extension_details)) {
+                $variations = $product->variations()->get();
+                foreach ($variations as $variation) {
+                    $this->productUtil->createOrUpdateExtensionToProduct(
+                        $variation->id,
+                        $request->extension_details);
+                }
 
-
+            }
             if ($request->images) {
                 foreach ($request->images as $image) {
                     $product->addMedia($image)->toMediaCollection('product');
@@ -580,13 +594,13 @@ class ProductController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-        } catch (\Exception $e) {
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
-        }
+//        } catch (\Exception $e) {
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
 
         return $output;
     }
@@ -668,10 +682,13 @@ class ProductController extends Controller
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $suppliers = Supplier::pluck('name', 'id');
         $units_js=$units->pluck('base_unit_multiplier', 'id');
+        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
+
         return view('product.edit')->with(compact(
             'raw_materials',
             'raw_material_units',
             'product',
+            'extensions',
             'product_classes',
             'categories',
             'sub_categories',
@@ -763,10 +780,19 @@ class ProductController extends Controller
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateRawMaterialToProduct($variation->id, $request->consumption_details);
+                    $this->productUtil->createOrUpdateRawMaterialToProduct(
+                        $variation->id, $request->consumption_details);
                 }
             }
+            if (!empty($request->extension_details)) {
+                $variations = $product->variations()->get();
+                foreach ($variations as $variation) {
+                    $this->productUtil->createOrUpdateExtensionToProduct(
+                        $variation->id,
+                        $request->extension_details);
+                }
 
+            }
 
             if ($request->images) {
                 $product->clearMediaCollection('product');
@@ -1116,7 +1142,6 @@ class ProductController extends Controller
         $row_id = request()->row_id ?? 0;
         $raw_materials  = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
-
         return view('product.partial.raw_material_row')->with(compact(
             'row_id',
             'raw_materials',
@@ -1124,7 +1149,22 @@ class ProductController extends Controller
         ));
     }
 
+    /**
+     * get extension row
+     *
+     * @return void
+     */
+    public function getExtensionRow()
+    {
 
+        $row_id   = request()->row_id  ?? 0;
+        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
+
+        return view('product.partial.extension_row')->with(compact(
+            'row_id',
+            'extensions',
+        ));
+    }
     //
     /**
      * get raw material details
@@ -1148,4 +1188,19 @@ class ProductController extends Controller
         }
         return ['raw_material' => $raw_material];
     }
+
+
+    /**
+     * get raw material details
+     *
+     * @param int $raw_material_id
+     * @return void
+     */
+    public function getExtensionDetail($extension_id)
+    {
+        $extension = Extension::find($extension_id);
+        return ['extension' => $extension];
+    }
+
+//
 }

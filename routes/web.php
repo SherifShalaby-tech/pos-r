@@ -41,7 +41,9 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('general/view-uploaded-files/{model_name}/{model_id}', 'GeneralController@viewUploadedFiles');
 
     Route::get('product/get-raw-material-details/{raw_material_id}', 'ProductController@getRawMaterialDetail');
+    Route::get('product/get-extension-details/{extension_id}', 'ProductController@getExtensionDetail');
     Route::get('product/get-raw-material-row', 'ProductController@getRawMaterialRow');
+    Route::get('product/get-extension-row', 'ProductController@getExtensionRow');
     Route::get('product/get-variation-row', 'ProductController@getVariationRow');
     Route::get('product/get-products', 'ProductController@getProducts');
     Route::get('product/get-purchase-history/{id}', 'ProductController@getPurchaseHistory');
@@ -196,11 +198,14 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::get('store-pos/get-pos-details-by-store/{store_id}', 'StorePosController@getPosDetailsByStore');
     Route::resource('store-pos', StorePosController::class);
+    Route::get('pos/get-product-row-extension', 'SellPosController@getProductRowExtension');
 
     Route::get('pos/update-status-to-cancel/{id}', 'SellPosController@updateStatusToCancel');
     Route::get('pos/get-non-identifiable-item-row', 'SellPosController@getNonIdentifiableItemRow');
     Route::get('pos/get-products', 'SellPosController@getProducts');
     Route::get('pos/add-product-row', 'SellPosController@addProductRow');
+
+
     Route::get('pos/get-product-items-by-filter', 'SellPosController@getProductItemsByFilter');
     Route::get('pos/get-online-order-transactions', 'SellPosController@getOnlineOrderTransactions');
     Route::get('pos/get-draft-transactions', 'SellPosController@getDraftTransactions');
@@ -218,7 +223,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('dining-room/get-dining-room-content', 'DiningRoomController@getDiningContent');
     Route::get('dining-room/get-dining-modal', 'DiningRoomController@getDiningModal');
     Route::resource('dining-room', DiningRoomController::class);
-
+    Route::resource('extension', ExtensionController::class);
     Route::get('dining-table/check-dining-table-name', 'DiningTableController@checkDiningTableName');
     Route::get('dining-table/get-dining-table-content', 'DiningTableController@getDiningContent');
     Route::get('dining-table/get-dining-table-action/{id}', 'DiningTableController@getDiningAction');

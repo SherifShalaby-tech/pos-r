@@ -117,6 +117,7 @@ class User extends Authenticatable
                 'barcode' => __('lang.barcode'),
                 'purchase_price' => __('lang.purchase_price'),
                 'sell_price' => __('lang.sell_price'),
+                'extension' => __('lang.extension'),
             ],
             'raw_material_module' => [
                 'raw_material' => __('lang.raw_material'),
@@ -260,6 +261,7 @@ class User extends Authenticatable
             'settings' => [
                 'store' => __('lang.store'),
                 'store_pos' => __('lang.store_pos'),
+
                 'dining_room' => __('lang.dining_room'),
                 'dining_table' => __('lang.dining_table'),
                 'service_fee' => __('lang.service_fee'),

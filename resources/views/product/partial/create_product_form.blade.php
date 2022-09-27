@@ -233,20 +233,39 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
         <div class="col-md-12">
             <table class="table table-bordered" id="consumption_table">
                 <thead>
+                <tr>
+                    <th style="width: 30%;">@lang('lang.raw_materials')</th>
+                    <th style="width: 30%;">@lang('lang.used_amount')</th>
+                    <th style="width: 30%;">@lang('lang.unit')</th>
+                    <th style="width: 30%;">@lang('lang.cost')</th>
+                    <th style="width: 10%;"><button class="btn btn-xs btn-success add_raw_material_row"
+                                                    type="button"><i class="fa fa-plus"></i></button></th>
+                </tr>
+                </thead>
+                <tbody>
+                @include('product.partial.raw_material_row', ['row_id' => 0])
+                </tbody>
+            </table>
+            <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="1">
+        </div>
+        <div class="col-md-12"><strong>@lang('lang.product_extension')</strong></div>
+
+        <div class="col-md-12">
+            <table class="table table-bordered" id="extensions_table">
+                <thead>
                     <tr>
-                        <th style="width: 30%;">@lang('lang.raw_materials')</th>
-                        <th style="width: 30%;">@lang('lang.used_amount')</th>
-                        <th style="width: 30%;">@lang('lang.unit')</th>
-                        <th style="width: 30%;">@lang('lang.cost')</th>
-                        <th style="width: 10%;"><button class="btn btn-xs btn-success add_raw_material_row"
+                        <th style="width: 30%;">@lang('lang.extension')</th>
+                        <th style="width: 30%;">@lang('lang.sell_price')</th>
+
+                        <th style="width: 10%;"><button class="btn btn-xs btn-success add_extension_row"
                                 type="button"><i class="fa fa-plus"></i></button></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @include('product.partial.raw_material_row', ['row_id' => 0])
+                    @include('product.partial.extension_row', ['row_id' => 0])
                 </tbody>
             </table>
-            <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="1">
+            <input type="hidden" name="extension_row_index" id="extension_row_index" value="1">
         </div>
     @endif
     @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')

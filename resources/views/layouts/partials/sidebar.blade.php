@@ -60,7 +60,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 <li><a href="#raw_material" aria-expanded="false" data-toggle="collapse"> <i
                             class="fa fa-industry"></i><span>{{__('lang.raw_material')}}</span><span></a>
                     <ul id="raw_material"
-                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['raw-material', 'raw-materials', 'consumption'])) show @endif">
+                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['raw-material', 'raw-materials', 'consumption','recipe','production'])) show @endif">
                         @can('raw_material_module.raw_material.create_and_edit')
                         <li
                             class="@if(request()->segment(1) == 'raw-material' && request()->segment(2) == 'create')) active @endif">
@@ -1146,10 +1146,11 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 @endif
 
                 @if( !empty($module_settings['settings']) )
-                <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i
+                <li>
+                    <a href="#setting" aria-expanded="false" data-toggle="collapse"> <i
                             class="dripicons-gear"></i><span>@lang('lang.settings')</span></a>
                     <ul id="setting"
-                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
+                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings','extension', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
                         @can('product_module.product_class.view')
                         <li
                             class="@if(request()->segment(1) == 'product-class' && empty(request()->segment(2))) active @endif">
@@ -1209,12 +1210,22 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <a href="{{action('ServiceFeeController@index')}}">{{__('lang.service_fee')}}</a>
                         </li>
                         @endcan
+                        @can('product_module.extension.view')
+                            <li
+                                class="@if(request()->segment(1) == 'extension' && empty(request()->segment(2))) active @endif">
+                                <a href="{{action('ExtensionController@index')}}">{{__('lang.extension')}}</a>
+                            </li>
+                        @endcan
                         @can('settings.dining_room.view')
                         <li
                             class="@if(request()->segment(1) == 'dining-room' && empty(request()->segment(2))) active @endif">
                             <a href="{{action('DiningRoomController@index')}}">{{__('lang.dining_room')}}</a>
                         </li>
                         @endcan
+
+
+
+
                         @can('settings.dining_table.view')
                         <li
                             class="@if(request()->segment(1) == 'dining-table' && empty(request()->segment(2))) active @endif">

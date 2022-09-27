@@ -794,3 +794,36 @@ $(document).on("change", "#sell_price", function () {
         return;
     }
 });
+$(document).on("click", ".add_extension_row", function () {
+    let row_id = parseInt($("#extension_row_index").val());
+    $("#extension_row_index").val(row_id + 1);
+
+    $.ajax({
+        method: "get",
+        url: "/product/get-extension-row",
+        data: { row_id: row_id },
+        success: function (result) {
+            $("#extensions_table > tbody").prepend(result);
+            $(".selectpicker").selectpicker("refresh");
+            $(".extension_id").selectpicker("refresh");
+        },
+    });
+});
+
+
+
+$(document).on("change", "select.extension_id", function () {
+    let tr = $(this).closest("tr");
+    let extension_id = $(this).val();
+
+    $.ajax({
+        method: "get",
+        url: "/product/get-extension-details/" + extension_id,
+        data: {},
+        success: function (result) {
+            tr.find(".raw_extension_price").val(
+                result.extension.sell_default_price
+            );
+        },
+    });
+});

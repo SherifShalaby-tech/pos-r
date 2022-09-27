@@ -46,7 +46,10 @@ class Variation extends Model
     {
         return $this->hasMany(ProductStore::class, 'variation_id');
     }
-
+    public function product_extensions()
+    {
+        return $this->hasMany(ProductExtension::class,'variation_id');
+    }
     public function raw_materials()
     {
         return $this->hasMany(ConsumptionProduct::class);
