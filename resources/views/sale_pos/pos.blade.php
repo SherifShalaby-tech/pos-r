@@ -769,6 +769,37 @@
 
 
     </section>
+    <div class="modal" id="product_extension" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@lang('lang.product_extension')</h5>
+                    <button type="button"  class="close close_btn_product_extension" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>@lang('lang.product_extension')</td>
+                                <td>@lang('lang.qty')</td>
+                                <td>@lang('lang.sell_price')</td>
+                            </tr>
+                        </thead>
+                        <tbody id="product_extension_tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="save_btn_product_extension" class="btn btn-primary">@lang('lang.save')</button>
+                    <button type="button"  class="btn btn-secondary close_btn_product_extension"
+                            data-dismiss="modal">@lang('lang.cancel')</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- This will be printed -->
@@ -780,6 +811,10 @@
     <script src="{{ asset('js/pos.js') }}"></script>
     <script src="{{ asset('js/dining_table.js') }}"></script>
     <script>
+        $('.close_btn_product_extension').click(function () {
+            $('#product_extension').removeClass('view_modal no-print show');
+            $('#product_extension').hide();
+        });
         $(document).ready(function() {
             $('.online-order-badge').hide();
         })

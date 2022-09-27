@@ -23,6 +23,7 @@ use App\Models\PurchaseOrderLine;
 use App\Models\RedemptionOfPoint;
 use App\Models\Referred;
 use App\Models\RewardSystem;
+use App\Models\SellLineExtension;
 use App\Models\Store;
 use App\Models\Supplier;
 use App\Models\System;
@@ -176,6 +177,29 @@ class TransactionUtil extends Util
                 $transaction_sell_line->item_tax = !empty($line['item_tax']) ? $this->num_uf($line['item_tax']) : 0;
                 $transaction_sell_line->save();
                 $keep_sell_lines[] = $line['transaction_sell_line_id'];
+                if(!empty($line['extensions_ids'])){
+                    SellLineExtension::where('transaction_sell_line_id',$line['transaction_sell_line_id'])
+                        ->wherenotin('extension_id',$line['extensions_ids'])->delete();
+                    foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
+                       $oldSellLineExtension= SellLineExtension::where(['transaction_sell_line_id'=>$line['transaction_sell_line_id'],
+                                'extension_id'=>$extensions_id,])->first();
+                        if($oldSellLineExtension){
+                            $oldSellLineExtension->quantity=$line['extensions_quantity'][$key_index];
+                            $oldSellLineExtension->sell_price=$line['extensions_sell_prices'][$key_index];
+                            $oldSellLineExtension->save();
+                        }else{
+
+                            SellLineExtension::updateOrCreate([
+                                'transaction_sell_line_id'=>$line['transaction_sell_line_id'],
+                                'extension_id'=>$extensions_id],[
+                                'quantity'=>$line['extensions_quantity'][$key_index],
+                                'sell_price'=>$line['extensions_sell_prices'][$key_index],
+                            ]);
+                        }
+                    }
+                }else{
+                    SellLineExtension::where('transaction_sell_line_id',$line['transaction_sell_line_id'])->delete();
+                }
             } else {
                 $transaction_sell_line = new TransactionSellLine();
                 $transaction_sell_line->transaction_id = $transaction->id;
@@ -200,6 +224,17 @@ class TransactionUtil extends Util
                 $transaction_sell_line->item_tax = !empty($line['item_tax']) ? $this->num_uf($line['item_tax']) : 0;
                 $transaction_sell_line->save();
                 $keep_sell_lines[] = $transaction_sell_line->id;
+                if(!empty($line['extensions_ids'])){
+                    foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
+                        SellLineExtension::Create([
+                            'transaction_sell_line_id'=>$transaction_sell_line->id,
+                            'extension_id'=>$extensions_id],[
+                            'quantity'=>$line['extensions_quantity'][$key_index],
+                            'sell_price'=>$line['extensions_sell_prices'][$key_index],
+                        ]);
+
+                    }
+                }
             }
             $this->updateSoldQuantityInAddStockLine($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $line['quantity'], $old_quantity);
         }

@@ -16,6 +16,7 @@ use App\Models\Employee;
 use App\Models\GiftCard;
 use App\Models\Product;
 use App\Models\ProductClass;
+use App\Models\ProductExtension;
 use App\Models\SalesPromotion;
 use App\Models\Store;
 use App\Models\StorePos;
@@ -175,7 +176,8 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-         try {
+//         try {
+
         $transaction_data = [
             'store_id' => $request->store_id,
             'customer_id' => $request->customer_id,
@@ -464,13 +466,13 @@ class SellPosController extends Controller
             'html_content' => $html_content,
             'msg' => __('lang.success')
         ];
-         } catch (\Exception $e) {
-             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-             $output = [
-                 'success' => false,
-                 'msg' => __('lang.something_went_wrong')
-             ];
-         }
+//         } catch (\Exception $e) {
+//             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//             $output = [
+//                 'success' => false,
+//                 'msg' => __('lang.something_went_wrong')
+//             ];
+//         }
         if ($request->action == 'send' && $transaction->is_direct_sale == 1) {
             return redirect()->back()->with('status', $output);
         }
@@ -980,9 +982,11 @@ class SellPosController extends Controller
     public function addProductRow(Request $request)
     {
         if ($request->ajax()) {
+
             $weighing_scale_barcode = $request->input('weighing_scale_barcode');
-
-
+            $extensions_ids = $request->input('extensions_ids');
+            $extensions_quantity = $request->input('extensions_quantity');
+            $extensions_sell_prices = $request->input('extensions_sell_prices');
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
             $store_id = $request->input('store_id');
@@ -1020,12 +1024,83 @@ class SellPosController extends Controller
                 $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
                 $sale_promotion_details = null; //changed, now in pos.js check_for_sale_promotion method
+                if(!empty($extensions_quantity)){
+                    $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
+                }else{
+                    $sum_extensions_sell_prices = 0;
+                }
                 $html_content =  view('sale_pos.partials.product_row')
-                    ->with(compact('products', 'index', 'sale_promotion_details', 'product_discount_details', 'edit_quantity', 'is_direct_sale', 'dining_table_id', 'exchange_rate'))->render();
+                    ->with(compact('products', 'index', 'sale_promotion_details'
+                        , 'product_discount_details', 'edit_quantity',"sum_extensions_sell_prices","extensions_ids","extensions_quantity","extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
+                        'exchange_rate'))->render();
 
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
             } else {
+                $output['success'] = false;
+                $output['msg'] = __('lang.sku_no_match');
+            }
+            return  $output;
+        }
+    }
+    /**
+     * Returns the Extensions for product row
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getProductRowExtension(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $product_id = $request->input('product_id');
+            $variation_id = $request->input('variation_id');
+            $store_id = $request->input('store_id');
+            $currency_id =$request->input('currency_id');
+            $row_count =$request->input('row_count');
+            $edit_quantity =$request->input('edit_quantity');
+            $weighing_scale_barcode =$request->input('weighing_scale_barcode');
+
+            $currency_id =$request->currency_id;
+            $currency = Currency::find($currency_id);
+            $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id,
+                $request->store_id);
+            //Check for weighing scale barcode
+            $weighing_barcode = request()->get('weighing_scale_barcode');
+            if (empty($variation_id) && !empty($weighing_barcode)) {
+                $product_details = $this->__parseWeighingBarcode($weighing_barcode);
+                if ($product_details['success']) {
+                    $product_id = $product_details['product_id'];
+                    $variation_id = $product_details['variation_id'];
+                } else {
+                    $output['success'] = false;
+                    $output['msg'] = $product_details['msg'];
+                    return $output;
+                }
+            }
+
+            if (!empty($product_id)) {
+                if(!empty($variation_id)){
+                  $extensions=  ProductExtension::with('extension:id,name,translations')
+                        ->where('variation_id',$variation_id)->get();
+                }else{
+                    $variation_id= Variation::where('product_id',$product_id)->first()->id;
+                    $extensions=  ProductExtension::with('extension:id,name,translations')
+                        ->where('variation_id',$variation_id)->get();
+                }
+                if($extensions->count() <= 0 ){
+                    $output['success'] = true;
+                    $output['html_content'] = 0;
+                    return  $output;
+                }
+
+                $html_content =  view('sale_pos.partials.extension_row')
+                    ->with(compact('extensions','product_id', 'edit_quantity',
+                        'variation_id','row_count','weighing_scale_barcode','store_id',
+                        'exchange_rate'))->render();
+                $output['success'] = true;
+                $output['html_content'] = $html_content;
+            } else {
+
                 $output['success'] = false;
                 $output['msg'] = __('lang.sku_no_match');
             }
