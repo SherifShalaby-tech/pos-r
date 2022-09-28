@@ -15,7 +15,7 @@ class CreateProductExtensionsTable extends Migration
     {
         Schema::create('product_extensions', function (Blueprint $table) {
             $table->id();//sell_price
-            $table->decimal('sell_price', 15, 5)->default(0);
+            $table->decimal('sell_price', 15, 2)->default(0);
             $table->unsignedBigInteger('variation_id');
             $table->foreign('variation_id')->references('id')->on('variations')->onDelete('cascade');
             $table->unsignedBigInteger('extension_id');

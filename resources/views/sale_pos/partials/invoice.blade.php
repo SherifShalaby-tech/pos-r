@@ -97,6 +97,22 @@
     small {
         font-size: 11px;
     }
+    tr.tr-extension{
+        font-size: 9px !important;
+        line-height: 15px !important;
+        color: black !important;
+        border-bottom: none !important;
+
+    }
+    tr.tr-extension td{
+        font-size: 9px !important;
+    }
+    tr.no-border{
+        border-bottom: none !important;
+    }
+    tr.border-top{
+        border-top: 1px dotted #ddd;
+    }
 </style>
 @php
 if (empty($invoice_lang)) {
@@ -104,6 +120,8 @@ if (empty($invoice_lang)) {
         ->session()
         ->get('language');
 }
+$is_first_after_extra=0;
+
 @endphp
 <div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
 
@@ -195,7 +213,10 @@ if (empty($invoice_lang)) {
                 <tbody>
 
                     @foreach ($transaction->transaction_sell_lines as $line)
-                        <tr>
+                        <tr  class=" @if($line->sell_line_extensions->count() > 0 )no-border @endif {{$is_first_after_extra == 1 ?'border-top':''}}">
+                            @php
+                                $is_first_after_extra=0;
+                            @endphp
                             <td style="width: 30%; text-algin: right !important;">
                                 @if (!empty($line->variation))
                                     @if ($line->variation->name != 'Default')
@@ -204,6 +225,7 @@ if (empty($invoice_lang)) {
                                         {{ $line->product->translated_name($line->product->id, $invoice_lang) }}
                                     @endif
                                 @endif
+
                             </td>
                             @if (empty($print_gift_invoice))
                                 <td style="text-align:center !important;vertical-align:bottom; width: 20%;">
@@ -221,6 +243,38 @@ if (empty($invoice_lang)) {
                                 </td>
                             @endif
                         </tr>
+                        @if($line->sell_line_extensions)
+                            @foreach( $line->sell_line_extensions as $k => $line_extension)
+
+                                @php
+                                    $qur_index = ($k + 1) % 3;
+                                    $name=$line_extension->extension->name;
+                                    $translations = !empty($line_extension->extension->translations['name']) ? $line_extension->extension->translations['name'] : [];
+                                    if (!empty($translations)) {
+                                        if (!empty($translations[$invoice_lang])) {
+                                            $name= $translations[$invoice_lang];
+                                        }
+                                    }
+                                    $is_first_after_extra=1;
+                                @endphp
+                                @if($qur_index == 1 || $k = 0 )
+                                    <tr class="tr-extension">
+                                @endif
+                                <td>{{(int)$line_extension->quantity.' -'.$name}}</td>
+                                @if( $qur_index == 0 )
+                                    </tr>
+                                @elseif($loop->last )
+                                    @if($loop->last && $qur_index == 1 )
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    @else
+                                            <td></td>
+                                        </tr>
+                                    @endif
+                                @endif
+                            @endforeach
+                        @endif
                     @endforeach
                 </tbody>
                 @if (empty($print_gift_invoice))

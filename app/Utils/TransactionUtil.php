@@ -16,6 +16,7 @@ use App\Models\CustomerImportantDate;
 use App\Models\DiningTable;
 use App\Models\EarningOfPoint;
 use App\Models\Employee;
+use App\Models\Extension;
 use App\Models\Product;
 use App\Models\ProductClass;
 use App\Models\ProductStore;
@@ -153,6 +154,7 @@ class TransactionUtil extends Util
         $keep_sell_lines = [];
         foreach ($transaction_sell_lines as $line) {
             $old_quantity = 0;
+
             if (!empty($transaction_sell_line['transaction_sell_line_id'])) {
                 $transaction_sell_line = TransactionSellLine::find($line['transaction_sell_line_id']);
                 $transaction_sell_line->product_id = $line['product_id'];
@@ -177,28 +179,70 @@ class TransactionUtil extends Util
                 $transaction_sell_line->item_tax = !empty($line['item_tax']) ? $this->num_uf($line['item_tax']) : 0;
                 $transaction_sell_line->save();
                 $keep_sell_lines[] = $line['transaction_sell_line_id'];
-                if(!empty($line['extensions_ids'])){
-                    SellLineExtension::where('transaction_sell_line_id',$line['transaction_sell_line_id'])
-                        ->wherenotin('extension_id',$line['extensions_ids'])->delete();
-                    foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
-                       $oldSellLineExtension= SellLineExtension::where(['transaction_sell_line_id'=>$line['transaction_sell_line_id'],
-                                'extension_id'=>$extensions_id,])->first();
-                        if($oldSellLineExtension){
-                            $oldSellLineExtension->quantity=$line['extensions_quantity'][$key_index];
-                            $oldSellLineExtension->sell_price=$line['extensions_sell_prices'][$key_index];
-                            $oldSellLineExtension->save();
-                        }else{
 
-                            SellLineExtension::updateOrCreate([
-                                'transaction_sell_line_id'=>$line['transaction_sell_line_id'],
-                                'extension_id'=>$extensions_id],[
-                                'quantity'=>$line['extensions_quantity'][$key_index],
-                                'sell_price'=>$line['extensions_sell_prices'][$key_index],
-                            ]);
+                if(!empty($line['extensions_ids'])){
+
+                    foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
+                        $old_quantityExtension=0;
+                        $extension_model =  Extension::whereId($extensions_id)->first();
+                        if($extension_model) {
+                            $oldSellLineExtension = SellLineExtension::where(['transaction_sell_line_id' => $line['transaction_sell_line_id'],
+                                'extension_id' => $extensions_id])->first();
+                            if ($oldSellLineExtension) {
+                                $old_quantityExtension=$oldSellLineExtension->quantity;
+                                $oldSellLineExtension->quantity = $line['extensions_quantity'][$key_index];
+                                $oldSellLineExtension->sell_price = $line['extensions_sell_prices'][$key_index];
+                                $oldSellLineExtension->save();
+                            } else {
+                                SellLineExtension::Create([
+                                    'transaction_sell_line_id' => $line['transaction_sell_line_id'],
+                                    'extension_id' => $extensions_id,
+                                    'quantity' => $line['extensions_quantity'][$key_index],
+                                    'sell_price' => $line['extensions_sell_prices'][$key_index],
+                                ]);
+                            }
+                            if($extension_model->ProductForExtension && $extension_model->product_id != null){
+
+                                $this->updateBlockQuantityExtra(
+                                    $extension_model->product_id,
+                                    $extension_model->ProductForExtension->variations->first()->id,
+                                    $transaction->store_id,
+                                    $line['extensions_quantity'][$key_index],$old_quantityExtension
+                                );
+                            }
+
                         }
                     }
+                    $oldSellLineExtensions = SellLineExtension::where('transaction_sell_line_id',$line['transaction_sell_line_id'])
+                        ->wherenotin('extension_id',$line['extensions_ids'])->get();
+                    foreach ($oldSellLineExtensions as $oldSellLineExtension){
+                        $extension_model =  Extension::whereId($oldSellLineExtension -> extension_id)->first();
+                        if($extension_model && $extension_model->ProductForExtension && $extension_model->product_id != null){
+                            $this->updateBlockQuantityExtra($extension_model->product_id,
+                                $extension_model->ProductForExtension->variations->first()->id,
+                                $transaction->store_id,
+                                0,$oldSellLineExtension->quantity);
+
+
+                        }
+                        $oldSellLineExtensions->delete();
+                    }
+
                 }else{
-                    SellLineExtension::where('transaction_sell_line_id',$line['transaction_sell_line_id'])->delete();
+                   $oldSellLineExtensions =  SellLineExtension::
+                   where('transaction_sell_line_id',$line['transaction_sell_line_id'])->get();
+                    foreach ($oldSellLineExtensions as $oldSellLineExtension){
+                            $extension_model =  Extension::whereId($oldSellLineExtension -> extension_id)->first();
+                            if($extension_model && $extension_model->ProductForExtension && $extension_model->product_id != null){
+                                $this->updateBlockQuantityExtra($extension_model->product_id,
+                                    $extension_model->ProductForExtension->variations->first()->id,
+                                    $transaction->store_id,
+                                    0,$oldSellLineExtension->quantity);
+
+
+                            }
+                        $oldSellLineExtensions->delete();
+                    }
                 }
             } else {
                 $transaction_sell_line = new TransactionSellLine();
@@ -226,17 +270,33 @@ class TransactionUtil extends Util
                 $keep_sell_lines[] = $transaction_sell_line->id;
                 if(!empty($line['extensions_ids'])){
                     foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
-                        SellLineExtension::Create([
-                            'transaction_sell_line_id'=>$transaction_sell_line->id,
-                            'extension_id'=>$extensions_id],[
-                            'quantity'=>$line['extensions_quantity'][$key_index],
-                            'sell_price'=>$line['extensions_sell_prices'][$key_index],
-                        ]);
+                        $extension_model =  Extension::whereId($extensions_id)->first();
+                        if($extension_model) {
+                            SellLineExtension::Create([
+                                'transaction_sell_line_id' => $transaction_sell_line->id,
+                                'extension_id' => $extensions_id,
+                                'quantity' => $line['extensions_quantity'][$key_index],
+                                'sell_price' => $line['extensions_sell_prices'][$key_index],
+                            ]);
 
+                            if($extension_model->ProductForExtension && $extension_model->product_id != null ){
+                                $this->updateBlockQuantityExtra($extension_model->product_id,
+                                    $extension_model->ProductForExtension->variations->first()->id,
+                                    $transaction->store_id,
+                                    $line['extensions_quantity'][$key_index],0);
+                            }
+
+                        }
                     }
                 }
             }
-            $this->updateSoldQuantityInAddStockLine($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $line['quantity'], $old_quantity);
+            $this->updateSoldQuantityInAddStockLine(
+                $transaction_sell_line->product_id,
+
+                $transaction_sell_line->variation_id,
+                $transaction->store_id,
+                $line['quantity'],
+                $old_quantity);
         }
 
         //delete sell lines remove by user
@@ -257,9 +317,12 @@ class TransactionUtil extends Util
      */
     public function updateSoldQuantityInAddStockLine($product_id, $variation_id, $store_id, $new_quantity, $old_quantity)
     {
+
         $qty_difference = $this->num_uf($new_quantity) - $this->num_uf($old_quantity);
+
         if ($qty_difference != 0) {
-            $add_stock_lines = AddStockLine::leftjoin('transactions', 'add_stock_lines.transaction_id', 'transactions.id')
+            $add_stock_lines = AddStockLine::
+                    leftjoin('transactions', 'add_stock_lines.transaction_id', 'transactions.id')
                 ->where('transactions.store_id', $store_id)
                 ->where('product_id', $product_id)
                 ->where('variation_id', $variation_id)
@@ -267,6 +330,7 @@ class TransactionUtil extends Util
                 ->having('remaining_qty', '>', 0)
                 ->groupBy('add_stock_lines.id')
                 ->get();
+
             foreach ($add_stock_lines as $line) {
                 if ($qty_difference == 0) {
                     return true;
@@ -285,7 +349,24 @@ class TransactionUtil extends Util
 
         return true;
     }
+    /**
+     * update the block quantity for quotations
+     *
+     * @param int $product_id
+     * @param int $variation_id
+     * @param int $store_id
+     * @param int $new_quantity
+     * @param string $old_quantity
+     * @return void
+     */
+    public function updateBlockQuantityExtra($product_id, $variation_id, $store_id, $qty,$oldqty=0)
+    {
+            $pro = ProductStore::where('product_id', $product_id)->where('variation_id', $variation_id)
+                ->where('store_id', $store_id);
+            $pro->increment('qty_available', $oldqty);
+            $pro->decrement('qty_available', $qty);
 
+    }
 
     /**
      * create or update transaction supplier service

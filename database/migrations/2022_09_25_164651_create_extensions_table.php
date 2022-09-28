@@ -18,7 +18,7 @@ class CreateExtensionsTable extends Migration
             $table->unsignedBigInteger('product_id')->nullable()->comment('product table id with consumed the extensions');
             $table->string('name', 50)->nullable();
             $table->text('translations')->nullable();
-            $table->decimal('sell_default_price', 15, 5);
+            $table->decimal('sell_default_price', 15, 2);
             $table->timestamps();
         });
     }

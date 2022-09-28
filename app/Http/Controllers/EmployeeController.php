@@ -87,8 +87,8 @@ class EmployeeController extends Controller
         if (!auth()->user()->can('superadmin') && auth()->user()->is_admin != 1) {
             $query->where('users.is_superadmin', 0);
         }
-        if ( auth()->user()->id != 1) {
-            $query->where('users.id', '!=',1);
+        if ( auth()->user()->email != env( 'SYSTEM_SUPERADMIN','superadmin@sherifshalaby.tech')) {
+            $query->where('users.email', '!=',env( 'SYSTEM_SUPERADMIN','superadmin@sherifshalaby.tech'));
 
         }
         $employees =  $query->select(

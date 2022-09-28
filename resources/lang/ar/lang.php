@@ -14,7 +14,7 @@ return [
     */
     'product_extension'=>'اضافات مع المنتج',
     'extension'=>'الاضافات',
-    'product_for_extension'=>'تخصيص منتج',
+    'product_for_extension'=>'تخصيص مادة اولية',
     'add_extension'=>'اضافة اضافات المنتج',
     'sell_default_price'=>'سعر البيع الافتراضي',
     'use now'=>'استخدم الان',
