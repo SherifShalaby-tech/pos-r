@@ -21,8 +21,8 @@ class CreateSellLineExtensionsTable extends Migration
             $table->foreign('extension_id')->references('id')->on('extensions')->onDelete('cascade');
             $table->unsignedBigInteger('transaction_sell_line_id');
             $table->foreign('transaction_sell_line_id')->references('id')->on('transaction_sell_lines')->onDelete('cascade');
-            $table->decimal('sell_price', 15, 5)->default(0);
-            $table->decimal('quantity', 15, 4);
+            $table->decimal('sell_price', 15, 2)->default(0);
+            $table->decimal('quantity', 15, 2);
             $table->timestamps();
         });
     }

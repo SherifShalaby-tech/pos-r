@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
     public function scopeNotview($query)
     {
-        return $query->where('email', '!=', 'superadmin@sherifshalaby.tech');
+        return $query->where('email', '!=', env( 'SYSTEM_SUPERADMIN','superadmin@sherifshalaby.tech'));
     }
     /**
      * get the array for dropdown of user by job type

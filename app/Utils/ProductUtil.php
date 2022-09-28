@@ -1416,7 +1416,8 @@ class ProductUtil extends Util
     public function updateBlockQuantity($product_id, $variation_id, $store_id, $qty, $type = 'add')
     {
         if ($type == 'add') {
-            ProductStore::where('product_id', $product_id)->where('variation_id', $variation_id)->where('store_id', $store_id)->increment('block_qty', $qty);
+            ProductStore::where('product_id', $product_id)->where('variation_id', $variation_id)
+                ->where('store_id', $store_id)->increment('block_qty', $qty);
         }
         if ($type == 'subtract') {
             ProductStore::where('product_id', $product_id)->where('variation_id', $variation_id)->where('store_id', $store_id)->decrement('block_qty', $qty);

@@ -14,7 +14,7 @@ return [
     */
     'product_extension'=>'Extras with the product',
     'extension'=>'Extras',
-    'product_for_extension'=>'Product customization',
+    'product_for_extension'=>'Primary material customization',
     'add_extension'=>'Add product Extra',
     'sell_default_price'=>'Default Selling Price',
 

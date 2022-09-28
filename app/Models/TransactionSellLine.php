@@ -28,4 +28,8 @@ class TransactionSellLine extends Model
     {
         return $this->belongsTo(Variation::class);
     }
+    public function sell_line_extensions()
+    {
+        return $this->hasMany(SellLineExtension::class,'transaction_sell_line_id');
+    }
 }

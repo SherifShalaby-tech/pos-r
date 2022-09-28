@@ -97,6 +97,7 @@ class SellPosController extends Controller
      */
     public function create()
     {
+//        dd(11%3 , 10 %3 ,12%3 , 13%3 , 14%3);
         //Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
             return redirect()->to('/cash-register/create?is_pos=1');
@@ -254,10 +255,9 @@ class SellPosController extends Controller
         $transaction = Transaction::create($transaction_data);
 
         $this->transactionUtil->createOrUpdateTransactionSellLine($transaction, $request->transaction_sell_line);
-
-        foreach ($request->transaction_sell_line as $sell_line) {
-            if (empty($sell_line['transaction_sell_line_id'])) {
-                if ($transaction->status == 'final') {
+        if ($transaction->status == 'final') {
+            foreach ($request->transaction_sell_line as $sell_line) {
+                if (empty($sell_line['transaction_sell_line_id'])) {
                     $product = Product::find($sell_line['product_id']);
                     if (!$product->is_service) {
                         $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
