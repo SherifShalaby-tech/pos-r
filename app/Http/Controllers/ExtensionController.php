@@ -52,7 +52,7 @@ class ExtensionController extends Controller
         $quick_add = request()->quick_add ?? null;
         $is_raw_material_extension = request()->is_raw_material_extension ?? 0;
 
-        $products = Product::where('is_raw_material', 0)->orderBy('name', 'asc')->pluck('name', 'id');
+        $products = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
 
         return view('extension.create')->with(compact(
             'quick_add',
@@ -126,7 +126,7 @@ class ExtensionController extends Controller
     {
         $extension = Extension::find($id);
 
-        $products = Product::where('is_raw_material', 0)->orderBy('name', 'asc')->pluck('name', 'id');
+        $products = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
 
         return view('extension.edit')->with(compact(
             'extension',
