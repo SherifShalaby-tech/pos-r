@@ -692,6 +692,7 @@ function calculate_sub_totals() {
 
         if (main_tax_type == "product_tax") {
             if (main_tax_id == tax_id) {
+                console.log(tax_rate);
                 let item_tax = (sub_total * tax_rate) / 100;
                 item_tax = item_tax / exchange_rate;
                 __write_number($(tr).find(".item_tax"), item_tax);
@@ -918,11 +919,15 @@ function get_tax_amount(total) {
         }
     }
 
-    if (tax_method == "exclusive") {
+
+
+    // if (tax_method == "exclusive") {
+    //     console.log(tax_amount,'exclusive');
         $("#tax").text(__currency_trans_from_en(tax_amount, false));
-    } else {
-        $("#tax").text(__currency_trans_from_en(0, false));
-    }
+    // } else {
+    //     console.log(tax_amount,'notexclusive');
+    //     $("#tax").text(__currency_trans_from_en(0, false));
+    // }
     tax_amount = tax_amount;
     __write_number($("#total_tax"), tax_amount);
 
