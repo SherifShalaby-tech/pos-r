@@ -16,6 +16,7 @@ $(document).ready(function () {
     setTimeout(() => {
         $("input#search_product").focus();
     }, 2000);
+    change_tax_id();
 });
 
 $(document).on("click", "#category-filter", function (e) {
@@ -1555,7 +1556,7 @@ function reset_pos_form() {
     $("#tax_method").val("");
     $("#tax_rate").val("0");
     $("#tax_type").val("");
-    $("#tax_id").val("");
+   // $("#tax_id").val("");
     $("#tax_id").selectpicker("refresh");
     $("#payment_status").val("");
     $("#payment_status").selectpicker("refresh");
@@ -2319,10 +2320,13 @@ $(document).on("click", ".redeem_btn", function () {
 $("#customer_id").change();
 
 $(document).on("change", "#tax_id", function () {
-    $("#tax_id_hidden").val($(this).val());
+    change_tax_id();
+});
+function change_tax_id() {
+    $("#tax_id_hidden").val($('#tax_id').val());
     $.ajax({
         method: "GET",
-        url: "/tax/get-details/" + $(this).val(),
+        url: "/tax/get-details/" + $('#tax_id').val(),
         data: {},
         success: function (result) {
             $("#tax_method").val(result.tax_method);
@@ -2331,7 +2335,8 @@ $(document).on("change", "#tax_id", function () {
             calculate_sub_totals();
         },
     });
-});
+
+}
 $(document).on("change", "#deliveryman_id", function () {
     $("#deliveryman_id_hidden").val($(this).val());
 });

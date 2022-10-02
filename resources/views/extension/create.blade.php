@@ -14,10 +14,20 @@
         <div class="modal-body ">
 
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
-            <div class="form-group">
-                {!! Form::label('product_id', __( 'lang.product_for_extension' ). ':') !!}
-                {!! Form::select('product_id', $products, false, ['class' => 'form-control selectpicker', 'placeholder'
-                => __('lang.product_for_extension'), 'data-live-search' => 'true']) !!}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::label('product_id', __( 'lang.product_for_extension' ). ':') !!}
+                        {!! Form::select('product_id', $products, false, ['class' => 'form-control selectpicker', 'placeholder'
+                        => __('lang.product_for_extension'), 'data-live-search' => 'true']) !!}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        {!! Form::label('used_amount', __('lang.used_amount') . ' *', []) !!}
+                        {!! Form::text('quantity_use',  0 , ['class' => 'form-control', 'placeholder' => __('lang.sell_default_price'), false]) !!}
+                    </div>
+                </div>
             </div>
             <div class="row">
                 <div class="col-md-6">

@@ -21,6 +21,7 @@
                                 <th>@lang('lang.name')</th>
                                 <th>@lang('lang.product_for_extension')</th>
                                 <th>@lang('lang.sell_default_price')</th>
+                                <th>@lang('lang.used_amount')</th>
                                 <th class="notexport">@lang('lang.action')</th>
                             </tr>
                         </thead>
@@ -30,6 +31,7 @@
                                 <td>{{$extension->name}}</td>
                                 <td>{{$extension->ProductForExtension != null  ? $extension->ProductForExtension->name : null }}</td>
                                 <td>{{$extension->sell_default_price}}</td>
+                                <td>{{$extension->quantity_use}}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-default btn-sm dropdown-toggle"
