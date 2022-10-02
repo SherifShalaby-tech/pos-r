@@ -188,16 +188,19 @@ class TransactionUtil extends Util
                         if($extension_model) {
                             $oldSellLineExtension = SellLineExtension::where(['transaction_sell_line_id' => $line['transaction_sell_line_id'],
                                 'extension_id' => $extensions_id])->first();
+                            $extensions_quantity=$line['extensions_quantity'][$key_index]*$extension_model->quantity_use;
+
                             if ($oldSellLineExtension) {
                                 $old_quantityExtension=$oldSellLineExtension->quantity;
-                                $oldSellLineExtension->quantity = $line['extensions_quantity'][$key_index];
+                                $oldSellLineExtension->quantity = $extensions_quantity;
                                 $oldSellLineExtension->sell_price = $line['extensions_sell_prices'][$key_index];
                                 $oldSellLineExtension->save();
                             } else {
+
                                 SellLineExtension::Create([
                                     'transaction_sell_line_id' => $line['transaction_sell_line_id'],
                                     'extension_id' => $extensions_id,
-                                    'quantity' => $line['extensions_quantity'][$key_index],
+                                    'quantity' => $extensions_quantity,
                                     'sell_price' => $line['extensions_sell_prices'][$key_index],
                                 ]);
                             }
@@ -207,7 +210,7 @@ class TransactionUtil extends Util
                                     $extension_model->product_id,
                                     $extension_model->ProductForExtension->variations->first()->id,
                                     $transaction->store_id,
-                                    $line['extensions_quantity'][$key_index],$old_quantityExtension
+                                    $extensions_quantity,$old_quantityExtension
                                 );
                             }
 
@@ -272,10 +275,11 @@ class TransactionUtil extends Util
                     foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
                         $extension_model =  Extension::whereId($extensions_id)->first();
                         if($extension_model) {
+                          $extensions_quantity=$line['extensions_quantity'][$key_index]*$extension_model->quantity_use;
                             SellLineExtension::Create([
                                 'transaction_sell_line_id' => $transaction_sell_line->id,
                                 'extension_id' => $extensions_id,
-                                'quantity' => $line['extensions_quantity'][$key_index],
+                                'quantity' => $extensions_quantity,
                                 'sell_price' => $line['extensions_sell_prices'][$key_index],
                             ]);
 
@@ -283,7 +287,7 @@ class TransactionUtil extends Util
                                 $this->updateBlockQuantityExtra($extension_model->product_id,
                                     $extension_model->ProductForExtension->variations->first()->id,
                                     $transaction->store_id,
-                                    $line['extensions_quantity'][$key_index],0);
+                                    $extensions_quantity,0);
                             }
 
                         }
@@ -292,7 +296,6 @@ class TransactionUtil extends Util
             }
             $this->updateSoldQuantityInAddStockLine(
                 $transaction_sell_line->product_id,
-
                 $transaction_sell_line->variation_id,
                 $transaction->store_id,
                 $line['quantity'],
