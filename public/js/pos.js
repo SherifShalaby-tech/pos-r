@@ -692,11 +692,12 @@ function calculate_sub_totals() {
 
         if (main_tax_type == "product_tax") {
             if (main_tax_id == tax_id) {
-                console.log(tax_rate);
+
                 let item_tax = (sub_total * tax_rate) / 100;
                 item_tax = item_tax / exchange_rate;
                 __write_number($(tr).find(".item_tax"), item_tax);
                 total_item_tax += item_tax;
+
                 if (tax_method === "exclusive") {
                     total_tax_payable += item_tax;
                 }

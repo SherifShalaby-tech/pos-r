@@ -7,6 +7,7 @@ use App\Models\Brand;
 use App\Models\CashRegisterTransaction;
 use App\Models\Category;
 use App\Models\Color;
+use App\Models\ConsumptionProduct;
 use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\Customer;
@@ -31,6 +32,7 @@ use App\Models\Transaction;
 use App\Models\TransactionSellLine;
 use App\Models\Unit;
 use App\Models\User;
+use App\Models\Variation;
 use App\Utils\CashRegisterUtil;
 use App\Utils\NotificationUtil;
 use App\Utils\ProductUtil;
@@ -98,21 +100,35 @@ class SellController extends Controller
                 ->leftjoin('currencies as received_currency', 'transactions.received_currency_id', 'received_currency.id')
                 ->where('transactions.type', 'sell')->whereIn('status', ['final', 'canceled']);
 
-            if (!empty(request()->product_class_id) &&  !empty(array_filter(request()->product_class_id))) {
-                $query->whereIn('products.product_class_id', array_filter(request()->product_class_id));
+            $product_ids='all';
+            if((!empty(request()->product_class_id) && !empty(array_filter(request()->product_class_id)))
+            || (!empty(request()->category_id) && !empty(array_filter(request()->category_id)))
+            ||(!empty(request()->sub_category_id) && !empty(array_filter(request()->sub_category_id)))
+            ||(!empty(request()->brand_id) && !empty(array_filter(request()->brand_id)))) {
+               $products= Product::whereNotNull('id');
+                if(!empty(request()->product_class_id) &&
+                    !empty(array_filter(request()->product_class_id))){
+                    $products->whereIn('product_class_id', array_filter(request()->product_class_id));
+                    $query->whereIn('products.product_class_id', array_filter(request()->product_class_id));
+                }
+                if (!empty(request()->category_id) &&
+                    !empty(array_filter(request()->category_id))) {
+                    $products->whereIn('category_id', array_filter(request()->category_id));
+
+                    $query->whereIn('products.category_id', array_filter(request()->category_id));
+                }
+                if (!empty(request()->sub_category_id) && !empty(array_filter(request()->sub_category_id))) {
+                    $products->whereIn('sub_category_id', array_filter(request()->sub_category_id));
+                    $query->whereIn('products.sub_category_id', array_filter(request()->sub_category_id));
+                }
+                if (!empty(request()->brand_id) && !empty(array_filter(request()->brand_id))) {
+                    $products->whereIn('brand_id', array_filter(request()->brand_id));
+                    $query->whereIn('products.brand_id', array_filter(request()->brand_id));
+                }
+                $product_ids = $products->pluck('id');
             }
 
-            if (!empty(request()->category_id) && !empty(array_filter(request()->category_id))) {
-                $query->whereIn('products.category_id', array_filter(request()->category_id));
-            }
 
-            if (!empty(request()->sub_category_id) && !empty(array_filter(request()->sub_category_id))) {
-                $query->whereIn('products.sub_category_id', array_filter(request()->sub_category_id));
-            }
-
-            if (!empty(request()->brand_id) && !empty(array_filter(request()->brand_id))) {
-                $query->whereIn('products.brand_id', array_filter(request()->brand_id));
-            }
             if (!empty(request()->tax_id) && !empty(array_filter(request()->tax_id))) {
                 $query->whereIn('transactions.tax_id', array_filter(request()->tax_id));
             }
@@ -200,106 +216,26 @@ class SellController extends Controller
                 'transaction_payments',
                 'deliveryman',
                 'canceled_by_user',
-                'sell_products',
-                'sell_variations'
+                'transaction_sell_lines'=>function ($q) use($product_ids){
+                    if($product_ids != 'all'){
+                        $q->wherein('transaction_sell_lines.product_id',$product_ids);
+                    }
+                },
+                'sell_products'=>function ($q) use($product_ids){
+                    if($product_ids != 'all'){
+                        $q->wherein('products.id',$product_ids);
+                    }
+                },
+                'sell_variations'=>function ($q) use($product_ids){
+                    if($product_ids != 'all'){
+                        $q->wherein('variations.product_id',$product_ids);
+                    }
+                }
             ])
                 ->groupBy('transactions.id');
 
-//            {
-//                data: "transaction_date",
-//                        name: "transaction_date"
-//                    },
-//            {
-//                data: "invoice_no",
-//                        name: "invoice_no"
-//                    },
-//            {
-//                data: "store_name",
-//                        name: "stores.name"
-//                    },
-//            {
-//                data: "customer_name",
-//                        name: "customers.name"
-//                    },
-//            {
-//                data: "mobile_number",
-//                        name: "customers.mobile_number"
-//                    },
-//            {
-//                data: "status",
-//                        name: "transactions.status"
-//                    },
-//            {
-//                data: "payment_status",
-//                        name: "transactions.payment_status"
-//                    },
-//            {
-//                data: "method",
-//                        name: "transaction_payments.method"
-//                    },
-//            {
-//                data: "ref_number",
-//                        name: "transaction_payments.ref_number"
-//                    },
-//            {
-//                data: "received_currency_symbol",
-//                        name: "received_currency_symbol",
-//                        searchable: false
-//                    },
-//            {
-//                data: "final_total",
-//                        name: "final_total"
-//                    },
-//            {
-//                data: "paid",
-//                        name: "transaction_payments.amount",
-//                        searchable: false
-//                    },
-//            {
-//                data: "due",
-//                        name: "transaction_payments.amount",
-//                        searchable: false
-//                    },
-//            {
-//                data: "paid_on",
-//                        name: "transaction_payments.paid_on"
-//                    },
-//            {
-//                data: "created_by",
-//                        name: "users.name"
-//                    },
-//            {
-//                data: "deliveryman",
-//                        name: "deliveryman.employee_name"
-//                    },
-//            @if (session('system_mode') == 'restaurant')
-//            {
-//                data: "service_fee_value",
-//                            name: "service_fee_value"
-//                        }, {
-//                data: "canceled_by",
-//                            name: "canceled_by"
-//                        },
-//                    @endif {
-//                data: "commissions",
-//                        name: "commissions",
-//                        orderable: false,
-//                        searchable: false,
-//                    },
-//                    {
-//                        data: "products",
-//                        name: "products.name"
-//                    },
-//                    {
-//                        data: "sku",
-//                        name: "products.sku",
-//                        visible: false
-//                    },
-//                    {
-//                        data: "sub_sku",
-//                        name: "variations.sub_sku",
-//                        visible: false
-//                    }
+
+
             return DataTables::of($sales)
                 // ->setTotalRecords(100)
                 ->editColumn('transaction_date', '{{@format_date($transaction_date)}}')
@@ -318,25 +254,42 @@ class SellController extends Controller
 
                     return $string;
                 })
-                ->editColumn('final_total', function ($row) use ($default_currency_id) {
-                    if (!empty($row->return_parent)) {
-                        $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
-                    } else {
-                        $final_total = $this->commonUtil->num_f($row->final_total);
+                ->editColumn('final_total', function ($row) use ($default_currency_id,$product_ids) {
+                    if($product_ids == 'all'){
+                        if (!empty($row->return_parent)) {
+                            $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                        } else {
+                            $final_total = $this->commonUtil->num_f($row->final_total);
+                        }
+                    }else{
+                        $final_total=0;
+                        foreach ($row->transaction_sell_lines as $transaction_sell_line){
+                            $final_total += ($transaction_sell_line->quantity -$transaction_sell_line->quantity_returned )*$transaction_sell_line->sell_price;
+                        }
                     }
 
                     $received_currency_id = $row->received_currency_id ?? $default_currency_id;
                     return '<span data-currency_id="' . $received_currency_id . '">' . $final_total . '</span>';
+
+
+
                 })
-                ->addColumn('paid', function ($row) use ($request, $default_currency_id) {
-                    $amount_paid = 0;
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
-                    } else {
-                        $payments = $row->transaction_payments;
-                    }
-                    foreach ($payments as $payment) {
-                        $amount_paid += $payment->amount;
+                ->addColumn('paid', function ($row) use ($request, $default_currency_id,$product_ids) {
+                    if($product_ids == 'all'){
+                        $amount_paid = 0;
+                        if (!empty($request->method)) {
+                            $payments = $row->transaction_payments->where('method', $request->method);
+                        } else {
+                            $payments = $row->transaction_payments;
+                        }
+                        foreach ($payments as $payment) {
+                            $amount_paid += $payment->amount;
+                        }
+                    }else{
+                        $amount_paid=0;
+                        foreach ($row->transaction_sell_lines as $transaction_sell_line){
+                            $amount_paid += ($transaction_sell_line->quantity -$transaction_sell_line->quantity_returned )*$transaction_sell_line->sell_price;
+                        }
                     }
                     $received_currency_id = $row->received_currency_id ?? $default_currency_id;
 
@@ -779,7 +732,8 @@ class SellController extends Controller
      */
     public function destroy($id)
     {
-        try {
+
+//        try {
             $transaction = Transaction::find($id);
 
             DB::beginTransaction();
@@ -788,12 +742,28 @@ class SellController extends Controller
             foreach ($transaction_sell_lines as $transaction_sell_line) {
                 if ($transaction->status == 'final') {
                     $product = Product::find($transaction_sell_line->product_id);
+
                     if (!$product->is_service) {
-                        $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $transaction_sell_line->quantity - $transaction_sell_line->quantity_returned);
+                        $def_quantity=$transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
+
+                        $ConsumptionProducts = ConsumptionProduct::where('variation_id', $transaction_sell_line->variation_id)->get();
+                        foreach ($ConsumptionProducts as $ConsumptionProduct) {
+                            $Variation = Variation::where('product_id', $ConsumptionProduct->raw_material_id)->first();
+                            if ($Variation) {
+                                //amount_used raw_material_id variation_id updateRawMaterialQuantityStore
+                                $this->productUtil->updateProductQuantityStore($ConsumptionProduct->raw_material_id, $Variation->id, $transaction->store_id, $def_quantity * $ConsumptionProduct->amount_used);
+                            }
+
+                        }
+
+                        $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $def_quantity);
                     }
                 }
+
+
                 $transaction_sell_line->delete();
             }
+
             Transaction::where('return_parent_id', $id)->delete();
             Transaction::where('parent_sale_id', $id)->delete();
 
@@ -809,13 +779,13 @@ class SellController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-        } catch (\Exception $e) {
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
-        }
+//        } catch (\Exception $e) {
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
 
         return $output;
     }
