@@ -188,7 +188,7 @@ class TransactionUtil extends Util
                         if($extension_model) {
                             $oldSellLineExtension = SellLineExtension::where(['transaction_sell_line_id' => $line['transaction_sell_line_id'],
                                 'extension_id' => $extensions_id])->first();
-                            $extensions_quantity=$line['extensions_quantity'][$key_index]*$extension_model->quantity_use;
+                            $extensions_quantity=$line['extensions_quantity'][$key_index];
 
                             if ($oldSellLineExtension) {
                                 $old_quantityExtension=$oldSellLineExtension->quantity;
@@ -210,7 +210,7 @@ class TransactionUtil extends Util
                                     $extension_model->product_id,
                                     $extension_model->ProductForExtension->variations->first()->id,
                                     $transaction->store_id,
-                                    $extensions_quantity,$old_quantityExtension
+                                    $extensions_quantity,$old_quantityExtension,$line,$extension_model->quantity_use
                                 );
                             }
 
@@ -224,7 +224,7 @@ class TransactionUtil extends Util
                             $this->updateBlockQuantityExtra($extension_model->product_id,
                                 $extension_model->ProductForExtension->variations->first()->id,
                                 $transaction->store_id,
-                                0,$oldSellLineExtension->quantity);
+                                0,$oldSellLineExtension->quantity,$line);
 
 
                         }
@@ -240,7 +240,7 @@ class TransactionUtil extends Util
                                 $this->updateBlockQuantityExtra($extension_model->product_id,
                                     $extension_model->ProductForExtension->variations->first()->id,
                                     $transaction->store_id,
-                                    0,$oldSellLineExtension->quantity);
+                                    0,$oldSellLineExtension->quantity,$line);
 
 
                             }
@@ -275,7 +275,7 @@ class TransactionUtil extends Util
                     foreach ($line['extensions_ids'] as $key_index=>$extensions_id){
                         $extension_model =  Extension::whereId($extensions_id)->first();
                         if($extension_model) {
-                          $extensions_quantity=$line['extensions_quantity'][$key_index]*$extension_model->quantity_use;
+                          $extensions_quantity=$line['extensions_quantity'][$key_index];
                             SellLineExtension::Create([
                                 'transaction_sell_line_id' => $transaction_sell_line->id,
                                 'extension_id' => $extensions_id,
@@ -287,7 +287,7 @@ class TransactionUtil extends Util
                                 $this->updateBlockQuantityExtra($extension_model->product_id,
                                     $extension_model->ProductForExtension->variations->first()->id,
                                     $transaction->store_id,
-                                    $extensions_quantity,0);
+                                    $extensions_quantity,0,$line,$extension_model->quantity_use);
                             }
 
                         }
@@ -362,13 +362,18 @@ class TransactionUtil extends Util
      * @param string $old_quantity
      * @return void
      */
-    public function updateBlockQuantityExtra($product_id, $variation_id, $store_id, $qty,$oldqty=0)
+    public function updateBlockQuantityExtra($product_id, $variation_id
+        , $store_id, $qty,$oldqty=0,$line=null,$quantity_use=null)
     {
+            if($line){
+                $qty=($qty*$quantity_use) * $this->num_uf($line['quantity']);
+            }
             $pro = ProductStore::where('product_id', $product_id)->where('variation_id', $variation_id)
                 ->where('store_id', $store_id);
             $pro->increment('qty_available', $oldqty);
             $pro->decrement('qty_available', $qty);
-
+//        dd($pro->first());
+//
     }
 
     /**
