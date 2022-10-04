@@ -735,7 +735,7 @@ class SellController extends Controller
     public function destroy($id)
     {
 
-//        try {
+        try {
             $transaction = Transaction::find($id);
 
             DB::beginTransaction();
@@ -764,7 +764,7 @@ class SellController extends Controller
                             $Extension=Extension::whereId($sell_line_extension->extension_id)->first();
                             if($Extension){
                                 $sell_line_extension_q= ($sell_line_extension->quantity*$Extension->quantity_use)*$def_quantity;
-                                
+
                                 if($Extension->product_id!= null){
                                     $product=Product::where('id',$Extension->product_id)->first();
 
@@ -800,13 +800,13 @@ class SellController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-//        } catch (\Exception $e) {
-//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//            $output = [
-//                'success' => false,
-//                'msg' => __('lang.something_went_wrong')
-//            ];
-//        }
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
 
         return $output;
     }
