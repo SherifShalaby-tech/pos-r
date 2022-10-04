@@ -18,9 +18,11 @@ use App\Models\DiningRoom;
 use App\Models\DiningTable;
 use App\Models\Employee;
 use App\Models\ExchangeRate;
+use App\Models\Extension;
 use App\Models\Grade;
 use App\Models\Product;
 use App\Models\ProductClass;
+use App\Models\SellLineExtension;
 use App\Models\ServiceFee;
 use App\Models\Size;
 use App\Models\Store;
@@ -752,6 +754,25 @@ class SellController extends Controller
                             if ($Variation) {
                                 //amount_used raw_material_id variation_id updateRawMaterialQuantityStore
                                 $this->productUtil->updateProductQuantityStore($ConsumptionProduct->raw_material_id, $Variation->id, $transaction->store_id, $def_quantity * $ConsumptionProduct->amount_used);
+                            }
+
+                        }
+//                        sell_line_extensions
+                        $sell_line_extensions=SellLineExtension::where('transaction_sell_line_id',$transaction_sell_line->id)->get();
+                        //dd($sell_line_extensions);
+                        foreach ($sell_line_extensions as $sell_line_extension){
+                            $Extension=Extension::whereId($sell_line_extension->extension_id)->first();
+                            if($Extension){
+                                $sell_line_extension_q= ($sell_line_extension->quantity*$Extension->quantity_use)*$def_quantity;
+                                
+                                if($Extension->product_id!= null){
+                                    $product=Product::where('id',$Extension->product_id)->first();
+
+                                    $this->transactionUtil->updateBlockQuantityExtra($product->id,
+                                        $product->variations->first()->id, $transaction->store_id
+                                        , 0 ,$sell_line_extension_q);
+                                }
+
                             }
 
                         }

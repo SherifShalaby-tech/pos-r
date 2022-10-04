@@ -13,6 +13,7 @@ use App\Models\CustomerType;
 use App\Models\DeliveryZone;
 use App\Models\DiningRoom;
 use App\Models\Employee;
+use App\Models\Extension;
 use App\Models\GiftCard;
 use App\Models\Product;
 use App\Models\ProductClass;
@@ -1029,9 +1030,21 @@ class SellPosController extends Controller
                 }else{
                     $sum_extensions_sell_prices = 0;
                 }
+                $extensions=[];
+                if($extensions_ids != null || $extensions_ids!= [] ){
+                    foreach ($extensions_ids as $key=> $extensions_id){
+                        $extensions[$key]['name']=Extension::where('id',$extensions_id)->first()->name;
+                        $extensions[$key]['extensions_quantity']=$extensions_quantity[$key];
+                        $extensions[$key]['extensions_id']=$extensions_ids[$key];
+                    }
+                }
+
                 $html_content =  view('sale_pos.partials.product_row')
                     ->with(compact('products', 'index', 'sale_promotion_details'
-                        , 'product_discount_details', 'edit_quantity',"sum_extensions_sell_prices","extensions_ids","extensions_quantity","extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
+                        , 'product_discount_details','extensions', 'edit_quantity',
+                        "sum_extensions_sell_prices",
+                        "extensions_ids","extensions_quantity",
+                        "extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
                         'exchange_rate'))->render();
 
                 $output['success'] = true;
@@ -1107,6 +1120,20 @@ class SellPosController extends Controller
             return  $output;
         }
     }
+
+    /**
+     * Returns count Extensions for product row
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function CountProductRowExtension( $variation_id)
+    {
+        $count=  ProductExtension::where('variation_id',$variation_id)->count();
+        $output['count'] = $count;
+        return  $output;
+
+    }
+
 
     /**
      * get the row for non identifiable products

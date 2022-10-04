@@ -324,18 +324,32 @@ function get_label_product_row(
             var row_v_id = $(this).find(".variation_id").val();
 
             if (row_v_id == variation_id && !is_added) {
-                add_via_ajax = false;
-                is_added = true;
+
 
                 //Increment product quantity
                 qty_element = $(this).find(".quantity");
                 var qty = __read_number(qty_element);
-                __write_number(qty_element, qty + 1);
-                qty_element.change;
-                check_for_sale_promotion();
-                calculate_sub_totals();
-                $("input#search_product").val("");
-                $("input#search_product").focus();
+                $.ajax({
+                    method: "GET",
+                    url: "/pos/count-product-row-extension/"+variation_id,
+                    dataType: "json",
+                    async: false,
+                    success: function (result) {
+                        console.log('dd');
+
+                        if(result.count == 0){
+                            add_via_ajax = false;
+                            is_added = true;
+                            __write_number(qty_element, qty + 1);
+                            qty_element.change;
+                            check_for_sale_promotion();
+                            calculate_sub_totals();
+                            $("input#search_product").val("");
+                            $("input#search_product").focus();
+                        }
+                    },
+                });
+
             }
         });
 
@@ -380,8 +394,6 @@ function get_label_product_row(
                     $('#product_extension_tbody').html(result.html_content);
                     $('#product_extension').addClass('view_modal no-print show');
                     $('#product_extension').show();
-
-
                 }
             },
         });
@@ -411,11 +423,32 @@ $('#save_btn_product_extension').click(function () {
         let currency_id = $("#received_currency_id").val();
         var edit_quantity= $('#extension_edit_quantity').val();
         var weighing_scale_barcode= $('#extension_weighing_scale_barcode').val();
+        var ex='id'+variation_id;
+
+        for (i = 0; i < extensions_ids.length; ++i) {
+            ex +='q'+ extensions_quantity[i]+'e'+extensions_ids[i];
+        }
         $('#product_extension').removeClass('view_modal no-print show');
         $('#product_extension').hide();
-        get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
-            ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
-            extensions_sell_prices);
+        if($('#'+ex).val() == 1){
+            add_via_ajax = false;
+            is_added = true;
+            qty_element =
+                $('#'+ex).parent().parent().parent().find(".quantity");
+
+            var qty = __read_number(qty_element);
+            console.log('ddddd='+qty)
+            __write_number(qty_element, qty + 1);
+            qty_element.change;
+            check_for_sale_promotion();
+            calculate_sub_totals();
+            $("input#search_product").val("");
+            $("input#search_product").focus();
+        }else{
+            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+                ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
+                extensions_sell_prices);
+        }
 
 });
 function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id

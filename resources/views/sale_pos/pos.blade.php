@@ -351,7 +351,7 @@
                         <input type="hidden" name="terms_and_condition_hidden" id="terms_and_condition_hidden"
                             value="{{ $toc_hidden }}">
                         <div class="row table_room_hide">
-                            <div class="col-md-12">
+                            <div class="col-md-12 ml-lg-2">
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">

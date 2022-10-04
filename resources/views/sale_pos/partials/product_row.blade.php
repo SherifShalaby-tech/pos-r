@@ -9,6 +9,18 @@
         <b>{{$product->variation_name}}</b> {{$product->sub_sku}}
         @else
         <b>{{$product->product_name}}</b>
+        <p class="m-0">
+            @php
+                $ex='id'.$product->variation_id;
+            @endphp
+            @foreach($extensions as $extension)
+                {{'('.$extension['extensions_quantity'].'-'.$extension['name']. ') '}}
+                @php
+                    $ex.='q'.$extension['extensions_quantity'].'e'.$extension['extensions_id'];
+                @endphp
+            @endforeach
+            <input type="hidden" id="{{$ex}}" name="old_ex" value="1">
+        </p>
         @endif
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][is_service]" class="is_service"
             value="{{$product->is_service}}">
