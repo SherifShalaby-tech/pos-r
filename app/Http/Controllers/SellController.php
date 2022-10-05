@@ -748,37 +748,38 @@ class SellController extends Controller
                     if (!$product->is_service) {
                         $def_quantity=$transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
 
-                        $ConsumptionProducts = ConsumptionProduct::where('variation_id', $transaction_sell_line->variation_id)->get();
-                        foreach ($ConsumptionProducts as $ConsumptionProduct) {
-                            $Variation = Variation::where('product_id', $ConsumptionProduct->raw_material_id)->first();
-                            if ($Variation) {
-                                //amount_used raw_material_id variation_id updateRawMaterialQuantityStore
-                                $this->productUtil->updateProductQuantityStore($ConsumptionProduct->raw_material_id, $Variation->id, $transaction->store_id, $def_quantity * $ConsumptionProduct->amount_used);
-                            }
-
-                        }
-//                        sell_line_extensions
-                        $sell_line_extensions=SellLineExtension::where('transaction_sell_line_id',$transaction_sell_line->id)->get();
-                        //dd($sell_line_extensions);
-                        foreach ($sell_line_extensions as $sell_line_extension){
-                            $Extension=Extension::whereId($sell_line_extension->extension_id)->first();
-                            if($Extension){
-                                $sell_line_extension_q= ($sell_line_extension->quantity*$Extension->quantity_use)*$def_quantity;
-
-                                if($Extension->product_id!= null){
-                                    $product=Product::where('id',$Extension->product_id)->first();
-
-                                    $this->transactionUtil->updateBlockQuantityExtra($product->id,
-                                        $product->variations->first()->id, $transaction->store_id
-                                        , 0 ,$sell_line_extension_q);
-                                }
-
-                            }
-
-                        }
-
                         $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $def_quantity);
                     }
+
+                    $ConsumptionProducts = ConsumptionProduct::where('variation_id', $transaction_sell_line->variation_id)->get();
+                    foreach ($ConsumptionProducts as $ConsumptionProduct) {
+                        $Variation = Variation::where('product_id', $ConsumptionProduct->raw_material_id)->first();
+                        if ($Variation) {
+                            //amount_used raw_material_id variation_id updateRawMaterialQuantityStore
+                            $this->productUtil->updateProductQuantityStore($ConsumptionProduct->raw_material_id, $Variation->id, $transaction->store_id, $def_quantity * $ConsumptionProduct->amount_used);
+                        }
+
+                    }
+//                        sell_line_extensions
+                    $sell_line_extensions=SellLineExtension::where('transaction_sell_line_id',$transaction_sell_line->id)->get();
+                    //dd($sell_line_extensions);
+                    foreach ($sell_line_extensions as $sell_line_extension){
+                        $Extension=Extension::whereId($sell_line_extension->extension_id)->first();
+                        if($Extension){
+                            $sell_line_extension_q= ($sell_line_extension->quantity*$Extension->quantity_use)*$def_quantity;
+
+                            if($Extension->product_id!= null){
+                                $product=Product::where('id',$Extension->product_id)->first();
+
+                                $this->transactionUtil->updateBlockQuantityExtra($product->id,
+                                    $product->variations->first()->id, $transaction->store_id
+                                    , 0 ,$sell_line_extension_q);
+                            }
+
+                        }
+
+                    }
+
                 }
 
 
