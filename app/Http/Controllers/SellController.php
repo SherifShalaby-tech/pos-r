@@ -744,9 +744,9 @@ class SellController extends Controller
             foreach ($transaction_sell_lines as $transaction_sell_line) {
                 if ($transaction->status == 'final') {
                     $product = Product::find($transaction_sell_line->product_id);
+                    $def_quantity=$transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
 
                     if (!$product->is_service) {
-                        $def_quantity=$transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
 
                         $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $def_quantity);
                     }
