@@ -1960,6 +1960,7 @@ $(document).ready(function () {
             { data: "mobile_number", name: "customers.mobile_number" },
             { data: "method", name: "transaction_payments.method" },
             { data: "status", name: "transactions.status" },
+            { data: "created_by_name", name: "created_by_name" },
             { data: "deliveryman_name", name: "deliveryman.employee_name" },
             { data: "action", name: "action" },
         ],
