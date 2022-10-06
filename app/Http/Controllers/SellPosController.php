@@ -98,7 +98,6 @@ class SellPosController extends Controller
      */
     public function create()
     {
-//        dd(11%3 , 10 %3 ,12%3 , 13%3 , 14%3);
         //Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
             return redirect()->to('/cash-register/create?is_pos=1');
@@ -558,7 +557,7 @@ class SellPosController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // try {
+         try {
         DB::beginTransaction();
         $transaction = $this->transactionUtil->updateSellTransaction($request, $id);
 
@@ -724,13 +723,13 @@ class SellPosController extends Controller
             'html_content' => $html_content,
             'msg' => __('lang.success')
         ];
-        // } catch (\Exception $e) {
-        //     Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-        //     $output = [
-        //         'success' => false,
-        //         'msg' => __('lang.something_went_wrong')
-        //     ];
-        // }
+         } catch (\Exception $e) {
+             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+             $output = [
+                 'success' => false,
+                 'msg' => __('lang.something_went_wrong')
+             ];
+         }
 
         return $output;
     }
@@ -1509,6 +1508,7 @@ class SellPosController extends Controller
             $query = Transaction::leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
                 ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
                 ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
+                ->leftjoin('users', 'transactions.created_by', 'users.id')
                 ->where('type', 'sell')->whereIn('status', ['draft', 'canceled'])->whereNull('transactions.dining_table_id')->whereNull('transactions.restaurant_order_id');
 
             if (!empty($store_id)) {
@@ -1529,11 +1529,22 @@ class SellPosController extends Controller
                 'customer_types.name as customer_type_name',
                 'customers.name as customer_name',
                 'customers.mobile_number',
+                'users.name as created_by_name',
+
             )->with(['deliveryman']);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('final_total', '{{@num_format($final_total)}}')
+                ->editColumn('invoice_no',function ($row) {
+                    $string = $row->invoice_no . ' ';
+                        $string .= '<a
+                        data-href="#"
+                        class="btn btn-modal" style="color: #007bff;">'. __('lang.draft').'</a>';
+
+
+                    return $string;
+                })
                 ->addColumn('customer_type', function ($row) {
                     if (!empty($row->customer->customer_type)) {
                         return $row->customer->customer_type->name;
@@ -1615,9 +1626,11 @@ class SellPosController extends Controller
                 ->rawColumns([
                     'action',
                     'customer_name',
+                    'invoice_no',
                     'transaction_date',
                     'final_total',
                     'status',
+                    'created_by_name',
                     'created_by',
                 ])
                 ->make(true);
