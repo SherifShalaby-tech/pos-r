@@ -132,10 +132,10 @@ $is_first_after_extra=0;
             <p>{{ $transaction->store->name }}
                 {{ $transaction->store->location }}</p>
             @if($transaction->status=="draft")
-                <a
+                <p
                     data-href="#"
-                    class="btn btn-modal" style="color: #007bff !important;position: absolute; top: 1px;">{{ __('lang.draft', [], $invoice_lang)}}
-                    </a>
+                    class="btn btn-modal" style="position: absolute; top: 1px;">{{ __('lang.draft', [], $invoice_lang)}}
+                    </p>
             @endif
             <p>{{ $transaction->store->phone_number }} </p>
 
