@@ -1531,9 +1531,9 @@ class ReportController extends Controller
             $query->where('p.id', $request->product_id);
         }
         $transactions = $query->select(
-            DB::raw("SUM(IF(transactions.type='sell', tsl.quantity * p.sell_price, 0)) as sold_amount"),
-            DB::raw("SUM(IF(transactions.type='sell', tsl.quantity * p.purchase_price, 0)) as purchased_amount"),
-            DB::raw("SUM(IF(transactions.type='sell', tsl.quantity, 0)) as sold_qty"),
+            DB::raw("SUM(IF(transactions.type='sell', (tsl.quantity - tsl.quantity_returned )* tsl.sell_price, 0)) as sold_amount"),
+            DB::raw("SUM(IF(transactions.type='sell', (tsl.quantity- tsl.quantity_returned) * p.purchase_price, 0)) as purchased_amount"),
+            DB::raw("SUM(IF(transactions.type='sell', tsl.quantity- tsl.quantity_returned, 0)) as sold_qty"),
             DB::raw("SUM(IF(transactions.type='add_stock', pl.quantity, 0)) as purchased_qty"),
             DB::raw('(SELECT SUM(product_stores.qty_available) FROM product_stores JOIN products ON product_stores.product_id=products.id WHERE products.id=p.id ' . $store_query . ') as in_stock'),
             'p.sku',
@@ -1617,35 +1617,53 @@ class ReportController extends Controller
             } else {
                 $date = $year . '-' . $month . '-' . $start;
             }
-            $query = Transaction::where('type', 'sell')->whereIn('status', ['final', 'canceled'])
-                ->whereDate('transaction_date', $date);
 
+            $query = Transaction::where('transactions.type', 'sell')->whereIn('transactions.status', ['final', 'canceled'])
+                ->whereDate('transactions.transaction_date', $date);
+            $query2 = Transaction::leftjoin('transaction_sell_lines as tsl', function ($join) {
+                $join->on('transactions.id', 'tsl.transaction_id');
+            })->where('transactions.type', 'sell')->whereIn('transactions.status', ['final', 'canceled'])
+                ->whereDate('transactions.transaction_date', $date);
             if (!empty($store_id)) {
-                $query->where('store_id', $store_id);
+                $query->where('transactions.store_id', $store_id);
+                $query2->where('transactions.store_id', $store_id);
             }
             if (!empty($method)) {
-                $query->where('method', $method);
+                $query->where('transactions.method', $method);
+                $query2->where('transactions.method', $method);
             }
             if (!empty($created_by)) {
-                $query->where('created_by', $created_by);
+                $query->where('transactions.created_by', $created_by);
+                $query2->where('transactions.created_by', $created_by);
             }
+            $query2 = $query2->select(
+                    DB::raw('SUM(tsl.quantity_returned * tsl.sell_price)  AS total_ret'),
+                )->first();
+            $total_ret=0;
+            if($query2){
+                $total_ret=$query2->total_ret;
+            }
+
+
             $sale_data = $query->select(
-                DB::raw('SUM(discount_amount) AS total_discount'),
-                DB::raw('SUM(total_product_discount) AS total_product_discount'),
-                DB::raw('SUM(total_tax) AS total_tax'),
-                DB::raw('SUM(delivery_cost) AS shipping_cost'),
-                DB::raw('SUM(final_total) AS grand_total'),
-                DB::raw('SUM(total_product_surplus) AS total_surplus'),
+                DB::raw('SUM(transactions.discount_amount)  AS total_discount'),
+                DB::raw('SUM(transactions.total_product_discount) AS total_product_discount'),
+                DB::raw('SUM(transactions.total_tax)  AS total_tax'),
+                DB::raw('SUM(transactions.delivery_cost) AS shipping_cost'),
+                DB::raw('SUM(transactions.final_total)  AS grand_total'),
+                DB::raw('SUM(transactions.total_product_surplus)  AS total_surplus'),
             )->first();
+
             $total_discount[$start] = $sale_data->total_discount + $sale_data->total_product_discount;
             $total_surplus[$start] = $sale_data->total_surplus;
             $order_discount[$start] = $sale_data->order_discount;
             $total_tax[$start] = $sale_data->total_tax;
             $order_tax[$start] = $sale_data->order_tax;
             $shipping_cost[$start] = $sale_data->shipping_cost;
-            $grand_total[$start] = $sale_data->grand_total;
+            $grand_total[$start] = $sale_data->grand_total-$total_ret;
             $start++;
         }
+
         $start_day = date('w', strtotime($year . '-' . $month . '-01')) + 1;
         $prev_year = date('Y', strtotime('-1 month', strtotime($year . '-' . $month . '-01')));
         $prev_month = date('m', strtotime('-1 month', strtotime($year . '-' . $month . '-01')));
@@ -1655,7 +1673,6 @@ class ReportController extends Controller
         $stores = Store::getDropdown();
         $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
         $cashiers = Employee::getDropdownByJobType('Cashier', true, true);
-
         return view('reports.daily_sale_report', compact(
             'total_discount',
             'total_surplus',
