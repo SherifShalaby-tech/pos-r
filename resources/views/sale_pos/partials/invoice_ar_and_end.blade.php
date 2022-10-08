@@ -126,7 +126,13 @@
             @include('layouts.partials.print_header')
 
             <p>{{ $transaction->store->name }} {{ $transaction->store->location }}</p>
-            <p>{{ $transaction->store->phone_number }} </p>
+           @if($transaction->status=="draft")
+            <a
+                data-href="#"
+                class="btn btn-modal" style="color: #007bff !important;position: absolute;top: 1px;">{{ __('lang.draft', [], 'en')}}
+                - {{ __('lang.draft', [], 'ar')}}</a>
+           @endif
+                <p>{{ $transaction->store->phone_number }} </p>
 
         </div>
         <div style="width: 70%; float:left;">
