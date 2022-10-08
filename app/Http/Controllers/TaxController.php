@@ -230,7 +230,11 @@ class TaxController extends Controller
         $taxes = Tax::getDropdown($store_id);
         $tax_dp = '<option value="">No Tax</option>';
         foreach ($taxes as $tax) {
-            $tax_dp .= '<option data-rate="' . $tax['rate'] . '" value="' . $tax['id'] . '" '. \App\Models\System::getProperty('def_pos_tax_id') == $tax['id']? 'selected' : null.'>' . $tax['name'] . '</option>';
+            $is_selc='';
+            if(\App\Models\System::getProperty('def_pos_tax_id') == $tax['id']){
+                $is_selc='selected';
+            }
+            $tax_dp .= '<option data-rate="' . $tax['rate'] . '" value="' . $tax['id'] . '" '. $is_selc .' >' . $tax['name'] . '</option>';
         }
 
         return $tax_dp;
