@@ -251,8 +251,8 @@
                                     $name=$line_extension->extension->name;
                                     $translations = !empty($line_extension->extension->translations['name']) ? $line_extension->extension->translations['name'] : [];
                                     if (!empty($translations)) {
-                                        if (!empty($translations[$invoice_lang])) {
-                                            $name= $translations[$invoice_lang];
+                                        if (!empty($translations['ar'])) {
+                                            $name= $translations['ar'];
                                         }
                                     }
                                     $is_first_after_extra=1;
