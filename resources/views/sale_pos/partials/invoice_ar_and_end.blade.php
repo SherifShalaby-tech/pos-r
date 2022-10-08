@@ -127,9 +127,7 @@
 
             <p>{{ $transaction->store->name }} {{ $transaction->store->location }}</p>
            @if($transaction->status=="draft")
-            <a
-                data-href="#"
-                class="btn btn-modal" style="color: #007bff !important;position: absolute;top: 1px;">{{ __('lang.draft', [], 'en')}}
+            <a style="position: absolute;top: 1px;">{{ __('lang.draft', [], 'en')}}
                 - {{ __('lang.draft', [], 'ar')}}</a>
            @endif
                 <p>{{ $transaction->store->phone_number }} </p>
