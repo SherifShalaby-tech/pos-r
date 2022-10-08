@@ -127,7 +127,7 @@
 
             <p>{{ $transaction->store->name }} {{ $transaction->store->location }}</p>
            @if($transaction->status=="draft")
-            <a style="position: absolute;top: 1px; text-align: right !important;">{{ __('lang.draft', [], 'en')}}
+            <a style="position: absolute;top: 1px; text-align: left !important; float: left">{{ __('lang.draft', [], 'en')}}
                 - {{ __('lang.draft', [], 'ar')}}</a>
            @endif
                 <p>{{ $transaction->store->phone_number }} </p>
