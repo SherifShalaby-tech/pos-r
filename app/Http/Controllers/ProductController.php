@@ -109,7 +109,7 @@ class ProductController extends Controller
     {
         if (request()->ajax()) {
 
-            $products = Product::Active()->leftjoin('variations', function ($join) {
+            $products = Product::leftjoin('variations', function ($join) {
                 $join->on('products.id', 'variations.product_id')->whereNull('variations.deleted_at');
             })
                 ->leftjoin('add_stock_lines', function ($join) {
