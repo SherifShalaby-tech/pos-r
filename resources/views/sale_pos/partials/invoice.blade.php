@@ -152,7 +152,7 @@ $is_first_after_extra=0;
                     @lang('lang.sale_note', [], $invoice_lang): {{ $transaction->sale_note }} <br>
                 @endif
             </p>
-            @if (session('system_mode') == 'garments')
+{{--            @if (session('system_mode') == 'garments')--}}
                 <p>
                     @if (!empty($transaction->customer_size))
                         @lang('lang.customer_size'):
@@ -175,7 +175,7 @@ $is_first_after_extra=0;
                     @endif
 
                 </p>
-            @endif
+{{--            @endif--}}
             @if (session('system_mode') == 'restaurant')
                 @if (!empty($transaction->dining_room))
                     @lang('lang.dining_room'):
