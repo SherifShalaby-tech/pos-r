@@ -80,9 +80,9 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 25%" class="col-sm-8">@lang( 'lang.products' )</th>
-                                            @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+{{--                                            @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')--}}
                                             <th style="width: 25%" class="col-sm-4">@lang( 'lang.sku' )</th>
-                                            @endif
+{{--                                            @endif--}}
                                             <th style="width: 25%" class="col-sm-4">@lang( 'lang.quantity' )</th>
                                             <th style="width: 12%" class="col-sm-4">@lang( 'lang.purchase_price' )</th>
                                             <th style="width: 12%" class="col-sm-4">@lang( 'lang.sub_total' )</th>
