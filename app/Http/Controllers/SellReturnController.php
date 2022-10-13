@@ -9,10 +9,12 @@ use App\Models\Customer;
 use App\Models\DiningRoom;
 use App\Models\DiningTable;
 use App\Models\Employee;
+use App\Models\Extension;
 use App\Models\GiftCard;
 use App\Models\MoneySafe;
 use App\Models\MoneySafeTransaction;
 use App\Models\Product;
+use App\Models\SellLineExtension;
 use App\Models\Store;
 use App\Models\StorePos;
 use App\Models\System;
@@ -412,13 +414,12 @@ class SellReturnController extends Controller
     public function store(Request $request)
     {
         try {
+
             if (!empty($request->transaction_sell_line)) {
                 $sell_transaction = Transaction::find($request->transaction_id);
                 $sell_return = Transaction::where('type', 'sell_return')
                     ->where('return_parent_id', $request->transaction_id)
                     ->first();
-
-
                 $transaction_data = [
                     'store_id' => $request->store_id,
                     'customer_id' => $request->customer_id,
@@ -461,11 +462,26 @@ class SellReturnController extends Controller
 
                 foreach ($request->transaction_sell_line as $sell_line) {
                     if (!empty($sell_line['transaction_sell_line_id'])) {
-
                         $line = TransactionSellLine::find($sell_line['transaction_sell_line_id']);
                         $old_quantity = $line->quantity_returned;
                         $line->quantity_returned = $sell_line['quantity'];
                         $line->save();
+                        $sell_line_extensions=SellLineExtension::where('transaction_sell_line_id',$line->id)->get();
+                        foreach ($sell_line_extensions as $sell_line_extension){
+                            $Extension=Extension::whereId($sell_line_extension->extension_id)->first();
+                            if($Extension){
+                                $sell_line_extension_q= ($sell_line_extension->quantity*$Extension->quantity_use)*($sell_line['quantity']-$old_quantity);
+                                if($Extension->product_id!= null){
+                                    $product=Product::where('id',$Extension->product_id)->first();
+
+                                    $this->transactionUtil->updateBlockQuantityExtra($product->id,
+                                        $product->variations->first()->id, $sell_return->store_id
+                                        , 0 ,$sell_line_extension_q);
+                                }
+
+                            }
+
+                        }
                         $product = Product::find($line->product_id);
                         if (!$product->is_service) {
                             $this->productUtil->updateProductQuantityStore($line->product_id, $line->variation_id, $sell_return->store_id, $sell_line['quantity'], $old_quantity);

@@ -76,7 +76,9 @@
                                         <div class="col-md-1" style="padding: 0 !important;">
                                             <div class="form-group" style="margin-top: 31px;">
                                                 <select class="form-control" name="tax_id" id="tax_id">
-                                                    <option value="">No Tax</option>
+                                                    @if(env('ISNoTax',true))
+                                                        <option value="">No Tax</option>
+                                                    @endif
                                                     @foreach ($taxes as $tax)
                                                         <option data-rate="{{ $tax['rate'] }}"
                                                             @if ((!empty($transaction) && $transaction->tax_id == $tax['id'] ) || App\Models\System::getProperty('def_pos_tax_id') == $tax['id']  ) selected @endif
