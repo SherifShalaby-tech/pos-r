@@ -101,7 +101,7 @@
                                         </li>
                                         <li class="divider"></li>
                                     @endcan
-{{--                                    @if (session('system_mode') == 'garments')--}}
+                                    @if (session('system_mode') == 'garments')
                                         @can('customer_module.customer_sizes.create_and_edit')
                                             <li>
                                                 <a data-href="{{ action('CustomerSizeController@add', $customer->id) }}"
@@ -118,7 +118,7 @@
                                             </li>
                                             <li class="divider"></li>
                                         @endcan
-{{--                                    @endif--}}
+                                    @endif
                                     @if ($customer->is_default == 0)
                                         @can('customer_module.customer.delete')
                                             <li>

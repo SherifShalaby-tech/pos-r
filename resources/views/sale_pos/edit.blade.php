@@ -13,7 +13,7 @@
                     <source src="{{ asset('audio/beep-07.mp3') }}">
                     </source>
                 </audio>
-                <div class="col-md-6">
+                <div class="@if (session('system_mode') == 'pos') col-md-7 @else col-md-6 @endif">
                     {!! Form::open(['url' => action('SellPosController@update', $transaction->id), 'method' => 'PUT', 'files' => true, 'class' => 'pos-form', 'id' => 'edit_pos_form']) !!}
                     <div class="card">
                         <div class="card-body" style="padding: 0px 10px; !important">
@@ -113,7 +113,7 @@
                                                 data-toggle="modal"
                                                 data-target="#contact_details_modal">@lang('lang.details')</button>
                                         </div>
-{{--                                        @if (session('system_mode') == 'garments')--}}
+                                        @if (session('system_mode') == 'garments')
                                             <div class="col-md-2">
                                                 <button type="button" class="btn btn-default" style="margin-top: 30px;"
                                                     data-toggle="modal" data-target="#customer_sizes_modal"><img
@@ -122,7 +122,7 @@
                                                         alt="@lang('lang.customer_size')" data-toggle="tooltip"
                                                         title="@lang('lang.customer_size')"></button>
                                             </div>
-{{--                                        @endif--}}
+                                        @endif
                                         <div class="col-md-2">
                                             <label for="" style="margin-top: 40px;">@lang('lang.customer_type'): <span
                                                     class="customer_type_name"></span></label>
@@ -135,7 +135,7 @@
                                                 <span class="points"><span
                                                         class="customer_points_span">{{ @num_format(0) }}</span></span></label>
                                         </div>
-                                        @if (session('system_mode') == 'restaurant')
+                                        @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
                                             <div class="col-md-2">
                                                 <button type="button" class="btn btn-danger btn-xs pull-right"
                                                     style="margin-top: 38px;" data-toggle="modal"
@@ -467,7 +467,7 @@
                     {!! Form::close() !!}
                 </div>
                 <!-- product list -->
-                <div class="col-md-6">
+                <div class="@if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') col-md-5 @else col-md-6 @endif">
                     <!-- navbar-->
                     <header class="header">
                         <nav class="navbar">
