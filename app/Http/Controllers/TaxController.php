@@ -228,7 +228,11 @@ class TaxController extends Controller
         $store_id = request()->store_id;
 
         $taxes = Tax::getDropdown($store_id);
-        $tax_dp = '<option value="">No Tax</option>';
+        if(env('ISNoTax',true)) {
+            $tax_dp = '<option value="">No Tax</option>';
+        }else{
+            $tax_dp = '';
+        }
         foreach ($taxes as $tax) {
             $is_selc='';
             if(\App\Models\System::getProperty('def_pos_tax_id') == $tax['id']){

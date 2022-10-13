@@ -211,7 +211,17 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                                 ${element.currency.symbol}</span>
                                             <span
                                                 class="total">${__currency_trans_from_en(element.data.current_stock_value, false)}</span>
-                                        </h3>`;
+                                        </h3><h5><span class="symbol" style="padding-right: 10px;">
+                                                ${element.currency.symbol}</span>
+                                            <span
+                                                class="total">${__currency_trans_from_en(element.data.current_stock_value_product, false)}</span>
+                                        <span style="color: #3fc3ee">P</span>
+                                        </h5>
+                                        <h5><span class="symbol" style="padding-right: 3px;">
+                                                ${element.currency.symbol}</span>
+                                            <span
+                                                class="total">${__currency_trans_from_en(element.data.current_stock_value_material, false)} </span>
+                                        <span style="color: #3fc3ee">M</span></h5>`;
 
                         revenue_string += `<h3 class="dashboard_currency currency_total_${element.currency.currency_id}"
                                             data-currency_id="${element.currency.currency_id}"

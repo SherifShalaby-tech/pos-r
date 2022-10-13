@@ -3,9 +3,11 @@
 
 @section('content')
     <div class="container-fluid">
+        @if(env('ISCREATTAX',true) || auth()->user()->email ==  env( 'SYSTEM_SUPERADMIN','superadmin@sherifshalaby.tech'))
         <a style="color: white" data-href="{{ action('TaxController@create') }}?type={{ $type }}"
             data-container=".view_modal" class="btn btn-modal btn-info"><i class="dripicons-plus"></i>
             @lang('lang.add')</a>
+        @endif
 
     </div>
     <div class="table-responsive">
