@@ -557,6 +557,7 @@ class SellPosController extends Controller
      */
     public function update(Request $request, $id)
     {
+//        dd($request->all());
          try {
         DB::beginTransaction();
         $transaction = $this->transactionUtil->updateSellTransaction($request, $id);
@@ -594,6 +595,8 @@ class SellPosController extends Controller
         if ($transaction->status != 'draft') {
             if (!empty($request->payments)) {
                 $payment_formated = [];
+                $transaction_payment_ids = array_column($request->payments, 'transaction_payment_id');
+                TransactionPayment::whereNotIn('id',$transaction_payment_ids)->delete();
                 foreach ($request->payments as $payment) {
                     $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                     $old_tp = null;

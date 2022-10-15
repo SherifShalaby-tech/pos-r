@@ -708,6 +708,7 @@ class SellController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         try {
             $this->transactionUtil->updateSellTransaction($request, $id);
 
