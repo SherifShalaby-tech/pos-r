@@ -232,7 +232,7 @@ class CashRegisterUtil extends Util
     {
         $transaction = Transaction::find($transaction->id);
         $opened_register =  CashRegister::where('user_id', $transaction->created_by)
-            ->where('status', 'open')
+//            ->where('status', 'open')
             ->first();
         if ($transaction->status == 'final') {
             $payment_methods = [
