@@ -283,15 +283,19 @@ class ReportController extends Controller
     {
         if (request()->ajax()) {
             $exchange_rate_currencies = $this->commonUtil->getExchangeRateCurrencies(true);
-
             $query = CashRegister::leftjoin('cash_register_transactions', 'cash_registers.id', 'cash_register_transactions.cash_register_id')
                 ->leftjoin('transactions', 'cash_register_transactions.transaction_id', 'transactions.id');
-
-            if (!empty(request()->start_date)) {
+            if (!empty($request->start_date)) {
                 $query->whereDate('cash_register_transactions.created_at', request()->start_date);
+            }
+            if (!empty($request->end_date)) {
+                $query->whereDate('cash_register_transactions.created_at', request()->end_date);
             }
             if (!empty(request()->start_time)) {
                 $query->where('cash_register_transactions.created_at', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+            }
+            if (!empty(request()->end_time)) {
+                $query->where('cash_register_transactions.created_at', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
             }
             if (!empty(request()->store_id) &&  !empty(array_filter(request()->store_id))) {
                 $query->whereIn('cash_registers.store_id', request()->store_id);
@@ -1445,6 +1449,12 @@ class ReportController extends Controller
             $best_selling_query = Transaction::leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
                 ->whereDate('transaction_date', '>=', $start_date)
                 ->whereDate('transaction_date', '<=', $end_date);
+            if (!empty($request->start_date)) {
+                $best_selling_query->whereDate('transaction_date', '>=', $request->start_date);
+            }
+            if (!empty($request->end_date)) {
+                $best_selling_query->whereDate('transaction_date', '<=', $request->end_date);
+            }
             if (!empty(request()->start_time)) {
                 $best_selling_query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
             }
@@ -1722,6 +1732,18 @@ class ReportController extends Controller
             if (!empty($store_id)) {
                 $total_discount_query->where('store_id', $store_id);
             }
+            if (!empty($request->start_date)) {
+                $total_discount_query->whereDate('transaction_date', '>=', $request->start_date);
+            }
+            if (!empty($request->end_date)) {
+                $total_discount_query->whereDate('transaction_date', '<=', $request->end_date);
+            }
+            if (!empty(request()->start_time)) {
+                $total_discount_query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+            }
+            if (!empty(request()->end_time)) {
+                $total_discount_query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
+            }
             $total_discount[] = $total_discount_query->sum('discount_amount');
 
             $total_tax_query = Transaction::where('type', 'sell')->where('status', 'final')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
@@ -1790,6 +1812,18 @@ class ReportController extends Controller
 
             if (!empty($store_id)) {
                 $query->where('store_id', $store_id);
+            }
+            if (!empty($request->start_date)) {
+                $query->whereDate('transaction_date', '>=', $request->start_date);
+            }
+            if (!empty($request->end_date)) {
+                $query->whereDate('transaction_date', '<=', $request->end_date);
+            }
+            if (!empty(request()->start_time)) {
+                $query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+            }
+            if (!empty(request()->end_time)) {
+                $query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
             }
             $purchase_data = $query->selectRaw(implode(',', $query1))->first();
             $total_discount[$start] = $purchase_data->total_discount;
@@ -1870,6 +1904,18 @@ class ReportController extends Controller
             $total_query = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
             if (!empty($store_id)) {
                 $total_query->where('store_id', $store_id);
+            }
+            if (!empty($request->start_date)) {
+                $total_query->whereDate('transaction_date', '>=', $request->start_date);
+            }
+            if (!empty($request->end_date)) {
+                $total_query->whereDate('transaction_date', '<=', $request->end_date);
+            }
+            if (!empty(request()->start_time)) {
+                $total_query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+            }
+            if (!empty(request()->end_time)) {
+                $total_query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
             }
             $total[] = $total_query->sum('final_total');
 
@@ -2241,8 +2287,20 @@ class ReportController extends Controller
 
 
         $cost_query = Product::leftjoin('product_stores', 'products.id', 'product_stores.product_id');
-        if (!empty($store_id)) {
+        if(!empty($store_id)) {
             $cost_query->where('store_id', $store_id);
+        }
+        if (!empty($request->start_date)) {
+            $cost_query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if (!empty($request->end_date)) {
+            $cost_query->whereDate('created_at', '<=', $request->end_date);
+        }
+        if (!empty(request()->start_time)) {
+            $cost_query->where('created_at', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+        }
+        if (!empty(request()->end_time)) {
+            $cost_query->where('created_at', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
         }
         $total_cost =  $cost_query->select(DB::raw('SUM(qty_available * purchase_price) as total_cost'))->first()->total_cost;
         $stores = Store::getDropdown();
@@ -2274,6 +2332,18 @@ class ReportController extends Controller
         }
         if (!empty($request->product_id)) {
             $query->where('products.id', $request->product_id);
+        }
+        if (!empty($request->start_date)) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if (!empty($request->end_date)) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+        if (!empty(request()->start_time)) {
+            $query->where('created_at', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+        }
+        if (!empty(request()->end_time)) {
+            $query->where('created_at', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
         }
 
         $items = $query->groupBy('products.id')->get();
@@ -2728,6 +2798,19 @@ class ReportController extends Controller
         }
         if (!empty($pos_id)) {
             $query->where('transactions.store_pos_id', $pos_id);
+        }
+
+        if (!empty($request->start_date)) {
+            $query->whereDate('transaction_date', '>=', $request->start_date);
+        }
+        if (!empty($request->end_date)) {
+            $query->whereDate('transaction_date', '<=', $request->end_date);
+        }
+        if (!empty(request()->start_time)) {
+            $query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+        }
+        if (!empty(request()->end_time)) {
+            $query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
         }
 
         $dues =  $query->get();

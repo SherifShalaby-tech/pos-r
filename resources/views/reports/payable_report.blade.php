@@ -35,9 +35,9 @@
                             <div class="form-group">
                                 {!! Form::label('end_time', __('lang.end_time'), []) !!}
                                 {!! Form::text('end_time', request()->end_time, [
-    'class' => 'form-control time_picker
-                            sale_filter',
-]) !!}
+                                    'class' => 'form-control time_picker
+                                                            sale_filter',
+                                ]) !!}
                             </div>
                         </div>
 
