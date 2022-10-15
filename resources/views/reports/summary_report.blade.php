@@ -10,13 +10,34 @@
         <form action="">
             <div class="col-md-12">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="from-group">
-                            {!! Form::label('date', __('lang.date'), []) !!}
-                            <input type="text" class="daterangepicker-field form-control"
-                                value="{{request()->start_date}} To {{request()->end_date}}" required />
-                            <input type="hidden" name="start_date" value="{{request()->start_date}}" />
-                            <input type="hidden" name="end_date" value="{{request()->end_date}}" />
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            {!! Form::label('start_date', __('lang.start_date'), []) !!}
+                            {!! Form::text('start_date', request()->start_date, ['class' => 'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            {!! Form::label('start_time', __('lang.start_time'), []) !!}
+                            {!! Form::text('start_time', request()->start_time, [
+'class' => 'form-control
+                        time_picker sale_filter',
+]) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            {!! Form::label('end_date', __('lang.end_date'), []) !!}
+                            {!! Form::text('end_date', request()->end_date, ['class' => 'form-control']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            {!! Form::label('end_time', __('lang.end_time'), []) !!}
+                            {!! Form::text('end_time', request()->end_time, [
+                                'class' => 'form-control time_picker
+                                                        sale_filter',
+                            ]) !!}
                         </div>
                     </div>
 
