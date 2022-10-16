@@ -59,7 +59,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 <div class="row">
                     <div class="col-md-12 form-group">
                         <div class="row">
-                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                                auth()->user()->can('dashboard.profit.view'))
                                 <!-- Count item widget-->
                                 <div class="col-sm-2">
                                     <div class="wrapper count-title text-center">
@@ -104,7 +105,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 </div>
                             @endif
                             <!-- Count item widget-->
-                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                                auth()->user()->can('dashboard.profit.view'))
                                 <div class="col-sm-3">
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-media-loop"
@@ -119,7 +121,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 </div>
                             @endif
                             <!-- Count item widget-->
-                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                                auth()->user()->can('dashboard.profit.view'))
                                 <div class="col-sm-3">
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i>
