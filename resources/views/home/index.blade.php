@@ -21,7 +21,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="store_id"><b>@lang('lang.store')</b></label>
-                                        {!! Form::select('store_id', $stores, session('user.is_superadmin') ? null : key($stores), ['class' => 'form-control ', 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('store_id', $stores, key($stores), ['class' => 'form-control ', 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
 
                                     </div>
                                     <div class="col-md-3">
@@ -302,7 +302,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
             });
             getChartAndTableSection(start_date, end_date, store_id);
         }
-        @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+        @if (auth()->user()->can('superadmin') || auth()->user()->is_admin ||
+                                auth()->user()->can('dashboard.profit.view'))
             function getChartAndTableSection(start_date, end_date, store_id) {
                 $("#chart_and_table_section").css("text-align", "center");
                 $("#chart_and_table_section").html(
