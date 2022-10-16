@@ -1586,9 +1586,9 @@ function reset_pos_form() {
     $("button#redeem_btn").attr("disabled", false);
     $("button.add_to_deposit").attr("disabled", false);
     set_default_customer();
-    $("#tax_method").val("");
-    $("#tax_rate").val("0");
-    $("#tax_type").val("");
+    // $("#tax_method").val("");
+    // $("#tax_rate").val("0");
+    // $("#tax_type").val("");
    // $("#tax_id").val("");
     $("#tax_id").selectpicker("refresh");
     $("#payment_status").val("");
@@ -1629,6 +1629,7 @@ function reset_pos_form() {
     $("#received_currency_id").val(default_currency_id);
     $("#received_currency_id").change();
     $("#received_currency_id").selectpicker("refresh");
+    change_tax_id();
 }
 $(document).ready(function () {
     $("#terms_and_condition_id").val($("#terms_and_condition_hidden").val());
