@@ -69,33 +69,45 @@ class ReportController extends Controller
 
         $sale_query = Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
             ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
-            ->wherein('transactions.type', ['sell','sell_return'])
+            ->where('transactions.type', 'sell')
+            ->where('transactions.status', 'final');
+        $sell_return_query= Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
+            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
+            ->where('transactions.type', 'sell_return')
             ->where('transactions.status', 'final');
 
         if (!empty($request->start_date)) {
             $sale_query->whereDate('transaction_date', '>=', $request->start_date);
+            $sell_return_query->whereDate('transaction_date', '>=', $request->start_date);
         }
         if (!empty($request->end_date)) {
             $sale_query->whereDate('transaction_date', '<=', $request->end_date);
+            $sell_return_query->whereDate('transaction_date', '<=', $request->end_date);
         }
         if (!empty(request()->start_time)) {
             $sale_query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+            $sell_return_query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
         }
         if (!empty(request()->end_time)) {
             $sale_query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
+            $sell_return_query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
         }
         if (!empty($request->customer_type_id)) {
             $sale_query->where('customer_type_id', $request->customer_type_id);
+            $sell_return_query->where('customer_type_id', $request->customer_type_id);
         }
 
         if (!empty($store_id)) {
             $sale_query->where('store_id', $store_id);
+            $sell_return_query->where('store_id', $store_id);
         }
         if (!empty($pos_id)) {
             $sale_query->where('store_pos_id', $pos_id);
+            $sell_return_query->where('store_pos_id', $pos_id);
         }
         if (!empty($request->product_id)) {
             $sale_query->where('product_id', $request->product_id);
+            $sell_return_query->where('product_id', $request->product_id);
         }
 
         $s_query = clone $sale_query;
@@ -108,33 +120,40 @@ class ReportController extends Controller
             $currency_array = [];
             foreach ($exchange_rate_currencies as $currency) {
                 $s_query = clone $sale_query;
+                $sell_return_query=$sell_return_query->where('stores.id', $store->id);
                 $currency_array[$currency['currency_id']]['currency_id'] = $currency['currency_id'];
                 $currency_array[$currency['currency_id']]['symbol'] = $currency['symbol'];
                 $currency_array[$currency['currency_id']]['is_default'] = $currency['is_default'];
                 $currency_array[$currency['currency_id']]['conversion_rate'] = $currency['conversion_rate'];
+
+
                 if (!$currency['is_default']) {
+                    $sell_return_v= $sell_return_query
+                        ->where('received_currency_id', $currency['currency_id'])->sum('final_total');
                     $currency_array[$currency['currency_id']]['total'] = $s_query->where('stores.id', $store->id)
-                        ->where('received_currency_id', $currency['currency_id'])->where('transactions.type', 'sell')->sum('final_total')
-                    -$s_query->where('stores.id', $store->id)
-                            ->where('received_currency_id', $currency['currency_id'])->where('transactions.type', 'sell_return')->sum('final_total');
+                        ->where('received_currency_id', $currency['currency_id'])->sum('final_total')
+                    -$sell_return_v;
                 } else {
-                    $currency_array[$currency['currency_id']]['total'] = $s_query->where('stores.id', $store->id)->where('transactions.type', 'sell')
+                    $sell_return_v=  $sell_return_query->where(function ($q) use ($currency) {
+                        $q->where('received_currency_id', $currency['currency_id'])->orWhereNull('received_currency_id');
+                    })
+                        ->sum('final_total');
+                    $currency_array[$currency['currency_id']]['total'] = $s_query->where('stores.id', $store->id)
                         ->where(function ($q) use ($currency) {
                             $q->where('received_currency_id', $currency['currency_id'])->orWhereNull('received_currency_id');
                         })
-                        ->sum('final_total')-
-                        $s_query->where('stores.id', $store->id)->where('transactions.type', 'sell_return')
-                            ->where(function ($q) use ($currency) {
-                                $q->where('received_currency_id', $currency['currency_id'])->orWhereNull('received_currency_id');
-                            })
-                            ->sum('final_total');
+                        ->sum('final_total') -$sell_return_v;
+
                 }
+
+
                 if (!empty($sales_totals[$currency['currency_id']])) {
                     $sales_totals[$currency['currency_id']] += $currency_array[$currency['currency_id']]['total'];
                 } else {
                     $sales_totals[$currency['currency_id']] = $currency_array[$currency['currency_id']]['total'];
                 }
             }
+
             $sales[$i]['currency'] = (array) $currency_array;
 
             $i++;
@@ -1947,8 +1966,8 @@ class ReportController extends Controller
         }
 
         $transactions = $query->select(
-            DB::raw("SUM(IF(transactions.type='sell', final_total, 0)) as sold_amount"),
-            DB::raw("SUM(IF(transactions.type='sell', tsl.quantity, 0)) as sold_qty"),
+            DB::raw("SUM(IF(transactions.type='sell', final_total, 0) )- SUM(IF(transactions.type='sell_return', final_total, 0)) as sold_amount"),
+            DB::raw("SUM(IF(transactions.type='sell', tsl.quantity - tsl.quantity_returned, 0)) as sold_qty"),
             DB::raw('(SELECT SUM(product_stores.qty_available) FROM product_stores JOIN products ON product_stores.product_id=products.id WHERE products.id=p.id ' . $store_query . ') as in_stock'),
             'p.name as product_name'
         )->groupBy('p.id')->get();
