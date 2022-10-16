@@ -1629,6 +1629,7 @@ function reset_pos_form() {
     $("#received_currency_id").val(default_currency_id);
     $("#received_currency_id").change();
     $("#received_currency_id").selectpicker("refresh");
+    change_tax_id();
 }
 $(document).ready(function () {
     $("#terms_and_condition_id").val($("#terms_and_condition_hidden").val());
