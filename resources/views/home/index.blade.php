@@ -104,8 +104,22 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 </div>
                             @endif
                             <!-- Count item widget-->
+                                @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                                    <div class="col-sm-2">
+                                        <div class="wrapper count-title text-center">
+                                            <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
+                                            </div>
+                                            <div class="name"><strong
+                                                    style="color: #297ff9">@lang('lang.total_taxes')</strong>
+                                            </div>
+                                            <div class="count-number profit-data">{{ @num_format(0) }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                            <!-- Count item widget-->
                             @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-media-loop"
                                                 style="color: #00c689"></i>
@@ -120,7 +134,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             @endif
                             <!-- Count item widget-->
                             @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
-                                <div class="col-sm-3">
+                                <div class="col-sm-2">
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i>
                                         </div>

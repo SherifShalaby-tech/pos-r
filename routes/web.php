@@ -260,7 +260,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::resource('service-fee', ServiceFeeController::class);
     Route::get('delivery-zone/get-details/{id}', 'DeliveryZoneController@getDetails');
     Route::resource('delivery-zone', DeliveryZoneController::class);
-
+    Route::get('employee/trash','EmployeeController@getEmployeeTrash')->name('employee.trash');
     Route::group(['prefix' => 'hrm'], function () {
         Route::resource('job', JobController::class);
         Route::get('get-same-job-employee-details/{id}', 'EmployeeController@getSameJobEmployeeDetails');

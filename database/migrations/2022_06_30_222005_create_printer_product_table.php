@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddColumnToVariationsTable extends Migration
+class CreatePrinterProductTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddColumnToVariationsTable extends Migration
      */
     public function up()
     {
-        Schema::table('variations', function (Blueprint $table) {
-            $table->Integer('number_vs_base_unit')->nullable();
+        Schema::create('printer_product', function (Blueprint $table) {
+            $table->id();
+            $table->integer('printer_id')->unsigned();
+            $table->integer('product_id')->unsigned();
         });
     }
 
@@ -25,8 +27,6 @@ class AddColumnToVariationsTable extends Migration
      */
     public function down()
     {
-        Schema::table('variations', function (Blueprint $table) {
-            $table->dropColumn('number_vs_base_unit');
-        });
+        Schema::dropIfExists('printer_product');
     }
 }

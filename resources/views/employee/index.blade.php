@@ -7,6 +7,9 @@
             <a style="color: white" href="{{ action('EmployeeController@create') }}" class="btn btn-info"><i
                     class="dripicons-plus"></i>
                 @lang('lang.add_new_employee')</a>
+            <a style="color: white" href="{{route('employee.trash')}}" class="btn btn-danger"><i
+                    class="dripicons-trash"></i>
+                @lang('lang.trash_employee')</a>
         @endcan
         <div class="row">
             <div class="col-md-12">

@@ -1282,6 +1282,8 @@ return [
     'delivery_cost_given_to_deliveryman' => 'مبلغ التوصيل يأخذه السائق مباشرة',
     'sale_payment_date' => 'تاريخ الدفع',
     'import_req'=>'تأكد من صحة البيانات المدخلة ثم اعد المحاولة',
+    'trash_employee' => 'سلة المهملات',
+    'total_taxes' => 'اجمالى الضرايب'
 
 
 ];

@@ -1307,4 +1307,7 @@ return [
     'cash_register_is_closed' => 'Cash register is closed',
     'import_req'=>'Make sure the entered data is correct and try again',
 
+    'trash_employee' => 'Trash',
+    'total_taxes' => 'Total Taxes'
+
 ];
