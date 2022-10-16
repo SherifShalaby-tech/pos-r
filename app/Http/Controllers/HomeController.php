@@ -547,7 +547,9 @@ class HomeController extends Controller
         $total_sale_general_tax_inclusive = $this->getTotalSaleGeneralTaxAmount($start_date, $end_date, $store_id, $store_pos_id);
 
 
-        $transaction_query = Transaction::whereIn('type', ['sell', 'sell_return', 'purchase_return', 'expense', 'add_stock'])->whereIn('status', ['final', 'received']);
+        $transaction_query = Transaction::
+        whereIn('type', ['sell', 'sell_return', 'purchase_return', 'expense', 'add_stock'])
+            ->whereIn('status', ['final', 'received']);
         if (!empty($start_date)) {
             $transaction_query->whereDate('transaction_date', '>=', $start_date);
         }

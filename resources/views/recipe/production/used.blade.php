@@ -98,7 +98,7 @@
                                     @endisset
                                     </tbody>
                                 </table>
-                                <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="{{$recipe->consumption_products->count()}}">
+                                <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="{{$recipe->consumption_products != null ?$recipe->consumption_products->count():0}}">
                             </div>
                             @can('product_module.purchase_price.create_and_edit')
                                 <div class="col-md-3">
@@ -129,7 +129,7 @@
 
                             <input type="hidden" name="is_raw_material" id="is_raw_material" value="1">
                             <input type="hidden" name="row_id" id="row_id"
-                                value="{{$recipe->consumption_products->count()}}">
+                                value="{{$recipe->consumption_products != null ?$recipe->consumption_products->count():0}}">
                         </div>
 
 

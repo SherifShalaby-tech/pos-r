@@ -69,7 +69,7 @@ class ReportController extends Controller
 
         $sale_query = Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
             ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
-            ->where('transactions.type', 'sell')
+            ->wherein('transactions.type', ['sell','sell_return'])
             ->where('transactions.status', 'final');
 
         if (!empty($request->start_date)) {
@@ -113,13 +113,21 @@ class ReportController extends Controller
                 $currency_array[$currency['currency_id']]['is_default'] = $currency['is_default'];
                 $currency_array[$currency['currency_id']]['conversion_rate'] = $currency['conversion_rate'];
                 if (!$currency['is_default']) {
-                    $currency_array[$currency['currency_id']]['total'] = $s_query->where('stores.id', $store->id)->where('received_currency_id', $currency['currency_id'])->sum('final_total');
-                } else {
                     $currency_array[$currency['currency_id']]['total'] = $s_query->where('stores.id', $store->id)
+                        ->where('received_currency_id', $currency['currency_id'])->where('transactions.type', 'sell')->sum('final_total')
+                    -$s_query->where('stores.id', $store->id)
+                            ->where('received_currency_id', $currency['currency_id'])->where('transactions.type', 'sell_return')->sum('final_total');
+                } else {
+                    $currency_array[$currency['currency_id']]['total'] = $s_query->where('stores.id', $store->id)->where('transactions.type', 'sell')
                         ->where(function ($q) use ($currency) {
                             $q->where('received_currency_id', $currency['currency_id'])->orWhereNull('received_currency_id');
                         })
-                        ->sum('final_total');
+                        ->sum('final_total')-
+                        $s_query->where('stores.id', $store->id)->where('transactions.type', 'sell_return')
+                            ->where(function ($q) use ($currency) {
+                                $q->where('received_currency_id', $currency['currency_id'])->orWhereNull('received_currency_id');
+                            })
+                            ->sum('final_total');
                 }
                 if (!empty($sales_totals[$currency['currency_id']])) {
                     $sales_totals[$currency['currency_id']] += $currency_array[$currency['currency_id']]['total'];
@@ -1584,6 +1592,7 @@ class ReportController extends Controller
         return view('reports.partials.view_product_details')->with(compact(
             'product',
             'stock_detials',
+            'sales',
             'sales',
             'add_stocks',
         ));
