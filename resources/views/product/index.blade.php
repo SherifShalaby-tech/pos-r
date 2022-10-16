@@ -91,18 +91,7 @@
 ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            {!! Form::label('color_id', __('lang.color') . ':', []) !!}
-                            {!! Form::select('color_id', $colors, request()->color_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                        </div>
-                    </div>
+
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('size_id', __('lang.size') . ':', []) !!}
@@ -115,18 +104,7 @@
 ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            {!! Form::label('grade_id', __('lang.grade') . ':', []) !!}
-                            {!! Form::select('grade_id', $grades, request()->grade_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                        </div>
-                    </div>
+
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('tax_id', __('lang.tax') . ':', []) !!}
@@ -216,12 +194,10 @@
                 @endif
                 <button type="button" value="11"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
-                <button type="button" value="12"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.color')</button>
+
                 <button type="button" value="13"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
-                <button type="button" value="14"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.grade')</button>
+
                 @if (empty($page))
                     <button type="button" value="15"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
@@ -263,27 +239,15 @@
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.product_code')</th>
                     <th>
-                        @if (session('system_mode') == 'restaurant')
                             @lang('lang.category')
-                        @else
-                            @lang('lang.class')
-                        @endif
+
                     </th>
-                    @if (session('system_mode') != 'restaurant')
-                        <th>@lang('lang.category')</th>
-                        <th>@lang('lang.sub_category')</th>
-                    @endif
                     <th>@lang('lang.purchase_history')</th>
                     <th>@lang('lang.batch_number')</th>
                     <th>@lang('lang.selling_price')</th>
                     <th>@lang('lang.tax')</th>
-                    @if (session('system_mode') != 'restaurant')
-                        <th>@lang('lang.brand')</th>
-                    @endif
                     <th>@lang('lang.unit')</th>
-                    <th>@lang('lang.color')</th>
                     <th>@lang('lang.size')</th>
-                    <th>@lang('lang.grade')</th>
                     <th class="sum">@lang('lang.current_stock')</th>
                     <th class="sum">@lang('lang.current_stock_value')</th>
                     <th>@lang('lang.customer_type')</th>
@@ -389,9 +353,8 @@
                         d.brand_id = $('#brand_id').val();
                         d.supplier_id = $('#supplier_id').val();
                         d.unit_id = $('#unit_id').val();
-                        d.color_id = $('#color_id').val();
                         d.size_id = $('#size_id').val();
-                        d.grade_id = $('#grade_id').val();
+
                         d.tax_id = $('#tax_id').val();
                         d.store_id = $('#store_id').val();
                         d.customer_type_id = $('#customer_type_id').val();
@@ -420,15 +383,7 @@
                         data: 'product_class',
                         name: 'product_classes.name'
                     },
-                    @if (session('system_mode') != 'restaurant')
-                        {
-                            data: 'category',
-                            name: 'categories.name'
-                        }, {
-                            data: 'sub_category',
-                            name: 'categories.name'
-                        },
-                    @endif {
+                     {
                         data: 'purchase_history',
                         name: 'purchase_history'
                     },
@@ -444,27 +399,16 @@
                         data: 'tax',
                         name: 'taxes.name'
                     },
-                    @if (session('system_mode') != 'restaurant')
-                        {
-                            data: 'brand',
-                            name: 'brands.name'
-                        },
-                    @endif {
+                   {
                         data: 'unit',
                         name: 'units.name'
                     },
-                    {
-                        data: 'color',
-                        name: 'colors.name'
-                    },
+
                     {
                         data: 'size',
                         name: 'sizes.name'
                     },
-                    {
-                        data: 'grade',
-                        name: 'grades.name'
-                    },
+
                     {
                         data: 'current_stock',
                         name: 'current_stock',
