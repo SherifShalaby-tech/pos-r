@@ -41,6 +41,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_active' => 'boolean'
     ];
 
     public function employee()
@@ -49,7 +50,8 @@ class User extends Authenticatable
     }
     public function scopeNotview($query)
     {
-        return $query->where('email', '!=', env( 'SYSTEM_SUPERADMIN','superadmin@sherifshalaby.tech'));
+        return $query->where('email', '!=', env( 'SYSTEM_SUPERADMIN','superadmin@sherifshalaby.tech'))
+            ->where('is_active',true);
     }
     /**
      * get the array for dropdown of user by job type

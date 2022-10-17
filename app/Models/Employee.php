@@ -37,7 +37,6 @@ class Employee extends Model implements HasMedia
         'commission_customer_types' => 'array',
         'commission_stores' => 'array',
         'commission_cashiers' => 'array'
-
     ];
 
     public function job_type()

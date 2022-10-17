@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->boolean('is_superadmin')->default(0);
             $table->boolean('is_admin')->default(0);
             $table->boolean('is_detault')->default(0);
-            $table->boolean('is_active')->default(1);
+            $table->boolean('is_active')->default(true);
             $table->rememberToken();
             $table->timestamps();
         });

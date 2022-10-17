@@ -1245,7 +1245,7 @@ $(document).on("click", ".qc-btn", function (e) {
 $(document).on("change", ".received_amount", function () {
     let this_row = $(this).parents(".payment_row");
 
-    $(this_row).nextAll().remove(); //remove all the next row if exist and recalculate the next row total
+    //$(this_row).nextAll().remove(); //remove all the next row if exist and recalculate the next row total
     let received_amount = 0;
     $("#payment_rows .payment_row").each((ele, row) => {
         let row_received_amount = parseFloat(
