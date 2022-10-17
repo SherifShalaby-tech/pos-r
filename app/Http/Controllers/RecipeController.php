@@ -215,6 +215,18 @@ class RecipeController extends Controller
     public function used($id=null)
     {
         $recipe = Recipe::find($id);
+        if(!$recipe && Recipe::first()){
+            $recipe = Recipe::first();
+
+        }elseif(!$recipe){
+            $output = [
+                'success' => false,
+                'msg' =>__('lang.error_recipe')
+            ];
+            return redirect()->back()->with('status', $output);
+
+
+        }
        // return $recipe->id;
         $raw_materials  = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
@@ -224,10 +236,7 @@ class RecipeController extends Controller
             ->select('recipes.id','recipes.name','products.name as product_name','variations.name as variation_name')
             ->get();
         $stores = Store::getDropdown();
-        if($recipe == null ){
-            $recipe = Recipe::first();
 
-        }
 
         return view('recipe.production.used')
             ->with(compact(
@@ -257,7 +266,7 @@ class RecipeController extends Controller
         $supplier=Supplier::where('is_kichen',1)->first();
 
         if(!$supplier){
-            Supplier::create([
+            $supplier= Supplier::create([
                 'name'=>'مطبخ رئيسي',
                 'company_name'=>'مطبخ رئيسي',
                 'products'=>[],

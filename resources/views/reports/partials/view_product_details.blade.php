@@ -132,6 +132,9 @@
                             </tr>
                         </thead>
                         <tbody>
+                                <?php
+                                $sale_sum_sell_price  = 0;
+                                ?>
                             @foreach ($sales as $sale)
                                 <tr>
                                     <td>
@@ -145,20 +148,23 @@
                                     <td>{{ $sale->transaction->invoice_no ?? '' }}</td>
                                     <td>{{ !empty($sale->transaction->transaction_date) ? @format_date($sale->transaction->transaction_date) : '' }}
                                     </td>
-                                    <td>{{ @num_format($sale->quantity) }}</td>
+                                    <td>{{ @num_format($sale->quantity - $sale->quantity_returned) }}</td>
                                     <td>{{ @num_format($sale->sell_price) }}</td>
                                     <td>{{ @num_format($sale->product_discount_amount) }}</td>
-                                    <td>{{ @num_format($sale->sub_total) }}</td>
+                                    <td>{{ @num_format($sale->sub_total - $sale->quantity_returned*$sale->sell_price) }}</td>
+                                    <?php
+                                    $sale_sum_sell_price  += $sale->quantity_returned*$sale->sell_price;
+                                    ?>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr>
                                 <th colspan="4" class="text-right">@lang('lang.total'):</th>
-                                <td>{{ @num_format($sales->sum('quantity')) }}</td>
+                                <td>{{ @num_format($sales->sum('quantity')-$sales->sum('quantity_returned')) }}</td>
                                 <td></td>
                                 <td>{{ @num_format($sales->sum('product_discount_amount')) }}</td>
-                                <td>{{ @num_format($sales->sum('sub_total')) }}</td>
+                                <td>{{ @num_format($sales->sum('sub_total')-$sale_sum_sell_price) }}</td>
                             </tr>
                         </tfoot>
                     </table>
