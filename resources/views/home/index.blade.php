@@ -21,7 +21,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 <div class="row">
                                     <div class="col-md-2">
                                         <label for="store_id"><b>@lang('lang.store')</b></label>
-                                        {!! Form::select('store_id', $stores, session('user.is_superadmin') ? null : key($stores), ['class' => 'form-control ', 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('store_id', $stores, key($stores), ['class' => 'form-control ', 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
 
                                     </div>
                                     <div class="col-md-3">
@@ -59,7 +59,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 <div class="row">
                     <div class="col-md-12 form-group">
                         <div class="row">
-                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                                auth()->user()->can('dashboard.profit.view'))
                                 <!-- Count item widget-->
                                 <div class="col-sm-2">
                                     <div class="wrapper count-title text-center">
@@ -120,6 +121,9 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <!-- Count item widget-->
                             @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
                                 <div class="col-sm-2">
+                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                                auth()->user()->can('dashboard.profit.view'))
+                                <div class="col-sm-3">
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-media-loop"
                                                 style="color: #00c689"></i>
@@ -135,6 +139,11 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <!-- Count item widget-->
                             @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
                                 <div class="col-sm-2">
+
+                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                                auth()->user()->can('dashboard.profit.view'))
+                                <div class="col-sm-3">
+
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i>
                                         </div>
@@ -330,7 +339,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
             });
             getChartAndTableSection(start_date, end_date, store_id);
         }
-        @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+        @if (auth()->user()->can('superadmin') || auth()->user()->is_admin ||
+                                auth()->user()->can('dashboard.profit.view'))
             function getChartAndTableSection(start_date, end_date, store_id) {
                 $("#chart_and_table_section").css("text-align", "center");
                 $("#chart_and_table_section").html(
