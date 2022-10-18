@@ -9,6 +9,7 @@ use App\Models\Color;
 use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\Grade;
+use App\Models\Printer;
 use App\Models\Product;
 use App\Models\ProductClass;
 use App\Models\ProductStore;
@@ -448,6 +449,7 @@ class ProductController extends Controller
 
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
 
+        $printers = Printer::get(['id','name']);
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
@@ -468,6 +470,7 @@ class ProductController extends Controller
                 'customer_types',
                 'discount_customer_types',
                 'stores',
+                'printers'
             ));
         }
 
@@ -489,6 +492,7 @@ class ProductController extends Controller
             'customer_types',
             'discount_customer_types',
             'stores',
+            'printers'
         ));
     }
 
@@ -551,11 +555,25 @@ class ProductController extends Controller
                 'active' => !empty($request->active) ? 1 : 0,
                 'created_by' => Auth::user()->id
             ];
-
-
             DB::beginTransaction();
 
             $product = Product::create($product_data);
+            if($request->printers){
+            // loop printers
+            foreach ($request->printers as $printer){
+                $data = [
+                    'printer_id' => $printer,
+                    'product_id' => $product['id'],
+                ];
+                $insert_data[] = $data;
+                $insert_data = collect($insert_data);
+                $chunks = $insert_data->chunk(100);
+                foreach ($chunks as $chunk)
+                {
+                    DB::table('printer_product')->insert($chunk->toArray());
+                }
+            }
+        }
 
             $this->productUtil->createOrUpdateVariations($product, $request);
 

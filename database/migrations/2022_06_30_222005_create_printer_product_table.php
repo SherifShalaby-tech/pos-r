@@ -15,8 +15,11 @@ class CreatePrinterProductTable extends Migration
     {
         Schema::create('printer_product', function (Blueprint $table) {
             $table->id();
-            $table->integer('printer_id')->unsigned();
-            $table->integer('product_id')->unsigned();
+            $table->unsignedBigInteger('printer_id')->unsigned();
+            $table->foreign('printer_id')->references('id')->on('printers')->onDelete('cascade');
+            $table->unsignedBigInteger('product_id')->unsigned();
+            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
