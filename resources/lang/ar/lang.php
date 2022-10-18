@@ -1285,7 +1285,16 @@ return [
     'sale_payment_date' => 'تاريخ الدفع',
     'import_req'=>'تأكد من صحة البيانات المدخلة ثم اعد المحاولة',
     'trash_employee' => 'سلة المهملات',
-    'total_taxes' => 'اجمالى الضرايب'
+    'total_taxes' => 'اجمالى الضرايب',
+    'printers' => 'الطابعات',
+    'add_new_printer' => 'اضافة طابعة جديدة',
+    'printers_list' => 'قائمة الطابعات',
+    'not_active' => 'غير نشيط',
+    'is_cashier' => 'الطابعة متاحة فى الكاشير',
+    'createdBy' => 'انشئ بواسطة',
+    'printer_deleted' => 'تم حذف الطابعة',
+    'printer_updated' => 'تم تحديث الطابعة',
+    'returned_by' => 'ارتجع بواسطة'
 
 
 ];

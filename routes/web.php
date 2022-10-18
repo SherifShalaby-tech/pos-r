@@ -70,6 +70,9 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::resource('recipe', RecipeController::class);
 
+    // printer controller
+    Route::resource('printers',PrinterController::class);
+
     Route::get('consumption/get-sufficient-suggestions/{raw_material_id}', 'ConsumptionController@getSufficientSuggestions');
     Route::get('consumption/get-raw-material-details', 'ConsumptionController@getConsumptionDetailRow');
     Route::get('consumption/add-row', 'ConsumptionController@addRow');

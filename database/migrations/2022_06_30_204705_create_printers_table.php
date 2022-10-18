@@ -16,7 +16,8 @@ class CreatePrintersTable extends Migration
         Schema::create('printers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('is_active')->default(1);
+            $table->boolean('is_active')->default(true)->nullable();
+            $table->boolean('is_cashier')->default(true)->nullable();
             $table->timestamps();
         });
     }

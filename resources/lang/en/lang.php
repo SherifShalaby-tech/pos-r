@@ -1206,8 +1206,7 @@ return [
 
     'representative_name' => 'Representative name',
     'active' => 'Active',
-
-
+    'not_active' => 'Not Active',
     'rate_ex' => 'Rate',
     'expiry_in' => 'Expire In',
     'currencies' => 'Currencies',
@@ -1308,6 +1307,15 @@ return [
     'import_req'=>'Make sure the entered data is correct and try again',
 
     'trash_employee' => 'Trash',
-    'total_taxes' => 'Total Taxes'
+    'total_taxes' => 'Total Taxes',
+    'printers' => 'Printers',
+    'add_new_printer' => 'add new printer',
+    'printers_list' => 'printers list',
+    'is_cashier' => 'Available for use at the cashier',
+    'createdBy' => 'Created By',
+    'printer_deleted' => 'Printer Deleted',
+    'printer_updated' => 'Printer Updated',
+    'returned_by' => 'Returned By'
+
 
 ];

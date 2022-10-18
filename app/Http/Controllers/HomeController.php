@@ -593,7 +593,6 @@ class HomeController extends Controller
 
         $gift_card_returned = $transaction_query->total_gift_card_amount ?? 0;
 
-
         $revenue = $transaction_query->total_sell ?? 0;
         // $total_delivery_cost_given_to_deliveryman = $transaction_query->total_delivery_cost_given_to_deliveryman ?? 0;
         // $revenue = $revenue - $total_delivery_cost_given_to_deliveryman;
@@ -603,6 +602,8 @@ class HomeController extends Controller
         $purchase_return = $transaction_query->total_purchase_return ?? 0;
 
         $purchase = $transaction_query->total_purchases ?? 0;
+
+        $total_tax = Transaction::where('type','sell')->sum('total_tax'); // total tax
 
         $revenue -= $sell_return;
 
@@ -770,7 +771,6 @@ class HomeController extends Controller
         }
 
         $payment_sent = $payment_purchase + $payment_expense + $wages_payment + $sell_return_payment;
-
         if (!empty($currency_id)) {
             if ($currency_id == $default_currency_id) {
                 $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
@@ -782,13 +782,12 @@ class HomeController extends Controller
         } else {
             $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
             $current_stock_value_material = $this->productUtil->getCurrentStockPrimaryMaterialValueByStore($store_id);
-
         }
-
         $data['revenue'] = $revenue;
         $data['sell_return'] = $sell_return;
         $data['profit'] = $profit;
         $data['purchase'] = $purchase;
+        $data['total_tax'] = $total_tax;
         $data['expense'] = $expense;
         $data['purchase_return'] = $purchase_return;
         $data['payment_received'] = $payment_received_total;
@@ -796,10 +795,8 @@ class HomeController extends Controller
         $data['current_stock_value'] = $current_stock_value_product+$current_stock_value_material;
         $data['current_stock_value_material'] = $current_stock_value_material;
         $data['current_stock_value_product'] = $current_stock_value_product;
-
         return $data;
     }
-
     /**
      * show the user transactin
      *
