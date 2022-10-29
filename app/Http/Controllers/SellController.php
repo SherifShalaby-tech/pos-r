@@ -45,6 +45,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Mpdf\Tag\Em;
 use Yajra\DataTables\Facades\DataTables;
@@ -195,7 +196,9 @@ class SellController extends Controller
             if (strtolower($request->session()->get('user.job_title')) == 'cashier') {
                 $query->where('transactions.created_by', $request->session()->get('user.id'));
             }
-
+            if(strtolower(Session::get('user.job_title')) == 'cashier'){
+                $query->where('created_by',Auth::user()->id);
+            }
             $sales = $query->select(
                 'transactions.final_total',
                 'transactions.payment_status',
