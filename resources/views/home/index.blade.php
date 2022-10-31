@@ -100,6 +100,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 </div>
                                 <!-- Count item widget-->
                                 <div class="col-sm-2">
+
                                     <div class="wrapper count-title text-center">
                                         <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
                                         </div>
