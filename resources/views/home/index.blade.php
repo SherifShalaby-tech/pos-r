@@ -59,7 +59,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 <div class="row">
                     <div class="col-md-12 form-group">
                         <div class="row">
-                            @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                            @if(auth()->user()->can('superadmin') || auth()->user()->is_admin)
                                 <!-- Count item widget-->
                                 <div class="col-sm-2">
                                     <div class="wrapper count-title text-center">
@@ -136,11 +136,10 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                         </div>
                                     </div>
                                 @endif
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
             <div class="container-fluid" id="chart_and_table_section">
                 {{-- @include('home.partials.chart_and_table') --}}
             </div>
