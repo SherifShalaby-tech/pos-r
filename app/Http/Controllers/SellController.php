@@ -101,7 +101,8 @@ class SellController extends Controller
                 ->leftjoin('variations', 'transaction_sell_lines.variation_id', 'variations.id')
                 ->leftjoin('users', 'transactions.created_by', 'users.id')
                 ->leftjoin('currencies as received_currency', 'transactions.received_currency_id', 'received_currency.id')
-                ->where('transactions.type', 'sell')->whereIn('status', ['final', 'canceled']);
+                ->where('transactions.type', 'sell')
+                ->whereIn('status', ['final', 'canceled']);
 
             $product_ids='all';
             if((!empty(request()->product_class_id) && !empty(array_filter(request()->product_class_id)))

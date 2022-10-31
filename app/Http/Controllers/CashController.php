@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 
 class CashController extends Controller
 {
@@ -52,7 +53,7 @@ class CashController extends Controller
         $query = CashRegister::leftjoin('cash_register_transactions', 'cash_registers.id', 'cash_register_transactions.cash_register_id')
             ->leftjoin('transactions', 'cash_register_transactions.transaction_id', 'transactions.id');
 
-        if (!auth()->user()->can('superadmin') || auth()->user()->is_admin == 1 || !auth()->user()->can('cash.view_details.view')) {
+        if (!auth()->user()->can('cash.view_details.view') || strtolower(Session::get('user.job_title')) == 'cashier') {
             $query->where('user_id', Auth::user()->id);
         }
 
@@ -69,10 +70,10 @@ class CashController extends Controller
             $query->where('cash_registers.created_at', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
         }
         if (!empty(request()->store_id)) {
-            $query->where('store_id', request()->store_id);
+            $query->where('cash_registers.store_id', request()->store_id);
         }
         if (!empty(request()->store_pos_id)) {
-            $query->where('store_pos_id', request()->store_pos_id);
+            $query->where('cash_registers.store_pos_id', request()->store_pos_id);
         }
         if (!empty(request()->user_id)) {
             $query->where('cash_registers.user_id', request()->user_id);
