@@ -444,7 +444,8 @@
                             name: 'default_purchase_price',
                             searchable: false
                         },
-                    @endcan {
+                    @endcan
+                    {
                         data: 'supplier_name',
                         name: 'supplier.name'
                     },
