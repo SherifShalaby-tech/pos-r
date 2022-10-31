@@ -98,6 +98,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- Count item widget-->
                                 <div class="col-sm-2">
 
