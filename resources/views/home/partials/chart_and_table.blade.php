@@ -1,4 +1,5 @@
-@if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+@if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                        auth()->user()->can('dashboard.profit.view'))
     <div class="col-md-12">
         <div class="row">
             <div class="col-md-7 mt-4">
