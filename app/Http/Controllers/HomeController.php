@@ -76,7 +76,7 @@ class HomeController extends Controller
         $store_id = [];
         $start_date = !empty(request()->start_date) ? request()->start_date : new Carbon('first day of this month');
         $end_date = !empty(request()->end_date) ? request()->end_date : new Carbon('last day of this month');
-        $store_id = request()->input('store_id') ? [request()->input('store_id')] : [];
+        $store_id = request()->input('store_id') ? [request()->input('store_id')] : [0];
 
         $store_pos_id = null;
         if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
@@ -194,9 +194,9 @@ class HomeController extends Controller
 
         $add_stock_query = Transaction::whereIn('transactions.type', ['add_stock'])
             ->whereIn('transactions.status', ['received']);
-        if (!empty($store_id)) {
-            $add_stock_query->where('transactions.store_id', '=', $store_id);
-        }
+
+        $add_stock_query->where('transactions.store_id', '=', $store_id);
+
         if (!empty($store_pos_id)) {
             $add_stock_query->where('transactions.store_pos_id', '=', $store_pos_id);
         }
@@ -531,7 +531,7 @@ class HomeController extends Controller
         if (!empty($store_id)) {
             $store_id = $store_id;
         } else {
-            $store_id = request()->input('store_id') ? [request()->input('store_id')] : [];
+            $store_id = request()->input('store_id') ? [request()->input('store_id')] :[0];
         }
 
         if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
@@ -562,9 +562,10 @@ class HomeController extends Controller
         if (!empty(request()->end_time)) {
             $transaction_query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
         }
-        if (!empty($store_id)) {
-            $transaction_query->whereIn('store_id', $store_id);
-        }
+
+        $transaction_query->whereIn('store_id', $store_id);
+
+
         if (!empty($store_pos_id)) {
             $transaction_query->where('store_pos_id', $store_pos_id);
         }
