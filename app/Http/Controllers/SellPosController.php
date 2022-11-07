@@ -597,7 +597,7 @@ class SellPosController extends Controller
             if (!empty($request->payments)) {
                 $payment_formated = [];
                 $transaction_payment_ids = array_column($request->payments, 'transaction_payment_id');
-                TransactionPayment::whereNotIn('id',$transaction_payment_ids)->delete();
+                TransactionPayment::where('transaction_id',$transaction->id)->whereNotIn('id',$transaction_payment_ids)->delete();
                 foreach ($request->payments as $payment) {
                     $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                     $old_tp = null;
