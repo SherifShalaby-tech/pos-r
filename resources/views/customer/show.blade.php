@@ -55,6 +55,10 @@
                                 role="tab" data-toggle="tab">@lang('lang.points')</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link @if (request()->show == 'view_payments') active @endif" href="#view-payments"
+                               role="tab" data-toggle="tab">@lang('lang.view_payments')</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link @if (request()->show == 'rewards') active @endif" href="#store-rewards"
                                 role="tab" data-toggle="tab">@lang('lang.rewards')</a>
                         </li>
@@ -393,114 +397,196 @@
                             </div>
                         </div>
 
-                        <div role="tabpanel" class="tab-pane fade @if (request()->show == 'points') show active @endif"
-                            id="store-point">
+                        <div role="tabpanel" class="tab-pane fade @if (request()->show == 'view_payments') show active @endif"
+                            id="view-payments">
                             <div class="table-responsive">
                                 <table class="table dataTable">
                                     <thead>
                                         <tr>
-                                            <th>@lang('lang.date')</th>
-                                            <th>@lang('lang.reference_no')</th>
-                                            <th>@lang('lang.customer')</th>
-                                            <th>@lang('lang.product')</th>
-                                            <th class="sum">@lang('lang.grand_total')</th>
-                                            <th>@lang('lang.status')</th>
-                                            <th>@lang('lang.points_earned')</th>
-                                            <th>@lang('lang.action')</th>
+                                            <th>@lang('lang.amount')</th>
+                                            <th>@lang('lang.payment_date')</th>
+                                            <th>@lang('lang.payment_type')</th>
+                                            <th>@lang('lang.bank_name')</th>
+                                            <th>@lang('lang.ref_number')</th>
+                                            <th>@lang('lang.bank_deposit_date')</th>
+                                            <th>@lang('lang.card_number')</th>
+                                            <th>@lang('lang.year')</th>
+                                            <th>@lang('lang.month')</th>
+                                            <th>@lang('lang.files')</th>
+                                                <th>@lang('lang.action')</th>
+
+
                                         </tr>
                                     </thead>
 
                                     <tbody>
-                                        @php
-                                            $total_point_payments = 0;
-                                            $total_point_due = 0;
-                                        @endphp
-                                        @foreach ($points as $point)
+                                    @isset($payments)
+                                        @foreach ($payments as $payment)
                                             <tr>
-                                                <td>{{ @format_date($point->transaction_date) }}</td>
-                                                <td>{{ $point->invoice_no }}</td>
+                                                <td>{{@num_format($payment->amount)}}</td>
+                                                <td>{{@format_date($payment->paid_on)}}</td>
+                                                <td>{{$payment_type_array[$payment->method]}}</td>
+                                                <td>{{$payment->bank_name}}</td>
+                                                <td>{{$payment->ref_number}}</td>
+                                                <td>@if(!empty($payment->bank_deposit_date && ($payment->method == 'bank_transfer' || $payment->method == 'cheque'))){{@format_date($payment->bank_deposit_date)}} @endif</td>
+                                                <td>{{$payment->card_number}}</td>
+                                                <td>{{$payment->card_year}}</td>
+                                                <td>{{$payment->card_month}}</td>
                                                 <td>
-                                                    @if (!empty($point->customer))
-                                                        {{ $point->customer->name }}
+                                                    @php
+                                                        $payment_media = $payment->getMedia('transaction_payment');
+                                                    @endphp
+                                                    @if(!empty($payment_media))
+                                                        @foreach ($payment_media as $media)
+                                                            <a href="{{$media->getUrl()}}">{{$media->name}}</a> <br>
+                                                        @endforeach
+
                                                     @endif
                                                 </td>
-                                                <td>
-                                                    @foreach ($point->transaction_sell_lines as $line)
-                                                        ({{ @num_format($line->quantity) }})
-                                                        @if (!empty($line->product))
-                                                            {{ $line->product->name }}
-                                                        @endif <br>
-                                                    @endforeach
-                                                </td>
-                                                <td>{{ @num_format($point->final_total) }}</td>
-                                                </td>
-                                                <td>
-                                                    @if ($point->status == 'final')
-                                                        <span class="badge badge-success">@lang('lang.completed')</span>
-                                                    @else
-                                                        {{ ucfirst($point->status) }}
-                                                    @endif
-                                                </td>
-                                                <td>{{ @num_format($point->rp_earned) }}</td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <button type="button"
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                                                    aria-haspopup="true" aria-expanded="false">@lang('lang.action')
+                                                                <span class="caret"></span>
+                                                                <span class="sr-only">Toggle Dropdown</span>
+                                                            </button>
+                                                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                                                @can('sale.pay.create_and_edit')
+                                                                    <li>
+                                                                        <a data-href="{{action('TransactionPaymentController@edit', $payment->id)}}"
+                                                                           data-container=".view_modal" class="btn btn-modal"><i
+                                                                                class="dripicons-document-edit"></i> @lang('lang.edit')</a>
+                                                                    </li>
+                                                                @endcan
+                                                                @can('sale.pay.delete')
+                                                                    <li>
+                                                                        <a data-href="{{action('TransactionPaymentController@destroy', $payment->id)}}"
+                                                                           data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"
+                                                                           class="btn text-red delete_item"><i class="fa fa-trash"></i>
+                                                                            @lang('lang.delete')</a>
+                                                                    </li>
+                                                                @endcan
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+
+                                            </tr>
+                                        @endforeach
+                                    @endisset
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade @if (request()->show == 'points') show active @endif"
+                             id="store-point">
+                            <div class="table-responsive">
+                                <table class="table dataTable">
+                                    <thead>
+                                    <tr>
+                                        <th>@lang('lang.date')</th>
+                                        <th>@lang('lang.reference_no')</th>
+                                        <th>@lang('lang.customer')</th>
+                                        <th>@lang('lang.product')</th>
+                                        <th class="sum">@lang('lang.grand_total')</th>
+                                        <th>@lang('lang.status')</th>
+                                        <th>@lang('lang.points_earned')</th>
+                                        <th>@lang('lang.action')</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody>
+                                    @php
+                                        $total_point_payments = 0;
+                                        $total_point_due = 0;
+                                    @endphp
+                                    @foreach ($points as $point)
+                                        <tr>
+                                            <td>{{ @format_date($point->transaction_date) }}</td>
+                                            <td>{{ $point->invoice_no }}</td>
+                                            <td>
+                                                @if (!empty($point->customer))
+                                                    {{ $point->customer->name }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @foreach ($point->transaction_sell_lines as $line)
+                                                    ({{ @num_format($line->quantity) }})
+                                                    @if (!empty($line->product))
+                                                        {{ $line->product->name }}
+                                                    @endif <br>
+                                                @endforeach
+                                            </td>
+                                            <td>{{ @num_format($point->final_total) }}</td>
+                                            </td>
+                                            <td>
+                                                @if ($point->status == 'final')
+                                                    <span class="badge badge-success">@lang('lang.completed')</span>
+                                                @else
+                                                    {{ ucfirst($point->status) }}
+                                                @endif
+                                            </td>
+                                            <td>{{ @num_format($point->rp_earned) }}</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button"
                                                             class="btn btn-default btn-sm dropdown-toggle"
                                                             data-toggle="dropdown" aria-haspopup="true"
                                                             aria-expanded="false">@lang('lang.action')
-                                                            <span class="caret"></span>
-                                                            <span class="sr-only">Toggle Dropdown</span>
-                                                        </button>
-                                                        <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
-                                                            user="menu">
-                                                            @can('sale.pos.view')
-                                                                <li>
-                                                                    <a data-href="{{ action('SellController@show', $point->id) }}"
-                                                                        data-container=".view_modal" class="btn btn-modal"><i
-                                                                            class="fa fa-eye"></i> @lang('lang.view')</a>
-                                                                </li>
-                                                                <li class="divider"></li>
-                                                            @endcan
-                                                            @can('sale.pos.create_and_edit')
-                                                                <li>
-                                                                    <a href="{{ action('SellController@edit', $point->id) }}"
-                                                                        class="btn"><i
-                                                                            class="dripicons-document-edit"></i>
-                                                                        @lang('lang.edit')</a>
-                                                                </li>
-                                                                <li class="divider"></li>
-                                                            @endcan
+                                                        <span class="caret"></span>
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
+                                                        user="menu">
+                                                        @can('sale.pos.view')
+                                                            <li>
+                                                                <a data-href="{{ action('SellController@show', $point->id) }}"
+                                                                   data-container=".view_modal" class="btn btn-modal"><i
+                                                                        class="fa fa-eye"></i> @lang('lang.view')</a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                        @endcan
+                                                        @can('sale.pos.create_and_edit')
+                                                            <li>
+                                                                <a href="{{ action('SellController@edit', $point->id) }}"
+                                                                   class="btn"><i
+                                                                        class="dripicons-document-edit"></i>
+                                                                    @lang('lang.edit')</a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                        @endcan
 
-                                                            @can('sale.pos.delete')
-                                                                <li>
-                                                                    <a data-href="{{ action('SellController@destroy', $point->id) }}"
-                                                                        data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
-                                                                        class="btn text-red delete_item"><i
-                                                                            class="fa fa-trash"></i>
-                                                                        @lang('lang.delete')</a>
-                                                                </li>
-                                                            @endcan
-                                                        </ul>
-                                                    </div>
-                                            </tr>
-                                            @php
-                                                $total_point_payments += $point->transaction_payments->sum('amount');
-                                                $total_point_due += $point->final_total - $point->transaction_payments->sum('amount');
-                                            @endphp
-                                        @endforeach
+                                                        @can('sale.pos.delete')
+                                                            <li>
+                                                                <a data-href="{{ action('SellController@destroy', $point->id) }}"
+                                                                   data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
+                                                                   class="btn text-red delete_item"><i
+                                                                        class="fa fa-trash"></i>
+                                                                    @lang('lang.delete')</a>
+                                                            </li>
+                                                        @endcan
+                                                    </ul>
+                                                </div>
+                                        </tr>
+                                        @php
+                                            $total_point_payments += $point->transaction_payments->sum('amount');
+                                            $total_point_due += $point->final_total - $point->transaction_payments->sum('amount');
+                                        @endphp
+                                    @endforeach
                                     </tbody>
                                     <tfoot>
-                                        <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th></th>
-                                            <th style="text-align: right">@lang('lang.total')</th>
-                                            <th></th>
-                                        </tr>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th style="text-align: right">@lang('lang.total')</th>
+                                        <th></th>
+                                    </tr>
                                     </tfoot>
                                 </table>
                             </div>
                         </div>
+
                         <div role="tabpanel" class="tab-pane fade @if (request()->show == 'rewards') show active @endif"
                             id="store-rewards">
                             <div class="table-responsive">
