@@ -245,39 +245,20 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
         <div class="col-md-12">
             <table class="table table-bordered" id="consumption_table">
                 <thead>
-                <tr>
-                    <th style="width: 30%;">@lang('lang.raw_materials')</th>
-                    <th style="width: 30%;">@lang('lang.used_amount')</th>
-                    <th style="width: 30%;">@lang('lang.unit')</th>
-                    <th style="width: 30%;">@lang('lang.cost')</th>
-                    <th style="width: 10%;"><button class="btn btn-xs btn-success add_raw_material_row"
-                                                    type="button"><i class="fa fa-plus"></i></button></th>
-                </tr>
-                </thead>
-                <tbody>
-                @include('product.partial.raw_material_row', ['row_id' => 0])
-                </tbody>
-            </table>
-            <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="1">
-        </div>
-        <div class="col-md-12"><strong>@lang('lang.product_extension')</strong></div>
-
-        <div class="col-md-12">
-            <table class="table table-bordered" id="extensions_table">
-                <thead>
                     <tr>
-                        <th style="width: 30%;">@lang('lang.extension')</th>
-                        <th style="width: 30%;">@lang('lang.sell_price')</th>
-
-                        <th style="width: 10%;"><button class="btn btn-xs btn-success add_extension_row"
+                        <th style="width: 30%;">@lang('lang.raw_materials')</th>
+                        <th style="width: 30%;">@lang('lang.used_amount')</th>
+                        <th style="width: 30%;">@lang('lang.unit')</th>
+                        <th style="width: 30%;">@lang('lang.cost')</th>
+                        <th style="width: 10%;"><button class="btn btn-xs btn-success add_raw_material_row"
                                 type="button"><i class="fa fa-plus"></i></button></th>
                     </tr>
                 </thead>
                 <tbody>
-                    @include('product.partial.extension_row', ['row_id' => 0])
+                    @include('product.partial.raw_material_row', ['row_id' => 0])
                 </tbody>
             </table>
-            <input type="hidden" name="extension_row_index" id="extension_row_index" value="1">
+            <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="1">
         </div>
     @endif
     @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
@@ -293,23 +274,54 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
                 {!! Form::text('alert_quantity', !empty($recent_product) ? @num_format($recent_product->alert_quantity) : 3, ['class' => 'form-control', 'placeholder' => __('lang.alert_quantity')]) !!}
             </div>
         </div>
+        <div class="col-md-4"></div>
+        <div class="col-md-4 depends_on_div">
+            <div class="form-group">
+                <div class="form-check">
+                    <input class="form-check-input depends_on" type="radio" name="depends_on" id="selling_price_depends" value="1">
+                    <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على سعر الشراء</label>
+                    <div class="form-group selling_price_depends_div hide">
+                        <label>سعر البيع يزيد عن سعر الشراء بــمبلغ</label>
+                        <select class="form-control mb-2" name="selling_price_depends_type">
+                            <option value="rate">نسبة</option>
+                            <option value="amount">مبلغ</option>
+                        </select>
+                        <input type="number" class="form-control" name="selling_price_depends" value="">
+
+                    </div>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input depends_on" type="radio" name="depends_on" id="purchase_price_depends" value="2">
+                    <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد على سعر البيع</label>
+                    <div class="form-group purchase_price_depends_div hide">
+                        <label>سعر الشراء يقل عن سعر البيع بــمبلغ</label>
+                        <select class="form-control mb-2" name="purchase_price_depends_type">
+                            <option value="rate">نسبة</option>
+                            <option value="amount">مبلغ</option>
+                        </select>
+                        <input type="number" class="form-control" name="purchase_price_depends" value="">
+
+                    </div>
+                </div>
+            </div>
+        </div>
     @endif
     <div class="col-md-4">
-        <div class="form-group">
+        <div class="form-group other_cost hide">
             {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
             {!! Form::text('other_cost', !empty($recent_product) ? @num_format($recent_product->other_cost) : null, ['class' => 'form-control', 'placeholder' => __('lang.other_cost')]) !!}
         </div>
     </div>
     @can('product_module.purchase_price.create_and_edit')
         <div class="col-md-4">
-            <div class="form-group">
-                {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
+            <div class="form-group purchase_price hide">
+                {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', []) !!}
                 {!! Form::text('purchase_price', !empty($recent_product) ? @num_format($recent_product->purchase_price) : null, ['class' => 'form-control', 'placeholder' => session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
             </div>
         </div>
     @endcan
     <div class="col-md-4">
-        <div class="form-group">
+        <div class="form-group sell_price hide">
             {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
             {!! Form::text('sell_price', !empty($recent_product) ? @num_format($recent_product->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
         </div>

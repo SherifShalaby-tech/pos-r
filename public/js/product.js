@@ -812,12 +812,29 @@ $(document).on("change", "#discount", function () {
         $("#discount_customer_types").attr("required", false);
     }
 });
-
+$(document).on("change", ".depends_on", function () {
+    if ($(this).val() == 1){
+        $(".selling_price_depends_div").removeClass("hide");
+        $(".purchase_price_depends_div").addClass('hide');
+    }else{
+        $(".selling_price_depends_div").addClass("hide");
+        $(".purchase_price_depends_div").removeClass('hide');
+    }
+});
+// //
 $(document).on("change", "#is_service", function () {
     if ($(this).prop("checked")) {
         $(".supplier_div").removeClass("hide");
+        $(".sell_price").removeClass('hide');
+        $(".purchase_price").removeClass('hide');
+        $(".other_cost").removeClass('hide');
+        $(".depends_on_div").addClass('hide');
     } else {
         $(".supplier_div").addClass("hide");
+        $(".sell_price").addClass('hide');
+        $(".purchase_price").addClass('hide');
+        $(".other_cost").addClass('hide');
+        $(".depends_on_div").removeClass('hide');
     }
 });
 $(document).on("change", "#sell_price", function () {
@@ -828,41 +845,4 @@ $(document).on("change", "#sell_price", function () {
         swal(LANG.warning, LANG.sell_price_less_than_purchase_price, "warning");
         return;
     }
-});
-
-
-//
-
-$(document).on("click", ".add_extension_row", function () {
-    let row_id = parseInt($("#extension_row_index").val());
-    $("#extension_row_index").val(row_id + 1);
-
-    $.ajax({
-        method: "get",
-        url: "/product/get-extension-row",
-        data: { row_id: row_id },
-        success: function (result) {
-            $("#extensions_table > tbody").prepend(result);
-            $(".selectpicker").selectpicker("refresh");
-            $(".extension_id").selectpicker("refresh");
-        },
-    });
-});
-
-
-
-$(document).on("change", "select.extension_id", function () {
-    let tr = $(this).closest("tr");
-    let extension_id = $(this).val();
-
-    $.ajax({
-        method: "get",
-        url: "/product/get-extension-details/" + extension_id,
-        data: {},
-        success: function (result) {
-            tr.find(".raw_extension_price").val(
-                result.extension.sell_default_price
-            );
-        },
-    });
 });

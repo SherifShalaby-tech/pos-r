@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Imports\ProductImport;
 use App\Models\Brand;
+use App\Models\Printer;
 use App\Models\Category;
 use App\Models\Color;
 use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\Grade;
-use App\Models\Printer;
 use App\Models\Product;
 use App\Models\ProductClass;
 use App\Models\ProductStore;
@@ -21,7 +21,6 @@ use App\Models\Tax;
 use App\Models\Transaction;
 use App\Models\Unit;
 use App\Models\User;
-use App\Models\Extension;
 use App\Models\Variation;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
@@ -446,15 +445,12 @@ class ProductController extends Controller
         $raw_materials  = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $suppliers = Supplier::pluck('name', 'id');
-
-        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-
         $printers = Printer::get(['id','name']);
+
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
                 'suppliers',
-                'extensions',
                 'raw_materials',
                 'raw_material_units',
                 'product_classes',
@@ -479,7 +475,6 @@ class ProductController extends Controller
             'raw_materials',
             'raw_material_units',
             'product_classes',
-            'extensions',
             'categories',
             'sub_categories',
             'brands',
@@ -510,11 +505,10 @@ class ProductController extends Controller
         $this->validate(
             $request,
             ['name' => ['required', 'max:255']],
-            ['purchase_price' => ['required', 'max:25', 'decimal']],
-            ['sell_price' => ['required', 'max:25', 'decimal']],
+            ['purchase_price' => ['max:25', 'decimal']],
+            ['sell_price' => ['max:25', 'decimal']],
         );
-
-//        try {
+        try {
             $discount_customers = $this->getDiscountCustomerFromType($request->discount_customer_types);
 
             $product_data = [
@@ -553,47 +547,42 @@ class ProductController extends Controller
                 'buy_from_supplier' => !empty($request->buy_from_supplier) ? 1 : 0,
                 'type' => !empty($request->this_product_have_variant) ? 'variable' : 'single',
                 'active' => !empty($request->active) ? 1 : 0,
-                'created_by' => Auth::user()->id
+                'created_by' => Auth::user()->id,
+                'selling_price_depends' => $request->selling_price_depends,
+                'purchase_price_depends' => $request->purchase_price_depends,
             ];
+
+
             DB::beginTransaction();
 
             $product = Product::create($product_data);
             if($request->printers){
-            // loop printers
-            foreach ($request->printers as $printer){
-                $data = [
-                    'printer_id' => $printer,
-                    'product_id' => $product['id'],
-                ];
-                $insert_data[] = $data;
-                $insert_data = collect($insert_data);
-                $chunks = $insert_data->chunk(100);
-                foreach ($chunks as $chunk)
-                {
-                    DB::table('printer_product')->insert($chunk->toArray());
+                // loop printers
+                foreach ($request->printers as $printer){
+                    $data = [
+                        'printer_id' => $printer,
+                        'product_id' => $product['id'],
+                    ];
+                    $insert_data[] = $data;
+                    $insert_data = collect($insert_data);
+                    $chunks = $insert_data->chunk(100);
+                    foreach ($chunks as $chunk)
+                    {
+                        DB::table('printer_product')->insert($chunk->toArray());
+                    }
                 }
             }
-        }
 
             $this->productUtil->createOrUpdateVariations($product, $request);
 
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateRawMaterialToProduct(
-                        $variation->id,
-                        $request->consumption_details);
+                    $this->productUtil->createOrUpdateRawMaterialToProduct($variation->id, $request->consumption_details);
                 }
             }
-            if (!empty($request->extension_details)) {
-                $variations = $product->variations()->get();
-                foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateExtensionToProduct(
-                        $variation->id,
-                        $request->extension_details);
-                }
 
-            }
+
             if ($request->images) {
                 foreach ($request->images as $image) {
                     $product->addMedia($image)->toMediaCollection('product');
@@ -612,13 +601,13 @@ class ProductController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-//        } catch (\Exception $e) {
-//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//            $output = [
-//                'success' => false,
-//                'msg' => __('lang.something_went_wrong')
-//            ];
-//        }
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
 
         return $output;
     }
@@ -700,13 +689,10 @@ class ProductController extends Controller
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $suppliers = Supplier::pluck('name', 'id');
         $units_js=$units->pluck('base_unit_multiplier', 'id');
-        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-
         return view('product.edit')->with(compact(
             'raw_materials',
             'raw_material_units',
             'product',
-            'extensions',
             'product_classes',
             'categories',
             'sub_categories',
@@ -798,19 +784,10 @@ class ProductController extends Controller
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateRawMaterialToProduct(
-                        $variation->id, $request->consumption_details);
+                    $this->productUtil->createOrUpdateRawMaterialToProduct($variation->id, $request->consumption_details);
                 }
             }
-            if (!empty($request->extension_details)) {
-                $variations = $product->variations()->get();
-                foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateExtensionToProduct(
-                        $variation->id,
-                        $request->extension_details);
-                }
 
-            }
 
             if ($request->images) {
                 $product->clearMediaCollection('product');
@@ -1160,6 +1137,7 @@ class ProductController extends Controller
         $row_id = request()->row_id ?? 0;
         $raw_materials  = Product::where('is_raw_material', 1)->orderBy('name', 'asc')->pluck('name', 'id');
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
+
         return view('product.partial.raw_material_row')->with(compact(
             'row_id',
             'raw_materials',
@@ -1167,23 +1145,6 @@ class ProductController extends Controller
         ));
     }
 
-    /**
-     * get extension row
-     *
-     * @return void
-     */
-    public function getExtensionRow()
-    {
-
-        $row_id   = request()->row_id  ?? 0;
-        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-
-        return view('product.partial.extension_row')->with(compact(
-            'row_id',
-            'extensions',
-        ));
-    }
-    //
     /**
      * get raw material details
      *
@@ -1193,32 +1154,7 @@ class ProductController extends Controller
     public function getRawMaterialDetail($raw_material_id)
     {
         $raw_material = Product::find($raw_material_id);
-        if(\request()->has('type')){
-            $unitraw_material_d=[];
-            $unitraw_material_d['name']=null;
-            $unitraw_material_d['id']=null;
-            $unitraw_material = $raw_material->units->first();
-            if($unitraw_material != null){
-                $unitraw_material_d['name']=$unitraw_material->name;
-                $unitraw_material_d['id']=$unitraw_material->id;
-            }
-            return ['raw_material' => $unitraw_material_d];
-        }
+
         return ['raw_material' => $raw_material];
     }
-
-
-    /**
-     * get raw material details
-     *
-     * @param int $raw_material_id
-     * @return void
-     */
-    public function getExtensionDetail($extension_id)
-    {
-        $extension = Extension::find($extension_id);
-        return ['extension' => $extension];
-    }
-
-//
 }
