@@ -333,7 +333,7 @@ $(document).on("submit", "form#quick_add_category_form", function (e) {
     });
 });
 
-$(document).on("change", "#product_class_id", function () {
+/*$(document).on("change", "#product_class_id", function () {
     $.ajax({
         method: "get",
         url:
@@ -370,7 +370,30 @@ $(document).on("change", "#category_id", function () {
             }
         },
     });
+});*/
+
+$( document ).ready(function() {
+    $.ajax({
+        method: "get",
+        url:"/get-all-subcategories",
+        async:false,
+        data: {},
+        contentType: "html",
+        success: function (result) {
+            $("#sub_category_id").empty().append(result).change();
+            $("#sub_category_id").selectpicker("refresh");
+            if (sub_category_id) {
+                $("#sub_category_id").selectpicker("val", sub_category_id);
+                sub_category_id = null;
+            }
+        },
+        error: function (error) {
+            console.log(eval(error))
+
+        }
+    });
 });
+
 var brand_id = null;
 $(document).on("submit", "form#quick_add_brand_form", function (e) {
     e.preventDefault();

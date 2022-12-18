@@ -292,4 +292,12 @@ class CategoryController extends Controller
 
         return $categories_dp;
     }
+
+    public function getAllSubCategories()
+    {
+        $categories = Category::whereNotNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
+        $categories_dp = $this->commonUtil->createDropdownHtml($categories, 'Please Select');
+        return $categories_dp;
+    }
+
 }
