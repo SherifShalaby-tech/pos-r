@@ -874,7 +874,9 @@ return [
     'stock_details' => 'تفاصيل المخزون',
     'no_data_found' => 'لاتوجد بيانات',
     'yes' => 'نعم',
-    'no' => 'رقم',
+
+    'no' => 'لا',
+    'cost_per_unit' => 'cost per unit',
     'import_products' => 'استيراد المنتج',
     'all_purchases' => 'جميع المشتريات',
     'due_date_for_purchase_payment' => 'تاريخ استحقاق الشراء',

@@ -22,6 +22,10 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     <div class="col-md-2">
                                         <label for="store_id"><b>@lang('lang.store')</b></label>
                                         {!! Form::select('store_id', $stores, session('user.is_superadmin') ? null : key($stores), ['class' => 'form-control ','multiple','data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
+                                     {{--
+                                     
+                                     Form::select('store_id', $stores, array_keys($stores), ['class' => 'form-control ','multiple' , 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => null]) --}}
+
 
                                     </div>
                                     <div class="col-md-3">
@@ -62,6 +66,23 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                         <div class="col-sm-2">
                             <div class="wrapper count-title text-center">
                                 <div class="icon"><i class="fa fa-cubes" style="color: #498636"></i>
+{{--
+                    <div class="col-md-12 form-group">
+                        <div class="row">
+                            @if(auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                        auth()->user()->can('dashboard.profit.view'))
+                                <!-- Count item widget-->
+                                <div class="col-sm-2">
+                                    <div class="wrapper count-title text-center">
+                                        <div class="icon"><i class="fa fa-cubes" style="color: #498636"></i>
+                                        </div>
+                                        <div class="name"><strong
+                                                style="color: #498636">@lang('lang.current_stock_value')</strong>
+                                        </div>
+                                        <div class="count-number current_stock_value-data">
+                                            {{ @num_format(0) }}</div>
+                                    </div>
+--}}
                                 </div>
                                 <div class="name"><strong
                                         style="color: #498636">@lang('lang.current_stock_value')</strong>
@@ -130,6 +151,20 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                             style="color: #297ff9">@lang('lang.profit')</strong>
                                     </div>
                                     <div class="count-number profit-data">{{ @num_format(0) }}
+                              {{--
+
+                                <!-- Count item widget-->
+                                <div class="col-sm-2">
+
+                                    <div class="wrapper count-title text-center">
+                                        <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
+                                        </div>
+                                        <div class="name"><strong
+                                                style="color: #297ff9">@lang('lang.total_taxes')</strong>
+                                        </div>
+                                        <div class="count-number total_tax">{{ @num_format(0) }}
+                                        </div>
+                                --}}
                                     </div>
                                 </div>
                         </div>
@@ -160,6 +195,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
     <script>
         $(document).ready(function() {
             $('#store_id').change();
+
         });
         $(document).on("change", '.filter, #store_id', function() {
             var store_id = $('select#store_id').val();
@@ -188,11 +224,12 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 end_date = 0;
             }
 
-            getDashboardData(store_id, start_date, end_date, start_time, end_time)
+            getDashboardData(store_id, start_date, end_date, start_time, end_time);
+
         })
 
         function getDashboardData(store_id, start_date, end_date, start_time, end_time) {
-            console.log(store_id, 'store_id');
+
             $.ajax({
                 method: 'get',
                 url: '/get-dashboard-data/' + start_date + '/' + end_date,
@@ -203,7 +240,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 },
                 // processData: false,
                 success: function(result) {
-                    console.log(result, 'result');
+
                     $('.revenue-data').hide();
                     // $(".revenue-data").text(__currency_trans_from_en(result.revenue, false));
 
@@ -342,11 +379,15 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     $('.expenses').hide();
                     $(".expenses").html(expenses_string);
                     $('.expenses').show(500);
+
+                   /* $("#store_id").selectpicker("refresh"); */
+
                 },
             });
             getChartAndTableSection(start_date, end_date, store_id);
         }
-        @if (auth()->user()->can('superadmin') || auth()->user()->is_admin)
+        @if (auth()->user()->can('superadmin') || auth()->user()->is_admin||
+                        auth()->user()->can('dashboard.profit.view'))
             function getChartAndTableSection(start_date, end_date, store_id) {
                 $("#chart_and_table_section").css("text-align", "center");
                 $("#chart_and_table_section").html(
@@ -363,7 +404,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     success: function(result) {
                         if (result) {
                             $('#chart_and_table_section').html(result);
-                            initializeChart()
+                            initializeChart();
+                            $("#store_id").selectpicker("refresh");
                         }
                     },
                 });

@@ -438,13 +438,13 @@
                         data: 'discount',
                         name: 'discount'
                     },
-                   {{-- @can('product_module.purchase_price.view')
+                   @can('product_module.purchase_price.view')
                         {
                             data: 'default_purchase_price',
                             name: 'default_purchase_price',
                             searchable: false
                         },
-                    @endcan --}}
+                    @endcan
                     {
                         data: 'supplier_name',
                         name: 'supplier.name'
