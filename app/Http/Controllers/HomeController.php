@@ -547,7 +547,9 @@ class HomeController extends Controller
         $total_sale_general_tax_inclusive = $this->getTotalSaleGeneralTaxAmount($start_date, $end_date, $store_id, $store_pos_id);
 
 
-        $transaction_query = Transaction::whereIn('type', ['sell', 'sell_return', 'purchase_return', 'expense', 'add_stock'])->whereIn('status', ['final', 'received']);
+        $transaction_query = Transaction::
+        whereIn('type', ['sell', 'sell_return', 'purchase_return', 'expense', 'add_stock'])
+            ->whereIn('status', ['final', 'received']);
         if (!empty($start_date)) {
             $transaction_query->whereDate('transaction_date', '>=', $start_date);
         }
@@ -592,7 +594,6 @@ class HomeController extends Controller
 
         $gift_card_returned = $transaction_query->total_gift_card_amount ?? 0;
 
-
         $revenue = $transaction_query->total_sell ?? 0;
         // $total_delivery_cost_given_to_deliveryman = $transaction_query->total_delivery_cost_given_to_deliveryman ?? 0;
         // $revenue = $revenue - $total_delivery_cost_given_to_deliveryman;
@@ -604,8 +605,6 @@ class HomeController extends Controller
         $purchase = $transaction_query->total_purchases ?? 0;
 
         $total_tax = Transaction::where('type','sell')->sum('total_tax'); // total tax
-
-        $expenses = Transaction::where('type','expense')->where('status', 'received')->sum('final_total'); // expenses
 
         $revenue -= $sell_return;
 
@@ -773,32 +772,32 @@ class HomeController extends Controller
         }
 
         $payment_sent = $payment_purchase + $payment_expense + $wages_payment + $sell_return_payment;
-
         if (!empty($currency_id)) {
             if ($currency_id == $default_currency_id) {
-                $current_stock_value = $this->productUtil->getCurrentStockValueByStore($store_id);
+                $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
+                $current_stock_value_material = $this->productUtil->getCurrentStockPrimaryMaterialValueByStore($store_id);
             } else {
-                $current_stock_value = 0; //expense does not have currency
+                $current_stock_value_product = 0; //expense does not have currency
+                $current_stock_value_material = 0; //expense does not have currency
             }
         } else {
-            $current_stock_value = $this->productUtil->getCurrentStockValueByStore($store_id);
+            $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
+            $current_stock_value_material = $this->productUtil->getCurrentStockPrimaryMaterialValueByStore($store_id);
         }
-
         $data['revenue'] = $revenue;
         $data['sell_return'] = $sell_return;
         $data['profit'] = $profit;
         $data['purchase'] = $purchase;
         $data['total_tax'] = $total_tax;
-        $data['expenses'] = $expenses;
         $data['expense'] = $expense;
         $data['purchase_return'] = $purchase_return;
         $data['payment_received'] = $payment_received_total;
         $data['payment_sent'] = $payment_sent;
-        $data['current_stock_value'] = $current_stock_value;
-
+        $data['current_stock_value'] = $current_stock_value_product+$current_stock_value_material;
+        $data['current_stock_value_material'] = $current_stock_value_material;
+        $data['current_stock_value_product'] = $current_stock_value_product;
         return $data;
     }
-
     /**
      * show the user transactin
      *
