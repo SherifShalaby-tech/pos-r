@@ -34,17 +34,20 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                         </li>
                         @endcan
                         @can('product_module.product_classification_tree.view')
-                        <li
-                            class="@if(request()->segment(1) == 'product-classification-tree' && empty(request()->segment(2))) active @endif">
-                            <a
-                                href="{{action('ProductClassificationTreeController@index')}}">{{__('lang.product_classification_tree')}}</a>
-                        </li>
+                            <li
+                                class="@if(request()->segment(1) == 'product-classification-tree' && empty(request()->segment(2))) active @endif">
+                                <a
+                                    href="{{action('ProductClassificationTreeController@index')}}">{{__('lang.product_classification_tree')}}</a>
+                            </li>
                         @endcan
+                            <li>
+                                <a href="{{route('item-borrowed.index')}}">{{trans('lang.Borrowed_products')}}</a>
+                            </li>
                         @can('product_module.barcode.create_and_edit')
-                        <li
-                            class="@if(request()->segment(1) == 'barcode' && request()->segment(2) == 'print-barcode')) active @endif">
-                            <a href="{{action('BarcodeController@create')}}">{{__('lang.print_barcode')}}</a>
-                        </li>
+                            <li
+                                class="@if(request()->segment(1) == 'barcode' && request()->segment(2) == 'print-barcode')) active @endif">
+                                <a href="{{action('BarcodeController@create')}}">{{__('lang.print_barcode')}}</a>
+                            </li>
                         @endcan
                     </ul>
                 </li>
@@ -60,7 +63,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 <li><a href="#raw_material" aria-expanded="false" data-toggle="collapse"> <i
                             class="fa fa-industry"></i><span>{{__('lang.raw_material')}}</span><span></a>
                     <ul id="raw_material"
-                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['raw-material', 'raw-materials', 'consumption','recipe','production'])) show @endif">
+                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['raw-material', 'raw-materials', 'consumption'])) show @endif">
                         @can('raw_material_module.raw_material.create_and_edit')
                         <li
                             class="@if(request()->segment(1) == 'raw-material' && request()->segment(2) == 'create')) active @endif">
@@ -81,39 +84,6 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <a
                                 href="{{action('ConsumptionController@create')}}">{{__('lang.add_manual_consumption')}}</a>
                         </li>
-                        @endcan
-
-                        @can('raw_material_module.recipe.view')
-                            <li
-                                class="@if(request()->segment(1) == 'recipe' && empty(request()->segment(2))) active @endif">
-                                <a
-                                    href="{{action('RecipeController@index')}}">{{__('lang.view_all_recipe')}}</a>
-                            </li>
-                        @endcan
-
-                        @can('raw_material_module.recipe.create_and_edit')
-                            <li
-                                class="@if(request()->segment(1) == 'recipe' && request()->segment(2) == 'create')) active @endif">
-                                <a
-                                    href="{{action('RecipeController@create')}}">{{__('lang.add_manual_recipe')}}</a>
-                            </li>
-                        @endcan
-
-
-                        @can('raw_material_module.production.view')
-                            <li
-                                class="@if(request()->segment(1) == 'production' && empty(request()->segment(2))) active @endif">
-                                <a
-                                    href="{{route('productions.index')}}">{{__('lang.view_all_production')}}</a>
-                            </li>
-                        @endcan
-
-                        @can('raw_material_module.production.create_and_edit')
-                            <li
-                                class="@if(request()->segment(1) == 'production' && request()->segment(2) == 'create')) active @endif">
-                                <a
-                                    href="{{route('recipeUesd.show.sendUesd',1)}}">{{__('lang.add_manual_production')}}</a>
-                            </li>
                         @endcan
                         @can('raw_material_module.consumption.create_and_edit')
                         <li
@@ -864,6 +834,9 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 href="{{action('CustomerTypeController@index')}}">{{__('lang.view_all_customer_types')}}</a>
                         </li>
                         @endcan
+                        <li>
+                            <a href="{{route('customer-insurances.index')}}">{{trans('lang.customer_insurances')}}</a>
+                        </li>
                     </ul>
                 </li>
                 @endif
@@ -1086,7 +1059,24 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 @endif
                 @endif
 
+                <!-- printers section -->
+                    <li>
+                        <a href="#printers" aria-expanded="false" data-toggle="collapse"> <i
+                                class="dripicons-print"></i><span>@lang('lang.printers')</span></a>
+                        <ul id="printers"
+                            class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings','extension', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
+                                <li
+                                    class="@if(request()->segment(1) == 'printers' && empty(request()->segment(2))) active @endif">
+                                    <a href="{{route('printers.index')}}">{{__('lang.printers_list')}}</a>
+                                </li>
+                                <li
+                                    class="@if(request()->segment(1) == 'printers' && request()->segment(2) == 'create') active @endif">
+                                    <a href="{{route('printers.create')}}">{{__('lang.add_new_printer')}}</a>
+                                </li>
+                        </ul>
+                    </li>
 
+                    <!-- end of printers section -->
                 @if( !empty($module_settings['sms_module']) )
                 @if(auth()->user()->can('sms_module.sms.create_and_edit') ||
                 auth()->user()->can('sms_module.sms.view') )
@@ -1144,30 +1134,12 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 </li>
                 @endif
                 @endif
-                    <!-- printers section -->
-                    <li>
-                        <a href="#printers" aria-expanded="false" data-toggle="collapse"> <i
-                                class="dripicons-print"></i><span>@lang('lang.printers')</span></a>
-                        <ul id="printers"
-                            class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings','extension', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
-                                <li
-                                    class="@if(request()->segment(1) == 'printers' && empty(request()->segment(2))) active @endif">
-                                    <a href="{{route('printers.index')}}">{{__('lang.printers_list')}}</a>
-                                </li>
-                                <li
-                                    class="@if(request()->segment(1) == 'printers' && request()->segment(2) == 'create') active @endif">
-                                    <a href="{{route('printers.create')}}">{{__('lang.add_new_printer')}}</a>
-                                </li>
-                        </ul>
-                    </li>
 
-                    <!-- end of printers section -->
                 @if( !empty($module_settings['settings']) )
-                <li>
-                    <a href="#setting" aria-expanded="false" data-toggle="collapse"> <i
+                <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i
                             class="dripicons-gear"></i><span>@lang('lang.settings')</span></a>
                     <ul id="setting"
-                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings','extension', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
+                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
                         @can('product_module.product_class.view')
                         <li
                             class="@if(request()->segment(1) == 'product-class' && empty(request()->segment(2))) active @endif">
@@ -1227,22 +1199,12 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <a href="{{action('ServiceFeeController@index')}}">{{__('lang.service_fee')}}</a>
                         </li>
                         @endcan
-                        @can('product_module.extension.view')
-                            <li
-                                class="@if(request()->segment(1) == 'extension' && empty(request()->segment(2))) active @endif">
-                                <a href="{{action('ExtensionController@index')}}">{{__('lang.extension')}}</a>
-                            </li>
-                        @endcan
                         @can('settings.dining_room.view')
                         <li
                             class="@if(request()->segment(1) == 'dining-room' && empty(request()->segment(2))) active @endif">
                             <a href="{{action('DiningRoomController@index')}}">{{__('lang.dining_room')}}</a>
                         </li>
                         @endcan
-
-
-
-
                         @can('settings.dining_table.view')
                         <li
                             class="@if(request()->segment(1) == 'dining-table' && empty(request()->segment(2))) active @endif">
@@ -1262,12 +1224,11 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <a href="{{action('ExchangeRateController@index')}}">{{__('lang.exchange_rate')}}</a>
                         </li>
                         @endcan
-                            {{--
                         @can('product_module.tax.view')
                         <li class="@if(request()->segment(1) == 'tax' && empty(request()->segment(2)) && request()->type == "product_tax") active @endif">
                             <a href="{{action('TaxController@index')}}?type=product_tax">{{__('lang.product_tax')}}</a>
                         </li>
-                        @endcan --}}
+                        @endcan
                         @can('product_module.tax.view')
                         <li class="@if(request()->segment(1) == 'tax' && empty(request()->segment(2)) && request()->type == "general_tax") active @endif">
                             <a href="{{action('TaxController@index')}}?type=general_tax">{{__('lang.general_tax')}}</a>
