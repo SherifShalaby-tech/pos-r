@@ -31,7 +31,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
-
+use Illuminate\Support\Facades\Http;
 class ProductController extends Controller
 {
     /**
@@ -89,7 +89,7 @@ class ProductController extends Controller
             'brands',
             'units',
             'colors',
-            'sizes',
+            'sizes',-
             'grades',
             'taxes',
             'customers',
@@ -293,10 +293,17 @@ class ProductController extends Controller
                     }
 
                     return $html;
+                })->addColumn('selection_checkbox_send', function ($row)  {
+                    $html = '<input type="checkbox" name="product_selected_send" class="product_selected_send" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+
+                    return $html;
                 })
                 ->addColumn(
                     'action',
                     function ($row) {
+                        if($row->parent_branch_id != null ){
+                            return '';
+                        }
                         $html =
                             '<div class="btn-group">
                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
@@ -352,6 +359,7 @@ class ProductController extends Controller
                 ])
                 ->rawColumns([
                     'selection_checkbox',
+                    'selection_checkbox_send',
                     'image',
                     'variation_name',
                     'sku',
@@ -508,6 +516,7 @@ class ProductController extends Controller
             ['purchase_price' => ['max:25', 'decimal']],
             ['sell_price' => ['max:25', 'decimal']],
         );
+
         try {
             $discount_customers = $this->getDiscountCustomerFromType($request->discount_customer_types);
 
@@ -588,7 +597,6 @@ class ProductController extends Controller
                     $product->addMedia($image)->toMediaCollection('product');
                 }
             }
-
             if (!empty($request->supplier_id)) {
                 SupplierProduct::updateOrCreate(
                     ['product_id' => $product->id, 'supplier_id' => $request->supplier_id]
@@ -805,8 +813,19 @@ class ProductController extends Controller
                 SupplierProduct::where('product_id', $product->id)->delete();
             }
 
-
             DB::commit();
+            $request->request->add(['getFirstMediaUrl_re' => $product->getFirstMediaUrl('product')]);
+            $ENABLE_POS_Branch = env('ENABLE_POS_Branch', false);
+            $POS_SYSTEM_URL = env('Branch_SYSTEM_URL', null);
+            $POS_ACCESS_TOKEN = env('Branch_ACCESS_TOKEN', null);
+            if($ENABLE_POS_Branch && $POS_SYSTEM_URL &&$POS_ACCESS_TOKEN ){
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $POS_ACCESS_TOKEN,
+                ])->post($POS_SYSTEM_URL . '/api/update_requst/'.$id, $request->all())->json();
+
+            }
+
+
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
@@ -856,10 +875,20 @@ class ProductController extends Controller
                 $product->delete();
                 $variation->delete();
             }
+            $ENABLE_POS_Branch = env('ENABLE_POS_Branch', false);
+            $POS_SYSTEM_URL = env('Branch_SYSTEM_URL', null);
+            $POS_ACCESS_TOKEN = env('Branch_ACCESS_TOKEN', null);
+            if($ENABLE_POS_Branch && $POS_SYSTEM_URL &&$POS_ACCESS_TOKEN ){
+                $response = Http::withHeaders([
+                    'Authorization' => 'Bearer ' . $POS_ACCESS_TOKEN,
+                ])->post($POS_SYSTEM_URL . '/api/delete_product/'.$id, [])->json();
+
+            }
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
             ];
+
             DB::commit();
         } catch (\Exception $e) {
             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
@@ -1154,7 +1183,66 @@ class ProductController extends Controller
     public function getRawMaterialDetail($raw_material_id)
     {
         $raw_material = Product::find($raw_material_id);
+         return ['raw_material' => $raw_material];
+    }
 
-        return ['raw_material' => $raw_material];
+    public function sendBranch()
+    {
+
+        if(\request()->has('store_id')) {
+            $ENABLE_POS_Branch = env('ENABLE_POS_Branch', false);
+            $POS_SYSTEM_URL = env('Branch_SYSTEM_URL', null);
+            $POS_ACCESS_TOKEN = env('Branch_ACCESS_TOKEN', null);
+            if($ENABLE_POS_Branch && $POS_SYSTEM_URL &&$POS_ACCESS_TOKEN ){
+                $array=\request()->store_id;
+              $products_ids = array_column($array, 'product_id');
+              $variations_ids = array_column($array, 'variation_id');
+                $products = Product::wherein('id',$products_ids)->with([
+                            'variations_with'=> function ($q) use ($variations_ids){
+                                $q->wherein('id',$variations_ids);
+                            },'colors','sizes','grades','units','product_class','category','sub_category',
+                             'brand','alert_quantity_unit','tax'])->get()->toArray();
+                $media=DB::table('media')->wherein('model_id',$products_ids)->where('model_type','App\Models\Product')->get();
+                $response = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $POS_ACCESS_TOKEN,
+                    ])->post($POS_SYSTEM_URL . '/api/save_poduct_out', ['products'=>$products,'media'=>$media])->json();
+
+                if($response == null ){
+                        return [
+                            'success' => false,
+                            'msg' => __('lang.something_went_wrong')
+                        ];
+                    }
+                    if (!empty($response['success'])) {
+
+                        return [
+                            'success' => true,
+                            'msg' => __('lang.add_product_success')
+                        ];
+                    }
+            }else{
+                return [
+                    'success' => false,
+                    'msg' => __('lang.you_dont_have_any_branch')
+                ];
+            }
+        }
+        return [
+            'success' => false,
+            'msg' => __('lang.please_select_any_product')
+        ];
+    }
+
+    /**
+     * get raw material details
+     *
+     * @param int $raw_material_id
+     * @return void
+     */
+    public function getExtensionDetail($extension_id)
+    {
+        $extension = Extension::find($extension_id);
+        return ['extension' => $extension];
+
     }
 }

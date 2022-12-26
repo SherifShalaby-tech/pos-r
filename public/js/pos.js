@@ -400,16 +400,26 @@ function get_label_product_row(
        }
 }
 $('#save_btn_product_extension').click(function () {
-    var extensions_ids = $('input[name^=extensions_checkboxs]').map(function(idx, elem) {
-        if($(elem).is(':checked')){
-            return $(elem).val();
+    // var extensions_ids = $('input[name^=extensions_checkboxs]').map(function(idx, elem) {
+    //     if($(elem).is(':checked')){
+    //         return $(elem).val();
+    //     }
+    // }).get();
+
+    var extensions_ids =$('input[name^=extensions_quantity]').map(function(idx, elem) {
+        if($(elem).val() >0){
+            return $(elem).attr('id-row');
         }
     }).get();
     var extensions_quantity = $('input[name^=extensions_quantity]').map(function(idx, elem) {
-        if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
+        // if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
+        //     return $(elem).val();
+        // }
+        if($(elem).val() >0){
             return $(elem).val();
         }
     }).get();
+    console.log(extensions_quantity,extensions_ids);
     var extensions_sell_prices = $('input[name^=extensions_sell_price]').map(function(idx, elem) {
         if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
             return $(elem).val();
@@ -1517,7 +1527,7 @@ $(document).ready(function () {
 
                         reset_pos_form();
                         getFilterProductRightSide();
-                        get_recent_transactions();
+                        //get_recent_transactions();
                     } else {
                         toastr.error(result.msg);
                     }
@@ -1693,398 +1703,395 @@ $(document).on("click", "td.filter_product_add", function () {
 $(document).on("click", "#recent-transaction-btn", function () {
     $("#recentTransaction").modal("show");
 });
-
-$(document).ready(function () {
-    customer_sales_table = $("#customer_sales_table").DataTable({
-        lengthChange: true,
-        paging: true,
-        info: false,
-        bAutoWidth: false,
-        language: {
-            url: dt_lang_url,
+customer_sales_table = $("#customer_sales_table").DataTable({
+    lengthChange: true,
+    paging: true,
+    info: false,
+    bAutoWidth: false,
+    language: {
+        url: dt_lang_url,
+    },
+    lengthMenu: [
+        [10, 25, 50, 75, 100, 200, 500, -1],
+        [10, 25, 50, 75, 100, 200, 500, "All"],
+    ],
+    dom: "lBfrtip",
+    stateSave: true,
+    buttons: buttons,
+    processing: true,
+    serverSide: true,
+    aaSorting: [[0, "desc"]],
+    initComplete: function () {
+        $(this.api().table().container())
+            .find("input")
+            .parent()
+            .wrap("<form>")
+            .parent()
+            .attr("autocomplete", "off");
+    },
+    ajax: {
+        url: "/pos/get-recent-transactions",
+        data: function (d) {
+            d.customer_id = $("#customer_id").val();
         },
-        lengthMenu: [
-            [10, 25, 50, 75, 100, 200, 500, -1],
-            [10, 25, 50, 75, 100, 200, 500, "All"],
-        ],
-        dom: "lBfrtip",
-        stateSave: true,
-        buttons: buttons,
-        processing: true,
-        serverSide: true,
-        aaSorting: [[0, "desc"]],
-        initComplete: function () {
-            $(this.api().table().container())
-                .find("input")
-                .parent()
-                .wrap("<form>")
-                .parent()
-                .attr("autocomplete", "off");
+    },
+    columnDefs: [
+        {
+            targets: [9],
+            orderable: false,
+            searchable: false,
         },
-        ajax: {
-            url: "/pos/get-recent-transactions",
-            data: function (d) {
-                d.customer_id = $("#customer_id").val();
-            },
-        },
-        columnDefs: [
-            {
-                targets: [9],
-                orderable: false,
-                searchable: false,
-            },
-        ],
-        columns: [
-            { data: "transaction_date", name: "transaction_date" },
-            { data: "invoice_no", name: "invoice_no" },
-            { data: "final_total", name: "final_total" },
-            { data: "method", name: "transaction_payments.method" },
-            { data: "ref_number", name: "transaction_payments.ref_number" },
-            { data: "status", name: "transactions.status" },
-            { data: "deliveryman_name", name: "deliveryman_name" },
-            { data: "created_by", name: "users.name" },
-            { data: "canceled_by", name: "canceled_by" },
-            { data: "action", name: "action" },
-        ],
-        createdRow: function (row, data, dataIndex) {},
-        footerCallback: function (row, data, start, end, display) {
-            var intVal = function (i) {
-                return typeof i === "string"
-                    ? i.replace(/[\$,]/g, "") * 1
-                    : typeof i === "number"
+    ],
+    columns: [
+        { data: "transaction_date", name: "transaction_date" },
+        { data: "invoice_no", name: "invoice_no" },
+        { data: "final_total", name: "final_total" },
+        { data: "method", name: "transaction_payments.method" },
+        { data: "ref_number", name: "transaction_payments.ref_number" },
+        { data: "status", name: "transactions.status" },
+        { data: "deliveryman_name", name: "deliveryman_name" },
+        { data: "created_by", name: "users.name" },
+        { data: "canceled_by", name: "canceled_by" },
+        { data: "action", name: "action" },
+    ],
+    createdRow: function (row, data, dataIndex) {},
+    footerCallback: function (row, data, start, end, display) {
+        var intVal = function (i) {
+            return typeof i === "string"
+                ? i.replace(/[\$,]/g, "") * 1
+                : typeof i === "number"
                     ? i
                     : 0;
-            };
+        };
 
-            this.api()
-                .columns(".sum", { page: "current" })
-                .every(function () {
-                    var column = this;
-                    if (column.data().count()) {
-                        var sum = column.data().reduce(function (a, b) {
-                            a = intVal(a);
-                            if (isNaN(a)) {
-                                a = 0;
-                            }
+        this.api()
+            .columns(".sum", { page: "current" })
+            .every(function () {
+                var column = this;
+                if (column.data().count()) {
+                    var sum = column.data().reduce(function (a, b) {
+                        a = intVal(a);
+                        if (isNaN(a)) {
+                            a = 0;
+                        }
 
-                            b = intVal(b);
-                            if (isNaN(b)) {
-                                b = 0;
-                            }
+                        b = intVal(b);
+                        if (isNaN(b)) {
+                            b = 0;
+                        }
 
-                            return a + b;
-                        });
-                        $(column.footer()).html(
-                            __currency_trans_from_en(sum, false)
-                        );
-                    }
+                        return a + b;
+                    });
+                    $(column.footer()).html(
+                        __currency_trans_from_en(sum, false)
+                    );
+                }
+            });
+    },
+});
+recent_transaction_table = $("#recent_transaction_table").DataTable({
+    lengthChange: true,
+    paging: true,
+    info: false,
+    bAutoWidth: false,
+    language: {
+        url: dt_lang_url,
+    },
+    lengthMenu: [
+        [10, 25, 50, 75, 100, 200, 500, -1],
+        [10, 25, 50, 75, 100, 200, 500, "All"],
+    ],
+    dom: "lBfrtip",
+    stateSave: true,
+    buttons: buttons,
+    processing: true,
+    serverSide: true,
+    aaSorting: [[0, "desc"]],
+    initComplete: function () {
+        $(this.api().table().container())
+            .find("input")
+            .parent()
+            .wrap("<form>")
+            .parent()
+            .attr("autocomplete", "off");
+    },
+    ajax: {
+        url: "/pos/get-recent-transactions",
+        data: function (d) {
+            d.start_date = $("#rt_start_date").val();
+            d.end_date = $("#rt_end_date").val();
+            d.method = $("#rt_method").val();
+            d.created_by = $("#rt_created_by").val();
+            d.customer_id = $("#rt_customer_id").val();
+            d.deliveryman_id = $("#rt_deliveryman_id").val();
+        },
+    },
+    columnDefs: [
+        {
+            targets: [13],
+            orderable: false,
+            searchable: false,
+        },
+    ],
+    columns: [
+        { data: "transaction_date", name: "transaction_date" },
+        { data: "invoice_no", name: "invoice_no" },
+        {
+            data: "received_currency_symbol",
+            name: "received_currency_symbol",
+            searchable: false,
+        },
+        { data: "final_total", name: "final_total" },
+        { data: "customer_type_name", name: "customer_type_name" },
+        { data: "customer_name", name: "customer_name" },
+        { data: "mobile_number", name: "mobile_number" },
+
+        { data: "status", name: "transactions.status" },
+        { data: "payment_status", name: "transactions.payment_status" },
+        { data: "deliveryman_name", name: "deliveryman.employee_name" },
+        { data: "created_by", name: "created_by_name" },
+        { data: "canceled_by", name: "canceled_by" },
+        { data: "action", name: "action" },
+    ],
+    createdRow: function (row, data, dataIndex) {},
+    footerCallback: function (row, data, start, end, display) {
+        var intVal = function (i) {
+            return typeof i === "string"
+                ? i.replace(/[\$,]/g, "") * 1
+                : typeof i === "number"
+                    ? i
+                    : 0;
+        };
+
+        this.api()
+            .columns(".currencies", {
+                page: "current",
+            })
+            .every(function () {
+                var column = this;
+                let currencies_html = "";
+                $.each(currency_obj, function (key, value) {
+                    currencies_html += `<h6 class="footer_currency" data-is_default="${value.is_default}"  data-currency_id="${value.currency_id}">${value.symbol}</h6>`;
+                    $(column.footer()).html(currencies_html);
                 });
-        },
-    });
-    recent_transaction_table = $("#recent_transaction_table").DataTable({
-        lengthChange: true,
-        paging: true,
-        info: false,
-        bAutoWidth: false,
-        language: {
-            url: dt_lang_url,
-        },
-        lengthMenu: [
-            [10, 25, 50, 75, 100, 200, 500, -1],
-            [10, 25, 50, 75, 100, 200, 500, "All"],
-        ],
-        dom: "lBfrtip",
-        stateSave: true,
-        buttons: buttons,
-        processing: true,
-        serverSide: true,
-        aaSorting: [[0, "desc"]],
-        initComplete: function () {
-            $(this.api().table().container())
-                .find("input")
-                .parent()
-                .wrap("<form>")
-                .parent()
-                .attr("autocomplete", "off");
-        },
-        ajax: {
-            url: "/pos/get-recent-transactions",
-            data: function (d) {
-                d.start_date = $("#rt_start_date").val();
-                d.end_date = $("#rt_end_date").val();
-                d.method = $("#rt_method").val();
-                d.created_by = $("#rt_created_by").val();
-                d.customer_id = $("#rt_customer_id").val();
-                d.deliveryman_id = $("#rt_deliveryman_id").val();
-            },
-        },
-        columnDefs: [
-            {
-                targets: [13],
-                orderable: false,
-                searchable: false,
-            },
-        ],
-        columns: [
-            { data: "transaction_date", name: "transaction_date" },
-            { data: "invoice_no", name: "invoice_no" },
-            {
-                data: "received_currency_symbol",
-                name: "received_currency_symbol",
-                searchable: false,
-            },
-            { data: "final_total", name: "final_total" },
-            { data: "customer_type_name", name: "customer_types.name" },
-            { data: "customer_name", name: "customers.name" },
-            { data: "mobile_number", name: "customers.mobile_number" },
-            { data: "method", name: "transaction_payments.method" },
-            { data: "ref_number", name: "transaction_payments.ref_number" },
-            { data: "status", name: "transactions.status" },
-            { data: "payment_status", name: "transactions.payment_status" },
-            { data: "deliveryman_name", name: "deliveryman.employee_name" },
-            { data: "created_by", name: "users.name" },
-            { data: "canceled_by", name: "canceled_by" },
-            { data: "action", name: "action" },
-        ],
-        createdRow: function (row, data, dataIndex) {},
-        footerCallback: function (row, data, start, end, display) {
-            var intVal = function (i) {
-                return typeof i === "string"
-                    ? i.replace(/[\$,]/g, "") * 1
-                    : typeof i === "number"
-                    ? i
-                    : 0;
-            };
+            });
 
-            this.api()
-                .columns(".currencies", {
-                    page: "current",
-                })
-                .every(function () {
-                    var column = this;
-                    let currencies_html = "";
+        this.api()
+            .columns(".sum", { page: "current" })
+            .every(function () {
+                var column = this;
+                var currency_total = [];
+                $.each(currency_obj, function (key, value) {
+                    currency_total[value.currency_id] = 0;
+                });
+                column.data().each(function (group, i) {
+                    b = $(group).text();
+                    currency_id = $(group).data("currency_id");
+
                     $.each(currency_obj, function (key, value) {
-                        currencies_html += `<h6 class="footer_currency" data-is_default="${value.is_default}"  data-currency_id="${value.currency_id}">${value.symbol}</h6>`;
-                        $(column.footer()).html(currencies_html);
+                        if (currency_id == value.currency_id) {
+                            currency_total[value.currency_id] += intVal(b);
+                        }
                     });
                 });
-
-            this.api()
-                .columns(".sum", { page: "current" })
-                .every(function () {
-                    var column = this;
-                    var currency_total = [];
-                    $.each(currency_obj, function (key, value) {
-                        currency_total[value.currency_id] = 0;
-                    });
-                    column.data().each(function (group, i) {
-                        b = $(group).text();
-                        currency_id = $(group).data("currency_id");
-
-                        $.each(currency_obj, function (key, value) {
-                            if (currency_id == value.currency_id) {
-                                currency_total[value.currency_id] += intVal(b);
-                            }
-                        });
-                    });
-                    var footer_html = "";
-                    $.each(currency_obj, function (key, value) {
-                        footer_html += `<h6 class="currency_total currency_total_${
-                            value.currency_id
-                        }" data-currency_id="${
-                            value.currency_id
-                        }" data-is_default="${
-                            value.is_default
-                        }" data-conversion_rate="${
-                            value.conversion_rate
-                        }" data-base_conversion="${
-                            currency_total[value.currency_id] *
-                            value.conversion_rate
-                        }" data-orig_value="${
-                            currency_total[value.currency_id]
-                        }">${__currency_trans_from_en(
-                            currency_total[value.currency_id],
-                            false
-                        )}</h6>`;
-                    });
-                    $(column.footer()).html(footer_html);
+                var footer_html = "";
+                $.each(currency_obj, function (key, value) {
+                    footer_html += `<h6 class="currency_total currency_total_${
+                        value.currency_id
+                    }" data-currency_id="${
+                        value.currency_id
+                    }" data-is_default="${
+                        value.is_default
+                    }" data-conversion_rate="${
+                        value.conversion_rate
+                    }" data-base_conversion="${
+                        currency_total[value.currency_id] *
+                        value.conversion_rate
+                    }" data-orig_value="${
+                        currency_total[value.currency_id]
+                    }">${__currency_trans_from_en(
+                        currency_total[value.currency_id],
+                        false
+                    )}</h6>`;
                 });
+                $(column.footer()).html(footer_html);
+            });
+    },
+});
+
+draft_table = $("#draft_table").DataTable({
+    lengthChange: true,
+    paging: true,
+    info: false,
+    bAutoWidth: false,
+    language: {
+        url: dt_lang_url,
+    },
+    lengthMenu: [
+        [10, 25, 50, 75, 100, 200, 500, -1],
+        [10, 25, 50, 75, 100, 200, 500, "All"],
+    ],
+    dom: "lBfrtip",
+    stateSave: true,
+    buttons: buttons,
+    processing: true,
+    serverSide: true,
+    aaSorting: [[0, "desc"]],
+    initComplete: function () {
+        $(this.api().table().container())
+            .find("input")
+            .parent()
+            .wrap("<form>")
+            .parent()
+            .attr("autocomplete", "off");
+    },
+    ajax: {
+        url: "/pos/get-draft-transactions",
+        data: function (d) {
+            d.start_date = $("#draft_start_date").val();
+            d.end_date = $("#draft_end_date").val();
+            d.deliveryman_id = $("#draft_deliveryman_id").val();
         },
-    });
-    draft_table = $("#draft_table").DataTable({
-        lengthChange: true,
-        paging: true,
-        info: false,
-        bAutoWidth: false,
-        language: {
-            url: dt_lang_url,
+    },
+    columnDefs: [
+        {
+            targets: [9],
+            orderable: false,
+            searchable: false,
         },
-        lengthMenu: [
-            [10, 25, 50, 75, 100, 200, 500, -1],
-            [10, 25, 50, 75, 100, 200, 500, "All"],
-        ],
-        dom: "lBfrtip",
-        stateSave: true,
-        buttons: buttons,
-        processing: true,
-        serverSide: true,
-        aaSorting: [[0, "desc"]],
-        initComplete: function () {
-            $(this.api().table().container())
-                .find("input")
-                .parent()
-                .wrap("<form>")
-                .parent()
-                .attr("autocomplete", "off");
-        },
-        ajax: {
-            url: "/pos/get-draft-transactions",
-            data: function (d) {
-                d.start_date = $("#draft_start_date").val();
-                d.end_date = $("#draft_end_date").val();
-                d.deliveryman_id = $("#draft_deliveryman_id").val();
-            },
-        },
-        columnDefs: [
-            {
-                targets: [9],
-                orderable: false,
-                searchable: false,
-            },
-        ],
-        columns: [
-            { data: "transaction_date", name: "transaction_date" },
-            { data: "invoice_no", name: "invoice_no" },
-            { data: "final_total", name: "final_total" },
-            { data: "customer_type", name: "customer_types.name" },
-            { data: "customer_name", name: "customers.name" },
-            { data: "mobile_number", name: "customers.mobile_number" },
-            { data: "method", name: "transaction_payments.method" },
-            { data: "status", name: "transactions.status" },
-            { data: "created_by_name", name: "created_by_name" },
-            { data: "deliveryman_name", name: "deliveryman.employee_name" },
-            { data: "action", name: "action" },
-        ],
-        createdRow: function (row, data, dataIndex) {},
-        footerCallback: function (row, data, start, end, display) {
-            var intVal = function (i) {
-                return typeof i === "string"
-                    ? i.replace(/[\$,]/g, "") * 1
-                    : typeof i === "number"
+    ],
+    columns: [
+        { data: "transaction_date", name: "transaction_date" },
+        { data: "invoice_no", name: "invoice_no" },
+        { data: "final_total", name: "final_total" },
+        { data: "customer_type", name: "customer_types.name" },
+        { data: "customer_name", name: "customers.name" },
+        { data: "mobile_number", name: "customers.mobile_number" },
+        { data: "method", name: "transaction_payments.method" },
+        { data: "status", name: "transactions.status" },
+        { data: "created_by_name", name: "created_by_name" },
+        { data: "deliveryman_name", name: "deliveryman.employee_name" },
+        { data: "action", name: "action" },
+    ],
+    createdRow: function (row, data, dataIndex) {},
+    footerCallback: function (row, data, start, end, display) {
+        var intVal = function (i) {
+            return typeof i === "string"
+                ? i.replace(/[\$,]/g, "") * 1
+                : typeof i === "number"
                     ? i
                     : 0;
-            };
+        };
 
-            this.api()
-                .columns(".sum", { page: "current" })
-                .every(function () {
-                    var column = this;
-                    if (column.data().count()) {
-                        var sum = column.data().reduce(function (a, b) {
-                            a = intVal(a);
-                            if (isNaN(a)) {
-                                a = 0;
-                            }
+        this.api()
+            .columns(".sum", { page: "current" })
+            .every(function () {
+                var column = this;
+                if (column.data().count()) {
+                    var sum = column.data().reduce(function (a, b) {
+                        a = intVal(a);
+                        if (isNaN(a)) {
+                            a = 0;
+                        }
 
-                            b = intVal(b);
-                            if (isNaN(b)) {
-                                b = 0;
-                            }
+                        b = intVal(b);
+                        if (isNaN(b)) {
+                            b = 0;
+                        }
 
-                            return a + b;
-                        });
-                        $(column.footer()).html(
-                            __currency_trans_from_en(sum, false)
-                        );
-                    }
-                });
+                        return a + b;
+                    });
+                    $(column.footer()).html(
+                        __currency_trans_from_en(sum, false)
+                    );
+                }
+            });
+    },
+});
+online_order_table = $("#online_order_table").DataTable({
+    lengthChange: true,
+    paging: true,
+    info: false,
+    bAutoWidth: false,
+    language: {
+        url: dt_lang_url,
+    },
+    lengthMenu: [
+        [10, 25, 50, 75, 100, 200, 500, -1],
+        [10, 25, 50, 75, 100, 200, 500, "All"],
+    ],
+    dom: "lBfrtip",
+    buttons: buttons,
+    processing: true,
+    serverSide: true,
+    aaSorting: [[0, "desc"]],
+    initComplete: function () {
+        $(this.api().table().container())
+            .find("input")
+            .parent()
+            .wrap("<form>")
+            .parent()
+            .attr("autocomplete", "off");
+    },
+    ajax: {
+        url: "/pos/get-online-order-transactions",
+        data: function (d) {
+            d.start_date = $("#online_order_start_date").val();
+            d.end_date = $("#online_order_end_date").val();
         },
-    });
-    online_order_table = $("#online_order_table").DataTable({
-        lengthChange: true,
-        paging: true,
-        info: false,
-        bAutoWidth: false,
-        language: {
-            url: dt_lang_url,
+    },
+    columnDefs: [
+        {
+            targets: [7],
+            orderable: false,
+            searchable: false,
         },
-        lengthMenu: [
-            [10, 25, 50, 75, 100, 200, 500, -1],
-            [10, 25, 50, 75, 100, 200, 500, "All"],
-        ],
-        dom: "lBfrtip",
-        buttons: buttons,
-        processing: true,
-        serverSide: true,
-        aaSorting: [[0, "desc"]],
-        initComplete: function () {
-            $(this.api().table().container())
-                .find("input")
-                .parent()
-                .wrap("<form>")
-                .parent()
-                .attr("autocomplete", "off");
-        },
-        ajax: {
-            url: "/pos/get-online-order-transactions",
-            data: function (d) {
-                d.start_date = $("#online_order_start_date").val();
-                d.end_date = $("#online_order_end_date").val();
-            },
-        },
-        columnDefs: [
-            {
-                targets: [7],
-                orderable: false,
-                searchable: false,
-            },
-        ],
-        columns: [
-            { data: "transaction_date", name: "transaction_date" },
-            { data: "final_total", name: "final_total" },
-            { data: "customer_type", name: "customer_types.name" },
-            { data: "customer_name", name: "customers.name" },
-            { data: "mobile_number", name: "customers.mobile_number" },
-            { data: "method", name: "transaction_payments.method" },
-            { data: "status", name: "transactions.status" },
-            { data: "deliveryman_name", name: "deliveryman_name" },
-            { data: "action", name: "action" },
-        ],
-        createdRow: function (row, data, dataIndex) {},
-        footerCallback: function (row, data, start, end, display) {
-            var intVal = function (i) {
-                return typeof i === "string"
-                    ? i.replace(/[\$,]/g, "") * 1
-                    : typeof i === "number"
+    ],
+    columns: [
+        { data: "transaction_date", name: "transaction_date" },
+        { data: "final_total", name: "final_total" },
+        { data: "customer_type", name: "customer_types.name" },
+        { data: "customer_name", name: "customers.name" },
+        { data: "mobile_number", name: "customers.mobile_number" },
+        { data: "method", name: "transaction_payments.method" },
+        { data: "status", name: "transactions.status" },
+        { data: "deliveryman_name", name: "deliveryman_name" },
+        { data: "action", name: "action" },
+    ],
+    createdRow: function (row, data, dataIndex) {},
+    footerCallback: function (row, data, start, end, display) {
+        var intVal = function (i) {
+            return typeof i === "string"
+                ? i.replace(/[\$,]/g, "") * 1
+                : typeof i === "number"
                     ? i
                     : 0;
-            };
+        };
 
-            this.api()
-                .columns(".sum", { page: "current" })
-                .every(function () {
-                    var column = this;
-                    if (column.data().count()) {
-                        var sum = column.data().reduce(function (a, b) {
-                            a = intVal(a);
-                            if (isNaN(a)) {
-                                a = 0;
-                            }
+        this.api()
+            .columns(".sum", { page: "current" })
+            .every(function () {
+                var column = this;
+                if (column.data().count()) {
+                    var sum = column.data().reduce(function (a, b) {
+                        a = intVal(a);
+                        if (isNaN(a)) {
+                            a = 0;
+                        }
 
-                            b = intVal(b);
-                            if (isNaN(b)) {
-                                b = 0;
-                            }
+                        b = intVal(b);
+                        if (isNaN(b)) {
+                            b = 0;
+                        }
 
-                            return a + b;
-                        });
-                        $(column.footer()).html(
-                            __currency_trans_from_en(sum, false)
-                        );
-                    }
-                });
-        },
-    });
+                        return a + b;
+                    });
+                    $(column.footer()).html(
+                        __currency_trans_from_en(sum, false)
+                    );
+                }
+            });
+    },
 });
 $(document).on("shown.bs.modal", "#contact_details_modal", function () {
     getCustomerPointDetails();
@@ -2153,33 +2160,8 @@ $(document).on("change", "#customer_id", function () {
             );
         },
     });
-    getCustomerBalance();
-    getCustomerSizes(customer_id);
 });
 
-function getCustomerSizes(customer_id) {
-    $("#size_next").removeClass("hide");
-    $("#size_prev").removeClass("hide");
-    $.ajax({
-        method: "get",
-        url: "/customer-sizes/get-dropdown",
-        data: { customer_id },
-        success: function (result) {
-            $("#customer_size_id").html(result);
-            $("#customer_size_id").val("");
-            $("#customer_size_id").selectpicker("refresh");
-
-            // for edit page
-            if (
-                $("#customer_size_id_hidden").length > 0 &&
-                $("#customer_size_id_hidden").val() != ""
-            ) {
-                $("#customer_size_id").val($("#customer_size_id_hidden").val());
-                $("#customer_size_id").selectpicker("refresh");
-            }
-        },
-    });
-}
 $(document).on("change", "#customer_size_id", function () {
     $("#customer_size_id_hidden").val($(this).val());
 });
@@ -2352,7 +2334,7 @@ $(document).on("click", ".redeem_btn", function () {
     calculate_sub_totals();
 });
 
-$("#customer_id").change();
+
 
 $(document).on("change", "#tax_id", function () {
     change_tax_id();

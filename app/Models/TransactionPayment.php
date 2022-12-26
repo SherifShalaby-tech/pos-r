@@ -39,6 +39,7 @@ class TransactionPayment extends Model implements HasMedia
     }
     public function created_by_user()
     {
-        return $this->belongsTo(User::class, 'created_by', 'id')->withDefault(['name' => '']);
+        return $this->belongsTo(User::class, 'created_by', 'id')
+            ->withDefault(['name' => '']);
     }
 }

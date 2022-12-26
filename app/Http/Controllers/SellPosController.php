@@ -1192,7 +1192,7 @@ class SellPosController extends Controller
      */
     public function getRecentTransactions(Request $request)
     {
-        if (request()->ajax()) {
+//        if (request()->ajax()) {
             $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
             $default_currency_id = System::getProperty('currency');
 
@@ -1256,12 +1256,10 @@ class SellPosController extends Controller
                 'received_currency_id'
             )->with([
                 'return_parent',
-                'customer',
-                'transaction_payments',
+                'transaction_payments:id,transaction_id,method,ref_number',
                 'deliveryman',
                 'canceled_by_user',
-            ])
-                ->groupBy('transactions.id');
+            ]);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1409,7 +1407,7 @@ class SellPosController extends Controller
                     'created_by',
                 ])
                 ->make(true);
-        }
+//        }
     }
 
     /**

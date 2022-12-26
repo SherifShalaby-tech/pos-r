@@ -41,10 +41,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('product-class/{id}', [ProductClassController::class, 'update']);
     Route::delete('product-class/{id}', [ProductClassController::class, 'destroy']);
 
+    Route::post('save_poduct_out', [ProductController::class, 'savePoductOut']);
     Route::get('product', [ProductController::class, 'index']);
     Route::post('product', [ProductController::class, 'store']);
     Route::put('product/{id}', [ProductController::class, 'update']);
+    Route::put('update_requst/{id}', [ProductController::class, 'update_requst']);
+
     Route::delete('product/{id}', [ProductController::class, 'destroy']);
+    Route::post('delete_product/{id}', [ProductController::class, 'delete_product']);
 
     Route::get('size', [SizeController::class, 'index']);
     Route::post('size', [SizeController::class, 'store']);

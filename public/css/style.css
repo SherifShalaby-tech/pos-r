@@ -180,3 +180,13 @@ input[type="number"] {
     /* progress bar covers file name */
     display: none !important;
 }
+button.send_to_branch {
+    /* position: absolute; */
+    display: none;
+    float: right !important;
+    margin: 5px 10px !important;
+    border-color: #cbc3c3 !important;
+    box-shadow: none !important;
+    padding: 10px !important;
+    background-color: #000000a1 !important;
+}
