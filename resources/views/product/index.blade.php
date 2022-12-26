@@ -225,16 +225,22 @@
                 <button type="button" value="22"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.created_by')</button>
                 <button type="button" value="23"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
+                        class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
             </div>
         </div>
 
 
     </div>
     <div class="table-responsive">
+
+        <button type="button"
+                class="badge badge-pill badge-primary column-toggle send_to_branch" id="send_to_branch">@lang('lang.send_to_branch')</button>
         <table id="product_table" class="table" style="width: auto">
             <thead>
                 <tr>
+                    @if(env('ENABLE_POS_Branch',false))
+                        <th>@lang('lang.select')</th>
+                    @endif
                     <th>@lang('lang.image')</th>
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.product_code')</th>
@@ -282,6 +288,7 @@
                     <td></td>
                     <td></td>
                     <td></td>
+                    <td></td>
                     <th style="text-align: right">@lang('lang.total')</th>
                     <td></td>
                     <td></td>
@@ -294,6 +301,7 @@
 
 @section('javascript')
     <script>
+        var product_selected_send = [];
         $(document).ready(function() {
             $('.column-toggle').each(function(i, obj) {
                 if (i > 0) {
@@ -367,7 +375,16 @@
                     "orderable": false,
                     "searchable": false
                 }],
-                columns: [{
+                columns: [
+                    @if(env('ENABLE_POS_Branch',false))
+                        {
+                            data: "selection_checkbox_send",
+                            name: "selection_checkbox_send",
+                            searchable: false,
+                            orderable: false,
+                        },
+                    @endif
+                    {
                         data: 'image',
                         name: 'image'
                     },
@@ -670,5 +687,67 @@
                 }
             });
         });
+        $(document).on("change", ".product_selected_send", function () {
+            let this_variation_id = $(this).val();
+            let this_product_id = $(this).data("product_id");
+            if ($(this).prop("checked")) {
+                var obj = {};
+                obj["product_id"] = this_product_id;
+                obj["variation_id"] = this_variation_id;
+                product_selected_send.push(obj);
+            } else {
+                product_selected_send = product_selected_send.filter(function (item) {
+                    return (
+                        item.product_id !== this_product_id &&
+                        item.variation_id !== this_variation_id
+                    );
+                });
+            }
+            //remove duplicate object from array
+            product_selected_send = product_selected_send.filter(
+                (value, index, self) =>
+                    index ===
+                    self.findIndex(
+                        (t) =>
+                            t.product_id === value.product_id &&
+                            t.variation_id === value.variation_id
+                    )
+            );
+            if(product_selected_send.length > 0){
+                $('#send_to_branch').css('display','block');
+            }else{
+                $('#send_to_branch').css('display','none');
+            }
+        });
+
+        $('#send_to_branch').click(function (e) {
+            e.preventDefault();
+            console.log(product_selected_send);
+            $.ajax({
+                method: "GET",
+                url: '/product-send-branch',
+                data: {
+                    store_id: product_selected_send
+                },
+                success: function (result) {
+                    if (result.success) {
+                        $('#product_table').find('.product_selected_send').each(function(item) {
+                            $(this).prop('checked', false)
+                        });
+                        $('#send_to_branch').css('display','none');
+                        swal("Success!", result.msg, "success");
+
+                    } else {
+                        $('#send_to_branch').css('display','none');
+                        $('#product_table').find('.product_selected_send').each(function(item) {
+                            $(this).prop('checked', false)
+                        });
+                        swal("Error!", result.msg, "error");
+
+                    }
+                },
+            });
+        })
+
     </script>
 @endsection

@@ -39,7 +39,6 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('general/upload-image-temp', 'GeneralController@uploadImageTemp');
     Route::post('general/upload-file-temp', 'GeneralController@uploadFileTemp');
     Route::get('general/view-uploaded-files/{model_name}/{model_id}', 'GeneralController@viewUploadedFiles');
-
     Route::get('product/get-raw-material-details/{raw_material_id}', 'ProductController@getRawMaterialDetail');
     Route::get('product/get-extension-details/{extension_id}', 'ProductController@getExtensionDetail');
     Route::get('product/get-raw-material-row', 'ProductController@getRawMaterialRow');
@@ -52,6 +51,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('product/check-sku/{sku}', 'ProductController@checkSku');
     Route::get('product/check-name', 'ProductController@checkName');
     Route::get('product-stocks', 'ProductController@getProductStocks');
+    Route::get('product-send-branch', 'ProductController@sendBranch');
     Route::get('product/delete-product-image/{id}', 'ProductController@deleteProductImage');
     Route::resource('product', ProductController::class);
 
