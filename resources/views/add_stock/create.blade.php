@@ -102,7 +102,7 @@
                                                 <th style="width: 30%" class="col-sm-4">@lang( 'lang.selling_price' )</th>
                                                 <th style="width: 10%" class="col-sm-4">@lang( 'lang.sub_total' )</th>
                                                 <th style="width: 10%" class="col-sm-4">@lang( 'lang.new_stock' )</th>
-                                                <th style="width: 10%" class="col-sm-4">سعر البيع للمخزون الحالى</th>
+                                                <th style="width: 10%" class="col-sm-4">@lang( 'lang.change_current_stock' )</th>
                                                 <th style="width: 10%" class="col-sm-4">@lang( 'lang.action' )</th>
                                             </tr>
                                         </thead>

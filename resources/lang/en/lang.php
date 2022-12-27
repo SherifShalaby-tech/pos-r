@@ -14,6 +14,7 @@ return [
     */
     'number_vs_base_unit'=>'Units equation',
     'dashboard' => 'Dashboard',
+    'change_current_stock' => 'change price of current stock',
     'username' => 'Username',
     'password' => 'Password',
     'email' => 'Email',
