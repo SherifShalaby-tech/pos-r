@@ -14,6 +14,7 @@ return [
     */
 
     'dashboard' => 'نظرة عامة',
+    'change_current_stock' => 'تغيير سعر البيع للمخزون الحالى ',
     'username' => 'اسم المستخدم',
     'password' => 'كلمة المرور',
     'email' => 'بريد إلكتروني',

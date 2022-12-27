@@ -167,7 +167,7 @@ class Product extends Model implements HasMedia
         $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',"<=",'quantity_sold')->first();
         if(is_null($quantityDiffrenceInLineStock))
         {
-            return $this->variations->first()->default_sell_price;
+           return isset($this->variations->first()->default_sell_price)?$this->variations->first()->default_sell_price:$value;
         }
         return $quantityDiffrenceInLineStock->sell_price;
     }
