@@ -9,7 +9,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
             <input id="is_service" name="is_service" type="checkbox"
                 @if (session('system_mode') == 'restaurant') checked
                 @elseif(!empty($recent_product) && $recent_product->is_service == 1) checked @endif
-                value="1" class="form-control-custom">
+                value="0" class="form-control-custom">
             <label for="is_service"><strong>
                     @if (session('system_mode') == 'restaurant')
                         @lang('lang.or_add_new_product')
@@ -452,8 +452,8 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
                     <th>@lang('lang.grade')</th>
                     <th>@lang('lang.unit')</th>
                     <th>@lang('lang.number_vs_base_unit')</th>
-                    <th>@lang('lang.purchase_price')</th>
-                    <th>@lang('lang.sell_price')</th>
+                    <th class="hide purchase_price_th">@lang('lang.purchase_price')</th>
+                    <th class="hide sell_price_th">@lang('lang.sell_price')</th>
                     <th><button type="button" class="btn btn-success btn-xs add_row mt-2"><i
                                 class="dripicons-plus"></i></button></th>
                 </tr>

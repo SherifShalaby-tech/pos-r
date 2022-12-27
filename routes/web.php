@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
@@ -416,3 +417,10 @@ Route::post('/tokens/create', function (Request $request) {
 
     return ['token' => $token->plainTextToken];
 });
+
+/*Route::get('test1', function(){
+    return $update = \App\Models\Product::whereId(1)->first();
+    $update->product->variations()->update(['default_sell_price'=>88]);
+    return 'success';
+});*/
+

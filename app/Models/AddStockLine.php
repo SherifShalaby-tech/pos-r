@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\StockLineObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -27,5 +28,11 @@ class AddStockLine extends Model
     public function variation()
     {
         return $this->belongsTo(Variation::class);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+        AddStockLine::observe(StockLineObserver::class);
     }
 }

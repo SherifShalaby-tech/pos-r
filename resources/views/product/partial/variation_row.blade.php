@@ -52,10 +52,10 @@
                 'form-control
                 number_vs_base_unit', 'required','id'=>'number_vs_base_unit_'.$row_id]) !!}</td>
         @endif
-    <td>{!! Form::text('variations['.$row_id.'][default_purchase_price]', $product_purchase_price , ['class' =>
+    <td  class="@if(empty($is_service)) hide @endif default_purchase_price_td">{!! Form::text('variations['.$row_id.'][default_purchase_price]', $product_purchase_price , ['class' =>
         'form-control
         default_purchase_price', 'required']) !!}</td>
-    <td>{!! Form::text('variations['.$row_id.'][default_sell_price]', $product_sale_price,
+    <td class="@if(empty($is_service)) hide @endif default_sell_price_td">{!! Form::text('variations['.$row_id.'][default_sell_price]', $product_sale_price,
         ['class' => 'form-control default_sell_price', 'required']) !!}</td>
     <td> <button type="button" class="btn btn-danger btn-xs remove_row mt-2"><i class="dripicons-cross"></i></button>
     </td>
