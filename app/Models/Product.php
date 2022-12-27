@@ -152,4 +152,21 @@ class Product extends Model implements HasMedia
     {
         return $this->hasOneThrough(Supplier::class, SupplierProduct::class, 'product_id', 'id', 'id', 'supplier_id');
     }
+
+    public function stockLines()
+    {
+        return $this->hasMany(AddStockLine::class,'product_id');
+    }
+
+    public function getSellPriceAttribute($value)
+    {
+        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',"<=",'quantity_sold')->first();
+        if(is_null($quantityDiffrenceInLineStock))
+        {
+            return $this->variations->first()->default_sell_price;
+        }
+        return $quantityDiffrenceInLineStock->sell_price;
+    }
+
+
 }

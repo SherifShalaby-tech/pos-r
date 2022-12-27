@@ -246,6 +246,7 @@ class ProductController extends Controller
                 })
                 ->editColumn('batch_number', '{{$batch_number}}')
                 ->editColumn('default_sell_price', '{{@num_format($default_sell_price)}}')
+                ->editColumn('default_purchase_price', '{{@num_format($default_purchase_price)}}')
                 ->addColumn('tax', '{{$tax}}')
                 ->editColumn('brand', '{{$brand}}')
                 ->editColumn('unit', '{{$unit}}')
@@ -262,7 +263,6 @@ class ProductController extends Controller
                 ->editColumn('exp_date', '@if(!empty($exp_date)){{@format_date($exp_date)}}@endif')
                 ->addColumn('manufacturing_date', '@if(!empty($manufacturing_date)){{@format_date($manufacturing_date)}}@endif')
                 ->editColumn('discount', '{{@num_format($discount)}}')
-                ->editColumn('default_purchase_price', '{{@num_format($default_purchase_price)}}')
                 ->editColumn('active', function ($row) {
                     if ($row->active) {
                         return __('lang.yes');
@@ -886,19 +886,21 @@ class ProductController extends Controller
         $name = request()->name;
         $purchase_price = request()->purchase_price;
         $sell_price = request()->sell_price;
+        $is_service = request()->is_service;
 
-        return view('product.partial.variation_row')->with(compact(
-            'units',
-            'colors',
-            'sizes',
-            'grades',
-            'stores',
-            'row_id',
-            'name',
-            'purchase_price',
-            'sell_price',
-            'units_js'
-        ));
+            return view('product.partial.variation_row')->with(compact(
+                'units',
+                'colors',
+                'sizes',
+                'grades',
+                'stores',
+                'row_id',
+                'name',
+                'purchase_price',
+                'sell_price',
+                'units_js',
+                'is_service'
+            ));
     }
 
     public function getProducts()

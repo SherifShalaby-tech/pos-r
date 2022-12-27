@@ -88,23 +88,21 @@
                             </div>
                             <br>
                             <div class="row">
-                                <div class="col-md-10 offset-md-1">
+                                <div class="col-md-12">
                                     <table class="table table-bordered table-striped table-condensed" id="product_table">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
                                                 <th style="width: 7%" class="col-sm-8">@lang( 'lang.image' )</th>
-                                                <th style="width: 20%" class="col-sm-8">@lang( 'lang.products' )</th>
-                                                <th style="width: 20%" class="col-sm-4">@lang( 'lang.sku' )</th>
-                                                <th style="width: 20%" class="col-sm-4">@lang( 'lang.quantity' )</th>
-                                                <th style="width: 20%" class="col-sm-4">@lang( 'lang.unit' )</th>
-                                                <th style="width: 20%" class="col-sm-4">@lang( 'lang.purchase_price' )
-                                                </th>
-                                                <th style="width: 20%" class="col-sm-4">@lang( 'lang.selling_price' )
-                                                </th>
+                                                <th style="width: 10%" class="col-sm-8">@lang( 'lang.products' )</th>
+                                                <th style="width: 10%" class="col-sm-4">@lang( 'lang.sku' )</th>
+                                                <th style="width: 5%" class="col-sm-4">@lang( 'lang.quantity' )</th>
+                                                <th style="width: 10%" class="col-sm-4">@lang( 'lang.unit' )</th>
+                                                <th style="width: 30%" class="col-sm-4">@lang( 'lang.purchase_price' )</th>
+                                                <th style="width: 30%" class="col-sm-4">@lang( 'lang.selling_price' )</th>
                                                 <th style="width: 10%" class="col-sm-4">@lang( 'lang.sub_total' )</th>
                                                 <th style="width: 10%" class="col-sm-4">@lang( 'lang.new_stock' )</th>
-                                                <th style="width: 10%" class="col-sm-4">تغيير سعر المخزون الحالى</th>
+                                                <th style="width: 10%" class="col-sm-4">سعر البيع للمخزون الحالى</th>
                                                 <th style="width: 10%" class="col-sm-4">@lang( 'lang.action' )</th>
                                             </tr>
                                         </thead>

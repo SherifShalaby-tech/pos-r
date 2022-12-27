@@ -6,6 +6,7 @@ use App\Models\Currency;
 use App\Models\System;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Schema::defaultStringLength(92);
         //Blade directive to format number into required format.
         Blade::directive('num_format', function ($expression) {
             $currency_precision =  2;
