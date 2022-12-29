@@ -12,6 +12,31 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+    'product_extension'=>'Extras with the product',
+    'extension'=>'Extras',
+    'product_for_extension'=>'Primary material customization',
+    'add_extension'=>'Add product Extra',
+    'sell_default_price'=>'Default Selling Price',
+
+    'use now' => 'Use Now',
+    'view_all_recipe' => 'View recipes',
+    'add_manual_recipe' => 'Add recipe',
+    'view_all_production' => 'view Produce Primary material',
+    'add_manual_production' => 'Produce Primary material',
+    'add_new_recipe' => 'Add new Recipe',
+    'add_recipe' => 'Add recipe',
+    'add_new_production' => 'Produce Primary material',
+    'sendTo'=>'Send To',
+    'edit_recipe'=>'edit Produce process',
+    'edit_production'=>'edit Produce Primary material',
+    'production'=>'Produce Primary material',
+    'StorePosReq'=>'For production, points of sale must be assigned to the user',
+    'productions'=>'Produce Primary material ',
+    'cost_per_unit'=>'التكلفة لكل وحدة',
+
+    "please_select_any_product"=>"Please select at least one product",
+    'you_dont_have_any_branch'=>"Sorry, we don't have any branches, please contact the administration",
+    'send_to_branch' => 'Send to branch',
     'number_vs_base_unit'=>'Units equation',
     'dashboard' => 'Dashboard',
     'change_current_stock' => 'change price of current stock',

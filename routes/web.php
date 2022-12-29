@@ -42,6 +42,9 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('general/view-uploaded-files/{model_name}/{model_id}', 'GeneralController@viewUploadedFiles');
     Route::get('product/get-raw-material-details/{raw_material_id}', 'ProductController@getRawMaterialDetail');
     Route::get('product/get-raw-material-row', 'ProductController@getRawMaterialRow');
+    Route::get('product/get-extension-details/{extension_id}', 'ProductController@getExtensionDetail');
+    Route::get('product/get-extension-row', 'ProductController@getExtensionRow');
+
     Route::get('product/get-variation-row', 'ProductController@getVariationRow');
     Route::get('product/get-products', 'ProductController@getProducts');
     Route::get('product/get-purchase-history/{id}', 'ProductController@getPurchaseHistory');
@@ -62,6 +65,16 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('raw-material/add-stock', 'AddStockController@index');
     Route::get('raw-material/add-product-row', 'RawMaterialController@addProductRow');
     Route::resource('raw-material', RawMaterialController::class);
+    Route::get('recipe/get-raw-recipe-details/{raw_recipe_id}', 'RecipeController@getRecipeDetail');
+    Route::post('recipe_uesd/send_uesd', 'RecipeController@sendUesd')->name('recipeUesd.sendUesd');
+    Route::get('recipe_uesd/send/{id?}', 'RecipeController@used')->name('recipeUesd.show.sendUesd');
+    Route::get('productions', 'RecipeController@ProductionIndex')->name('productions.index');
+    Route::get('productions/edit/{id}', 'RecipeController@editProduction')->name('productions.edit');
+    Route::put('productions/edit/{id}', 'RecipeController@updateProduction')->name('productions.update');
+    Route::delete('productions/delete/{id}', 'RecipeController@destroyProduction')->name('productions.delete');
+
+    Route::resource('recipe', RecipeController::class);
+
     // printer controller
     Route::resource('printers',PrinterController::class);
     Route::get('consumption/get-sufficient-suggestions/{raw_material_id}', 'ConsumptionController@getSufficientSuggestions');
@@ -147,6 +160,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('purchase-order/get-po-number', 'PurchaseOrderController@getPoNumber');
     Route::get('purchase-order/draft-purchase-order', 'PurchaseOrderController@getDraftPurchaseOrder');
     Route::get('purchase-order/quick-add-draft', 'PurchaseOrderController@quickAddDraft');
+    Route::get('purchase-order/product', 'PurchaseOrderController@getProduct');
     Route::resource('purchase-order', PurchaseOrderController::class);
 
     Route::get('add-stock/get-source-by-type-dropdown/{type}', 'AddStockController@getSourceByTypeDropdown');
@@ -194,6 +208,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::get('store-pos/get-pos-details-by-store/{store_id}', 'StorePosController@getPosDetailsByStore');
     Route::resource('store-pos', StorePosController::class);
+    Route::get('pos/get-product-row-extension', 'SellPosController@getProductRowExtension');
+    Route::get('pos/count-product-row-extension/{variation_id}', 'SellPosController@CountProductRowExtension');
 
     Route::get('pos/update-status-to-cancel/{id}', 'SellPosController@updateStatusToCancel');
     Route::get('pos/get-non-identifiable-item-row', 'SellPosController@getNonIdentifiableItemRow');
@@ -224,6 +240,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('dining-table/get-table-details/{id}', 'DiningTableController@getTableDetails');
     Route::get('dining-table/get-dropdown-by-dining-room/{id}', 'DiningTableController@getDropdownByDiningRoom');
     Route::resource('dining-table', DiningTableController::class);
+    Route::resource('extension', ExtensionController::class);
 
     Route::post('sale/save-import', 'SellController@saveImport');
     Route::get('sale/get-import', 'SellController@getImport');
@@ -263,6 +280,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
         Route::get('employee/get-dropdown', 'EmployeeController@getDropdown');
         Route::resource('employee', EmployeeController::class);
         Route::resource('leave-type', LeaveTypeController::class);
+        Route::get('employee/trash','EmployeeController@getEmployeeTrash')->name('employee.trash');
 
         Route::get('leave/get-leave-details/{employee_id}', 'LeaveController@getLeaveDetails');
         Route::resource('leave', LeaveController::class);

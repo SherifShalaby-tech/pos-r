@@ -383,6 +383,7 @@ function get_label_product_row(
                 is_direct_sale: $("#is_direct_sale").val(),
             },
             success: function (result) {
+                console.log(result);
                 if (!result.success) {
                     swal("Error", result.msg, "error");
                     return;

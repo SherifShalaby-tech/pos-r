@@ -12,7 +12,26 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'product_extension'=>'اضافات مع المنتج',
+    'extension'=>'الاضافات',
+    'product_for_extension'=>'تخصيص مادة اولية',
+    'add_extension'=>'اضافة اضافات المنتج',
+    'sell_default_price'=>'سعر البيع الافتراضي',
+    'use now'=>'استخدم الان',
+    'view_all_recipe'=>'عرض الوصفات',
+    'add_manual_recipe'=>'اضافة وصفة',
+    'view_all_production'=>'عرض المواد المصنعة',
+    'add_manual_production'=>'تصنيع مادة جديدة',
+    'add_new_recipe'=>'اضافة وصفة جديدة',
+    'add_recipe'=>'اضافة وصفة',
+    'add_new_production'=>'عملية تصنيع جديدة',
+    'sendTo'=>'ارسال الي',
+    'edit_recipe'=>'تعديل عملية التصنيع',
+    'StorePosReq'=>'للانتاج يجب تخصيص نقاط البيع للمستخدم',
+    'productions'=>'عمليات التصنيع',
+    "please_select_any_product"=>"من فضلك , قم بأختيار منتج واحد علي الاقل",
+    'you_dont_have_any_branch'=>'عفوا , لا يوجد اي فرع لدينا يرجي التواصل مع الادارة',
+    'send_to_branch'=>'ارسال الي الفرعي',
     'dashboard' => 'نظرة عامة',
     'change_current_stock' => 'تغيير سعر البيع للمخزون الحالى ',
     'username' => 'اسم المستخدم',

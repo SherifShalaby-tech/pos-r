@@ -774,16 +774,19 @@ class HomeController extends Controller
 
         $payment_sent = $payment_purchase + $payment_expense + $wages_payment + $sell_return_payment;
 
+
         if (!empty($currency_id)) {
             if ($currency_id == $default_currency_id) {
-                $current_stock_value = $this->productUtil->getCurrentStockValueByStore($store_id);
+                $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
+                $current_stock_value_material = $this->productUtil->getCurrentStockPrimaryMaterialValueByStore($store_id);
             } else {
-                $current_stock_value = 0; //expense does not have currency
+                $current_stock_value_product = 0; //expense does not have currency
+                $current_stock_value_material = 0; //expense does not have currency
             }
         } else {
-            $current_stock_value = $this->productUtil->getCurrentStockValueByStore($store_id);
+            $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
+            $current_stock_value_material = $this->productUtil->getCurrentStockPrimaryMaterialValueByStore($store_id);
         }
-
         $data['revenue'] = $revenue;
         $data['sell_return'] = $sell_return;
         $data['profit'] = $profit;
@@ -794,7 +797,9 @@ class HomeController extends Controller
         $data['purchase_return'] = $purchase_return;
         $data['payment_received'] = $payment_received_total;
         $data['payment_sent'] = $payment_sent;
-        $data['current_stock_value'] = $current_stock_value;
+        $data['current_stock_value'] = $current_stock_value_product+$current_stock_value_material;
+        $data['current_stock_value_material'] = $current_stock_value_material;
+        $data['current_stock_value_product'] = $current_stock_value_product;
 
         return $data;
     }

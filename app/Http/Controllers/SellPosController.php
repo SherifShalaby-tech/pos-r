@@ -13,9 +13,11 @@ use App\Models\CustomerType;
 use App\Models\DeliveryZone;
 use App\Models\DiningRoom;
 use App\Models\Employee;
+use App\Models\Extension;
 use App\Models\GiftCard;
 use App\Models\Product;
 use App\Models\ProductClass;
+use App\Models\ProductExtension;
 use App\Models\SalesPromotion;
 use App\Models\Store;
 use App\Models\StorePos;
@@ -266,18 +268,18 @@ class SellPosController extends Controller
         $transaction = Transaction::create($transaction_data);
 
         $this->transactionUtil->createOrUpdateTransactionSellLine($transaction, $request->transaction_sell_line);
-
-        foreach ($request->transaction_sell_line as $sell_line) {
-            if (empty($sell_line['transaction_sell_line_id'])) {
-                if ($transaction->status == 'final') {
-                    $product = Product::find($sell_line['product_id']);
-                    if (!$product->is_service) {
-                        $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
+        if ($transaction->status == 'final') {
+            foreach ($request->transaction_sell_line as $sell_line) {
+                if (empty($sell_line['transaction_sell_line_id'])) {
+                    if ($transaction->status == 'final') {
+                        $product = Product::find($sell_line['product_id']);
+                        if (!$product->is_service) {
+                            $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
+                        }
                     }
                 }
             }
         }
-
         // if quotation and qty is blocked(reserved) for sale
         if ($transaction->is_quotation && $transaction->block_qty) {
             foreach ($request->transaction_sell_line as $sell_line) {
@@ -998,6 +1000,9 @@ class SellPosController extends Controller
         if ($request->ajax()) {
             $weighing_scale_barcode = $request->input('weighing_scale_barcode');
 
+            $extensions_ids = $request->input('extensions_ids');
+            $extensions_quantity = $request->input('extensions_quantity');
+            $extensions_sell_prices = $request->input('extensions_sell_prices');
 
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
@@ -1028,7 +1033,19 @@ class SellPosController extends Controller
                     return $output;
                 }
             }
-
+            if(!empty($extensions_quantity)){
+                $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
+            }else{
+                $sum_extensions_sell_prices = 0;
+            }
+            $extensions=[];
+            if($extensions_ids != null || $extensions_ids!= [] ){
+                foreach ($extensions_ids as $key=> $extensions_id){
+                    $extensions[$key]['name']=Extension::where('id',$extensions_id)->first()->name;
+                    $extensions[$key]['extensions_quantity']=$extensions_quantity[$key];
+                    $extensions[$key]['extensions_id']=$extensions_ids[$key];
+                }
+            }
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id);
@@ -1037,8 +1054,12 @@ class SellPosController extends Controller
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
                 $sale_promotion_details = null; //changed, now in pos.js check_for_sale_promotion method
                 $html_content =  view('sale_pos.partials.product_row')
-                    ->with(compact('products', 'index', 'sale_promotion_details', 'product_discount_details', 'edit_quantity', 'is_direct_sale', 'dining_table_id', 'exchange_rate'))->render();
-
+                    ->with(compact('products', 'index', 'sale_promotion_details'
+                        , 'product_discount_details','extensions', 'edit_quantity',
+                        "sum_extensions_sell_prices",
+                        "extensions_ids","extensions_quantity",
+                        "extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
+                        'exchange_rate'))->render();
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
             } else {
@@ -1048,6 +1069,85 @@ class SellPosController extends Controller
             return  $output;
         }
     }
+
+    /**
+     * Returns the Extensions for product row
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getProductRowExtension(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $product_id = $request->input('product_id');
+            $variation_id = $request->input('variation_id');
+            $store_id = $request->input('store_id');
+            $currency_id =$request->input('currency_id');
+            $row_count =$request->input('row_count');
+            $edit_quantity =$request->input('edit_quantity');
+            $weighing_scale_barcode =$request->input('weighing_scale_barcode');
+
+            $currency_id =$request->currency_id;
+            $currency = Currency::find($currency_id);
+            $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id,
+                $request->store_id);
+            //Check for weighing scale barcode
+            $weighing_barcode = request()->get('weighing_scale_barcode');
+            if (empty($variation_id) && !empty($weighing_barcode)) {
+                $product_details = $this->__parseWeighingBarcode($weighing_barcode);
+                if ($product_details['success']) {
+                    $product_id = $product_details['product_id'];
+                    $variation_id = $product_details['variation_id'];
+                } else {
+                    $output['success'] = false;
+                    $output['msg'] = $product_details['msg'];
+                    return $output;
+                }
+            }
+
+            if (!empty($product_id)) {
+                if(!empty($variation_id)){
+                    $extensions=  ProductExtension::with('extension:id,name,translations')
+                        ->where('variation_id',$variation_id)->get();
+                }else{
+                    $variation_id= Variation::where('product_id',$product_id)->first()->id;
+                    $extensions=  ProductExtension::with('extension:id,name,translations')
+                        ->where('variation_id',$variation_id)->get();
+                }
+                if($extensions->count() <= 0 ){
+                    $output['success'] = true;
+                    $output['html_content'] = 0;
+                    return  $output;
+                }
+
+                $html_content =  view('sale_pos.partials.extension_row')
+                    ->with(compact('extensions','product_id', 'edit_quantity',
+                        'variation_id','row_count','weighing_scale_barcode','store_id',
+                        'exchange_rate'))->render();
+                $output['success'] = true;
+                $output['html_content'] = $html_content;
+            } else {
+
+                $output['success'] = false;
+                $output['msg'] = __('lang.sku_no_match');
+            }
+            return  $output;
+        }
+    }
+
+    /**
+     * Returns count Extensions for product row
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function CountProductRowExtension( $variation_id)
+    {
+        $count=  ProductExtension::where('variation_id',$variation_id)->count();
+        $output['count'] = $count;
+        return  $output;
+
+    }
+
 
     /**
      * get the row for non identifiable products
@@ -1424,6 +1524,7 @@ class SellPosController extends Controller
             $query = Transaction::leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
                 ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
                 ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
+                ->leftjoin('users', 'transactions.created_by', 'users.id')
                 ->where('type', 'sell')->whereIn('status', ['draft', 'canceled'])->whereNull('transactions.dining_table_id')->whereNull('transactions.restaurant_order_id');
 
             if (!empty($store_id)) {
@@ -1444,6 +1545,7 @@ class SellPosController extends Controller
                 'customer_types.name as customer_type_name',
                 'customers.name as customer_name',
                 'customers.mobile_number',
+                'users.name as created_by_name',
             )->with(['deliveryman']);
 
             return DataTables::of($transactions)
@@ -1455,6 +1557,14 @@ class SellPosController extends Controller
                     } else {
                         return '';
                     }
+                })->editColumn('invoice_no',function ($row) {
+                    $string = $row->invoice_no . ' ';
+                    $string .= '<a
+                        data-href="#"
+                        class="btn btn-modal" style="color: #007bff;">'. __('lang.draft').'</a>';
+
+
+                    return $string;
                 })
                 ->editColumn('customer_name', '<span class="text-red">{{$customer_name}}</span>')
                 ->addColumn('method', function ($row) {
@@ -1534,6 +1644,8 @@ class SellPosController extends Controller
                     'final_total',
                     'status',
                     'created_by',
+                    'invoice_no',
+                    'created_by_name',
                 ])
                 ->make(true);
         }

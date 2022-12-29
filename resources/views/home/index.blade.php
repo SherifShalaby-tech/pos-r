@@ -23,7 +23,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                         <label for="store_id"><b>@lang('lang.store')</b></label>
                                         {!! Form::select('store_id', $stores, session('user.is_superadmin') ? null : key($stores), ['class' => 'form-control ','multiple','data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
                                      {{--
-                                     
+
                                      Form::select('store_id', $stores, array_keys($stores), ['class' => 'form-control ','multiple' , 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => null]) --}}
 
 
@@ -168,7 +168,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     </div>
                                 </div>
                         </div>
-                            <div class="col-sm-2">
+                            <div class="col-sm-2 mt-2">
                                 <div class="wrapper count-title text-center">
                                     <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
                                     </div>

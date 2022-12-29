@@ -141,6 +141,8 @@ class ProductController extends BaseController
     public function savePoductOut(Request $request)
     {
         $products = $request->products;
+        $media= $request->media;
+        $media_url= $request->media_url;
         try {
             DB::beginTransaction();
             foreach ($products as $product){
@@ -396,6 +398,11 @@ class ProductController extends BaseController
                     }
 
 
+                }
+                $response= collect($media)->wherein('model_id',$product['id']);
+                foreach ($response as $respon){
+                    $path_url = $media_url.'/'.$respon['id'].'/'.$respon['file_name'];
+                    $old_product->addMediaFromUrl($path_url)->toMediaCollection('product');
                 }
             }
             DB::commit();

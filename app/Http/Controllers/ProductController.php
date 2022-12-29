@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\ProductImport;
 use App\Models\Brand;
+use App\Models\Extension;
 use App\Models\Printer;
 use App\Models\Category;
 use App\Models\Color;
@@ -454,11 +455,13 @@ class ProductController extends Controller
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $suppliers = Supplier::pluck('name', 'id');
         $printers = Printer::get(['id','name']);
+        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
 
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
                 'suppliers',
+                'extensions',
                 'raw_materials',
                 'raw_material_units',
                 'product_classes',
@@ -483,6 +486,7 @@ class ProductController extends Controller
             'raw_materials',
             'raw_material_units',
             'product_classes',
+            'extensions',
             'categories',
             'sub_categories',
             'brands',
@@ -584,13 +588,24 @@ class ProductController extends Controller
 
             $this->productUtil->createOrUpdateVariations($product, $request);
 
+
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateRawMaterialToProduct($variation->id, $request->consumption_details);
+                    $this->productUtil->createOrUpdateRawMaterialToProduct(
+                        $variation->id,
+                        $request->consumption_details);
                 }
             }
+            if (!empty($request->extension_details)) {
+                $variations = $product->variations()->get();
+                foreach ($variations as $variation) {
+                    $this->productUtil->createOrUpdateExtensionToProduct(
+                        $variation->id,
+                        $request->extension_details);
+                }
 
+            }
 
             if ($request->images) {
                 foreach ($request->images as $image) {
@@ -697,10 +712,13 @@ class ProductController extends Controller
         $raw_material_units  = Unit::orderBy('name', 'asc')->pluck('name', 'id');
         $suppliers = Supplier::pluck('name', 'id');
         $units_js=$units->pluck('base_unit_multiplier', 'id');
+        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
+
         return view('product.edit')->with(compact(
             'raw_materials',
             'raw_material_units',
             'product',
+            'extensions',
             'product_classes',
             'categories',
             'sub_categories',
@@ -789,13 +807,23 @@ class ProductController extends Controller
             $this->productUtil->createOrUpdateVariations($product, $request);
 
 
+
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
-                    $this->productUtil->createOrUpdateRawMaterialToProduct($variation->id, $request->consumption_details);
+                    $this->productUtil->createOrUpdateRawMaterialToProduct(
+                        $variation->id, $request->consumption_details);
                 }
             }
+            if (!empty($request->extension_details)) {
+                $variations = $product->variations()->get();
+                foreach ($variations as $variation) {
+                    $this->productUtil->createOrUpdateExtensionToProduct(
+                        $variation->id,
+                        $request->extension_details);
+                }
 
+            }
 
             if ($request->images) {
                 $product->clearMediaCollection('product');
@@ -1136,7 +1164,22 @@ class ProductController extends Controller
 
         return $output;
     }
+    /**
+     * get extension row
+     *
+     * @return void
+     */
+    public function getExtensionRow()
+    {
 
+        $row_id   = request()->row_id  ?? 0;
+        $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
+
+        return view('product.partial.extension_row')->with(compact(
+            'row_id',
+            'extensions',
+        ));
+    }
     public function deleteProductImage($id)
     {
         try {
@@ -1185,6 +1228,17 @@ class ProductController extends Controller
     public function getRawMaterialDetail($raw_material_id)
     {
         $raw_material = Product::find($raw_material_id);
+        if(\request()->has('type')){
+            $unitraw_material_d=[];
+            $unitraw_material_d['name']=null;
+            $unitraw_material_d['id']=null;
+            $unitraw_material = $raw_material->units->first();
+            if($unitraw_material != null){
+                $unitraw_material_d['name']=$unitraw_material->name;
+                $unitraw_material_d['id']=$unitraw_material->id;
+            }
+            return ['raw_material' => $unitraw_material_d];
+        }
          return ['raw_material' => $raw_material];
     }
 
@@ -1204,10 +1258,19 @@ class ProductController extends Controller
                                 $q->wherein('id',$variations_ids);
                             },'colors','sizes','grades','units','product_class','category','sub_category',
                              'brand','alert_quantity_unit','tax'])->get()->toArray();
-                $media=DB::table('media')->wherein('model_id',$products_ids)->where('model_type','App\Models\Product')->get();
+                $media=DB::table('media')
+                    ->wherein('model_id',$products_ids)
+                    ->where('model_type','App\Models\Product')
+                    ->select('id','model_id','file_name')->get();
+
+                $media_url=asset('storage');
                 $response = Http::withHeaders([
-                        'Authorization' => 'Bearer ' . $POS_ACCESS_TOKEN,
-                    ])->post($POS_SYSTEM_URL . '/api/save_poduct_out', ['products'=>$products,'media'=>$media])->json();
+                    'Authorization' => 'Bearer ' . $POS_ACCESS_TOKEN,
+                ])->post($POS_SYSTEM_URL . '/api/save_poduct_out', [
+                    'products'=>$products,
+                    'media_url'=>$media_url,
+                    'media'=>$media
+                ])->json();
 
                 if($response == null ){
                         return [

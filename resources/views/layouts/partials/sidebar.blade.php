@@ -77,7 +77,38 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 href="{{action('RawMaterialController@index')}}">{{__('lang.view_all_raw_materials')}}</a>
                         </li>
                         @endcan
+                            @can('raw_material_module.recipe.view')
+                                <li
+                                    class="@if(request()->segment(1) == 'recipe' && empty(request()->segment(2))) active @endif">
+                                    <a
+                                        href="{{action('RecipeController@index')}}">{{__('lang.view_all_recipe')}}</a>
+                                </li>
+                            @endcan
 
+                            @can('raw_material_module.recipe.create_and_edit')
+                                <li
+                                    class="@if(request()->segment(1) == 'recipe' && request()->segment(2) == 'create')) active @endif">
+                                    <a
+                                        href="{{action('RecipeController@create')}}">{{__('lang.add_manual_recipe')}}</a>
+                                </li>
+                            @endcan
+
+
+                            @can('raw_material_module.production.view')
+                                <li
+                                    class="@if(request()->segment(1) == 'production' && empty(request()->segment(2))) active @endif">
+                                    <a
+                                        href="{{route('productions.index')}}">{{__('lang.view_all_production')}}</a>
+                                </li>
+                            @endcan
+
+                            @can('raw_material_module.production.create_and_edit')
+                                <li
+                                    class="@if(request()->segment(1) == 'production' && request()->segment(2) == 'create')) active @endif">
+                                    <a
+                                        href="{{route('recipeUesd.show.sendUesd',1)}}">{{__('lang.add_manual_production')}}</a>
+                                </li>
+                            @endcan
                         @can('raw_material_module.consumption.create_and_edit')
                         <li
                             class="@if(request()->segment(1) == 'consumption' && request()->segment(2) == 'create')) active @endif">
@@ -1171,6 +1202,12 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                             <a href="{{action('ColorController@index')}}">{{__('lang.color')}}</a>
                         </li>
                         @endcan
+                            @can('product_module.extension.view')
+                                <li
+                                    class="@if(request()->segment(1) == 'extension' && empty(request()->segment(2))) active @endif">
+                                    <a href="{{action('ExtensionController@index')}}">{{__('lang.extension')}}</a>
+                                </li>
+                            @endcan
                         @can('product_module.grade.view')
                         <li class="@if(request()->segment(1) == 'grade' && empty(request()->segment(2))) active @endif">
                             <a href="{{action('GradeController@index')}}">{{__('lang.grade')}}</a>

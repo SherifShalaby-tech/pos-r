@@ -1,6 +1,18 @@
 @extends('layouts.app')
 @section('title', __('lang.pos'))
+@section('styles')
+    <style>
+        .btn-group-custom .btn {
+            font-size: 13px !important;
+            min-width: 13% !important;
+            margin: 2px 5px;
+            text-align: center !important;
+            overflow: initial;
+            width: auto !important;
+        }
+    </style>
 
+@endsection
 @section('content')
     <section class="forms pos-section no-print">
         <div class="container-fluid">
@@ -64,11 +76,13 @@
                                         <div class="col-md-1" style="padding: 0 !important;">
                                             <div class="form-group" style="margin-top: 31px;">
                                                 <select class="form-control" name="tax_id" id="tax_id">
-                                                    <option value="">No Tax</option>
+                                                    @if(env('ISNoTax',true))
+                                                        <option value="">No Tax</option>
+                                                    @endif
                                                     @foreach ($taxes as $tax)
                                                         <option data-rate="{{ $tax['rate'] }}"
-                                                            @if (!empty($transaction) && $transaction->tax_id == $tax['id']) selected @endif
-                                                            value="{{ $tax['id'] }}">{{ $tax['name'] }}</option>
+                                                                @if ((!empty($transaction) && $transaction->tax_id == $tax['id'] ) || App\Models\System::getProperty('def_pos_tax_id') == $tax['id']  ) selected @endif
+                                                                value="{{ $tax['id'] }}">{{ $tax['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                                 <input type="hidden" name="tax_id_hidden" id="tax_id_hidden" value="">
@@ -98,7 +112,7 @@
                                 </div>
                                 <div class="col-md-12 main_settings">
                                     <div class="row table_room_hide">
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             {!! Form::label('customer_id', __('lang.customer'), []) !!}
                                             <div class="input-group my-group">
                                                 {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ? $walk_in_customer->id : null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'customer_id', 'required']) !!}
@@ -117,16 +131,7 @@
                                                 data-toggle="modal"
                                                 data-target="#contact_details_modal">@lang('lang.details')</button>
                                         </div>
-                                        @if (session('system_mode') == 'garments')
-                                            <div class="col-md-1">
-                                                <button type="button" class="btn btn-default" style="margin-top: 30px;"
-                                                    data-toggle="modal" data-target="#customer_sizes_modal"><img
-                                                        style="width: 20px; height: 25px;"
-                                                        src="{{ asset('images/269 Garment Icon.png') }}"
-                                                        alt="@lang('lang.customer_size')" data-toggle="tooltip"
-                                                        title="@lang('lang.customer_size')"></button>
-                                            </div>
-                                        @endif
+
                                         <div class="col-md-2">
                                             <label for="customer_type_name" style="margin-top: 40px;">@lang('lang.customer_type'):
                                                 <span class="customer_type_name"></span></label>
@@ -146,10 +151,10 @@
                                                     data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
                                             </div>
                                         @endif
-                                        <div class="col-md-2">
+                                        <div class="col-md-1">
                                             <button type="button"
                                                     class="btn btn-default"
-                                                    style="margin-top: 30px;"
+                                                    style="margin-top: 10px;"
                                                     data-toggle="modal" data-target="#deposit_modal">
                                                 <img
                                                     style="width: 20px; height: 25px;"
@@ -157,14 +162,16 @@
                                                     alt="@lang('lang.insurance_amount')" data-toggle="tooltip"
                                                     title="@lang('lang.insurance_amount')">
                                             </button>
-                                        </div>
-                                        <div class="col-md-1">
                                             <button type="button" class="btn btn-danger btn-xs  pull-right"
-                                                style="margin-top: 38px;" id="print_and_draft"><i
+                                                    style="margin-top: 38px;" id="print_and_draft"><i
                                                     class="dripicons-print"></i></button>
                                             <input type="hidden" id="print_and_draft_hidden" name="print_and_draft_hidden"
-                                                value="">
+                                                   value="">
                                         </div>
+                                        <div class="col-md-2">
+
+                                        </div>
+
                                     </div>
                                     <div class="row table_room_show hide">
                                         <div class="col-md-4">
@@ -482,6 +489,7 @@
                     @include('sale_pos.partials.payment_modal')
                     @include('sale_pos.partials.deposit_modal')
                     @include('sale_pos.partials.discount_modal')
+
                     {{-- @include('sale_pos.partials.tax_modal') --}}
                     @include('sale_pos.partials.delivery_cost_modal')
                     @include('sale_pos.partials.coupon_modal')
@@ -774,6 +782,37 @@
 
 
     </section>
+    <div class="modal" id="product_extension" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">@lang('lang.product_extension')</h5>
+                    <button type="button"  class="close close_btn_product_extension" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table>
+                        <thead>
+                        <tr>
+                            <td>@lang('lang.product_extension')</td>
+                            <td>@lang('lang.qty')</td>
+                            <td>@lang('lang.sell_price')</td>
+                        </tr>
+                        </thead>
+                        <tbody id="product_extension_tbody">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="save_btn_product_extension" class="btn btn-primary">@lang('lang.save')</button>
+                    <button type="button"  class="btn btn-secondary close_btn_product_extension"
+                            data-dismiss="modal">@lang('lang.cancel')</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <!-- This will be printed -->
@@ -785,6 +824,10 @@
     <script src="{{ asset('js/pos.js') }}"></script>
     <script src="{{ asset('js/dining_table.js') }}"></script>
     <script>
+        $('.close_btn_product_extension').click(function () {
+            $('#product_extension').removeClass('view_modal no-print show');
+            $('#product_extension').hide();
+        });
         $(document).ready(function() {
             $('.online-order-badge').hide();
         })

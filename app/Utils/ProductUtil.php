@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\EarningOfPoint;
 use App\Models\Product;
 use App\Models\ProductClass;
+use App\Models\ProductExtension;
 use App\Models\ProductStore;
 use App\Models\PurchaseOrderLine;
 use App\Models\PurchaseReturnLine;
@@ -103,6 +104,11 @@ class ProductUtil extends Util
             $count = Transaction::where('type', $type)->whereMonth('transaction_date', $month)->count() + $i;
 
             $number = 'RetP' . $year . $month . $count;
+        }
+        if ($type == 'production') {
+            $count = Transaction::where('type', $type)->whereDay('transaction_date', $day)->count() + $i;
+
+            $number = 'PMP' . $year . $month .$day. $count;
         }
         if ($type == 'remove_stock') {
             $count = Transaction::where('type', $type)->whereMonth('transaction_date', $month)->count() + $i;
@@ -310,6 +316,46 @@ class ProductUtil extends Util
         }
         foreach ($variation_array as $array) {
             $this->createOrUpdateProductStore($product, $array['variation'], $request, $array['variant_stores']);
+        }
+
+        return true;
+    }
+
+    /**
+     * create or update product extension data
+     *
+     * @param int $variation_id
+     * @param array $consumption_details
+     * @return boolean
+     */
+    public function createOrUpdateExtensionToProduct($variation_id, $extension_details)
+    {
+        $keep_extension_product = [];
+        if (!empty($extension_details)) {
+            foreach ($extension_details as $v) {
+                if (!empty($v['extension_id'])) {
+                    if (!empty($v['id'])) {
+                        $extension_product = ProductExtension::find($v['id']);
+                        $extension_product->extension_id = $v['extension_id'];
+                        $extension_product->variation_id = $variation_id;
+                        $extension_product->sell_price = $this->num_uf($v['sell_price']);
+                        $extension_product->save();
+                        $keep_extension_product[] = $v['id'];
+                    } else {
+                        $extension_product_data['extension_id'] = $v['extension_id'];
+                        $extension_product_data['variation_id'] = $variation_id;
+                        $extension_product_data['sell_price'] = $v['sell_price'];
+                        $extension_product = ProductExtension::create($extension_product_data);
+                        $keep_extension_product[] = $extension_product->id;
+                    }
+                }
+            }
+        }
+
+        if (!empty($keep_extension_product)) {
+            //delete the consumption product removed by user
+            ProductExtension::where('variation_id', $variation_id)
+                ->whereNotIn('id', $keep_extension_product)->delete();
         }
 
         return true;
@@ -1288,7 +1334,50 @@ class ProductUtil extends Util
 
         return true;
     }
+    /**
+     * get the stock value by store id
+     *
+     * @param int $store_id
+     * @return void
+     */
+    public function getCurrentStockProductValueByStore($store_id = null)
+    {
+        $query = Product::leftjoin('variations', 'products.id', 'variations.product_id')
+            ->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id')
+            ->where('is_service', 0)->where('products.is_raw_material', 0);
+        if (!empty($store_id)) {
+            $query->where('product_stores.store_id', $store_id);
+        }
+        $query->select(
+            DB::raw('SUM(product_stores.qty_available * products.purchase_price) as current_stock_value'),
+        );
 
+        $current_stock_value = $query->first();
+
+        return $current_stock_value ? $current_stock_value->current_stock_value : 0;
+    }
+    /**
+     * get the stock value by store id
+     *
+     * @param int $store_id
+     * @return void
+     */
+    public function getCurrentStockPrimaryMaterialValueByStore($store_id = null)
+    {
+        $query = Product::leftjoin('variations', 'products.id', 'variations.product_id')
+            ->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id')
+            ->where('is_service', 0)->where('products.is_raw_material', 1);
+        if (!empty($store_id)) {
+            $query->where('product_stores.store_id', $store_id);
+        }
+        $query->select(
+            DB::raw('SUM(product_stores.qty_available * products.purchase_price) as current_stock_value'),
+        );
+
+        $current_stock_value = $query->first();
+
+        return $current_stock_value ? $current_stock_value->current_stock_value : 0;
+    }
     /**
      * update the block quantity for quotations
      *
