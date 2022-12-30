@@ -824,7 +824,7 @@ $(document).on("change", ".depends_on", function () {
 });
 // //
 $(document).on("change", "#is_service", function () {
-    if ($(this).prop("checked")) {
+    if ($(this).prop("checked")) {1
         $(this).val(1);
         $(".supplier_div").removeClass("hide");
         $(".sell_price").removeClass('hide');
@@ -836,6 +836,8 @@ $(document).on("change", "#is_service", function () {
         $(".sell_price_th").removeClass('hide');
         $(".default_purchase_price_td").removeClass('hide');
         $(".default_sell_price_td").removeClass('hide');
+        $(".alert_quantity").addClass('hide');
+
     } else {
         $(this).val(0);
         $(".supplier_div").addClass("hide");
@@ -848,6 +850,8 @@ $(document).on("change", "#is_service", function () {
         $(".sell_price_th").addClass('hide');
         $(".default_purchase_price_td").addClass('hide');
         $(".default_sell_price_td").addClass('hide');
+        $(".alert_quantity").removeClass('hide');
+
     }
 });
 $(document).on("change", "#sell_price", function () {

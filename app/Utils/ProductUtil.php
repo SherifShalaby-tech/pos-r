@@ -618,9 +618,9 @@ class ProductUtil extends Util
         $product = Product::leftjoin('variations as v', 'products.id', '=', 'v.product_id')
             ->leftjoin('taxes', 'products.tax_id', '=', 'taxes.id')
             ->leftjoin('product_stores', 'v.id', '=', 'product_stores.variation_id')
-
-            ->whereNull('v.deleted_at');
-
+            ->leftjoin('add_stock_lines', 'v.id', '=', 'add_stock_lines.variation_id')
+            ->whereNull('v.deleted_at')
+            ->where('add_stock_lines.quantity',">=",'add_stock_lines.quantity_sold');
         if (!is_null($variation_id) && $variation_id !== '0') {
             $product->where('v.id', $variation_id);
         }
@@ -642,8 +642,8 @@ class ProductUtil extends Util
             'taxes.rate as tax_rate',
             'v.id as variation_id',
             'v.name as variation_name',
-            'v.default_purchase_price',
-            'v.default_sell_price',
+            'add_stock_lines.purchase_price as default_purchase_price',
+            'add_stock_lines.sell_price as default_sell_price',
             'v.sub_sku'
         )->groupBy('v.id')
             ->get();

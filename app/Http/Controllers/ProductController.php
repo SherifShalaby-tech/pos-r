@@ -246,8 +246,17 @@ class ProductController extends Controller
                     return $row->supplier->name ?? '';
                 })
                 ->editColumn('batch_number', '{{$batch_number}}')
-                ->editColumn('default_sell_price', '{{@num_format($default_sell_price)}}')
-                ->editColumn('default_purchase_price', '{{@num_format($default_purchase_price)}}')
+                ->editColumn('default_sell_price', function ($row) {
+                    $price=$row->variations->where('id',$row->variation_id)->first()->stockLines->where('quantity',"<=",'quantity_sold')->first();
+                    $price= $price? $price->sell_price:0;
+                    return $this->productUtil->num_f($price);
+                })//, '{{@num_format($default_sell_price)}}')
+                ->editColumn('default_purchase_price', function ($row) {
+                    $price=$row->variations->where('id',$row->variation_id)->first()->stockLines->where('quantity',"<=",'quantity_sold')->first();
+                    $price= $price? $price->purchase_price:0;
+
+                    return $this->productUtil->num_f($price);
+                })//, '{{@num_format($default_purchase_price)}}')
                 ->addColumn('tax', '{{$tax}}')
                 ->editColumn('brand', '{{$brand}}')
                 ->editColumn('unit', '{{$unit}}')
@@ -541,8 +550,8 @@ class ProductController extends Controller
                 'barcode_type' => $request->barcode_type ?? 'C128',
                 'alert_quantity' => $request->alert_quantity,
                 'other_cost' => !empty($request->other_cost) ? $this->commonUtil->num_uf($request->other_cost) : 0,
-                'purchase_price' => $this->commonUtil->num_uf($request->purchase_price),
-                'sell_price' => $this->commonUtil->num_uf($request->sell_price),
+                'purchase_price' => !empty($request->is_service) ? $this->commonUtil->num_uf($request->purchase_price):0,
+                'sell_price' => !empty($request->is_service) ? $this->commonUtil->num_uf($request->sell_price):0,
                 'tax_id' => $request->tax_id,
                 'tax_method' => $request->tax_method,
                 'discount_type' => $request->discount_type,

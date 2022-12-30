@@ -183,18 +183,19 @@ class SellPosController extends Controller
     {
         // try {
         DB::beginTransaction();
-        if($request->ItemBorrowed){
-            foreach($request->ItemBorrowed as $deposite){
-                DB::table('item_borroweds')->insert([
-                    'name' => $deposite['name'],
-                    'customer_id' => $deposite['customer_id'],
-                    'admin_id' => Auth::user()->id,
-                    'status' => $deposite['status'],
-                    'deposit_amount' => $deposite['insurance_amount'],
-                    'return_date' => $deposite['return_date']
-                ]);
-            }
-        }
+//        dd($request->ItemBorrowed);
+//        if($request->ItemBorrowed){
+//            foreach($request->ItemBorrowed as $deposite){
+//                DB::table('item_borroweds')->insert([
+//                    'name' => $deposite['name'],
+//                    'customer_id' => $deposite['customer_id'],
+//                    'admin_id' => Auth::user()->id,
+//                    'status' => $deposite['status'],
+//                    'deposit_amount' => $deposite['insurance_amount'],
+//                    'return_date' => $deposite['return_date']
+//                ]);
+//            }
+//        }
         $transaction_data = [
             'store_id' => $request->store_id,
             'customer_id' => $request->customer_id,
@@ -1049,7 +1050,6 @@ class SellPosController extends Controller
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id);
-
                 $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
                 $sale_promotion_details = null; //changed, now in pos.js check_for_sale_promotion method
@@ -1359,7 +1359,7 @@ class SellPosController extends Controller
                 'transaction_payments:id,transaction_id,method,ref_number',
                 'deliveryman',
                 'canceled_by_user',
-            ]);
+            ])->groupBy('transactions.id');
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')

@@ -54,4 +54,18 @@ class Variation extends Model
     {
         return $this->hasMany(ConsumptionProduct::class);
     }
+    public function stockLines()
+    {
+        return $this->hasMany(AddStockLine::class,'variation_id');
+    }
+
+    public function getSellPriceAttribute($value)
+    {
+        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',"<=",'quantity_sold')->first();
+        if(is_null($quantityDiffrenceInLineStock))
+        {
+            return isset($this->default_sell_price)?$this->default_sell_price:$value;
+        }
+        return $quantityDiffrenceInLineStock->sell_price;
+    }
 }

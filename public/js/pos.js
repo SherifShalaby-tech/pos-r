@@ -1829,7 +1829,7 @@ recent_transaction_table = $("#recent_transaction_table").DataTable({
     },
     columnDefs: [
         {
-            targets: [13],
+            targets: [11],
             orderable: false,
             searchable: false,
         },
@@ -1846,7 +1846,8 @@ recent_transaction_table = $("#recent_transaction_table").DataTable({
         { data: "customer_type_name", name: "customer_type_name" },
         { data: "customer_name", name: "customer_name" },
         { data: "mobile_number", name: "mobile_number" },
-
+        { data: "method", name: "transaction_payments.method" },
+        { data: "status", name: "transactions.status" },
         { data: "status", name: "transactions.status" },
         { data: "payment_status", name: "transactions.payment_status" },
         { data: "deliveryman_name", name: "deliveryman.employee_name" },

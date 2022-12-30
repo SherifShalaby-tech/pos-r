@@ -7,15 +7,12 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
     <div class="col-md-4">
         <div class="i-checks">
             <input id="is_service" name="is_service" type="checkbox"
-                @if (session('system_mode') == 'restaurant') checked
-                @elseif(!empty($recent_product) && $recent_product->is_service == 1) checked @endif
+                checked
+
                 value="0" class="form-control-custom">
             <label for="is_service"><strong>
-                    @if (session('system_mode') == 'restaurant')
                         @lang('lang.or_add_new_product')
-                    @else
-                        @lang('lang.add_new_service')
-                    @endif
+
                 </strong></label>
         </div>
     </div>
@@ -43,11 +40,8 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
         </div>
     </div>
     <div class="col-md-4">
-        @if (session('system_mode') == 'restaurant')
             {!! Form::label('product_class_id', __('lang.category') . ' *', []) !!}
-        @else
-            {!! Form::label('product_class_id', __('lang.class') . ' *', []) !!}
-        @endif
+
         <div class="input-group my-group">
             {!! Form::select('product_class_id', $product_classes, !empty($recent_product) ? $recent_product->product_class_id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'required']) !!}
             <span class="input-group-btn">
@@ -60,50 +54,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
         </div>
         <div class="error-msg text-red"></div>
     </div>
-    @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
-        <div class="col-md-4">
-            {!! Form::label('category_id', __('lang.category') . ' *', []) !!}
-            <div class="input-group my-group">
-                {!! Form::select('category_id', $categories, !empty($recent_product) ? $recent_product->category_id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-                <span class="input-group-btn">
-                    @can('product_module.category.create_and_edit')
-                        <button class="btn-modal btn btn-default bg-white btn-flat"
-                            data-href="{{ action('CategoryController@create') }}?quick_add=1&type=category"
-                            data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                    @endcan
-                </span>
-            </div>
-            <div class="error-msg text-red"></div>
-        </div>
-        <div class="col-md-4">
-            {!! Form::label('sub_category_id', __('lang.sub_category'), []) !!}
-            <div class="input-group my-group">
-                {!! Form::select('sub_category_id', [], !empty($recent_product) ? $recent_product->sub_category_id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-                <span class="input-group-btn">
-                    @can('product_module.sub_category.create_and_edit')
-                        <button class="btn-modal btn btn-default bg-white btn-flat"
-                            data-href="{{ action('CategoryController@create') }}?quick_add=1&type=sub_category"
-                            data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                    @endcan
-                </span>
-            </div>
-            <div class="error-msg text-red"></div>
-        </div>
-        <div class="col-md-4">
-            {!! Form::label('brand_id', __('lang.brand'), []) !!}
-            <div class="input-group my-group">
-                {!! Form::select('brand_id', $brands, !empty($recent_product) ? $recent_product->brand_id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-                <span class="input-group-btn">
-                    @can('product_module.brand.create_and_edit')
-                        <button class="btn-modal btn btn-default bg-white btn-flat"
-                            data-href="{{ action('BrandController@create') }}?quick_add=1" data-container=".view_modal"><i
-                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                    @endcan
-                </span>
-            </div>
-            <div class="error-msg text-red"></div>
-        </div>
-    @endif
+
     <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('name', __('lang.name') . ' *', []) !!}
@@ -127,34 +78,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
             {!! Form::text('sku', null, ['class' => 'form-control', 'placeholder' => __('lang.sku')]) !!}
         </div>
     </div>
-    @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
-        <div class="col-md-4">
-            {!! Form::label('multiple_units', __('lang.unit'), []) !!}
-            <div class="input-group my-group">
-                {!! Form::select('multiple_units[]', $units, !empty($recent_product) ? $recent_product->multiple_units : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'multiple_units']) !!}
-                <span class="input-group-btn">
-                    @can('product_module.unit.create_and_edit')
-                        <button class="btn-modal btn btn-default bg-white btn-flat"
-                            data-href="{{ action('UnitController@create') }}?quick_add=1" data-container=".view_modal"><i
-                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                    @endcan
-                </span>
-            </div>
-        </div>
-        <div class="col-md-4">
-            {!! Form::label('multiple_colors', __('lang.color'), []) !!}
-            <div class="input-group my-group">
-                {!! Form::select('multiple_colors[]', $colors, !empty($recent_product) ? $recent_product->multiple_colors : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'multiple_colors']) !!}
-                <span class="input-group-btn">
-                    @can('product_module.color.create_and_edit')
-                        <button class="btn-modal btn btn-default bg-white btn-flat"
-                            data-href="{{ action('ColorController@create') }}?quick_add=1" data-container=".view_modal"><i
-                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                    @endcan
-                </span>
-            </div>
-        </div>
-    @endif
+
     <div class="col-md-4">
         {!! Form::label('multiple_sizes', __('lang.size'), []) !!}
         <div class="input-group my-group">
@@ -168,33 +92,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
             </span>
         </div>
     </div>
-    @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
-        <div class="col-md-4">
-            {!! Form::label('multiple_grades', __('lang.grade'), []) !!}
-            <div class="input-group my-group">
-                {!! Form::select('multiple_grades[]', $grades, !empty($recent_product) ? $recent_product->multiple_grades : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'multiple_grades']) !!}
-                <span class="input-group-btn">
-                    @can('product_module.grade.create_and_edit')
-                        <button class="btn-modal btn btn-default bg-white btn-flat"
-                            data-href="{{ action('GradeController@create') }}?quick_add=1" data-container=".view_modal"><i
-                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
-                    @endcan
-                </span>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="form-group">
-                <label for="printers">{{trans('lang.printers')}}</label>
-                <div class="input-group my-group">
-                    <select id="printers" data-live-search="true" class="selectpicker form-control" name="printers[]" multiple>
-                        @foreach($printers as $printer)
-                            <option value="{{$printer->id}}">{{$printer->name}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-        </div>
-    @endif
+
     <div class="col-md-12 " style="margin-top: 10px;">
         <div class="dropzone" id="my-dropzone">
             <div class="dz-message" data-dz-message><span>@lang('lang.drop_file_here_to_upload')</span></div>
@@ -203,11 +101,8 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
 
     <div class="col-md-12">
         <div class="form-group">
-            @if (session('system_mode') == 'restaurant')
                 {!! Form::label('recipe', __('lang.recipe'), []) !!}
-            @else
-                <label>@lang('lang.product_details')</label>
-            @endif
+
             <button type="button" class="translation_textarea_btn btn btn-sm"><i
                     class="dripicons-web text-primary fa-lg"></i></button>
             <textarea name="product_details" id="product_details" class="form-control"
@@ -220,7 +115,6 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
             ])
         </div>
     </div>
-    @if (session('system_mode') == 'restaurant' || session('system_mode') == 'garments' || session('system_mode') == 'pos')
         <div class="col-md-4">
             <div class="i-checks">
                 <input id="automatic_consumption" name="automatic_consumption" type="checkbox" value="1"
@@ -279,68 +173,67 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
             </table>
             <input type="hidden" name="extension_row_index" id="extension_row_index" value="1">
         </div>
-    @endif
-    @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+
+        <div class="col-md-4">
+        <div class="form-group">
+            <div class="form-check">
+                <input class="form-check-input depends_on" type="radio" name="depends_on" id="selling_price_depends" value="1">
+                <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على سعر الشراء</label>
+                <div class="form-group selling_price_depends_div hide">
+                    <label>سعر البيع يزيد عن سعر الشراء بــمبلغ</label>
+                    <select class="form-control mb-2" name="selling_price_depends_type">
+                        <option value="rate">نسبة</option>
+                        <option value="amount">مبلغ</option>
+                    </select>
+                    <input type="number" class="form-control" name="selling_price_depends" value="">
+
+                </div>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input depends_on" type="radio" name="depends_on" id="purchase_price_depends" value="2">
+                <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد على سعر البيع</label>
+                <div class="form-group purchase_price_depends_div hide">
+                    <label>سعر الشراء يقل عن سعر البيع بــمبلغ</label>
+                    <select class="form-control mb-2" name="purchase_price_depends_type">
+                        <option value="rate">نسبة</option>
+                        <option value="amount">مبلغ</option>
+                    </select>
+                    <input type="number" class="form-control" name="purchase_price_depends" value="">
+
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="col-md-4">
             <div class="form-group">
                 {!! Form::label('barcode_type', __('lang.barcode_type'), []) !!}
                 {!! Form::select('barcode_type', ['C128' => 'Code 128', 'C39' => 'Code 39', 'UPCA' => 'UPC-A', 'UPCE' => 'UPC-E', 'EAN8' => 'EAN-8', 'EAN13' => 'EAN-13'], !empty($recent_product) ? $recent_product->barcode_type : false, ['class' => 'form-control', 'required']) !!}
             </div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 alert_quantity hide">
             <div class="form-group">
                 {!! Form::label('alert_quantity', __('lang.alert_quantity'), []) !!}
                 {!! Form::text('alert_quantity', !empty($recent_product) ? @num_format($recent_product->alert_quantity) : 3, ['class' => 'form-control', 'placeholder' => __('lang.alert_quantity')]) !!}
             </div>
         </div>
-        <div class="col-md-4"></div>
-        <div class="col-md-4 depends_on_div">
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input depends_on" type="radio" name="depends_on" id="selling_price_depends" value="1">
-                    <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على سعر الشراء</label>
-                    <div class="form-group selling_price_depends_div hide">
-                        <label>سعر البيع يزيد عن سعر الشراء بــمبلغ</label>
-                        <select class="form-control mb-2" name="selling_price_depends_type">
-                            <option value="rate">نسبة</option>
-                            <option value="amount">مبلغ</option>
-                        </select>
-                        <input type="number" class="form-control" name="selling_price_depends" value="">
 
-                    </div>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input depends_on" type="radio" name="depends_on" id="purchase_price_depends" value="2">
-                    <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد على سعر البيع</label>
-                    <div class="form-group purchase_price_depends_div hide">
-                        <label>سعر الشراء يقل عن سعر البيع بــمبلغ</label>
-                        <select class="form-control mb-2" name="purchase_price_depends_type">
-                            <option value="rate">نسبة</option>
-                            <option value="amount">مبلغ</option>
-                        </select>
-                        <input type="number" class="form-control" name="purchase_price_depends" value="">
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
     <div class="col-md-4">
-        <div class="form-group other_cost hide">
+        <div class="form-group other_cost">
             {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
             {!! Form::text('other_cost', !empty($recent_product) ? @num_format($recent_product->other_cost) : null, ['class' => 'form-control', 'placeholder' => __('lang.other_cost')]) !!}
         </div>
     </div>
     @can('product_module.purchase_price.create_and_edit')
         <div class="col-md-4">
-            <div class="form-group purchase_price hide">
-                {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', []) !!}
-                {!! Form::text('purchase_price', !empty($recent_product) ? @num_format($recent_product->purchase_price) : null, ['class' => 'form-control', 'placeholder' => session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
+            <div class="form-group purchase_price">
+                {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
+                {!! Form::text('purchase_price', !empty($recent_product) ? @num_format($recent_product->purchase_price) : null, ['class' => 'form-control', 'placeholder' =>  __('lang.cost'), 'required']) !!}
             </div>
         </div>
     @endcan
     <div class="col-md-4">
-        <div class="form-group sell_price hide">
+        <div class="form-group sell_price">
             {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
             {!! Form::text('sell_price', !empty($recent_product) ? @num_format($recent_product->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
         </div>
