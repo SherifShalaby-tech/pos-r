@@ -164,7 +164,7 @@ class Product extends Model implements HasMedia
 
     public function getSellPriceAttribute($value)
     {
-        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',"<=",'quantity_sold')->first();
+        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',">",'quantity_sold')->first();
         if(is_null($quantityDiffrenceInLineStock))
         {
 

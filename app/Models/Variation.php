@@ -61,7 +61,7 @@ class Variation extends Model
 
     public function getSellPriceAttribute($value)
     {
-        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',"<=",'quantity_sold')->first();
+        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',">",'quantity_sold')->first();
         if(is_null($quantityDiffrenceInLineStock))
         {
             return isset($this->default_sell_price)?$this->default_sell_price:$value;

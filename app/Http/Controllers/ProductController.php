@@ -215,7 +215,7 @@ class ProductController extends Controller
                 'variations.id as variation_id',
                 'variations.name as variation_name',
                 'variations.default_purchase_price',
-                'variations.default_sell_price',
+                'variations.default_sell_price as default_sell_price',
                 'add_stock_lines.expiry_date as exp_date',
                 'users.name as created_by_name',
                 'edited.name as edited_by_name',
@@ -247,13 +247,13 @@ class ProductController extends Controller
                 })
                 ->editColumn('batch_number', '{{$batch_number}}')
                 ->editColumn('default_sell_price', function ($row) {
-                    $price=$row->variations->where('id',$row->variation_id)->first()->stockLines->where('quantity',"<=",'quantity_sold')->first();
-                    $price= $price? $price->sell_price:0;
+                    $price=$row->variations->where('id',$row->variation_id)->first()->stockLines->where('quantity',">",'quantity_sold')->first();
+                    $price= $price? ($price->sell_price > 0 ? $price->sell_price : $row->default_sell_price):$row->default_sell_price;
                     return $this->productUtil->num_f($price);
                 })//, '{{@num_format($default_sell_price)}}')
                 ->editColumn('default_purchase_price', function ($row) {
-                    $price=$row->variations->where('id',$row->variation_id)->first()->stockLines->where('quantity',"<=",'quantity_sold')->first();
-                    $price= $price? $price->purchase_price:0;
+                    $price=$row->variations->where('id',$row->variation_id)->first()->stockLines->where('quantity',">",'quantity_sold')->first();
+                    $price= $price? ($price->purchase_price > 0 ? $price->purchase_price : $row->default_purchase_price):$row->default_purchase_price;
 
                     return $this->productUtil->num_f($price);
                 })//, '{{@num_format($default_purchase_price)}}')
