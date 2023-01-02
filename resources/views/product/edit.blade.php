@@ -17,7 +17,7 @@
                                 <div class="col-md-4">
                                     <div class="i-checks">
                                         <input id="is_service" name="is_service" type="checkbox"
-                                            @if (!empty($product->is_service)) checked @endif value="1"
+                                            @if (!empty($product->is_service)) checked @endif value="@if($product->is_service)1 @else 0 @endif"
                                             class="form-control-custom">
                                         <label for="is_service"><strong>
                                                 @if (session('system_mode') == 'restaurant')
@@ -332,6 +332,37 @@
                                         </table>
                                         <input type="hidden" name="extension_row_index" id="extension_row_index" value="1">
                                     </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input depends_on" type="radio" name="depends_on" id="selling_price_depends" value="1">
+                                                <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على سعر الشراء</label>
+                                                <div class="form-group selling_price_depends_div hide">
+                                                    <label>سعر البيع يزيد عن سعر الشراء بــمبلغ</label>
+                                                    <select class="form-control mb-2" name="selling_price_depends_type">
+                                                        <option value="rate">نسبة</option>
+                                                        <option value="amount">مبلغ</option>
+                                                    </select>
+                                                    <input type="number" class="form-control" name="selling_price_depends" value="{{$product->selling_price_depends}}">
+
+                                                </div>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input depends_on" type="radio" name="depends_on" id="purchase_price_depends" value="2">
+                                                <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد على سعر البيع</label>
+                                                <div class="form-group purchase_price_depends_div hide">
+                                                    <label>سعر الشراء يقل عن سعر البيع بــمبلغ</label>
+                                                    <select class="form-control mb-2" name="purchase_price_depends_type">
+                                                        <option value="rate">نسبة</option>
+                                                        <option value="amount">مبلغ</option>
+                                                    </select>
+                                                    <input type="number" class="form-control" name="purchase_price_depends" value="{{$product->purchase_price_depends}}">
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 @endif
                                 @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
                                     <div class="col-md-4">
@@ -499,8 +530,8 @@
                                                 <th>@lang('lang.grade')</th>
                                                 <th>@lang('lang.unit')</th>
                                                 <th>@lang('lang.number_vs_base_unit')</th>
-                                                <th>@lang('lang.purchase_price')</th>
-                                                <th>@lang('lang.sell_price')</th>
+                                                <th class="purchase_price_th @if(!$product->is_service) hide @endif">@lang('lang.purchase_price')</th>
+                                                <th class="sell_price_th @if(!$product->is_service) hide @endif">@lang('lang.sell_price')</th>
                                                 <th><button type="button" class="btn btn-success btn-xs add_row mt-2"><i
                                                             class="dripicons-plus"></i></button></th>
                                             </tr>

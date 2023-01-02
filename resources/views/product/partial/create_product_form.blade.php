@@ -204,6 +204,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
             </div>
         </div>
     </div>
+
         <div class="col-md-4">
             <div class="form-group">
                 {!! Form::label('barcode_type', __('lang.barcode_type'), []) !!}
