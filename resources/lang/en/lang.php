@@ -32,8 +32,11 @@ return [
     'production'=>'Produce Primary material',
     'StorePosReq'=>'For production, points of sale must be assigned to the user',
     'productions'=>'Produce Primary material ',
-    'cost_per_unit'=>'التكلفة لكل وحدة',
-
+    'cost_per_unit'=>'cost per unit',
+    'add_a_free_amount'=>'Add a free amount of the same product',
+    'free_amount'=>'free amount',
+    'new_purchase_price'=>'new purchase price',
+    'profit'=>'profit',
     "please_select_any_product"=>"Please select at least one product",
     'you_dont_have_any_branch'=>"Sorry, we don't have any branches, please contact the administration",
     'send_to_branch' => 'Send to branch',

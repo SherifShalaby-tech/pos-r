@@ -206,8 +206,10 @@ return [
     'product_name' => 'اسم المنتج',
     'paper_size' => 'حجم الورق',
     'variations' => 'الاختلافات',
-
-
+    'add_a_free_amount'=>'اضافة كمية مجانية من نفس المنتج',
+    'free_amount'=>'الكمية المجانية',
+    'new_purchase_price'=>'سعر الشراء الجديد',
+    'profit'=>'الربح',
     'create_new_purchase_order' => 'إنشاء أمر شراء جديد',
     'purchase_order' => 'أمر شراء',
     'list_purchase_order' => 'قائمة أوامر الشراء',
