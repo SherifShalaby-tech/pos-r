@@ -76,7 +76,7 @@ class HomeController extends Controller
         $store_id = [];
         $start_date = !empty(request()->start_date) ? request()->start_date : new Carbon('first day of this month');
         $end_date = !empty(request()->end_date) ? request()->end_date : new Carbon('last day of this month');
-        $store_id = request()->input('store_id') ? [request()->input('store_id')] : [0];
+        $store_id = request()->input('store_id') ? request()->input('store_id') : [0];
 
         $store_pos_id = null;
         if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
@@ -89,7 +89,6 @@ class HomeController extends Controller
                 $store_pos_id =  -1;
             }
         }
-
         $best_sellings = $this->getBestSellings($start_date, $end_date, 'qty', $store_id);
         $yearly_best_sellings_qty = $this->getBestSellings($start_date, $end_date, 'qty', $store_id);
         $yearly_best_sellings_price = $this->getBestSellings($start_date, $end_date, 'total_price', $store_id);
@@ -245,14 +244,14 @@ class HomeController extends Controller
     {
         $query =  TransactionSellLine::leftjoin('transactions', 'transaction_sell_lines.transaction_id', 'transactions.id')
             ->join('products', 'transaction_sell_lines.product_id', 'products.id')
-            ->where('transaction_date', '>=', $start_date)
-            ->where('transaction_date', '<=', $end_date);
+            ->where('transactions.transaction_date', '>=', $start_date)
+            ->where('transactions.transaction_date', '<=', $end_date);
 
         if (!empty($store_id)) {
             $query->whereIn('transactions.store_id', $store_id);
         }
         if (!empty($store_pos_id)) {
-            $query->where('transactions.store_pos_id', '=', $store_pos_id);
+            $query->where('transactions.store_pos_id',  $store_pos_id);
         }
 
         $result = $query->select(
@@ -531,7 +530,7 @@ class HomeController extends Controller
         if (!empty($store_id)) {
             $store_id = $store_id;
         } else {
-            $store_id = request()->input('store_id') ? [request()->input('store_id')] :[0];
+            $store_id = request()->input('store_id') ? request()->input('store_id') :[0];
         }
 
         if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
