@@ -770,6 +770,7 @@ $(document).ready(function () {
             .text(__currency_trans_from_en(raw_material_total, false));
     });
 });
+
 $(document).on("change", "#discount", function () {
     let discount = __read_number($(this));
     if (discount > 0) {
@@ -778,13 +779,49 @@ $(document).on("change", "#discount", function () {
         $("select#discount_customer_types").attr("required", false);
     }
 });
-$(document).on("change", "#is_service", function () {
-    if ($(this).prop("checked")) {
-        $(".supplier_div").removeClass("hide");
-    } else {
-        $(".supplier_div").addClass("hide");
+
+$(document).on("change", ".depends_on", function () {
+    if ($(this).val() == 1){
+        $(".selling_price_depends_div").removeClass("hide");
+        $(".purchase_price_depends_div").addClass('hide');
+    }else{
+        $(".selling_price_depends_div").addClass("hide");
+        $(".purchase_price_depends_div").removeClass('hide');
     }
 });
+
+$(document).on("change", "#is_service", function () {
+    if ($(this).prop("checked")) {
+        $(this).val(1);
+        $(".supplier_div").removeClass("hide");
+        $(".sell_price").removeClass('hide');
+        $(".purchase_price").removeClass('hide');
+        $(".other_cost").removeClass('hide');
+        $(".depends_on_div").addClass('hide');
+        //purchase_price rows
+        $(".purchase_price_th").removeClass('hide');
+        $(".sell_price_th").removeClass('hide');
+        $(".default_purchase_price_td").removeClass('hide');
+        $(".default_sell_price_td").removeClass('hide');
+        $(".alert_quantity").addClass('hide');
+
+    } else {
+        $(this).val(0);
+        $(".supplier_div").addClass("hide");
+        $(".sell_price").addClass('hide');
+        $(".purchase_price").addClass('hide');
+        $(".other_cost").addClass('hide');
+        $(".depends_on_div").addClass('hide');
+        //purchase_price rows
+        $(".purchase_price_th").addClass('hide');
+        $(".sell_price_th").addClass('hide');
+        $(".default_purchase_price_td").addClass('hide');
+        $(".default_sell_price_td").addClass('hide');
+        $(".alert_quantity").removeClass('hide');
+
+    }
+});
+
 $(document).on("change", "#sell_price", function () {
     let sell_price = __read_number($(this));
     let purchase_price = __read_number($("#purchase_price"));

@@ -822,9 +822,10 @@ $(document).on("change", ".depends_on", function () {
         $(".purchase_price_depends_div").removeClass('hide');
     }
 });
+
 // //
 $(document).on("change", "#is_service", function () {
-    if ($(this).prop("checked")) {1
+    if ($(this).prop("checked")) {
         $(this).val(1);
         $(".supplier_div").removeClass("hide");
         $(".sell_price").removeClass('hide');

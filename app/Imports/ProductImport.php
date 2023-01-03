@@ -169,9 +169,10 @@ class ProductImport implements ToCollection, WithHeadingRow, WithValidation
                 ];
 
                 $product = Product::create($product_data);
+                if (!empty($row['image'])) {
+                    $product->addMediaFromUrl($row['image'])->toMediaCollection('product');
+                }
                 $this->productUtil->createOrUpdateVariations($product, $this->request);
-
-
             }
 
         }
