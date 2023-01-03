@@ -248,12 +248,14 @@ class ProductController extends Controller
                 })
                 ->editColumn('batch_number', '{{$batch_number}}')
                 ->editColumn('default_sell_price', function ($row) {
-                    $price= AddStockLine::where('variation_id',$row->variation_id)->where('quantity',">",'quantity_sold')->first();
+                    $price= AddStockLine::where('variation_id',$row->variation_id)
+                        ->whereColumn('quantity',">",'quantity_sold')->first();
                     $price= $price? ($price->sell_price > 0 ? $price->sell_price : $row->default_sell_price):$row->default_sell_price;
                     return $this->productUtil->num_f($price);
                 })//, '{{@num_format($default_sell_price)}}')
                 ->editColumn('default_purchase_price', function ($row) {
-                    $price= AddStockLine::where('variation_id',$row->variation_id)->where('quantity',">",'quantity_sold')->first();
+                    $price= AddStockLine::where('variation_id',$row->variation_id)
+                        ->whereColumn('quantity',">",'quantity_sold')->first();
                     $price= $price? ($price->purchase_price > 0 ? $price->purchase_price : $row->default_purchase_price):$row->default_purchase_price;
 
                     return $this->productUtil->num_f($price);

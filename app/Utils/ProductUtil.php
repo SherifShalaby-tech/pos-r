@@ -980,12 +980,11 @@ class ProductUtil extends Util
         foreach ($add_stocks as $line) {
             if (!empty($line['add_stock_line_id'])) {
                 $add_stock = AddStockLine::find($line['add_stock_line_id']);
-
                 $add_stock->product_id = $line['product_id'];
                 $add_stock->variation_id = $line['variation_id'];
                 $old_qty = $add_stock->quantity;
-                $add_stock->quantity = $this->num_uf($line['quantity']);
-                $add_stock->purchase_price = $this->num_uf($line['purchase_price']);
+                $add_stock->quantity = $line['bounce_qty'] > 0 ? $this->num_uf($line['quantity'])+$line['bounce_qty']: $this->num_uf($line['quantity']);
+                $add_stock->purchase_price = $line['bounce_qty'] > 0 ? $line['bounce_purchase_price']:$this->num_uf($line['purchase_price']);
                 $add_stock->final_cost = $this->num_uf($line['final_cost']);
                 $add_stock->sub_total = $this->num_uf($line['sub_total']);
                 $add_stock->batch_number = $line['batch_number'];
@@ -1011,8 +1010,8 @@ class ProductUtil extends Util
                     'transaction_id' => $transaction->id,
                     'product_id' => $line['product_id'],
                     'variation_id' => $line['variation_id'],
-                    'quantity' => $this->num_uf($line['quantity']),
-                    'purchase_price' => $this->num_uf($line['purchase_price']),
+                    'quantity' => $line['bounce_qty'] > 0 ? $this->num_uf($line['quantity'])+$line['bounce_qty']: $this->num_uf($line['quantity']),
+                    'purchase_price' => $line['bounce_qty'] > 0 ? $line['bounce_purchase_price'] : $this->num_uf($line['purchase_price']),
                     'final_cost' => $this->num_uf($line['final_cost']),
                     'sub_total' => $this->num_uf($line['sub_total']),
                     'batch_number' => $line['batch_number'],

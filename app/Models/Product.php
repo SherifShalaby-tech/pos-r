@@ -162,16 +162,16 @@ class Product extends Model implements HasMedia
         return $this->hasMany(AddStockLine::class,'product_id');
     }
 
-    public function getSellPriceAttribute($value)
-    {
-        $quantityDiffrenceInLineStock = $this->stockLines->where('quantity',">",'quantity_sold')->first();
-        if(is_null($quantityDiffrenceInLineStock))
-        {
-
-           return isset($this->variations->first()->default_sell_price)?$this->variations->first()->default_sell_price:$value;
-        }
-        return $quantityDiffrenceInLineStock->sell_price;
-    }
+//    public function getSellPriceAttribute($value)
+//    {
+//        $quantityDiffrenceInLineStock = AddStockLine::where('product_id',$this->id)->whereColumn('quantity',">",'quantity_sold')->first();
+//        if(is_null($quantityDiffrenceInLineStock))
+//        {
+//
+//           return isset($this->variations->first()->default_sell_price)?$this->variations->first()->default_sell_price:$value;
+//        }
+//        return $quantityDiffrenceInLineStock->sell_price;
+//    }
 
 
 }
