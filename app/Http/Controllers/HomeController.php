@@ -53,7 +53,7 @@ class HomeController extends Controller
         if (strtolower(session('user.job_title')) == 'cashier') {
             $store_pos_id = session('user.pos_id');
         } else {
-            if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
+            if (!Auth::user()->is_superadmin && !auth()->user()->is_admin && !strtolower(session('user.job_title'))  =="Accountant") {
                 $employee = Employee::where('user_id', Auth::user()->id)->first();
                 $store_ids = $employee->store_id;
                 $store_pos_id = null;
@@ -79,7 +79,7 @@ class HomeController extends Controller
         $store_id = request()->input('store_id') ? request()->input('store_id') : [0];
 
         $store_pos_id = null;
-        if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
+        if (!Auth::user()->is_superadmin && !auth()->user()->is_admin && !strtolower(session('user.job_title'))  =="Accountant") {
             $employee = Employee::where('user_id', Auth::user()->id)->first();
             $store_id = $employee->store_id;
             $store_pos_id = null;
@@ -533,7 +533,7 @@ class HomeController extends Controller
             $store_id = request()->input('store_id') ? request()->input('store_id') :[0];
         }
 
-        if (!Auth::user()->is_superadmin && !auth()->user()->is_admin) {
+        if (!Auth::user()->is_superadmin && !auth()->user()->is_admin && !strtolower(session('user.job_title'))  =="Accountant") {
             $store_pos_id = null;
             if (!empty(session('user.pos_id'))) {
                 $store_pos_id = session('user.pos_id');

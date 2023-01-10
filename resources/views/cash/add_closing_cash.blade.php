@@ -208,7 +208,7 @@
                 id="closing-save-btn">@lang('lang.save')</button>
             <button type="button"
                 class="btn btn-default @if ($type == 'logout') close-btn-add-closing-cash @endif"
-                @if ($type != 'logout') data-dismiss="modal" @endif>@lang('lang.close')</button>
+                @if ($type != 'logout') data-dismiss="modal" @endif>@lang('lang.cancel')</button>
         </div>
 
         {!! Form::close() !!}
