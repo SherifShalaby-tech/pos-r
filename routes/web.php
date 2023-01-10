@@ -441,4 +441,4 @@ Route::post('/tokens/create', function (Request $request) {
     $update->product->variations()->update(['default_sell_price'=>88]);
     return 'success';
 });*/
-
+Route::post('pdf', 'SettingController@getPdf');

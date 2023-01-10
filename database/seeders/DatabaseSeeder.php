@@ -195,6 +195,7 @@ class DatabaseSeeder extends Seeder
             PermissionTableSeeder::class,
             CurrenciesTableSeeder::class,
             PrinterSeeder::class,
+            JobSeeder::class,
         ]);
     }
 }
