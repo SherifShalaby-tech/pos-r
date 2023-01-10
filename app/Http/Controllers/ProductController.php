@@ -91,7 +91,7 @@ class ProductController extends Controller
             'brands',
             'units',
             'colors',
-            'sizes',-
+            'sizes',
             'grades',
             'taxes',
             'customers',
