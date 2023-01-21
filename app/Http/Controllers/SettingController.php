@@ -447,7 +447,9 @@ class SettingController extends Controller
         // $pdf = PDF::loadHTML( $request['data'] );
 
         $data = $request['data'];
-        $pdf = PDF::loadView('layouts.partials.pdf',compact('data'));
+        $title = $request['title'];
+
+        $pdf = PDF::loadView('layouts.partials.pdf',compact('data','title'));
 
         return response()->download( $pdf->download('Report.pdf') );
         // return $pdf->download('Admins.pdf') ;

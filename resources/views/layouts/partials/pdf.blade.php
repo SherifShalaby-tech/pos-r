@@ -21,11 +21,16 @@
         $logo = App\Models\System::getProperty('logo');
     @endphp
     <table>
-      <tr><td>
-        <img style="width: 500px !important; height: auto !important;" src="{{asset('/uploads/'.$logo)}}">
-      </td></tr>
       <tr>
-        <td>
+          <td>
+            <img style="width: 500px !important; height: auto !important;" src="{{asset('/uploads/'.$logo)}}">
+          </td>
+          <td>
+              {{$title}}
+          </td>
+      </tr>
+      <tr>
+        <td colspan="2">
           {!!$data!!}
         </td>
       </tr>
