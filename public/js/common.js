@@ -243,6 +243,7 @@ var buttons = [
         charset: 'UTF-8',
         bom: true,
         footer: true,
+        title: $('title').text(),
         exportOptions: {
             columns: ":visible:not(.notexport)",
         },
@@ -252,6 +253,7 @@ var buttons = [
         charset: 'UTF-8',
         bom: true,
         footer: true,
+        title: $('title').text(),
         exportOptions: {
             columns: ":visible:not(.notexport)",
         },
@@ -261,8 +263,11 @@ var buttons = [
         footer: true,
         charset: 'UTF-8',
         bom: true,
+        title: $('title').text(),
+        messageTop: $('title').text(),
         exportOptions: {
             columns: ":visible:not(.notexport)",
+
         },
     },
     { text: 'pdf' , action: function () {
@@ -272,14 +277,14 @@ var buttons = [
             // data = document.getElementById("sales_table").innerHTML;
             data = document.getElementsByClassName("dataTable")[0].innerHTML;
             // Done but error 414 request url is too larg solved by changing get to post
-
+           let title= $('title').text()
             $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} });
             // var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
                 url: "/pdf",
                 type: 'post',
                 // dataType: "json",
-                data: { 'data':data },
+                data: { 'data':data ,'title': title},
                 xhrFields: { responseType: 'blob' },
                 success: function(response, status, xhr) {
 
@@ -346,6 +351,7 @@ var buttons = [
         footer: true,
         charset: 'UTF-8',
         bom: true,
+        title:$('title').text(),
         exportOptions: {
             columns: ":visible:not(.notexport)",
         },
