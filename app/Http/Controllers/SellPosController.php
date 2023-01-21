@@ -1292,19 +1292,18 @@ class SellPosController extends Controller
      */
     public function getRecentTransactions(Request $request)
     {
-//        if (request()->ajax()) {
+        if (request()->ajax()) {
             $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
             $default_currency_id = System::getProperty('currency');
 
             $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
             $pos_id = $this->transactionUtil->getFilterOptionValues($request)['pos_id'];
-            $query = Transaction::leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
-                ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
+            $query = Transaction::
+            leftjoin('customers', 'transactions.customer_id', 'customers.id')
                 ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
                 ->leftjoin('users', 'transactions.created_by', 'users.id')
                 ->leftjoin('currencies as received_currency', 'transactions.received_currency_id', 'received_currency.id')
                 ->where('type', 'sell')->where('status', '!=', 'draft');
-
             if(strtolower(session('user.job_title')) == 'cashier'){
                 $query->where('transactions.created_by',Auth::user()->id);
             }
@@ -1326,9 +1325,9 @@ class SellPosController extends Controller
             if (!empty(request()->created_by)) {
                 $query->where('transactions.created_by', request()->created_by);
             }
-            if (!empty(request()->method)) {
-                $query->where('transaction_payments.method', request()->method);
-            }
+            // if (!empty(request()->method)) {
+            //     $query->where('transaction_payments.method', request()->method);
+            // }
             if (!empty($pos_id)) {
                 $query->where('store_pos_id', $pos_id);
             }
@@ -1347,7 +1346,7 @@ class SellPosController extends Controller
                 'transactions.service_fee_value',
                 'transactions.invoice_no',
                 'transactions.deliveryman_id',
-                'transaction_payments.paid_on',
+                // 'transaction_payments.paid_on',
                 'users.name as created_by_name',
                 'customers.name as customer_name',
                 'customer_types.name as customer_type_name',
@@ -1355,11 +1354,12 @@ class SellPosController extends Controller
                 'received_currency.symbol as received_currency_symbol',
                 'received_currency_id'
             )->with([
-                'return_parent',
-                'transaction_payments:id,transaction_id,method,ref_number',
-                'deliveryman',
-                'canceled_by_user',
-            ])->groupBy('transactions.id');
+                'return_parent:id,final_total',
+                'customer:id,name,mobile_number',
+                // 'transaction_payments:id,method,ref_number',
+                'deliveryman:id,employee_name',
+                'canceled_by_user:id,name',
+            ]);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1389,24 +1389,24 @@ class SellPosController extends Controller
                 })
                 ->addColumn('method', function ($row) use ($payment_types, $request) {
                     $methods = '';
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
-                    } else {
-                        $payments = $row->transaction_payments;
-                    }
-                    foreach ($payments as $payment) {
-                        if (!empty($payment->method)) {
-                            $methods .= $payment_types[$payment->method] . '<br>';
-                        }
-                    }
+                    // if (!empty($request->method)) {
+                    //     $payments = $row->transaction_payments->where('method', $request->method);
+                    // } else {
+                    //     $payments = $row->transaction_payments;
+                    // }
+                    // foreach ($payments as $payment) {
+                    //     if (!empty($payment->method)) {
+                    //         $methods .= $payment_types[$payment->method] . '<br>';
+                    //     }
+                    // }
                     return $methods;
                 })
                 ->addColumn('ref_number', function ($row) {
-                    if (!empty($row->transaction_payments[0]->ref_number)) {
-                        return $row->transaction_payments[0]->ref_number;
-                    } else {
-                        return '';
-                    }
+                    // if (!empty($row->transaction_payments[0]->ref_number)) {
+                    //     return $row->transaction_payments[0]->ref_number;
+                    // } else {
+                    return '';
+                    // }
                 })
                 ->addColumn('deliveryman_name', function ($row) {
                     if (!empty($row->deliveryman)) {
@@ -1433,14 +1433,14 @@ class SellPosController extends Controller
                 })
                 ->addColumn('paid', function ($row) use ($request) {
                     $amount_paid = 0;
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
-                    } else {
-                        $payments = $row->transaction_payments;
-                    }
-                    foreach ($payments as $payment) {
-                        $amount_paid += $payment->amount;
-                    }
+                    // if (!empty($request->method)) {
+                    //     $payments = $row->transaction_payments->where('method', $request->method);
+                    // } else {
+                    //     $payments = $row->transaction_payments;
+                    // }
+                    // foreach ($payments as $payment) {
+                    //     $amount_paid += $payment->amount;
+                    // }
                     return $this->commonUtil->num_uf($amount_paid);
                 })
                 ->editColumn('created_by', '{{$created_by_name}}')
@@ -1507,9 +1507,8 @@ class SellPosController extends Controller
                     'created_by',
                 ])
                 ->make(true);
-//        }
+        }
     }
-
     /**
      * list of draft transactions
      *
