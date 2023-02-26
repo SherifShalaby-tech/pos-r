@@ -9,7 +9,7 @@
 
     </div>
     <div class="table-responsive">
-        <table id="store_table" class="table dataTable">
+        <table id="customer_table" class="table">
             <thead>
                 <tr>
                     <th>@lang('lang.customer_type')</th>
@@ -27,113 +27,113 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($customers as $customer)
-                    <tr>
-                        <td>
-                            @if (!empty($customer->customer_type))
-                                {{ $customer->customer_type->name }}
-                            @endif
-                        </td>
-                        <td>{{ $customer->name }}</td>
-                        <td><img src="@if (!empty($customer->getFirstMediaUrl('customer_photo'))) {{ $customer->getFirstMediaUrl('customer_photo') }}@else{{ asset('/uploads/' . session('logo')) }} @endif"
-                                alt="photo" width="50" height="50">
-                        </td>
-                        <td>{{ $customer->mobile_number }}</td>
-                        <td>{{ $customer->address }}</td>
-                        <td class="@if ($balances[$customer->id] < 0) text-red @endif">
-                            {{ @num_format($balances[$customer->id]) }}
-                        </td>
-                        <td><a href="{{ action('CustomerController@show', $customer->id) }}?show=purchases"
-                                class="btn">{{ @num_format($customer->total_purchase - $customer->total_return) }}</a>
-                        </td>
-                        <td><a href="{{ action('CustomerController@show', $customer->id) }}?show=discounts"
-                                class="btn">{{ @num_format($customer->total_sp_discount + $customer->total_product_discount + $customer->total_coupon_discount) }}</a>
-                        </td>
-                        <td><a href="{{ action('CustomerController@show', $customer->id) }}?show=points"
-                                class="btn">{{ @num_format($customer->total_rp) }}</a></td>
-                        <td>{{ @format_date($customer->created_at) }}</td>
-                        <td>{{ $customer->created_by_user->name ?? '' }}</td>
-                        <td>
-                            <div class="btn-group">
-                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
-                                    aria-haspopup="true" aria-expanded="false">@lang('lang.action')
-                                    <span class="caret"></span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                    @can('customer_module.customer.view')
-                                        <li>
-                                            <a href="{{ action('CustomerController@show', $customer->id) }}"
-                                                class="btn">
-                                                <i class="dripicons-document"></i> @lang('lang.view')</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                    @endcan
-                                    @can('customer_module.customer.create_and_edit')
-                                        <li>
-                                            <a href="{{ action('CustomerController@edit', $customer->id) }}"><i
-                                                    class="dripicons-document-edit btn"></i>@lang('lang.edit')</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                    @endcan
-                                    @can('customer_module.add_payment.create_and_edit')
-                                        @if ($balances[$customer->id] < 0)
-                                            <li>
-                                                <a data-href="{{ action('TransactionPaymentController@getCustomerDue', $customer->id) }}"
-                                                    class="btn-modal" data-container=".view_modal"><i
-                                                        class="fa fa-money btn"></i>@lang('lang.pay_customer_due')</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                        @endif
-                                    @endcan
-                                    @can('adjustment.customer_balance_adjustment.create_and_edit')
-                                        <li>
-                                            <a href="{{ action('CustomerBalanceAdjustmentController@create', ['customer_id' => $customer->id]) }}"
-                                                class="btn"><i class="fa fa-adjust"></i> @lang('lang.adjust_customer_balance')</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                    @endcan
-                                    @can('adjustment.customer_point_adjustment.create_and_edit')
-                                        <li>
+{{--                @foreach ($customers as $customer)--}}
+{{--                    <tr>--}}
+{{--                        <td>--}}
+{{--                            @if (!empty($customer->customer_type))--}}
+{{--                                {{ $customer->customer_type->name }}--}}
+{{--                            @endif--}}
+{{--                        </td>--}}
+{{--                        <td>{{ $customer->name }}</td>--}}
+{{--                        <td><img src="@if (!empty($customer->getFirstMediaUrl('customer_photo'))) {{ $customer->getFirstMediaUrl('customer_photo') }}@else{{ asset('/uploads/' . session('logo')) }} @endif"--}}
+{{--                                alt="photo" width="50" height="50">--}}
+{{--                        </td>--}}
+{{--                        <td>{{ $customer->mobile_number }}</td>--}}
+{{--                        <td>{{ $customer->address }}</td>--}}
+{{--                        <td class="@if ($balances[$customer->id] < 0) text-red @endif">--}}
+{{--                            {{ @num_format($balances[$customer->id]) }}--}}
+{{--                        </td>--}}
+{{--                        <td><a href="{{ action('CustomerController@show', $customer->id) }}?show=purchases"--}}
+{{--                                class="btn">{{ @num_format($customer->total_purchase - $customer->total_return) }}</a>--}}
+{{--                        </td>--}}
+{{--                        <td><a href="{{ action('CustomerController@show', $customer->id) }}?show=discounts"--}}
+{{--                                class="btn">{{ @num_format($customer->total_sp_discount + $customer->total_product_discount + $customer->total_coupon_discount) }}</a>--}}
+{{--                        </td>--}}
+{{--                        <td><a href="{{ action('CustomerController@show', $customer->id) }}?show=points"--}}
+{{--                                class="btn">{{ @num_format($customer->total_rp) }}</a></td>--}}
+{{--                        <td>{{ @format_date($customer->created_at) }}</td>--}}
+{{--                        <td>{{ $customer->created_by_user->name ?? '' }}</td>--}}
+{{--                        <td>--}}
+{{--                            <div class="btn-group">--}}
+{{--                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"--}}
+{{--                                    aria-haspopup="true" aria-expanded="false">@lang('lang.action')--}}
+{{--                                    <span class="caret"></span>--}}
+{{--                                    <span class="sr-only">Toggle Dropdown</span>--}}
+{{--                                </button>--}}
+{{--                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">--}}
+{{--                                    @can('customer_module.customer.view')--}}
+{{--                                        <li>--}}
+{{--                                            <a href="{{ action('CustomerController@show', $customer->id) }}"--}}
+{{--                                                class="btn">--}}
+{{--                                                <i class="dripicons-document"></i> @lang('lang.view')</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="divider"></li>--}}
+{{--                                    @endcan--}}
+{{--                                    @can('customer_module.customer.create_and_edit')--}}
+{{--                                        <li>--}}
+{{--                                            <a href="{{ action('CustomerController@edit', $customer->id) }}"><i--}}
+{{--                                                    class="dripicons-document-edit btn"></i>@lang('lang.edit')</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="divider"></li>--}}
+{{--                                    @endcan--}}
+{{--                                    @can('customer_module.add_payment.create_and_edit')--}}
+{{--                                        @if ($balances[$customer->id] < 0)--}}
+{{--                                            <li>--}}
+{{--                                                <a data-href="{{ action('TransactionPaymentController@getCustomerDue', $customer->id) }}"--}}
+{{--                                                    class="btn-modal" data-container=".view_modal"><i--}}
+{{--                                                        class="fa fa-money btn"></i>@lang('lang.pay_customer_due')</a>--}}
+{{--                                            </li>--}}
+{{--                                            <li class="divider"></li>--}}
+{{--                                        @endif--}}
+{{--                                    @endcan--}}
+{{--                                    @can('adjustment.customer_balance_adjustment.create_and_edit')--}}
+{{--                                        <li>--}}
+{{--                                            <a href="{{ action('CustomerBalanceAdjustmentController@create', ['customer_id' => $customer->id]) }}"--}}
+{{--                                                class="btn"><i class="fa fa-adjust"></i> @lang('lang.adjust_customer_balance')</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="divider"></li>--}}
+{{--                                    @endcan--}}
+{{--                                    @can('adjustment.customer_point_adjustment.create_and_edit')--}}
+{{--                                        <li>--}}
 
-                                            <a href="{{ action('CustomerPointAdjustmentController@create', ['customer_id' => $customer->id]) }}"
-                                                class="btn"><i class="fa fa-adjust"></i> @lang('lang.adjust_customer_points')</a>
-                                        </li>
-                                        <li class="divider"></li>
-                                    @endcan
-                                    @if (session('system_mode') == 'garments')
-                                        @can('customer_module.customer_sizes.create_and_edit')
-                                            <li>
-                                                <a data-href="{{ action('CustomerSizeController@add', $customer->id) }}"
-                                                    class="btn-modal" data-container=".view_modal"><i
-                                                        class="fa fa-plus btn"></i>@lang('lang.add_size')</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                        @endcan
-                                        @can('customer_module.customer_sizes.view')
-                                            <li>
-                                                <a href="{{ action('CustomerController@show', $customer->id) }}?show=sizes"
-                                                    class=""><i
-                                                        class="fa fa-user-secret btn"></i>@lang('lang.view_sizes')</a>
-                                            </li>
-                                            <li class="divider"></li>
-                                        @endcan
-                                    @endif
-                                    @if ($customer->is_default == 0)
-                                        @can('customer_module.customer.delete')
-                                            <li>
-                                                <a data-href="{{ action('CustomerController@destroy', $customer->id) }}"
-                                                    data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
-                                                    class="btn text-red delete_customer"><i class="fa fa-trash"></i>
-                                                    @lang('lang.delete')</a>
-                                            </li>
-                                        @endcan
-                                    @endif
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
+{{--                                            <a href="{{ action('CustomerPointAdjustmentController@create', ['customer_id' => $customer->id]) }}"--}}
+{{--                                                class="btn"><i class="fa fa-adjust"></i> @lang('lang.adjust_customer_points')</a>--}}
+{{--                                        </li>--}}
+{{--                                        <li class="divider"></li>--}}
+{{--                                    @endcan--}}
+{{--                                    @if (session('system_mode') == 'garments')--}}
+{{--                                        @can('customer_module.customer_sizes.create_and_edit')--}}
+{{--                                            <li>--}}
+{{--                                                <a data-href="{{ action('CustomerSizeController@add', $customer->id) }}"--}}
+{{--                                                    class="btn-modal" data-container=".view_modal"><i--}}
+{{--                                                        class="fa fa-plus btn"></i>@lang('lang.add_size')</a>--}}
+{{--                                            </li>--}}
+{{--                                            <li class="divider"></li>--}}
+{{--                                        @endcan--}}
+{{--                                        @can('customer_module.customer_sizes.view')--}}
+{{--                                            <li>--}}
+{{--                                                <a href="{{ action('CustomerController@show', $customer->id) }}?show=sizes"--}}
+{{--                                                    class=""><i--}}
+{{--                                                        class="fa fa-user-secret btn"></i>@lang('lang.view_sizes')</a>--}}
+{{--                                            </li>--}}
+{{--                                            <li class="divider"></li>--}}
+{{--                                        @endcan--}}
+{{--                                    @endif--}}
+{{--                                    @if ($customer->is_default == 0)--}}
+{{--                                        @can('customer_module.customer.delete')--}}
+{{--                                            <li>--}}
+{{--                                                <a data-href="{{ action('CustomerController@destroy', $customer->id) }}"--}}
+{{--                                                    data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"--}}
+{{--                                                    class="btn text-red delete_customer"><i class="fa fa-trash"></i>--}}
+{{--                                                    @lang('lang.delete')</a>--}}
+{{--                                            </li>--}}
+{{--                                        @endcan--}}
+{{--                                    @endif--}}
+{{--                                </ul>--}}
+{{--                            </div>--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                @endforeach--}}
             </tbody>
             <tfoot>
                 <tr>
@@ -154,6 +154,95 @@
 
 @section('javascript')
     <script>
+        customer_sales_table = $("#customer_table").DataTable({
+            lengthChange: true,
+            paging: true,
+            info: false,
+            bAutoWidth: false,
+            language: {
+                url: dt_lang_url,
+            },
+            lengthMenu: [
+                [10, 25, 50, 75, 100, 200, 500, -1],
+                [10, 25, 50, 75, 100, 200, 500, "All"],
+            ],
+            dom: "lBfrtip",
+            stateSave: true,
+            buttons: buttons,
+            processing: true,
+            serverSide: true,
+            aaSorting: [[0, "desc"]],
+            initComplete: function () {
+                $(this.api().table().container())
+                    .find("input")
+                    .parent()
+                    .wrap("<form>")
+                    .parent()
+                    .attr("autocomplete", "off");
+            },
+            ajax: {
+                url: '/customer',
+                data: function (d) {
+                    d.customer_id = $("#customer_id").val();
+                },
+            },
+            columnDefs: [
+                {
+                    targets: [11],
+                    orderable: false,
+                    searchable: false,
+                },
+            ],
+            columns: [
+                { data: "customer_type_name", name: "customer_type_name" },
+                { data: "name", name: "name" },
+                { data: "image", name: "image" },
+                { data: "mobile_number", name: "mobile_number" },
+                { data: "address", name: "address" },
+                { data: "balance", name: "balance" },
+                { data: "purchases", name: "purchases" },
+                { data: "discounts", name: "discounts" },
+                { data: "points", name: "points" },
+                { data: "created_at", name: "created_at" },
+                { data: "created_by_name", name: "created_by_name" },
+                { data: "action", name: "action" },
+            ],
+            createdRow: function (row, data, dataIndex) {},
+            footerCallback: function (row, data, start, end, display) {
+                var intVal = function (i) {
+                    return typeof i === "string"
+                        ? i.replace(/[\$,]/g, "") * 1
+                        : typeof i === "number"
+                            ? i
+                            : 0;
+                };
+
+                this.api()
+                    .columns(".sum", { page: "current" })
+                    .every(function () {
+                        var column = this;
+                        if (column.data().count()) {
+                            var sum = column.data().reduce(function (a, b) {
+                                a = intVal(a);
+                                if (isNaN(a)) {
+                                    a = 0;
+                                }
+
+                                b = intVal(b);
+                                if (isNaN(b)) {
+                                    b = 0;
+                                }
+
+                                return a + b;
+                            });
+                            $(column.footer()).html(
+                                __currency_trans_from_en(sum, false)
+                            );
+                        }
+                    });
+            },
+        });
+
         $(document).on('click', '.delete_customer', function(e) {
             e.preventDefault();
             swal({

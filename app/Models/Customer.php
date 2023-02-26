@@ -24,6 +24,10 @@ class Customer extends Model implements HasMedia
     {
         return $this->hasMany(CustomerImportantDate::class);
     }
+    public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
     public function customer_type()
     {
         return $this->belongsTo(CustomerType::class);
