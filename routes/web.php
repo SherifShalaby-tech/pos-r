@@ -42,6 +42,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('general/view-uploaded-files/{model_name}/{model_id}', 'GeneralController@viewUploadedFiles');
     Route::get('product/get-raw-material-details/{raw_material_id}', 'ProductController@getRawMaterialDetail');
     Route::get('product/get-raw-material-row', 'ProductController@getRawMaterialRow');
+    Route::get('product/get-raw-discount', 'ProductController@getRawDiscount');
     Route::get('product/get-extension-details/{extension_id}', 'ProductController@getExtensionDetail');
     Route::get('product/get-extension-row', 'ProductController@getExtensionRow');
 

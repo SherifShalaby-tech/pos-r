@@ -12,7 +12,11 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+    'have_weight'=>'depends on weight',
+
+    'type_Debt' => 'Pay Debt',
     'product_extension'=>'Extras with the product',
+    'clear_all_input_form'=>'Keeping data after saving product',
     'extension'=>'Extras',
     'product_for_extension'=>'Primary material customization',
     'add_extension'=>'Add product Extra',

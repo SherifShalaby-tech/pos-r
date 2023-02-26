@@ -10,6 +10,7 @@ use App\Models\Customer;
 use App\Models\EarningOfPoint;
 use App\Models\Product;
 use App\Models\ProductClass;
+use App\Models\ProductDiscount;
 use App\Models\ProductExtension;
 use App\Models\ProductStore;
 use App\Models\PurchaseOrderLine;
@@ -648,7 +649,6 @@ class ProductUtil extends Util
 
         return $products;
     }
-
     /**
      * get the product discount details for product if exist
      *
@@ -664,8 +664,10 @@ class ProductUtil extends Util
             $customer_type_id = (string) $customer->customer_type_id;
         }
         if (!empty($customer_type_id)) {
+
             $product = Product::whereJsonContains('discount_customer_types', $customer_type_id)
                 ->where('id', $product_id)
+                ->where('discount', '>',0)
                 ->select(
                     'products.discount_type',
                     'products.discount',
@@ -673,6 +675,17 @@ class ProductUtil extends Util
                     'products.discount_end_date',
                 )
                 ->first();
+            if(!$product){
+                $product = ProductDiscount::whereJsonContains('discount_customer_types', $customer_type_id)
+                    ->where('product_id', $product_id)
+                    ->select(
+                        'discount_type',
+                        'discount',
+                        'discount_start_date',
+                        'discount_end_date',
+                    )
+                    ->first();
+            }
 
             if (!empty($product)) {
                 if (!empty($product->discount_start_date) && !empty($product->discount_end_date)) {
@@ -1394,13 +1407,31 @@ class ProductUtil extends Util
             ProductStore::where('product_id', $product_id)->where('variation_id', $variation_id)->where('store_id', $store_id)->decrement('block_qty', $qty);
         }
     }
-
     /**
      * extract products using product tree selection
      *
      * @param array $data_selected
      * @return array
      */
+    public function extractProductVariationIdsfromProductTree($data_selected)
+    {
+        $product_ids = [];
+        if (!empty($data_selected['product_selected'])) {
+            $p = array_values(Variation::whereIn('id', $data_selected['product_selected'])->select('id')->pluck('id')->toArray());
+            $product_ids = array_merge($product_ids, $p);
+        }
+
+        $product_ids  = array_unique($product_ids);
+
+        return (array)$product_ids;
+    }
+    /**
+     * extract products using product tree selection
+     *
+     * @param array $data_selected
+     * @return array
+     */
+
     public function extractProductIdsfromProductTree($data_selected)
     {
         $product_ids = [];
@@ -1430,8 +1461,7 @@ class ProductUtil extends Util
 
         return (array)$product_ids;
     }
-
-    public function getProductDetailsUsingArrayIds($array, $store_ids = null)
+    public function getProductDetailsUsingArrayIds($array, $store_ids = null,$variations= null)
     {
         $query = Product::leftjoin('variations', 'products.id', 'variations.product_id')
             ->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id');
@@ -1439,16 +1469,30 @@ class ProductUtil extends Util
         if (!empty($store_ids)) {
             $query->whereIn('product_stores.store_id', $store_ids);
         }
-        $query->whereIn('products.id', $array)
-            ->select(
-                'products.*',
-                DB::raw('SUM(product_stores.qty_available) as current_stock'),
-                DB::raw("(SELECT transaction_date FROM transactions LEFT JOIN add_stock_lines ON transactions.id=add_stock_lines.transaction_id WHERE add_stock_lines.product_id=products.id ORDER BY transaction_date DESC LIMIT 1) as date_of_purchase")
-            )
-            ->groupBy('products.id');
+        if (!empty($variations)) {
+            $query->whereIn('variations.id', $array);
+        }else{
+            $query->whereIn('products.id', $array);
+        }
+
+        $query->select(
+            'products.*',
+            'variations.id as variations_id',
+            'variations.name as variations_name',
+            'variations.sub_sku as variations_sku',
+            'variations.default_sell_price as variations_sell_price',
+            'variations.default_purchase_price as variations_purchase_price',
+            DB::raw('SUM(product_stores.qty_available) as current_stock'),
+            DB::raw("(SELECT transaction_date FROM transactions LEFT JOIN add_stock_lines ON transactions.id=add_stock_lines.transaction_id WHERE add_stock_lines.product_id=products.id ORDER BY transaction_date DESC LIMIT 1) as date_of_purchase")
+        );
+        if(!empty($variations)){
+            $query->groupBy('variations.id');
+        }else{
+            $query ->groupBy('products.id');
+        }
+
 
         $products = $query->get();
-
         return $products;
     }
 

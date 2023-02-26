@@ -12,6 +12,10 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+    'have_weight'=>'يعتمد علي الميزان',
+
+    'type_Debt'=>'سداد دين',
+    'clear_all_input_form'=>'الاحتفاظ بالبيانات بعد عملية الإدخال',
     'product_extension'=>'اضافات مع المنتج',
     'extension'=>'الاضافات',
     'product_for_extension'=>'تخصيص مادة اولية',

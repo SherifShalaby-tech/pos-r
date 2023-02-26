@@ -622,7 +622,23 @@ $(document).on("submit", "form#quick_add_grade_form", function (e) {
         },
     });
 });
+$(document).on("click", ".add_discount_row", function () {
+    let row_id = parseInt($("#raw_discount_index").val());
+    $("#raw_discount_index").val(row_id + 1);
 
+    $.ajax({
+        method: "get",
+        url: "/product/get-raw-discount",
+        data: { row_id: row_id },
+        success: function (result) {
+            $("#consumption_table_discount > tbody").prepend(result);
+            $(".selectpicker").selectpicker("refresh");
+            $(".datepicker").datepicker("refresh");
+
+            // $(".raw_material_unit_id").selectpicker("refresh");
+        },
+    });
+});
 $("#expiry_date").change(function () {
     if (
         $(this).val() != undefined &&
