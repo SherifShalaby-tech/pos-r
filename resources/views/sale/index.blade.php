@@ -162,6 +162,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-3">
+                                    <button type="submit" class="btn btn-success mt-4 ml-2" id="submit-filter">@lang('lang.filter')</button>
+
                                     <button type="button"
                                         class="btn btn-danger mt-4 ml-2 clear_filter">@lang('lang.clear_filter')</button>
                                 </div>
@@ -469,15 +471,17 @@
                         });
                 },
             });
-            $(document).on('change', '.sale_filter', function() {
+
+
+            $(document).on('click', '#submit-filter', function() {
                 sales_table.ajax.reload();
                 get_total_details();
             });
         })
-        $('.time_picker').focusout(function(event) {
-            sales_table.ajax.reload();
-            get_total_details();
-        });
+        // $('.time_picker').focusout(function(event) {
+        //     sales_table.ajax.reload();
+        //     get_total_details();
+        // });
 
         $(document).on('change', '#dining_room_id', function() {
             let dining_room_id = $(this).val();

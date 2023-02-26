@@ -14,7 +14,7 @@
                             <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                             {!! Form::open(['url' => action('ProductController@update', $product->id), 'id' => 'product-edit-form', 'method' => 'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="i-checks">
                                         <input id="is_service" name="is_service" type="checkbox"
                                             @if (!empty($product->is_service)) checked @endif value="@if($product->is_service)1 @else 0 @endif"
@@ -28,7 +28,7 @@
                                             </strong></label>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="i-checks">
                                         <input id="active" name="active" type="checkbox"
                                             @if (!empty($product->active)) checked @endif value="1"
@@ -38,6 +38,17 @@
                                             </strong></label>
                                     </div>
                                 </div>
+
+                                <div class="col-md-3">
+                                    <div class="i-checks">
+                                        <input id="have_weight" name="have_weight" type="checkbox"
+                                               @if (!empty($product->have_weight)) checked @endif value="1" class="form-control-custom">
+                                        <label for="have_weight"><strong>
+                                                @lang('lang.have_weight')
+                                            </strong></label>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-4">
                                     <div class="form-group supplier_div @if (empty($product->is_service)) hide @endif">
                                         {!! Form::label('supplier_id', __('lang.supplier'), []) !!}
@@ -385,14 +396,14 @@
                                     </div>
                                 </div>
                                 @can('product_module.purchase_price.create_and_edit')
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 supplier_div @if (empty($product->is_service)) hide @endif">
                                         <div class="form-group">
                                             {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', []) !!}
                                             {!! Form::text('purchase_price', @num_format($product->purchase_price), ['class' => 'form-control', 'placeholder' => session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
                                         </div>
                                     </div>
                                 @endcan
-                                <div class="col-md-4">
+                                <div class="col-md-4 supplier_div @if (empty($product->is_service)) hide @endif">
                                     <div class="form-group">
                                         {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
                                         {!! Form::text('sell_price', @num_format($product->sell_price), ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
@@ -421,37 +432,47 @@
                                 </div>
                                 <br>
                                 <div class="clearfix"></div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        {!! Form::label('discount_type', __('lang.discount_type'), []) !!}
-                                        {!! Form::select('discount_type', ['fixed' => __('lang.fixed'), 'percentage' => __('lang.percentage')], $product->discount_type, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-                                    </div>
+
+                                <div class="col-md-12">
+                                    <table class="table table-bordered" id="consumption_table_discount">
+                                        <thead>
+                                        <tr>
+                                            <th style="width: 20%;">@lang('lang.discount_type')</th>
+                                            <th style="width: 15%;">@lang('lang.discount')</th>
+                                            <th style="width: 20%;">@lang('lang.discount_start_date')</th>
+                                            <th style="width: 20%;">@lang('lang.discount_end_date')</th>
+                                            <th style="width: 20%;">@lang('lang.customer_type') <i class="dripicons-question" data-toggle="tooltip"
+                                                                                                   title="@lang('lang.discount_customer_info')"></i></th>
+                                            <th style="width: 5%;"><button class="btn btn-xs btn-success add_discount_row"
+                                                                           type="button"><i class="fa fa-plus"></i></button></th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        @php
+                                            $discounts = \App\Models\ProductDiscount::where('product_id',$product->id)->get();
+                                            $index_old=0;
+                                        @endphp
+
+                                        @if($product->discount)
+                                            @php
+                                                $index_old=1;
+                                            @endphp
+                                            @include('product.partial.raw_discount', [
+                                                'row_id' => 0,
+                                                'discount_product'=>$product,
+                                            ])
+                                        @endif
+                                        @foreach($discounts as $discount)
+                                            @include('product.partial.raw_discount', [
+                                            'row_id' => $loop->index + $index_old,
+                                            'discount'=>$discount,
+                                            ])
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+                                    <input type="hidden" name="raw_discount_index" id="raw_discount_index" value="1">
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        {!! Form::label('discount', __('lang.discount'), []) !!}
-                                        {!! Form::text('discount', @num_format($product->discount), ['class' => 'form-control', 'placeholder' => __('lang.discount')]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        {!! Form::label('discount_start_date', __('lang.discount_start_date'), []) !!}
-                                        {!! Form::text('discount_start_date', !empty($product->discount_start_date) ? @format_date($product->discount_start_date) : null, ['class' => 'form-control datepicker', 'placeholder' => __('lang.discount_start_date')]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        {!! Form::label('discount_end_date', __('lang.discount_end_date'), []) !!}
-                                        {!! Form::text('discount_end_date', !empty($product->discount_end_date) ? @format_date($product->discount_end_date) : null, ['class' => 'form-control datepicker', 'placeholder' => __('lang.discount_end_date')]) !!}
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        {!! Form::label('discount_customer_types', __('lang.customer_type'), []) !!} <i class="dripicons-question" data-toggle="tooltip"
-                                            title="@lang('lang.discount_customer_info')"></i>
-                                        {!! Form::select('discount_customer_types[]', $discount_customer_types, $product->discount_customer_types, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'multiple', 'data-actions-box' => 'true', 'id' => 'discount_customer_types']) !!}
-                                    </div>
-                                </div>
+
                                 <div class="col-md-4">
                                     <div class="i-checks">
                                         <input id="show_to_customer" name="show_to_customer" type="checkbox"

@@ -346,6 +346,8 @@ function get_label_product_row(
                             calculate_sub_totals();
                             $("input#search_product").val("");
                             $("input#search_product").focus();
+                            $(this).insertBefore($("#product_table  tbody tr:first"));
+
                         }
                     },
                 });
@@ -528,7 +530,7 @@ function check_for_sale_promotion() {
     var added_products = [];
     var added_qty = [];
     $("#product_table > tbody  > tr").each((ele, tr) => {
-        let product_id_tr = __read_number($(tr).find(".product_id"));
+        let product_id_tr = __read_number($(tr).find(".variation_id"));
         let qty_tr = {
             product_id: product_id_tr,
             qty: __read_number($(tr).find(".quantity")),
@@ -548,106 +550,134 @@ function check_for_sale_promotion() {
         },
         success: function (result) {
             if (result.valid) {
-                if (result.sale_promotion_details.type === "item_discount") {
-                    let product_ids = result.sale_promotion_details.product_ids;
-                    let discount_type =
-                        result.sale_promotion_details.discount_type;
-                    let discount_value =
-                        result.sale_promotion_details.discount_value;
-                    let purchase_condition =
-                        result.sale_promotion_details.purchase_condition;
-                    let purchase_condition_amount =
-                        result.sale_promotion_details.purchase_condition_amount;
-                    product_ids.forEach((product_id) => {
-                        $("#product_table tbody")
-                            .find("tr")
-                            .each(function () {
-                                var row_product_id = $(this)
-                                    .find(".product_id")
-                                    .val()
-                                    .trim();
-                                if (row_product_id == product_id) {
-                                    if (discount_type == "fixed") {
-                                        $(this)
-                                            .find(".promotion_discount_type")
-                                            .val("fixed");
-                                    } else if (discount_type == "percentage") {
-                                        $(this)
-                                            .find(".promotion_discount_type")
-                                            .val("percentage");
-                                    }
-                                    $(this)
-                                        .find(".promotion_discount_value")
-                                        .val(discount_value);
-                                    $(this)
-                                        .find(
-                                            ".promotion_purchase_condition_amount"
-                                        )
-                                        .val(purchase_condition_amount);
-                                    $(this)
-                                        .find(".promotion_purchase_condition")
-                                        .val(purchase_condition);
-                                }
-                            });
-                    });
-                }
-
-                if (
-                    result.sale_promotion_details.type === "package_promotion"
-                ) {
-                    let discount = 0;
+                let  discount = 0;
+                let  sum_item_discount = 0;
+                result.sale_promotion_details.forEach((data, index) => {
+                    let sum_discount = 0;
                     if (
-                        result.sale_promotion_details.discount_type === "fixed"
+                        data.type === "package_promotion"
                     ) {
-                        discount =
-                            parseFloat(
-                                result.sale_promotion_details.actual_sell_price
-                            ) -
-                            parseFloat(
-                                result.sale_promotion_details.discount_value
+
+                        if (
+                            data.discount_type === "fixed"
+                        ) {
+                            sum_discount =
+                                ( parseFloat(
+                                        data.actual_sell_price
+                                    ) -
+                                    parseFloat(
+                                        data.discount_value
+                                    ) ) *  parseFloat(data.count_discount_number);
+
+                        }
+                        if (
+                            data.discount_type ===
+                            "percentage"
+                        ) {
+                            let discount_value =
+                                (parseFloat(
+                                        data.actual_sell_price
+                                    ) *
+                                    parseFloat(
+                                        data.discount_value
+                                    )) /
+                                100;
+                            sum_discount =
+                                (parseFloat(
+                                    data.actual_sell_price
+                                ) - discount_value ) *  parseFloat(data.count_discount_number);;
+
+                        }
+                        if (data.purchase_condition) {
+                            let purchase_condition_amount =
+                                data
+                                    .purchase_condition_amount;
+                            let grand_total = __read_number($("#grand_total"));
+                            if (purchase_condition_amount > grand_total) {
+                                sum_discount = 0;
+                            }
+                        }
+                        discount+=sum_discount;
+                        var product_ids = data.product_ids;
+                        $("#product_table > tbody > tr").each(function (ele, tr) {
+                            let product_id = __read_number(
+                                $(tr).find(".product_id")
                             );
+                            if (product_ids.includes(product_id)) {
+                                $(tr).find(".sell_price").attr("readonly", true);
+                                //neglect all other discount for this product if any
+                                $(tr).find(".promotion_discount_value").val(0);
+                                $(tr).find(".product_discount_value").val(0);
+                            }
+                        });
+
+
+
                     }
-                    if (
-                        result.sale_promotion_details.discount_type ===
-                        "percentage"
-                    ) {
+                    if (data.type === "item_discount") {
+                        let product_ids = data.product_ids;
+                        let discount_type =
+                            data.discount_type;
                         let discount_value =
-                            (parseFloat(
-                                result.sale_promotion_details.actual_sell_price
-                            ) *
-                                parseFloat(
-                                    result.sale_promotion_details.discount_value
-                                )) /
-                            100;
-                        discount =
-                            parseFloat(
-                                result.sale_promotion_details.actual_sell_price
-                            ) - discount_value;
-                    }
-                    if (result.sale_promotion_details.purchase_condition) {
+                            data.discount_value;
+                        let purchase_condition =
+                            data.purchase_condition;
                         let purchase_condition_amount =
-                            result.sale_promotion_details
-                                .purchase_condition_amount;
-                        let grand_total = __read_number($("#grand_total"));
-                        if (purchase_condition_amount > grand_total) {
-                            discount = 0;
-                        }
+                            data.purchase_condition_amount;
+                        product_ids.forEach((product_id) => {
+                            $("#product_table tbody")
+                                .find("tr")
+                                .each(function () {
+                                    var row_product_id = $(this)
+                                        .find(".product_id")
+                                        .val()
+                                        .trim();
+                                    var qty = $(this)
+                                        .find(".qty")
+                                        .val()
+                                        .trim();
+                                    if (row_product_id == product_id) {
+                                        if (discount_type == "fixed") {
+                                            $(this)
+                                                .find(".promotion_discount_type")
+                                                .val("fixed");
+                                        } else if (discount_type == "percentage") {
+                                            $(this)
+                                                .find(".promotion_discount_type")
+                                                .val("percentage");
+                                        }
+                                        $(this)
+                                            .find(".promotion_discount_value")
+                                            .val(discount_value*qty);
+
+                                        sum_item_discount +=(discount_value*qty);
+                                        $(this)
+                                            .find(
+                                                ".promotion_purchase_condition_amount"
+                                            )
+                                            .val(purchase_condition_amount);
+                                        $(this)
+                                            .find(".promotion_purchase_condition")
+                                            .val(purchase_condition);
+                                    }
+                                });
+                        });
                     }
 
-                    var product_ids = result.sale_promotion_details.product_ids;
-                    $("#product_table > tbody > tr").each(function (ele, tr) {
-                        let product_id = __read_number(
-                            $(tr).find(".product_id")
-                        );
-                        if (product_ids.includes(product_id)) {
-                            $(tr).find(".sell_price").attr("readonly", true);
-                            //neglect all other discount for this product if any
-                            $(tr).find(".promotion_discount_value").val(0);
-                            $(tr).find(".product_discount_value").val(0);
-                        }
-                    });
-                    __write_number($("#total_pp_discount"), discount);
-                }
+                });
+                console.log('sales_promotion-cost_span=>',sum_item_discount,discount)
+                $("span#sales_promotion-cost_span").text(
+                    __currency_trans_from_en(sum_item_discount+discount, false)
+                );
+                __write_number($("#total_pp_discount"), discount);
+
+
+                calculate_sub_totals();
+            }else{
+                $("span#sales_promotion-cost_span").text(
+                    __currency_trans_from_en(0, false)
+                );
+                __write_number($("#total_pp_discount"), 0);
                 calculate_sub_totals();
             }
         },
@@ -662,6 +692,8 @@ function calculate_sub_totals() {
     var total_item_tax = 0;
     var total_tax_payable = 0;
     var total_coupon_discount = 0;
+    var sales_promotion_cost = __read_number($("#sales_promotion-cost"));
+
     var exchange_rate = __read_number($("#exchange_rate"));
     $("#product_table > tbody  > tr").each((ele, tr) => {
         let quantity = __read_number($(tr).find(".quantity"));
@@ -803,8 +835,9 @@ function calculate_sub_totals() {
     // if (promo_discount > 0) {
     //     __write_number($("#discount_amount"), promo_discount);
     // }
-
-    total -= promo_discount;
+    if(__currency_trans_from_en($("#subtotal").text(), false) > 0){
+        total -= promo_discount;
+    }
 
     let delivery_cost = 0;
     if ($("#delivery_cost_paid_by_customer").prop("checked")) {
@@ -1584,7 +1617,7 @@ function reset_pos_form() {
         pos_form_obj[0].reset();
     }
     $(
-        "span.grand_total_span, span#subtotal, span.subtotal, span.discount_span, span.service_value_span, span#item, span#discount, span#tax, span#delivery-cost, span.final_total_span, span.customer_points_span, span.customer_points_value_span, span.customer_total_redeemable_span, .remaining_balance_text, .current_deposit_balance, span.gift_card_current_balance "
+        "span.grand_total_span, span#subtotal, span.subtotal, span.discount_span, span.service_value_span, span#item, span#discount, span#tax, span#delivery-cost,span#sales_promotion-cost_span, span.final_total_span, span.customer_points_span, span.customer_points_value_span, span.customer_total_redeemable_span, .remaining_balance_text, .current_deposit_balance, span.gift_card_current_balance "
     ).text(0);
     $(
         "#uploaded_file_names, #amount,.received_amount, .change_amount, #paying_amount, #discount_value, #final_total, #grand_total,  #gift_card_id, #total_tax, #total_item_tax, #coupon_id, #change, .delivery_address, .delivery_cost, #delivery_cost, #customer_points_value, #customer_total_redeemable, #rp_redeemed, #rp_redeemed_value, #is_redeem_points, #add_to_deposit, #remaining_deposit_balance, #used_deposit_balance, #current_deposit_balance, #change_amount, #total_sp_discount, #customer_size_id_hidden, #customer_size_id, #sale_note_draft, #sale_note, #deliveryman_id_hidden, #total_sp_discount, #total_pp_discount, #dining_table_id, #print_and_draft_hidden, #manual_delivery_zone"

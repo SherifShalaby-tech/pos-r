@@ -4,20 +4,21 @@
     <td class="row_number"></td>
     @endif
     <td style="width: @if(session('system_mode')  != 'restaurant') 18%; @else 20%; @endif font-size: 13px;">
-@php
-$Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
-    if($Variation){
-        $stockLines=\App\Models\AddStockLine::where('variation_id',$Variation->id)->whereColumn('quantity',">",'quantity_sold')->first();
-        $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
-        $default_purchase_price=$stockLines?$stockLines->purchase_price : $Variation->default_purchase_price;
+        @php
+         $Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
+            if($Variation){
+                $stockLines=\App\Models\AddStockLine::where('variation_id',$Variation->id)->whereColumn('quantity',">",'quantity_sold')->first();
+                $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
+                $default_purchase_price=$stockLines?$stockLines->purchase_price : $Variation->default_purchase_price;
 
-    }
+            }
 
-@endphp
+        @endphp
         @if($product->variation_name != "Default")
-        <b>{{$product->variation_name}}</b> {{$product->sub_sku}}
+            <b>{{$product->variation_name}}</b> {{$product->sub_sku}}
         @else
-        <b>{{$product->product_name}}</b>
+            <b>{{$product->product_name}}</b>
+        @endif
         <p class="m-0">
             @php
                 $ex='id'.$product->variation_id;
@@ -30,7 +31,9 @@ $Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
             @endforeach
             <input type="hidden" id="{{$ex}}" name="old_ex" value="1">
         </p>
-        @endif
+
+
+
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][is_service]" class="is_service"
             value="{{$product->is_service}}">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][product_id]" class="product_id"

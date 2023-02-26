@@ -2,26 +2,47 @@
 $recent_product = App\Models\Product::where('is_raw_material', 0)
     ->orderBy('created_at', 'desc')
     ->first();
+$clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
+
 @endphp
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="i-checks">
             <input id="is_service" name="is_service" type="checkbox"
                 checked
 
-                value="0" class="form-control-custom">
+                 class="form-control-custom">
             <label for="is_service"><strong>
                         @lang('lang.or_add_new_product')
 
                 </strong></label>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="i-checks">
             <input id="active" name="active" type="checkbox" checked value="1" class="form-control-custom">
             <label for="active"><strong>
                     @lang('lang.active')
                 </strong></label>
+        </div>
+    </div>
+    <div class="col-md-3 ">
+        <div class="i-checks">
+            <input id="clear_all_input_form" name="clear_all_input_form"
+                   type="checkbox" @if ($clear_all_input_form == null || $clear_all_input_form == '1') checked @endif value="1"
+                   class="form-control-custom">
+            <label for="clear_all_input_form">
+                <strong>
+                    @lang('lang.clear_all_input_form')
+                </strong>
+            </label>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="i-checks">
+            <input id="have_weight" name="have_weight" type="checkbox"  value="1"
+                   class="form-control-custom">
+            <label for="have_weight"><strong>@lang('lang.have_weight')</strong></label>
         </div>
     </div>
     <div class="col-md-4">
@@ -219,35 +240,36 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
         </div>
 
 
-    <div class="col-md-4">
-        <div class="form-group other_cost">
+
+    <div class="col-md-4 other_cost">
+        <div class="form-group">
             {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
-            {!! Form::text('other_cost', !empty($recent_product) ? @num_format($recent_product->other_cost) : null, ['class' => 'form-control', 'placeholder' => __('lang.other_cost')]) !!}
+            {!! Form::text('other_cost', !empty($recent_product) ? @num_format($recent_product->other_cost) : null, ['class' => 'clear_input_form form-control', 'placeholder' => __('lang.other_cost')]) !!}
         </div>
     </div>
     @can('product_module.purchase_price.create_and_edit')
-        <div class="col-md-4">
-            <div class="form-group purchase_price">
-                {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
-                {!! Form::text('purchase_price', !empty($recent_product) ? @num_format($recent_product->purchase_price) : null, ['class' => 'form-control', 'placeholder' =>  __('lang.cost'), 'required']) !!}
+        <div class="col-md-4 supplier_div">
+            <div class="form-group">
+                {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', []) !!}
+                {!! Form::text('purchase_price', !empty($recent_product) ? @num_format($recent_product->purchase_price) : null, ['class' => 'clear_input_form form-control', 'placeholder' => session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
             </div>
         </div>
     @endcan
-    <div class="col-md-4">
-        <div class="form-group sell_price">
+    <div class="col-md-4 supplier_div">
+        <div class="form-group">
             {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
-            {!! Form::text('sell_price', !empty($recent_product) ? @num_format($recent_product->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
+            {!! Form::text('sell_price', !empty($recent_product) ? @num_format($recent_product->sell_price) : null, ['class' => 'clear_input_form form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
         </div>
     </div>
     <div class="col-md-4">
         {!! Form::label('tax_id', __('lang.tax'), []) !!}
         <div class="input-group my-group">
-            {!! Form::select('tax_id', $taxes, !empty($recent_product) ? $recent_product->tax_id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+            {!! Form::select('tax_id', $taxes, !empty($recent_product) ? $recent_product->tax_id : false, ['class' => 'clear_input_form selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
             <span class="input-group-btn">
                 @can('product_module.tax.create')
                     <button class="btn-modal btn btn-default bg-white btn-flat"
-                        data-href="{{ action('TaxController@create') }}?quick_add=1&type=product_tax"
-                        data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                            data-href="{{ action('TaxController@create') }}?quick_add=1&type=product_tax"
+                            data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
                 @endcan
             </span>
         </div>
@@ -256,46 +278,36 @@ $recent_product = App\Models\Product::where('is_raw_material', 0)
     <div class="col-md-4">
         <div class="form-group">
             {!! Form::label('tax_method', __('lang.tax_method'), []) !!}
-            {!! Form::select('tax_method', ['inclusive' => __('lang.inclusive'), 'exclusive' => __('lang.exclusive')], !empty($recent_product) ? $recent_product->tax_method : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+            {!! Form::select('tax_method', ['inclusive' => __('lang.inclusive'), 'exclusive' => __('lang.exclusive')], !empty($recent_product) ? $recent_product->tax_method : false, ['class' => 'clear_input_form selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
         </div>
     </div>
     <br>
     <div class="clearfix"></div>
-    <div class="col-md-4">
-        <div class="form-group">
-            {!! Form::label('discount_type', __('lang.discount_type'), []) !!}
-            {!! Form::select('discount_type', ['fixed' => __('lang.fixed'), 'percentage' => __('lang.percentage')], !empty($recent_product) ? $recent_product->discount_type : 'fixed', ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="form-group">
-            {!! Form::label('discount', __('lang.discount'), []) !!}
-            {!! Form::text('discount', !empty($recent_product) ? @num_format($recent_product->discount) : null, ['class' => 'form-control', 'placeholder' => __('lang.discount')]) !!}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="form-group">
-            {!! Form::label('discount_start_date', __('lang.discount_start_date'), []) !!}
-            {!! Form::text('discount_start_date', !empty($recent_product) && !empty($recent_product->discount_start_date) ? @format_date($recent_product->discount_start_date) : null, ['class' => 'form-control datepicker', 'placeholder' => __('lang.discount_start_date')]) !!}
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="form-group">
-            {!! Form::label('discount_end_date', __('lang.discount_end_date'), []) !!}
-            {!! Form::text('discount_end_date', !empty($recent_product) && !empty($recent_product->discount_end_date) ? @format_date($recent_product->discount_end_date) : null, ['class' => 'form-control datepicker', 'placeholder' => __('lang.discount_end_date')]) !!}
-        </div>
+    <div class="col-md-12">
+        <table class="table table-bordered" id="consumption_table_discount">
+            <thead>
+            <tr>
+                <th style="width: 20%;">@lang('lang.discount_type')</th>
+                <th style="width: 15%;">@lang('lang.discount')</th>
+                <th style="width: 20%;">@lang('lang.discount_start_date')</th>
+                <th style="width: 20%;">@lang('lang.discount_end_date')</th>
+                <th style="width: 20%;">@lang('lang.customer_type') <i class="dripicons-question" data-toggle="tooltip"
+                                                                       title="@lang('lang.discount_customer_info')"></i></th>
+                <th style="width: 5%;"><button class="btn btn-xs btn-success add_discount_row"
+                                               type="button"><i class="fa fa-plus"></i></button></th>
+            </tr>
+            </thead>
+            <tbody>
+            @include('product.partial.raw_discount', ['row_id' => 0])
+            </tbody>
+        </table>
+        <input type="hidden" name="raw_discount_index" id="raw_discount_index" value="1">
     </div>
     <input type="hidden" name="default_purchase_price_percentage" id="default_purchase_price_percentage"
         value="{{ App\Models\System::getProperty('default_purchase_price_percentage') ?? 75 }}">
     <input type="hidden" name="default_profit_percentage" id="default_profit_percentage"
         value="{{ App\Models\System::getProperty('default_profit_percentage') ?? 0 }}">
-    <div class="col-md-4">
-        <div class="form-group">
-            {!! Form::label('discount_customer_types', __('lang.customer_type'), []) !!} <i class="dripicons-question" data-toggle="tooltip"
-                title="@lang('lang.discount_customer_info')"></i>
-            {!! Form::select('discount_customer_types[]', $discount_customer_types, !empty($recent_product) ? $recent_product->discount_customer_types : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'multiple', 'data-actions-box' => 'true', 'id' => 'discount_customer_types']) !!}
-        </div>
-    </div>
+
     <div class="col-md-4">
         <div class="i-checks">
             <input id="show_to_customer" name="show_to_customer" type="checkbox" checked value="1"

@@ -14,6 +14,7 @@ use App\Models\CustomerType;
 use App\Models\Grade;
 use App\Models\Product;
 use App\Models\ProductClass;
+use App\Models\ProductDiscount;
 use App\Models\ProductStore;
 use App\Models\Size;
 use App\Models\Store;
@@ -275,7 +276,18 @@ class ProductController extends Controller
                 })
                 ->editColumn('exp_date', '@if(!empty($exp_date)){{@format_date($exp_date)}}@endif')
                 ->addColumn('manufacturing_date', '@if(!empty($manufacturing_date)){{@format_date($manufacturing_date)}}@endif')
-                ->editColumn('discount', '{{@num_format($discount)}}')
+                ->editColumn('discount',function ($row) {
+                    $discount_text=$row->discount?$row->discount.' - ':'';
+                    $discounts= ProductDiscount::where('product_id',$row->id)->get();
+                    foreach ($discounts as $k=>$discount){
+                        if($k != 0){
+                            $discount_text.=' - ';
+                        }
+                        $discount_text.= $discount->discount;
+                    }
+                    return $discount_text;
+                    //'{{@num_format($discount)}}'
+                })
                 ->editColumn('active', function ($row) {
                     if ($row->active) {
                         return __('lang.yes');
@@ -557,12 +569,6 @@ class ProductController extends Controller
                 'sell_price' => !empty($request->is_service) ? $this->commonUtil->num_uf($request->sell_price):0,
                 'tax_id' => $request->tax_id,
                 'tax_method' => $request->tax_method,
-                'discount_type' => $request->discount_type,
-                'discount_customer_types' => $request->discount_customer_types,
-                'discount_customers' => $discount_customers,
-                'discount' => $this->commonUtil->num_uf($request->discount),
-                'discount_start_date' => !empty($request->discount_start_date) ? $this->commonUtil->uf_date($request->discount_start_date) : null,
-                'discount_end_date' => !empty($request->discount_end_date) ? $this->commonUtil->uf_date($request->discount_end_date) : null,
                 'show_to_customer' => !empty($request->show_to_customer) ? 1 : 0,
                 'show_to_customer_types' => $request->show_to_customer_types,
                 'different_prices_for_stores' => !empty($request->different_prices_for_stores) ? 1 : 0,
@@ -575,12 +581,32 @@ class ProductController extends Controller
                 'created_by' => Auth::user()->id,
                 'selling_price_depends' => $request->selling_price_depends,
                 'purchase_price_depends' => $request->purchase_price_depends,
+                'have_weight' => !empty($request->have_weight) ? 1 : 0,
             ];
 
 
             DB::beginTransaction();
 
             $product = Product::create($product_data);
+            $index_discounts=[];
+            if(count($request->discount_type)>0){
+                $index_discounts=array_keys($request->discount_type);
+            }
+
+            foreach ($index_discounts as $index_discount){
+                $discount_customers = $this->getDiscountCustomerFromType($request->get('discount_customer_types_'.$index_discount));
+                $data_des=[
+                    'product_id' => $product->id,
+                    'discount_type' => $request->discount_type[$index_discount],
+                    'discount_customer_types' => $request->get('discount_customer_types_'.$index_discount),
+                    'discount_customers' => $discount_customers,
+                    'discount' => $this->commonUtil->num_uf($request->discount[$index_discount]),
+                    'discount_start_date' => !empty($request->discount_start_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_start_date[$index_discount]) : null,
+                    'discount_end_date' => !empty($request->discount_end_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_end_date[$index_discount]) : null
+                ];
+
+                ProductDiscount::create($data_des);
+            }
             if($request->printers){
                 // loop printers
                 foreach ($request->printers as $printer){
@@ -769,7 +795,7 @@ class ProductController extends Controller
             ['sell_price' => ['required', 'max:25', 'decimal']],
         );
 
-        try {
+//        try {
             $discount_customers = $this->getDiscountCustomerFromType($request->discount_customer_types);
             $product_data = [
                 'name' => $request->name,
@@ -792,12 +818,12 @@ class ProductController extends Controller
                 'sell_price' => $this->commonUtil->num_uf($request->sell_price),
                 'tax_id' => $request->tax_id,
                 'tax_method' => $request->tax_method,
-                'discount_type' => $request->discount_type,
-                'discount_customer_types' => $request->discount_customer_types,
-                'discount_customers' => $discount_customers,
-                'discount' => $this->commonUtil->num_uf($request->discount),
-                'discount_start_date' => !empty($request->discount_start_date) ? $this->commonUtil->uf_date($request->discount_start_date) : null,
-                'discount_end_date' => !empty($request->discount_end_date) ? $this->commonUtil->uf_date($request->discount_end_date) : null,
+                'discount_type' =>null,
+                'discount_customer_types' => null,
+                'discount_customers' => null,
+                'discount' => null,
+                'discount_start_date' =>  null,
+                'discount_end_date' =>  null,
                 'show_to_customer' => !empty($request->show_to_customer) ? 1 : 0,
                 'show_to_customer_types' => $request->show_to_customer_types,
                 'different_prices_for_stores' => !empty($request->different_prices_for_stores) ? 1 : 0,
@@ -808,6 +834,7 @@ class ProductController extends Controller
                 'type' => !empty($request->this_product_have_variant) ? 'variable' : 'single',
                 'active' => !empty($request->active) ? 1 : 0,
                 'edited_by' => Auth::user()->id,
+                'have_weight' => !empty($request->have_weight) ? 1 : 0,
                 'selling_price_depends' => $request->selling_price_depends,
                 'purchase_price_depends' => $request->purchase_price_depends,
             ];
@@ -820,7 +847,44 @@ class ProductController extends Controller
 
             $this->productUtil->createOrUpdateVariations($product, $request);
 
+            if($request->discount_type){
+                if(count($request->discount_type)>0){
+                    $index_discounts=array_keys($request->discount_type);
+                    if($request->discount_ids != null ){
+                        $index_discounts_olds=array_keys($request->discount_ids);
+                        ProductDiscount::where('product_id',$product->id)->whereNotIn('id',$request->discount_ids)->delete();
+                    }else{
+                        ProductDiscount::where('product_id',$product->id)->delete();
+                    }
+                }
 
+                foreach ($index_discounts as $index_discount){
+                    $discount_customers = $this->getDiscountCustomerFromType($request->get('discount_customer_types_'.$index_discount));
+                    $data_des=[
+                        'product_id' => $product->id,
+                        'discount_type' => $request->discount_type[$index_discount],
+                        'discount_customer_types' => $request->get('discount_customer_types_'.$index_discount),
+                        'discount_customers' => $discount_customers,
+                        'discount' => $this->commonUtil->num_uf($request->discount[$index_discount]),
+                        'discount_start_date' => !empty($request->discount_start_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_start_date[$index_discount]) : null,
+                        'discount_end_date' => !empty($request->discount_end_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_end_date[$index_discount]) : null
+                    ];
+
+
+                    if(in_array($index_discount,$index_discounts_olds)){
+                        ProductDiscount::where('id',$request->discount_ids[$index_discount])->update($data_des);
+                    }else{
+                        ProductDiscount::create($data_des);
+                    }
+
+
+                }
+
+
+
+            }else{
+                ProductDiscount::where('product_id',$product->id)->delete();
+            }
 
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
@@ -872,13 +936,13 @@ class ProductController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-        } catch (\Exception $e) {
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
-        }
+//        } catch (\Exception $e) {
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
 
         if ($request->ajax()) {
             return $output;
@@ -942,7 +1006,21 @@ class ProductController extends Controller
 
         return $output;
     }
+    /**
+     * get raw material row
+     *
+     * @return void
+     */
+    public function getRawDiscount()
+    {
+        $row_id = request()->row_id ?? 0;
+        $discount_customer_types = CustomerType::pluck('name', 'id');
 
+        return view('product.partial.raw_discount')->with(compact(
+            'row_id',
+            'discount_customer_types',
+        ));
+    }
     public function getVariationRow()
     {
         $row_id = request()->row_id;

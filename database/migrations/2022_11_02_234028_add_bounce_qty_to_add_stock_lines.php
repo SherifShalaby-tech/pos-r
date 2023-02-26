@@ -14,7 +14,6 @@ class AddBounceQtyToAddStockLines extends Migration
     public function up()
     {
         Schema::table('add_stock_lines', function (Blueprint $table) {
-            $table->double('sell_price');
             $table->integer('bounce_qty')->nullable();
             $table->double('profit_bounce')->nullable();
             $table->double('bounce_purchase_price')->nullable();
