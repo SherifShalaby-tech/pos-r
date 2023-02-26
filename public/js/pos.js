@@ -1771,7 +1771,7 @@ customer_sales_table = $("#customer_sales_table").DataTable({
     },
     columnDefs: [
         {
-            targets: [9],
+            targets: [7],
             orderable: false,
             searchable: false,
         },

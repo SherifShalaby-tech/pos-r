@@ -73,8 +73,6 @@
                                         <th>@lang('lang.date_and_time')</th>
                                         <th>@lang('lang.invoice_no')</th>
                                         <th class="sum">@lang('lang.value')</th>
-                                        <th>@lang('lang.payment_type')</th>
-                                        <th>@lang('lang.ref_number')</th>
                                         <th>@lang('lang.status')</th>
                                         <th>@lang('lang.delivery_man')</th>
                                         <th>@lang('lang.cashier')</th>

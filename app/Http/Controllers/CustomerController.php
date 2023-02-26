@@ -59,27 +59,135 @@ class CustomerController extends Controller
      */
     public function index()
     {
-        $query = Customer::leftjoin('transactions', 'customers.id', 'transactions.customer_id')
-            ->select(
-                'customers.*',
-                DB::raw('SUM(IF(transactions.type="sell_return", final_total, 0)) as total_return'),
-                DB::raw('SUM(IF(transactions.type="sell", final_total, 0)) as total_purchase'),
-                DB::raw('SUM(IF(transactions.type="sell", total_sp_discount, 0)) as total_sp_discount'),
-                DB::raw('SUM(IF(transactions.type="sell", total_product_discount, 0)) as total_product_discount'),
-                DB::raw('SUM(IF(transactions.type="sell", total_coupon_discount, 0)) as total_coupon_discount'),
-            );
+        if (request()->ajax()) {
+            $query = Customer::
+                leftjoin('transactions', 'customers.id', 'transactions.customer_id')
+                ->leftjoin('users', 'customers.created_by', 'users.id')
+                ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
+                ->select(
+                    'customers.*',
+                    'users.name as created_by_name',
+                    'customer_types.name as customer_type_name',
+                    DB::raw('SUM(IF(transactions.type="sell_return", final_total, 0)) as total_return'),
+                    DB::raw('SUM(IF(transactions.type="sell", final_total, 0)) as total_purchase'),
+                    DB::raw('SUM(IF(transactions.type="sell", total_sp_discount, 0)) as total_sp_discount'),
+                    DB::raw('SUM(IF(transactions.type="sell", total_product_discount, 0)) as total_product_discount'),
+                    DB::raw('SUM(IF(transactions.type="sell", total_coupon_discount, 0)) as total_coupon_discount'),
+                );
 
-        $customers = $query->groupBy('customers.id')->get();
+            $customers = $query->groupBy('customers.id');
 
-        $balances = [];
-        foreach ($customers as $customer) {
-            $balances[$customer->id] = $this->transactionUtil->getCustomerBalance($customer->id)['balance'];
-        }
+                return DataTables::of($customers)
+                    ->editColumn('created_at', '{{@format_datetime($created_at)}}')
+                    ->editColumn('created_by', '{{$created_by_name}}')
+                    ->addColumn('image', function ($row) {
+                        $image = $row->getFirstMediaUrl('customer_photo');
+                        if (!empty($image)) {
+                            return '<img src="' . $image . '" height="50px" width="50px">';
+                        } else {
+                            return '<img src="' . asset('/uploads/' . session('logo')) . '" height="50px" width="50px">';
+                        }
+                    })
+                    ->addColumn('points', function ($row) {
+                       return ' <a href="'. action('CustomerController@show', $row->id) .'?show=points"
+                                    class="btn">'. $this->productUtil->num_f($row->total_rp) .'</a>';
+                    })
+                    ->addColumn('purchases', function ($row) {
+                        return ' <a href="'. action('CustomerController@show', $row->id) .'?show=purchases"
+                                    class="btn">'.$this->productUtil-> num_f($row->total_purchase - $row->total_return) .'</a>';
+                    })
+                    ->addColumn('discounts', function ($row) {
+                        return ' <a href="'. action('CustomerController@show', $row->id) .'?show=discounts"
+                                    class="btn">'. $this->productUtil->num_f($row->total_sp_discount + $row->total_product_discount + $row->total_coupon_discount) .'</a>';
+                    })
+                    ->addColumn('balance', function ($row) {
+                       return $this->transactionUtil->getCustomerBalance($row->id)['balance'];
+                    })
 
-        return view('customer.index')->with(compact(
-            'customers',
-            'balances'
-        ));
+
+                    ->addColumn(
+                        'action',
+                        function ($row) {
+                            $html = ' <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">' . __('lang.action') . '
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">';
+                            if (auth()->user()->can('customer_module.customer.view')){
+                                $html .=' <li><a href="'. action('CustomerController@show', $row->id) .'" class="btn"> <i class="dripicons-document"></i>'. __('lang.view').'</a>
+                                                </li>';
+
+                            }
+                            $html .= '<li class="divider"></li>';
+                            if (auth()->user()->can('customer_module.customer.create_and_edit')){
+                                $html .='<li>
+                                                <a href="'. action('CustomerController@edit',$row->id) .'"><i
+                                                        class="dripicons-document-edit btn"></i>'.__('lang.edit').'</a>
+                                            </li>';
+
+                            }
+                            $html .= '<li class="divider"></li>';
+                            if (auth()->user()->can('customer_module.add_payment.create_and_edit')) {
+
+                                $balances=  $this->transactionUtil->getCustomerBalance($row->id)['balance'];
+                                if ($balances < 0){
+                                    $html .= '<li >
+                                                    <a data - href = "'. action('TransactionPaymentController@getCustomerDue', $row->id).'"
+                                                        class="btn-modal" data - container = ".view_modal" ><i
+                                                            class="fa fa-money btn" ></i >'. __('lang.pay_customer_due').'</a >
+                                                </li ><li class="divider"></li>';
+                                }
+                            }
+                            if (auth()->user()->can('adjustment.customer_balance_adjustment.create_and_edit')){
+                            $html .= '<li>
+                                                <a href="'. action('CustomerBalanceAdjustmentController@create', ['customer_id' => $row->id]) .'"
+                                                    class="btn"><i class="fa fa-adjust"></i>'. __('lang.adjust_customer_balance').'</a>
+                                            </li>
+                                            <li class="divider"></li>';
+                            }
+                            if (auth()->user()->can('adjustment.customer_point_adjustment.create_and_edit')){
+                                $html .= '<li>
+
+                                                <a href="'. action('CustomerPointAdjustmentController@create', ['customer_id' => $row->id]) .'"
+                                                    class="btn"><i class="fa fa-adjust"></i>'. __('lang.adjust_customer_points').'</a>
+                                            </li>
+                                            <li class="divider"></li>';
+                            }
+                            if($row->is_default == 0){
+
+                                if (auth()->user()->can('customer_module.customer.delete')) {
+                                    $html .=
+                                        '<li>
+                                    <a data-href="' . action('CustomerController@destroy', $row->id)  . '"
+                                        data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
+                                        class="btn text-red delete_item"><i class="dripicons-trash"></i>
+                                        ' . __('lang.delete') . '</a>
+                                    </li>';
+                                }
+                            }
+
+
+                            $html .= '</ul></div>';
+                            return $html;
+                        }
+                    )
+                    ->rawColumns([
+                        'action',
+                        'image',
+                        'balance',
+                        'points',
+                        'discounts',
+                        'purchases',
+                        'created_at',
+                        'created_by',
+                    ])
+                    ->make(true);
+            }
+
+
+        return view('customer.index');
     }
 
     /**
