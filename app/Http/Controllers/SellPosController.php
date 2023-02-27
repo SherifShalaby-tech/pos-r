@@ -572,6 +572,7 @@ class SellPosController extends Controller
      */
     public function update(Request $request, $id)
     {
+
         // try {
         DB::beginTransaction();
         $transaction = $this->transactionUtil->updateSellTransaction($request, $id);
@@ -610,13 +611,15 @@ class SellPosController extends Controller
             if (!empty($request->payments)) {
                 $payment_formated = [];
                 $transaction_payment_ids = array_column($request->payments, 'transaction_payment_id');
-                TransactionPayment::where('transaction_id',$transaction->id)->whereNotIn('id',$transaction_payment_ids)->delete();
+                TransactionPayment::where('transaction_id',$transaction->id)
+                    ->whereNotIn('id',$transaction_payment_ids)->delete();
                 foreach ($request->payments as $payment) {
                     $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                     $old_tp = null;
                     if (!empty($payment['transaction_payment_id'])) {
                         $old_tp = TransactionPayment::find($payment['transaction_payment_id']);
                     }
+
                     $payment_data = [
                         'transaction_payment_id' => !empty($payment['transaction_payment_id']) ? $payment['transaction_payment_id'] : null,
                         'transaction_id' => $transaction->id,
@@ -643,10 +646,15 @@ class SellPosController extends Controller
                     $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
 
                     if (!empty($transaction_payment)) {
-                        $this->moneysafeUtil->updatePayment($transaction, $payment_data, 'credit', $transaction_payment->id, $old_tp);
+
+                        if ($payment_data['method'] == 'bank_transfer' || $payment_data['method'] == 'card') {
+                            $this->moneysafeUtil->updatePayment($transaction, $payment_data, 'credit', $transaction_payment->id, $old_tp);
+                        }
                         $payment_data['transaction_payment_id'] =  $transaction_payment->id;
                         $payment_formated[] = $payment_data;
+                        $this->cashRegisterUtil->updatePayments($transaction, $payment_data, 'credit', null, $transaction_payment->id);
                     }
+
                 }
                 $this->cashRegisterUtil->updateSellPaymentsBasedOnPaymentDate($transaction, $payment_formated);
             }

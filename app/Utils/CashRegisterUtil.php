@@ -173,6 +173,70 @@ class CashRegisterUtil extends Util
         return true;
     }
 
+    /**
+     * Update sell payments to currently opened cash register
+     *
+     * @param object/int $transaction
+     * @param array $payments
+     *
+     * @return boolean
+     */
+    public function updatePayments($transaction, $payment, $type = 'credit', $user_id = null, $transaction_payment_id = null,)
+    {
+        if (empty($user_id)) {
+            $user_id = auth()->user()->id;
+        }
+        $register =  $this->getCurrentCashRegisterOrCreate($user_id);
+
+        if ($transaction->type == 'sell_return') {
+            $cr_transaction = CashRegisterTransaction::where('transaction_id', $transaction->id)->first();
+            if (!empty($cr_transaction)) {
+                $cr_transaction->update([
+                    'amount' => $this->num_uf($payment['amount']),
+                    'pay_method' => $payment['method'],
+                    'type' => $type,
+                    'transaction_type' => $transaction->type,
+                    'transaction_id' => $transaction->id,
+                    'transaction_payment_id' => $transaction_payment_id
+                ]);
+
+                return true;
+            }else {
+                CashRegisterTransaction::create([
+                    'cash_register_id' => $payment['cash_register_id'] ?? $register->id,
+                    'pay_method' =>  $payment['method'],
+                    'type' => $type,
+                    'transaction_type' => $transaction->type,
+                    'transaction_id' => $transaction->id,
+                    'transaction_payment_id' => $transaction_payment_id
+                    ],[
+                    'amount' => $this->num_uf($payment['amount'])
+                ]);
+                return true;
+            }
+        } else {
+            $payments_formatted[] = new CashRegisterTransaction([
+                'amount' => $this->num_uf($payment['amount']),
+                'pay_method' => $payment['method'],
+                'type' => $type,
+                'transaction_type' => $transaction->type,
+                'transaction_id' => $transaction->id,
+                'transaction_payment_id' => $transaction_payment_id
+            ]);
+        }
+
+
+        //add to cash register pos return amount as sell amount
+        if (!empty($pos_return_transactions)) {
+            $payments_formatted[0]['amount'] = $payments_formatted[0]['amount'] + !empty($pos_return_transactions) ? $this->num_uf($pos_return_transactions->final_total) : 0;
+        }
+
+        if (!empty($payments_formatted) && !empty($register)) {
+            $register->cash_register_transactions()->saveMany($payments_formatted);
+        }
+
+        return true;
+    }
 
     /**
      * Adds sell payments to currently opened cash register
@@ -232,7 +296,7 @@ class CashRegisterUtil extends Util
     {
         $transaction = Transaction::find($transaction->id);
         $opened_register =  CashRegister::where('user_id', $transaction->created_by)
-//            ->where('status', 'open')
+            ->where('status', 'open')
             ->first();
         if ($transaction->status == 'final') {
             $payment_methods = [
@@ -240,6 +304,7 @@ class CashRegisterUtil extends Util
                 'card',
                 'cheque',
                 'bank_transfer',
+                'paypal'
 
             ];
 
@@ -269,12 +334,15 @@ class CashRegisterUtil extends Util
                     $amount = $this->num_uf($payment['amount']);
                     $change_amount = !empty($payment['change_amount']) ? $this->num_uf($payment['change_amount']) : 0;
                     $amount = $amount - $change_amount;
+
                     $payment_diffs[$payment['method']]['transaction_payment_id'] = $payment['transaction_payment_id'];
                     $payment_diffs[$payment['method']]['new_cash_register_id'] = !empty($payment['cash_register_id']) ? $payment['cash_register_id'] : null;
+                    $payment_diffs[$payment['method']]['cash_register_id'] =array_keys($payment_diffs[$payment['method']],'cash_register_id') ? $payment_diffs[$payment['method']]['cash_register_id'] : null;
+                    $payment_diffscash_register_id= $payment_diffs[$payment['method']]['cash_register_id'];
                     if (isset($payment['is_return']) && $payment['is_return'] == 1) {
                         $payment_diffs[$payment['method']]['value'] = $payment_diffs[$payment['method']]['value'] + $this->num_uf($amount);
                     } else {
-                        if (!empty($payment['cash_register_id']) && $payment['cash_register_id'] != $payment_diffs[$payment['method']]['cash_register_id']) {
+                        if (!empty($payment['cash_register_id']) && $payment['cash_register_id'] != $payment_diffscash_register_id) {
                             $payment_diffs[$payment['method']]['value'] = $payment_diffs[$payment['method']]['value'];
                             $payment_diffs[$payment['method']]['diff'] = $amount - $payment_diffs[$payment['method']]['value'];
                         } else {
