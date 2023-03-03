@@ -236,6 +236,8 @@ $(document).on("click", ".remove_row", function () {
 
     $(this).closest("tr").remove();
     $(".row_details_" + index).remove();
+    $(".bounce_details_td_" + index).remove();
+
     calculate_sub_totals();
     reset_row_numbering();
 });
