@@ -306,6 +306,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::resource('redemption-of-points', RedemptionOfPointController::class);
 
     Route::get('sales-promotion/get-sale-promotion-details/{id}', 'SalesPromotionController@getSalePromotionDetails');
+    Route::get('sales-promotion/get-product-condition-rows', 'SalesPromotionController@getProductConditionRows');
     Route::get('sales-promotion/get-product-details-rows', 'SalesPromotionController@getProductDetailsRows');
     Route::resource('sales-promotion', SalesPromotionController::class);
 

@@ -552,6 +552,7 @@ function check_for_sale_promotion() {
             if (result.valid) {
                 let  discount = 0;
                 let  sum_item_discount = 0;
+                console.log('sales_promotion-cost_span=>',result.sale_promotion_details)
                 result.sale_promotion_details.forEach((data, index) => {
                     let sum_discount = 0;
                     if (
@@ -629,7 +630,7 @@ function check_for_sale_promotion() {
                                 .find("tr")
                                 .each(function () {
                                     var row_product_id = $(this)
-                                        .find(".product_id")
+                                        .find(".variation_id")
                                         .val()
                                         .trim();
                                     var qty = $(this)
@@ -670,7 +671,6 @@ function check_for_sale_promotion() {
                     __currency_trans_from_en(sum_item_discount+discount, false)
                 );
                 __write_number($("#total_pp_discount"), discount);
-
 
                 calculate_sub_totals();
             }else{
