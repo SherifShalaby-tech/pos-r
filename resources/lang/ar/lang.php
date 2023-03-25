@@ -82,6 +82,8 @@ return [
     'class_name' => 'اسم الفئة',
     'add_class' => 'أضف فئة',
     'description' => 'وصف',
+    'manufacturers' => 'المصنعين',
+    'add_manufacturer' => 'اضافة مصنع جديد',
     'product_class' => 'فئة المنتج',
     'category' => 'القسم',
     'add_category' => 'إضافة القسم',

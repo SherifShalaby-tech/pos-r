@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ManufacturerController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -409,6 +410,12 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('money-safe/get-dropdown', 'MoneySafeController@getDropdown');
     Route::get('money-safe/get-details-by-id/{id}', 'MoneySafeController@getDetailsById');
     Route::resource('money-safe', MoneySafeController::class);
+
+    // manufacturers
+    Route::resource('manufacturers', 'ManufacturerController');
+
+
+
 });
 
 

@@ -13,7 +13,8 @@ return [
     |
     */
     'have_weight'=>'depends on weight',
-
+    'manufacturers' => 'Manufacturers',
+    'add_manufacturer' => 'Add New Manufacturer',
     'type_Debt' => 'Pay Debt',
     'product_extension'=>'Extras with the product',
     'clear_all_input_form'=>'Keeping data after saving product',
