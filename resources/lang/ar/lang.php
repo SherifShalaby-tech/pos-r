@@ -12,8 +12,18 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    'have_weight'=>'يعتمد علي الميزان',
 
+    'manufacturers' => 'المصنعين',
+    'add_manufacturer' => 'اضافة مصنع جديد',
+    'edit_manufacturer' => 'تعديل مصنع',
+    'manufacturings' => 'عمليات التصنيع',
+    'view_all_manufacturings' => 'عرض كل عمليات التصنيع',
+    'manufacturing' => 'تصنيع',
+    'manufacturer' => 'المصنع',
+    'manufacturing_status' => 'حالة التصنيع',
+
+
+    'have_weight'=>'يعتمد علي الميزان',
     'type_Debt'=>'سداد دين',
     'clear_all_input_form'=>'الاحتفاظ بالبيانات بعد عملية الإدخال',
     'product_extension'=>'اضافات مع المنتج',
@@ -82,9 +92,6 @@ return [
     'class_name' => 'اسم الفئة',
     'add_class' => 'أضف فئة',
     'description' => 'وصف',
-    'manufacturers' => 'المصنعين',
-    'add_manufacturer' => 'اضافة مصنع جديد',
-    'edit_manufacturer' => 'تعديل مصنع',
     'product_class' => 'فئة المنتج',
     'category' => 'القسم',
     'add_category' => 'إضافة القسم',

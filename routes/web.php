@@ -69,6 +69,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::resource('raw-material', RawMaterialController::class);
     Route::get('recipe/get-raw-recipe-details/{raw_recipe_id}', 'RecipeController@getRecipeDetail');
     Route::post('recipe_uesd/send_uesd', 'RecipeController@sendUesd')->name('recipeUesd.sendUesd');
+
     Route::get('recipe_uesd/send/{id?}', 'RecipeController@used')->name('recipeUesd.show.sendUesd');
     Route::get('productions', 'RecipeController@ProductionIndex')->name('productions.index');
     Route::get('productions/edit/{id}', 'RecipeController@editProduction')->name('productions.edit');
@@ -413,8 +414,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     // manufacturers
     Route::resource('manufacturers', 'ManufacturerController');
-
-
+    Route::resource('manufacturing-s', 'ManufacturingController');
+    Route::get('manufacturing/uesd/send/{id?}', 'ManufacturingController@used')->name('manufacturings.show.sendUesd');
 
 });
 

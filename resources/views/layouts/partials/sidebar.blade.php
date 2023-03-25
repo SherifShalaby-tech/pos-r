@@ -1165,6 +1165,17 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 </li>
                 @endif
                 @endif
+{{--                TODO permissions--}}
+                <li><a href="#manufacturings" aria-expanded="false" data-toggle="collapse"> <i
+                            class="fa fa-envelope "></i><span>{{__('lang.manufacturings')}}</span><span></a>
+                    <ul id="manufacturings"  class="collapse list-unstyled @if(in_array(request()->segment(1), ['manufacturings'])) show @endif">
+                        <li class="@if(request()->segment(1) == 'email' && empty(request()->segment(2))) active @endif">
+                            <a href="{{action('ManufacturingController@index')}}">{{__('lang.view_all_manufacturings')}}</a>
+                        </li>
+
+                    </ul>
+                </li>
+
 
                 @if( !empty($module_settings['settings']) )
                 <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i

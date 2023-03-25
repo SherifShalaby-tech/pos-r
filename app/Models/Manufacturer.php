@@ -29,4 +29,8 @@ class Manufacturer extends Model
         }
         return $name;
     }
+    public static function getDropdown()
+    {
+        return Manufacturer::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
+    }
 }

@@ -1,15 +1,11 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-
         {!! Form::open(['url' => action('ManufacturerController@update', $manufacturer->id), 'method' => 'put', 'id' => 'manufacturer_add_form', 'files' => true]) !!}
-
         <div class="modal-header">
-
             <h4 class="modal-title">@lang( 'lang.edit_manufacturer' )</h4>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                     aria-hidden="true">&times;</span></button>
         </div>
-
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __('lang.name') . ':*') !!}
