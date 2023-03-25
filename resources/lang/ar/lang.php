@@ -84,6 +84,7 @@ return [
     'description' => 'وصف',
     'manufacturers' => 'المصنعين',
     'add_manufacturer' => 'اضافة مصنع جديد',
+    'edit_manufacturer' => 'تعديل مصنع',
     'product_class' => 'فئة المنتج',
     'category' => 'القسم',
     'add_category' => 'إضافة القسم',
