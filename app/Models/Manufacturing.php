@@ -11,8 +11,6 @@ class Manufacturing extends Model
     protected $fillable = [
       "store_id",
       "manufacturer_id",
-      "recipe_id",
-      "quantity_product",
       "created_by",
       "edited_by",
     ];
@@ -22,8 +20,8 @@ class Manufacturing extends Model
     public function manufacturer(){
         return $this->belongsTo(Manufacturer::class,"manufacturer_id","id");
     }
-    public function material(){
-        return $this->belongsTo(Recipe::class,"recipe_id","id");
+    public function materials(){
+        return $this->many(manufacturingProduct::class,"manufacturing_id","id");
     }
     public function createdUser(){
         return $this->belongsTo(User::class,"created_by","id");

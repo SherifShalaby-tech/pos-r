@@ -62,7 +62,6 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     //item borrowed controller
     Route::resource('item-borrowed',ItemBorrowedController::class);
     Route::post('item-borrowed/give','ItemBorrowedController@give')->name('item-borrowed.give');
-
     Route::get('raw-material/add-stock/create', 'AddStockController@create');
     Route::get('raw-material/add-stock', 'AddStockController@index');
     Route::get('raw-material/add-product-row', 'RawMaterialController@addProductRow');
@@ -75,9 +74,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('productions/edit/{id}', 'RecipeController@editProduction')->name('productions.edit');
     Route::put('productions/edit/{id}', 'RecipeController@updateProduction')->name('productions.update');
     Route::delete('productions/delete/{id}', 'RecipeController@destroyProduction')->name('productions.delete');
-
     Route::resource('recipe', RecipeController::class);
-
     // printer controller
     Route::resource('printers',PrinterController::class);
     Route::get('consumption/get-sufficient-suggestions/{raw_material_id}', 'ConsumptionController@getSufficientSuggestions');
@@ -415,7 +412,6 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     // manufacturers
     Route::resource('manufacturers', 'ManufacturerController');
     Route::resource('manufacturing-s', 'ManufacturingController');
-    Route::get('manufacturing/uesd/send/{id?}', 'ManufacturingController@used')->name('manufacturings.show.sendUesd');
 
 });
 

@@ -16,11 +16,12 @@ return [
     'manufacturers' => 'المصنعين',
     'add_manufacturer' => 'اضافة مصنع جديد',
     'edit_manufacturer' => 'تعديل مصنع',
-    'manufacturings' => 'عمليات التصنيع',
+    'manufacturings' => 'التصنيع الخارجي',
     'view_all_manufacturings' => 'عرض كل عمليات التصنيع',
     'manufacturing' => 'تصنيع',
     'manufacturer' => 'المصنع',
     'manufacturing_status' => 'حالة التصنيع',
+    'edit_manufacturing_status' => 'تعديل حالة التصنيع ',
 
 
     'have_weight'=>'يعتمد علي الميزان',

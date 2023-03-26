@@ -8,7 +8,7 @@
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 @can('raw_material_module.production.create_and_edit')
-                <a style="color: white" href="{{route('manufacturings.show.sendUesd',1)}}"
+                <a style="color: white" href="{{action('ManufacturingController@create')}}"
                      class="btn btn-info"><i class="dripicons-plus"></i>
                     @lang('lang.add_new_production')</a>
                 @endcan
@@ -52,8 +52,7 @@
                                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
                                                 user="menu">
                                                 <li>
-
-                                                    <a href="{{route('productions.edit', $manufacturing->id)}}" class="btn "><i
+                                                    <a href="{{action('ManufacturingController@edit', $manufacturing->id)}}" class="btn "><i
                                                             class="dripicons-retweet"></i> @lang('lang.manufacturing_status')</a>
                                                 </li>
                                                 <li>

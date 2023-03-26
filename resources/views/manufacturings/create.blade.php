@@ -22,7 +22,6 @@
                                             ['class' => 'select_store_id selectpicker form-control',
                                              'data-live-search' => 'true',
                                               'style' => 'width: 80%', 'id' => 'store_id']) !!}
-
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -35,43 +34,27 @@
 
                                     </div>
                                 </div>
+
                                 <div class="col-md-3">
-                                    {!! Form::label('recipe_id', __('lang.recipe'), []) !!}
+                                    {!! Form::label('product_ids', __('lang.recipe'), []) !!}
                                     <div class="input-group my-group">
-                                        <select name="recipe_id" id="recipe_id"
-                                                class='select_recipe_id selectpicker form-control'
+                                        <select required name="product_ids[]" id="product_ids" multiple
+                                                class='select_product_ids selectpicker select2 form-control'
                                                 data-live-search='true' style='width: 30%;'
                                                 placeholder="{{__('lang.please_select')}}">
-                                            @foreach($recipes as $item)
-                                                <option value="{{$item->id}}"
-                                                        @isset($recipe) @if($item->id == $recipe ->id) selected @endif @endisset>{{$item->variation_name != 'Default' ?:$item->product_name }}
-                                                    ({{$item->name}})
-                                                </option>
+                                            @foreach($products as $item)
+                                                @if($item->current_stock > 0)
+                                                    <option stock="{{ $item->current_stock }}" name="{{$item->name}}"
+                                                            id="product_{{$item->id}}" value="{{$item->id}}">
+                                                        {{ $item->name }}
+                                                    </option>
+                                                @endif
                                             @endforeach
-
                                         </select>
-
                                     </div>
                                 </div>
-                                <div class="col-md-3 ">
-                                    <div class="col-7">
-                                        <div class="form-group">
-                                            {!! Form::label('quantity_product', __('lang.quantity'), []) !!}
-                                            {!! Form::number('quantity_product',!empty($recipe) ?
-                                        number_format($recipe->quantity_product,5,'.','') :
-                                        null,
-                                            ['class' => 'form-control', 'placeholder' =>
-                                            __('lang.quantity_product')]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-5">
-                                        <label for="" class="unit_label" id="label_unit_id_material"
-                                               style="text-align: center; margin-top: 40%;"> </label>
-                                        <input type="text" class="hide" id="unit_id_material" value=""
-                                               name="unit_id_material">
-                                    </div>
 
-                                </div>
+
                                 <div class="col-md-4 d-none">
                                     <div class="i-checks">
                                         <input id="price_based_on_raw_material" name="price_based_on_raw_material"
@@ -92,7 +75,8 @@
                                     <div class="form-group">
                                         <input type="button" value="{{trans('lang.manufacturing')}}" id="submit-btn"
                                                class="btn btn-primary">
-                                        <a href="{{ route("manufacturing-s.index") }}" class="btn btn-dark">{{trans('lang.back')}}</a>
+                                        <a href="{{ route("manufacturing-s.index") }}"
+                                           class="btn btn-dark">{{trans('lang.back')}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -109,12 +93,71 @@
             </div>
         </div>
     </section>
+
+{{--    <div class="modal" tabindex="-1" role="dialog">--}}
+{{--        <div class="modal-dialog" role="document">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="modal-header">--}}
+{{--                    <h5 class="modal-title">Modal title</h5>--}}
+{{--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
+{{--                        <span aria-hidden="true">&times;</span>--}}
+{{--                    </button>--}}
+{{--                </div>--}}
+{{--                <div class="modal-body">--}}
+{{--                    <table id="product-modal">--}}
+{{--                        <thead>--}}
+{{--                        <th>name</th>--}}
+{{--                        <th>stock</th>--}}
+{{--                        <th>quentity</th>--}}
+{{--                        <th>unit</th>--}}
+{{--                        </thead>--}}
+{{--                        <tbody>--}}
+
+{{--                        </tbody>--}}
+{{--                    </table>--}}
+{{--                </div>--}}
+{{--                <div class="modal-footer">--}}
+{{--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Add</button>--}}
+{{--                </div>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
+
+    <div class="modal fade" id="ProductsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table id="product-modal" class="table table-striped table-bordered">
+                        <thead>
+                            <th>@lang('lang.name')</th>
+                            <th>@lang('lang.stock')</th>
+                            <th>@lang('lang.quantity')</th>
+                            <th>@lang('lang.unit')</th>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" id="addQuantity" class="btn btn-primary">Understood</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('javascript')
-
     <script>
-
+        let data = [];
+        let Quantities = [];
         $(document).ready(function () {
             calculate_price_base_on_raw_material();
             gert_unit_base_for_select_material_id();
@@ -125,7 +168,11 @@
                     $.ajax({
                         type: "POST",
                         url: $("#product-edit-form").attr("action"),
-                        data: $("#product-edit-form").serialize(),
+                        data: {
+                            "store_id" :$("#store_id").val(),
+                            "manufacturer_id" :$("#manufacturer_id").val(),
+                            "product_quentity" :Quantities,
+                        },
                         success: function (response) {
                             if (response.success) {
                                 swal("Success", response.msg, "success")
@@ -143,6 +190,89 @@
 
                 }
             });
+
+            $(document).on("change", "#product_ids", function (e) {
+
+                if(data.length < $(this).val().length){
+                    let product_current;
+                    $(this).val().forEach(e=>{
+                        if (data.filter(function(g) { return g.id == e; }).length == 0) {
+                            product_current =e;
+                        }
+                    })
+                    // select added new value
+                    $("#product-modal tbody").empty()
+                    $("#product-modal tbody").append(`
+                <tr>
+                        <td>
+                            ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('name'): $('#product_'+product_current).attr('name')}
+                        </td>
+                        <td>
+                              ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('stock'): $('#product_'+product_current).attr('stock')}
+                        </td>
+                        <td>
+                            <input class="form-control" type="number" id="product_quantity">
+                            <input type="hidden" id="product_stock" value=" ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('stock'): $('#product_'+product_current).attr('stock')}">
+                            <input type="hidden" id="product_id" value=" ${data.length == 0 ? $('#product_'+$(this).val()[0]).val(): $('#product_'+product_current).val()}">
+                        </td>
+                        <td>
+                            GM
+                        </td>
+                    </tr>
+                `)
+                    $("#ProductsModal").modal("show")
+                }else{
+                    // select  remove old  value
+
+                    console.log("$(this).val()",$(this).val())
+                    if($(this).val().length == 0){
+                        Quantities =[];
+                    }else{
+                        Quantities.forEach(a=>{
+                            if ($(this).val().filter(function(g) { return g == a.product_id; }).length == 0) {
+                                const index = Quantities.indexOf(a);
+                                if (index > -1) {
+                                    Quantities.splice(index, 1);
+                                }
+                            }
+                        })
+                    }
+
+                    console.log(Quantities)
+
+                }
+
+                data = [];
+                product_ids = $(this).val();
+                product_ids.forEach(e => {
+                    data.push({
+                        "id": e,
+                        "name": $('#product_' + e).attr('name'),
+                        "stock": $('#product_' + e).attr('stock')
+                    })
+                });
+
+            });
+            $(document).on("click", "#addQuantity", function (e) {
+                let userQuantity= Number($("#product_quantity").val());
+                let product_stock= Number($("#product_stock").val());
+                let product_id= Number($("#product_id").val());
+                if(userQuantity == null || userQuantity==''){
+                    swal("Error", "Please Fill Quantity Input", "error");
+                }else if(userQuantity > product_stock){
+                    swal("Error", "Sorry Out Of Stock", "error");
+                }else{
+                    Quantities.push({
+                        "product_id" :product_id,
+                        "quantity" :userQuantity,
+                    })
+                    // console.log(Quantities)
+                    swal("Success", 'Quantity Added Successfully', "success");
+                    $("#ProductsModal").modal("hide")
+                }
+            });
+
+
             /*$("#submit-btn").on("click", function (e) {
                 e.preventDefault();
                 document.getElementById("loader").style.display = "block";
@@ -206,72 +336,7 @@
             $(document).on("change", "select.select_material_id", function () {
                 gert_unit_base_for_select_material_id();
             });
-            $(document).on("change", "select.select_recipe_id", function () {
-                let raw_recipe_id = $(this).val();
-                console.log(raw_recipe_id);
-                $.ajax({
-                    method: "get",
-                    url: "/recipe/get-raw-recipe-details/" + raw_recipe_id,
-                    data: {},
-                    success: function (result) {
-                        $('#body-table-material').html(result.view);
-                        $(".selectpicker").selectpicker("refresh");
-                        $(".raw_material_unit_id").selectpicker("refresh");
 
-                        if (result.recipe.price_based_on_raw_material == 1) {
-                            $('#price_based_on_raw_material').prop('checked', true);
-                            let total_raw_material_price = 0;
-                            $("#consumption_table > tbody > tr").each(function () {
-                                let raw_material_price = __read_number(
-                                    $(this).find(".raw_material_price")
-                                );
-                                let raw_material_quantity = __read_number(
-                                    $(this).find(".raw_material_quantity")
-                                );
-                                let raw_material_total = raw_material_price * raw_material_quantity;
-                                total_raw_material_price += raw_material_total;
-
-                                $(this)
-                                    .find(".cost_label")
-                                    .text(__currency_trans_from_en(raw_material_total, false));
-                                $(this)
-                                    .find(".cost_input")
-                                    .val(__currency_trans_from_en(raw_material_total, false));
-                            });
-                            let other_cost = __read_number($("#other_cost"));
-                            total_raw_material_price += other_cost;
-                            __write_number($("#purchase_price"), total_raw_material_price);
-                        } else {
-                            $('#price_based_on_raw_material').prop('checked', false);
-
-                        }
-                        if (result.recipe.automatic_consumption == 1) {
-                            $('#automatic_consumption').prop('checked', true);
-
-                        } else {
-                            $('#automatic_consumption').prop('checked', false);
-
-                        }
-                        calculate_price_base_on_raw_material();
-                        __write_number($("#other_cost"), result.recipe.other_cost);
-                        __write_number($("#purchase_price"), result.recipe.purchase_price);
-                        __write_number($("#quantity_product"), result.recipe.quantity_product);
-                        __write_number($("#sell_price"), result.recipe.purchase_price);
-                        __write_number($("#purchase_price_per_unit"), result.recipe.purchase_price / result.recipe.quantity_product);
-
-                        // tr.find(".raw_material_price").val(
-                        //     result.raw_material.purchase_price
-                        // );
-                        // tr.find(".raw_material_unit_id").val(
-                        //     result.raw_material.multiple_units[0]
-                        // );
-                        // tr.find(".raw_material_unit_id").selectpicker("refresh");
-                        // tr.find(".unit_label").text(
-                        //     tr.find("select.raw_material_unit_id option:selected").text()
-                        // );
-                    },
-                });
-            });
             $(document).on("change", "select.raw_material_id", function () {
                 let tr = $(this).closest("tr");
                 let raw_material_id = $(this).val();
@@ -540,6 +605,7 @@
 
 
     </script>
+
 
 
     <script>

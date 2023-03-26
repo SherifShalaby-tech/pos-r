@@ -16,11 +16,12 @@ return [
     'manufacturers' => 'Manufacturers',
     'add_manufacturer' => 'Add New Manufacturer',
     'edit_manufacturer' => 'Edit Manufacturer',
-    'manufacturings' => 'Manufacturings',
+    'manufacturings' => 'Out Manufacturings',
     'view_all_manufacturings' => 'View All Manufacturings',
     'manufacturing' => 'Manufacturing',
     'manufacturer' => 'Manufacturer',
     'manufacturing_status' => 'Manufacturing Status',
+    'edit_manufacturing_status' => 'Edit Manufacturing Status',
 
 
     'have_weight'=>'depends on weight',
