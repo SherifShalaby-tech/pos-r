@@ -24,6 +24,7 @@
                                 <th>@lang('lang.quantity')</th>
                                 <th>@lang('lang.manufacturing_date')</th>
                                 <th>@lang('lang.product_received')</th>
+                                <th>@lang('lang.product_received_quantity')</th>
                                 <th>@lang('lang.created_by')</th>
                                 <th>@lang('lang.edited_by')</th>
                                 @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
@@ -38,7 +39,9 @@
                                 <td>{{$manufacturing->manufacturer->name ??""}}</td>
                                 <td>
                                     @foreach($manufacturing->materials as $material)
-                                        {{$material->product->name ??""}}  <br>
+                                        @if($material->status == "0")
+                                            {{$material->product->name ??""}}  <br>
+                                        @endif
                                     @endforeach
                                 </td>
                                 <td>
@@ -47,7 +50,19 @@
                                     @endforeach
                                 </td>
                                 <td>{{date('Y/m/d H:i',strtotime($manufacturing->created_at))}}</td>
-                                <td>لم يتم استلام منتجات المواد المصنعه </td>
+                                <td>
+                                    @foreach($manufacturing->material_recived as $material)
+                                        @if($material->status == "1")
+                                            {{$material->product->name ??""}}  <br>
+                                        @endif
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach($manufacturing->material_recived as $material)
+                                        {{$material->quantity ??""}}  <br>
+                                    @endforeach
+
+                                </td>
                                 <td>{{$manufacturing->createdUser->name ??""}}</td>
                                 <td>{{$manufacturing->editedUser->name ??""}}</td>
                                 @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
@@ -62,7 +77,7 @@
                                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
                                                 user="menu">
                                                 <li>
-                                                    <a href="{{action('ManufacturingController@edit', $manufacturing->id)}}" class="btn "><i
+                                                    <a href="{{route('manufacturing.getReceivedProductsPage',$manufacturing->id)}}" class="btn "><i
                                                             class="dripicons-retweet"></i> @lang('lang.manufacturing_status')</a>
                                                 </li>
                                                 <li>
@@ -72,8 +87,7 @@
                                                 </li>
                                                 <li class="divider"></li>
                                                <li>
-{{--                                                   {{route('productions.delete', $manufacturing->id)}}--}}
-                                                    <a data-href="{{route('ManufacturingController@edit', $manufacturing->id)}}--}}"
+                                                    <a data-href="{{action('ManufacturingController@destroy', $manufacturing->id)}}"
                                                         data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"
                                                         class="btn text-red delete_item"><i class="fa fa-trash"></i>
                                                         @lang('lang.delete')</a>

@@ -9,6 +9,7 @@ class manufacturingProduct extends Model
 {
     use HasFactory;
     protected $fillable = [
+        "status",
         "manufacturing_id",
         "product_id",
         "quantity",

@@ -24,6 +24,8 @@ return [
     'edit_manufacturing_status' => 'تعديل حالة التصنيع ',
     'manufacturing_material' => 'مادة التصنيع ',
     'product_received' => 'المنتجات المستلمة',
+    'product_received_quantity' => 'كميه',
+    'received' => 'استلام',
 
 
 

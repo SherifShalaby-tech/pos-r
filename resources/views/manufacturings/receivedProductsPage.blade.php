@@ -13,24 +13,36 @@
                         </div>
                         <div class="card-body">
                             <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                            {!! Form::open(['url' =>action('ManufacturingController@store'), 'id' =>'product-edit-form', 'method'=>'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                            {!! Form::open(['url' =>action('ManufacturingController@postReceivedProductsPage'), 'id' =>'product-edit-form', 'method'=>'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                            <input type="hidden" name="store_id" value="{{ $store->id }}">
+                            <input type="hidden" name="manufacturer_id" value="{{ $manufacturer->id }}">
+                            <input type="hidden" name="manufacturing_id" value="{{ $manufacturing->id }}">
                             <div class="row">
                                 <div class="col-md-3">
                                     {!! Form::label('store_id', __('lang.store'), []) !!}
                                     <div class="input-group my-group">
-                                        {!! Form::select('store_id', $stores, false,
-                                            ['class' => 'select_store_id selectpicker form-control',
-                                             'data-live-search' => 'true',
-                                              'style' => 'width: 80%', 'id' => 'store_id']) !!}
+                                        <select required name="store_id" id="store_id"
+                                                class='select_product_ids selectpicker  form-control'
+                                                data-live-search='true' style='width: 30%;'
+                                                placeholder="{{__('lang.please_select')}}">
+
+                                            <option selected disabled  value="{{ $store->id }}">
+                                                {{ $store->name }}
+                                            </option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-3">
-                                    {!! Form::label('manufacturer_id', __('lang.manufacturers'), []) !!}
+                                    {!! Form::label('manufacturer_id', __('lang.manufacturer'), []) !!}
                                     <div class="input-group my-group">
-                                        {!! Form::select('manufacturer_id', $manufacturers, false,
-                                            ['class' => 'select_manufacturer_id selectpicker form-control',
-                                             'data-live-search' => 'true',
-                                              'style' => 'width: 80%', 'id' => 'manufacturer_id']) !!}
+                                        <select required name="manufacturer_id" id="manufacturer_id"
+                                                class='select_product_ids selectpicker  form-control'
+                                                data-live-search='true' style='width: 30%;'
+                                                placeholder="{{__('lang.please_select')}}">
+                                            <option selected disabled  value="{{ $manufacturer->id }}">
+                                                {{ $manufacturer->name }}
+                                            </option>
+                                        </select>
 
                                     </div>
                                 </div>
@@ -41,19 +53,6 @@
                                         @include(
                                             'quotation.partial.product_selection'
                                         )
-{{--                                        <select required name="product_ids[]" id="product_ids" multiple--}}
-{{--                                                class='select_product_ids selectpicker select2 form-control'--}}
-{{--                                                data-live-search='true' style='width: 30%;'--}}
-{{--                                                placeholder="{{__('lang.please_select')}}">--}}
-{{--                                            @foreach($products as $item)--}}
-{{--                                                @if($item->current_stock > 0)--}}
-{{--                                                    <option stock="{{ $item->current_stock }}" name="{{$item->name}}"--}}
-{{--                                                            id="product_{{$item->id}}" value="{{$item->id}}">--}}
-{{--                                                        {{ $item->name }}--}}
-{{--                                                    </option>--}}
-{{--                                                @endif--}}
-{{--                                            @endforeach--}}
-{{--                                        </select>--}}
                                     </div>
                                 </div>
                             </div>
@@ -66,7 +65,6 @@
 
                                             <th style="width: 7%" class="col-sm-8">@lang( 'lang.image' )</th>
                                             <th style="width: 10%" class="col-sm-8">@lang( 'lang.products' )</th>
-                                            <th style="width: 10%" class="col-sm-4">@lang( 'lang.current_stock' )</th>
                                             <th style="width: 5%" class="col-sm-4">@lang( 'lang.quantity' )</th>
                                             <th style="width: 10%" class="col-sm-4">@lang( 'lang.unit' )</th>
                                             <th style="width: 10%" class="col-sm-4">@lang( 'lang.action' )</th>
@@ -90,7 +88,7 @@
                             <div class="row">
                                 <div class="col-md-4 mt-5">
                                     <div class="form-group">
-                                        <input type="button" value="{{trans('lang.manufacturing')}}" id="submit-btn"
+                                        <input type="button" value="{{trans('lang.received')}}" id="submit-btns"
                                                class="btn btn-primary">
                                         <a href="{{ route("manufacturing-s.index") }}"
                                            class="btn btn-dark">{{trans('lang.back')}}</a>
@@ -104,35 +102,6 @@
             </div>
         </div>
     </section>
-{{--    <div class="modal fade" id="ProductsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">--}}
-{{--        <div class="modal-dialog" role="document">--}}
-{{--            <div class="modal-content">--}}
-{{--                <div class="modal-header">--}}
-{{--                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>--}}
-{{--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
-{{--                        <span aria-hidden="true">&times;</span>--}}
-{{--                    </button>--}}
-{{--                </div>--}}
-{{--                <div class="modal-body">--}}
-{{--                    <table id="product-modal" class="table table-striped table-bordered">--}}
-{{--                        <thead>--}}
-{{--                            <th>@lang('lang.name')</th>--}}
-{{--                            <th>@lang('lang.stock')</th>--}}
-{{--                            <th>@lang('lang.quantity')</th>--}}
-{{--                            <th>@lang('lang.unit')</th>--}}
-{{--                        </thead>--}}
-{{--                        <tbody>--}}
-
-{{--                        </tbody>--}}
-{{--                    </table>--}}
-{{--                </div>--}}
-{{--                <div class="modal-footer">--}}
-{{--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>--}}
-{{--                    <button type="button" id="addQuantity" class="btn btn-primary">Understood</button>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
 @endsection
 
 @push('javascripts')
@@ -170,7 +139,7 @@
                 $("#row_count").val(row_count + 1);
                 $.ajax({
                     method: "GET",
-                    url: "/manufacturing/add-product-row",
+                    url: "/manufacturing/add-product-to-stock",
                     dataType: "html",
                     async: false,
                     data: {
@@ -191,13 +160,9 @@
                                 $("#input_product_"+product_id).val(1)
                                 swal("Error", "Sorry You Should enter quentity more than 0", "error");
                             }
-                            if(Number($("#input_product_"+product_id).val()) > Number(document.getElementById("product_stock_"+product_id).innerHTML) ){
-                                $("#input_product_"+product_id).val(1)
-                                swal("Error", "Sorry Out Of Stock", "error");
-                            }
                             let q = 0;
                             for(i=0;i < $('#product_table tbody tr').length;i++){
-                                q+= Number($($(".product_row")[i].children[3].children[1]).val())
+                                q+= Number($($(".product_row")[i].children[2].children[1]).val())
                             }
                             $('.items_product_count').text(q);
                         })
@@ -207,10 +172,10 @@
 
                        setTimeout(t=>{
                            for(i=0;i < $('#product_table tbody tr').length;i++){
-                               q+= Number($($(".product_row")[i].children[3].children[1]).val())
+                               q+= Number($($(".product_row")[i].children[2].children[1]).val())
                            }
                            $('.items_product_count').text(q);
-                       },1000)
+                       },100)
 
 
 
@@ -231,7 +196,7 @@
 
 
             for(i=0;i < $('#product_table tbody tr').length;i++){
-                q+= Number($($(".product_row")[i].children[3].children[1]).val())
+                q+= Number($($(".product_row")[i].children[2].children[1]).val())
             }
             $('.items_product_count').text(q);
 
@@ -384,9 +349,9 @@
 
 
         $(document).ready(function () {
-            $("#submit-btn").on("click", function (e) {
+            $("#submit-btns").on("click", function (e) {
                 e.preventDefault();
-                if ($("#product-edit-form").valid()) {
+                if($('#product_table tbody tr').length > 0){
                     $.ajax({
                         type: "POST",
                         url: $("#product-edit-form").attr("action"),
@@ -397,6 +362,7 @@
                                 setTimeout(t=>{
                                     window.history.back()
                                 },2000)
+
                             }
                             if (!response.success) {
                                 swal("Error", response.msg, "error");
@@ -408,8 +374,10 @@
                             }
                         },
                     });
-
+                }else{
+                    swal("Error", "Sorry You Should Select Returned Materials", "error");
                 }
+
             });
         });
 

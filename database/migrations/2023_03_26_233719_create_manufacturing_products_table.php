@@ -15,6 +15,7 @@ class CreateManufacturingProductsTable extends Migration
     {
         Schema::create('manufacturing_products', function (Blueprint $table) {
             $table->id();
+            $table->enum("status",["0","1"])->comment("0 => mean material under manufacture , 1 => mean material replaced");
             $table->integer("product_id");
             $table->integer("manufacturing_id");
             $table->string("quantity");

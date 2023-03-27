@@ -24,7 +24,7 @@ return [
     'edit_manufacturing_status' => 'Edit Manufacturing Status',
     'manufacturing_material' => 'Manufacturing Material',
     'product_received' => 'Products Received',
-
+    'received' => 'Received',
 
 
     'have_weight'=>'depends on weight',
