@@ -25,6 +25,8 @@ return [
     'manufacturing_material' => 'Manufacturing Material',
     'product_received' => 'Products Received',
     'received' => 'Received',
+    'underManufacturing' => 'Under Manufacturing',
+    'manufactured' => 'Manufactured',
 
 
     'have_weight'=>'depends on weight',

@@ -26,6 +26,8 @@ return [
     'product_received' => 'المنتجات المستلمة',
     'product_received_quantity' => 'كميه',
     'received' => 'استلام',
+    'underManufacturing' => 'تحت التصنيع',
+    'manufactured' => 'تم تصنيعها',
 
 
 

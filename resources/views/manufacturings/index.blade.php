@@ -82,7 +82,7 @@
                                                 </li>
                                                 <li>
 {{--                                                    {{route('productions.edit', $manufacturing->id)}}--}}
-                                                    <a href="#" class="btn "><i
+                                                    <a href="{{action('ManufacturingController@edit', $manufacturing->id)}}" class="btn "><i
                                                             class="dripicons-document-edit"></i> @lang('lang.edit')</a>
                                                 </li>
                                                 <li class="divider"></li>

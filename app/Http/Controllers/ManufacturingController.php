@@ -267,25 +267,76 @@ class ManufacturingController extends Controller
     public function edit($id)
     {
         $manufacturing = Manufacturing::findOrFail($id);
-        return view('manufacturings.edit', compact('manufacturing'));
+        $underManufacturings = manufacturingProduct::query()->where('manufacturing_id',$id)->where("status","0")->get();
+        $manufactureds = manufacturingProduct::query()->where("manufacturing_id",$id)->where("status","1")->get();
+        $product_ids = manufacturingProduct::query()->where("manufacturing_id",$id)->pluck("quantity","product_id")->toArray();
+        return view('manufacturings.edit', compact('manufacturing','underManufacturings','manufactureds','product_ids'));
     }
 
-    public function update(Request $request, $id)
+    public function updates(Request $request)
     {
-        $this->validate(
-            $request,
-            ['name' => ['required', 'max:255']]
-        );
-
+        $manufacturing = Manufacturing::find($request->manufacturing_id);
         try {
-            $data = $request->only('name', 'translations');
-            $data['translations'] = !empty($data['translations']) ? $data['translations'] : [];
             DB::beginTransaction();
-            $manufacturer = Manufacturer::find($id);
-            $manufacturer->update([
-                "name" => $data["name"],
-                "translations" => $data["translations"]
-            ]);
+            if (isset($request->product_material_recived) && is_array($request->product_material_recived) && count($request->product_material_recived) > 0) {
+                $deleted_product_material_recived = array_values(array_diff($manufacturing->material_recived->pluck("product_id")->toArray(), array_keys($request->product_material_recived)));
+                if (isset($deleted_product_material_recived) && is_array($deleted_product_material_recived) && count($deleted_product_material_recived) > 0) {
+                    foreach ($deleted_product_material_recived as $deleted_product_id) {
+                        $manufacturingDeletedProduct = manufacturingProduct::query()->where("manufacturing_id", $manufacturing->id)->where("product_id", $deleted_product_id)->where("status", "1")->first();
+                        $product = Product::find($deleted_product_id);
+                        $product->product_stores->first()->increment("qty_available", $manufacturingDeletedProduct->quantity);
+                        $manufacturingDeletedProduct->delete();
+                    }
+                }
+                foreach ($request->product_material_recived as $product_id => $material_recived) {
+                    $manufacturingProduct = manufacturingProduct::query()->where("manufacturing_id", $manufacturing->id)->where("product_id", $product_id)->where("status", $material_recived["status"])->first();
+                    $product = Product::find($product_id);
+                    $manufacturingProductOldQuantity = $manufacturingProduct->quantity;
+                    $manufacturingProductNewQuantity = (double)$material_recived["quantity"];
+                    if ($manufacturingProductOldQuantity < $manufacturingProductNewQuantity) {
+                        $increased = $manufacturingProductNewQuantity - $manufacturingProductOldQuantity;
+                        $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
+                        $product->product_stores->first()->increment("qty_available", $increased);
+                    } else {
+                        $decreased = $manufacturingProductOldQuantity - $manufacturingProductNewQuantity;
+                        $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
+                        $product->product_stores->first()->decrement("qty_available", $decreased);
+                    }
+                }
+            }
+            if (isset($request->product_material_under_manufactured) && is_array($request->product_material_under_manufactured) && count($request->product_material_under_manufactured) > 0) {
+                $deleted_product_material_under_manufactured = array_values(array_diff($manufacturing->materials->pluck("product_id")->toArray(), array_keys($request->product_material_under_manufactured)));
+                if (isset($deleted_product_material_under_manufactured) && is_array($deleted_product_material_under_manufactured) && count($deleted_product_material_under_manufactured) > 0) {
+                    foreach ($deleted_product_material_under_manufactured as $deleted_product_id) {
+                        $manufacturingDeletedProduct = manufacturingProduct::query()->where("manufacturing_id", $manufacturing->id)->where("product_id", $deleted_product_id)->where("status", "1")->first();
+                        $product = Product::find($deleted_product_id);
+                        $product->product_stores->first()->increment("qty_available", $manufacturingDeletedProduct->quantity);
+                        $manufacturingDeletedProduct->delete();
+                    }
+                }
+                foreach ($request->product_material_under_manufactured as $p_id => $material_under_manufactured) {
+                    $manufacturingProduct = manufacturingProduct::query()->where("manufacturing_id", $manufacturing->id)->where("product_id", $p_id)->where("status", $material_under_manufactured["status"])->first();
+                    $product = Product::find($p_id);
+                    $manufacturingProductOldQuantity = $manufacturingProduct->quantity;
+                    $manufacturingProductNewQuantity = $material_under_manufactured["quantity"];
+                    $ProductStock = $product->product_stores->pluck("qty_available")->first();
+                    if ($manufacturingProductNewQuantity  < ($ProductStock+$manufacturingProductNewQuantity)) {
+                        if ($manufacturingProductNewQuantity < $manufacturingProductOldQuantity){
+                            $increased = $manufacturingProductOldQuantity - $manufacturingProductNewQuantity;
+                            $product->product_stores->first()->increment("qty_available", $increased);
+                        }else if ($manufacturingProductNewQuantity > $manufacturingProductOldQuantity && $manufacturingProductNewQuantity < ($ProductStock+$manufacturingProductOldQuantity)){
+                            $decreased = $manufacturingProductNewQuantity - $manufacturingProductOldQuantity;
+                            $product->product_stores->first()->decrement("qty_available", $decreased);
+
+                        }else{
+                            // error new value out of stock
+                        }
+                    } else {
+                        // error new value out of stock
+                    }
+                }
+            }
+
             DB::commit();
             $output = [
                 'success' => true,
@@ -298,8 +349,7 @@ class ManufacturingController extends Controller
                 'msg' => __('lang.something_went_wrong')
             ];
         }
-
-        return redirect()->back()->with('status', $output);
+        return $output;
     }
 
     public function addProductRow(Request $request)
@@ -344,8 +394,22 @@ class ManufacturingController extends Controller
     {
         try {
             $manufacturing = Manufacturing::find($id);
-            $manufacturingProducts = manufacturingProduct::query()->where("manufacturing_id", $manufacturing->id)->delete();
-            $manufacturing->delete();
+            if (isset($manufacturing->material_recived)  && count($manufacturing->material_recived) > 0) {
+                    foreach ($manufacturing->material_recived as $deleted_product) {
+                        $product = Product::find($deleted_product->product_id);
+//                        $product->product_stores->first()->increment("qty_available", $deleted_product->quantity);
+//                        $deleted_product->delete();
+                    }
+            }
+
+            if (isset($manufacturing->materials)  && count($manufacturing->materials) > 0) {
+                    foreach ($manufacturing->materials as $deleted_product) {
+                        $product = Product::find($deleted_product->product_id);
+//                        $product->product_stores->first()->increment("qty_available", $deleted_product->quantity);
+//                        $deleted_product->delete();
+                    }
+            }
+//            $manufacturing->delete();
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
