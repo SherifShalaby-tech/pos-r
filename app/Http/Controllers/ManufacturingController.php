@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
-use App\Models\Manufacturer;
+use App\Models\Brand;use App\Models\Category;
+use App\Models\Color;use App\Models\Currency;use App\Models\Customer;use App\Models\CustomerType;use App\Models\Grade;use App\Models\Manufacturer;
 use App\Models\Manufacturing;
 use App\Models\manufacturingProduct;
 use App\Models\Product;
 use App\Models\ProductClass;
 use App\Models\ProductStore;
 use App\Models\Recipe;
-use App\Models\Store;
-use App\Models\Unit;
-use App\Utils\Util;
+use App\Models\Size;use App\Models\Store;
+use App\Models\Supplier;use App\Models\Tax;use App\Models\Transaction;use App\Models\Unit;
+use App\Models\User;use App\Utils\ProductUtil;use App\Utils\Util;
 use Doctrine\DBAL\Exception\DatabaseDoesNotExist;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,10 +26,11 @@ class ManufacturingController extends Controller
      *
      */
     protected $commonUtil;
-
-    public function __construct(Util $commonUtil)
+    protected $productUtil;
+    public function __construct(Util $commonUtil,ProductUtil $productUtil)
     {
         $this->commonUtil = $commonUtil;
+        $this->productUtil = $productUtil;
     }
 
     public function index()
@@ -43,50 +44,32 @@ class ManufacturingController extends Controller
     public function create()
     {
         $store_query = '';
-        $products = Product::leftjoin('variations', function ($join) {
-            $join->on('products.id', 'variations.product_id')->whereNull('variations.deleted_at');
-        })
-            ->leftjoin('add_stock_lines', function ($join) {
-                $join->on('variations.id', 'add_stock_lines.variation_id')->where('add_stock_lines.expiry_date', '>=', date('Y-m-d'));
-            })
-            ->leftjoin('colors', 'variations.color_id', 'colors.id')
-            ->leftjoin('sizes', 'variations.size_id', 'sizes.id')
-            ->leftjoin('grades', 'variations.grade_id', 'grades.id')
-            ->leftjoin('units', 'variations.unit_id', 'units.id')
-            ->leftjoin('product_classes', 'products.product_class_id', 'product_classes.id')
-            ->leftjoin('categories', 'products.category_id', 'categories.id')
-            ->leftjoin('categories as sub_categories', 'products.sub_category_id', 'sub_categories.id')
-            ->leftjoin('brands', 'products.brand_id', 'brands.id')
-            ->leftjoin('supplier_products', 'products.id', 'supplier_products.product_id')
-            ->leftjoin('users', 'products.created_by', 'users.id')
-            ->leftjoin('users as edited', 'products.edited_by', 'users.id')
-            ->leftjoin('taxes', 'products.tax_id', 'taxes.id')
-            ->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id');
-        $products = $products->select(
-            'products.*',
-            'add_stock_lines.batch_number',
-            'variations.sub_sku',
-            'product_classes.name as product_class',
-            'categories.name as category',
-            'sub_categories.name as sub_category',
-            'brands.name as brand',
-            'colors.name as color',
-            'sizes.name as size',
-            'grades.name as grade',
-            'units.name as unit',
-            'taxes.name as tax',
-            'variations.id as variation_id',
-            'variations.name as variation_name',
-            'variations.default_purchase_price',
-            'variations.default_sell_price as default_sell_price',
-            'add_stock_lines.expiry_date as exp_date',
-            'users.name as created_by_name',
-            'edited.name as edited_by_name',
-            DB::raw('(SELECT SUM(product_stores.qty_available) FROM product_stores JOIN variations as v ON product_stores.variation_id=v.id WHERE v.id=variations.id ' . $store_query . ') as current_stock'),
-        )->with(['supplier'])
-            ->groupBy('variations.id')
-            ->get();
+//        $products =all();
+        $suppliers = Supplier::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
 
+        $po_nos = Transaction::where('type', 'purchase_order')->where('status', '!=', 'received')->pluck('po_no', 'id');
+        $status_array = $this->commonUtil->getPurchaseOrderStatusArray();
+        $payment_status_array = $this->commonUtil->getPaymentStatusArray();
+        $payment_type_array = $this->commonUtil->getPaymentTypeArray();
+        $payment_types = $payment_type_array;
+        $taxes = Tax::pluck('name', 'id');
+        $variation_id = request()->get('variation_id');
+        $product_id = request()->get('product_id');
+        $is_raw_material = request()->segment(1) == 'raw-material' ? true : false;
+        $product_classes = ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
+        $categories = Category::whereNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
+        $sub_categories = Category::whereNotNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
+        $brands = Brand::orderBy('name', 'asc')->pluck('name', 'id');
+        $units = Unit::orderBy('name', 'asc')->pluck('name', 'id');
+        $colors = Color::orderBy('name', 'asc')->pluck('name', 'id');
+        $sizes = Size::orderBy('name', 'asc')->pluck('name', 'id');
+        $grades = Grade::orderBy('name', 'asc')->pluck('name', 'id');
+        $taxes_array = Tax::orderBy('name', 'asc')->pluck('name', 'id');
+        $customer_types = CustomerType::orderBy('name', 'asc')->pluck('name', 'id');
+        $discount_customer_types = Customer::getCustomerTreeArray();
+        $exchange_rate_currencies = $this->commonUtil->getCurrenciesExchangeRateArray(true);
+        $stores  = Store::getDropdown();
+        $users = User::Notview()->pluck('name', 'id');
         $stores = Store::getDropdown();
         $manufacturers = Manufacturer::getDropdown();
 
@@ -94,14 +77,39 @@ class ManufacturingController extends Controller
         return view('manufacturings.create')
             ->with(compact(
                 'stores',
-                'products',
                 'manufacturers',
+                'is_raw_material',
+                'suppliers',
+                'status_array',
+                'payment_status_array',
+                'payment_type_array',
+                'stores',
+                'variation_id',
+                'product_id',
+                'po_nos',
+                'taxes',
+                'product_classes',
+                'payment_types',
+                'payment_status_array',
+                'categories',
+                'sub_categories',
+                'brands',
+                'units',
+                'colors',
+                'sizes',
+                'grades',
+                'taxes_array',
+                'customer_types',
+                'exchange_rate_currencies',
+                'discount_customer_types',
+                'users',
             ));
     }
 
 
     public function store(Request $request)
     {
+//        dd($request->all());
         $this->validate(
             $request,
             [
@@ -110,20 +118,20 @@ class ManufacturingController extends Controller
             ]
         );
         try {
-
             $data = $request->only('store_id', 'manufacturer_id');
             $data["created_by"] = auth()->id();
             DB::beginTransaction();
-            $manufacturing = Manufacturing::firstOrCreate($data);
-            foreach ($request->product_quentity as $product_quentity) {
-                $product = Product::find($product_quentity["product_id"]);
+            $manufacturing = Manufacturing::create($data);
+            foreach ($request->product_quentity as $key=>$product_quentity){
+                $product = Product::find($key);
                 $product->product_stores->first()->decrement("qty_available",$product_quentity["quantity"]);
-                $manufacturingProducts = manufacturingProduct::query()->firstOrCreate([
+                $manufacturingProducts = manufacturingProduct::query()->create([
                     "manufacturing_id" => $manufacturing->id,
-                    "product_id" => $product_quentity["product_id"],
+                    "product_id" => $key,
                     "quantity" => $product_quentity["quantity"],
                 ]);
             }
+
             DB::commit();
             $output = [
                 'success' => true,
@@ -183,14 +191,27 @@ class ManufacturingController extends Controller
         return redirect()->back()->with('status', $output);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
+    public function addProductRow(Request $request)
+    {
+        if ($request->ajax()) {
+            $currency_id = $request->currency_id;
+            $currency = Currency::find($currency_id);
+            $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id, $request->store_id);
+            $product_id = $request->input('product_id');
+            $variation_id = $request->input('variation_id');
+            $store_id = $request->input('store_id');
+
+            if (!empty($product_id)) {
+                $index = $request->input('row_count');
+                $products = $this->productUtil->getDetailsFromProduct($product_id, $variation_id, $store_id);
+                return view('manufacturings.partials.product_row')
+                    ->with(compact('products', 'index', 'currency', 'exchange_rate'));
+            }
+        }
+    }
     public function destroy($id)
     {
+        dd($id);
         try {
             Manufacturer::find($id)->delete();
             $output = [

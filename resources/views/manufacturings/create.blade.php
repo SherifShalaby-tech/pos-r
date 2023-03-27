@@ -36,37 +36,54 @@
                                 </div>
 
                                 <div class="col-md-3">
-                                    {!! Form::label('product_ids', __('lang.recipe'), []) !!}
+                                    {!! Form::label('product_ids', __('lang.manufacturing_material'), []) !!}
                                     <div class="input-group my-group">
-                                        <select required name="product_ids[]" id="product_ids" multiple
-                                                class='select_product_ids selectpicker select2 form-control'
-                                                data-live-search='true' style='width: 30%;'
-                                                placeholder="{{__('lang.please_select')}}">
-                                            @foreach($products as $item)
-                                                @if($item->current_stock > 0)
-                                                    <option stock="{{ $item->current_stock }}" name="{{$item->name}}"
-                                                            id="product_{{$item->id}}" value="{{$item->id}}">
-                                                        {{ $item->name }}
-                                                    </option>
-                                                @endif
-                                            @endforeach
-                                        </select>
+                                        @include(
+                                            'quotation.partial.product_selection'
+                                        )
+{{--                                        <select required name="product_ids[]" id="product_ids" multiple--}}
+{{--                                                class='select_product_ids selectpicker select2 form-control'--}}
+{{--                                                data-live-search='true' style='width: 30%;'--}}
+{{--                                                placeholder="{{__('lang.please_select')}}">--}}
+{{--                                            @foreach($products as $item)--}}
+{{--                                                @if($item->current_stock > 0)--}}
+{{--                                                    <option stock="{{ $item->current_stock }}" name="{{$item->name}}"--}}
+{{--                                                            id="product_{{$item->id}}" value="{{$item->id}}">--}}
+{{--                                                        {{ $item->name }}--}}
+{{--                                                    </option>--}}
+{{--                                                @endif--}}
+{{--                                            @endforeach--}}
+{{--                                        </select>--}}
                                     </div>
                                 </div>
-
-
-                                <div class="col-md-4 d-none">
-                                    <div class="i-checks">
-                                        <input id="price_based_on_raw_material" name="price_based_on_raw_material"
-                                               type="checkbox"
-                                               @if (!empty($recipe) && $recipe->price_based_on_raw_material == 1) checked
-                                               @endif  value="1" class="form-control-custom">
-                                        <label
-                                            for="price_based_on_raw_material"><strong>@lang('lang.price_based_on_raw_material')</strong></label>
-                                    </div>
-                                </div>
-
                             </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <table class="table table-bordered table-striped table-condensed" id="product_table">
+                                        <thead>
+                                        <tr>
+
+                                            <th style="width: 7%" class="col-sm-8">@lang( 'lang.image' )</th>
+                                            <th style="width: 10%" class="col-sm-8">@lang( 'lang.products' )</th>
+                                            <th style="width: 10%" class="col-sm-4">@lang( 'lang.current_stock' )</th>
+                                            <th style="width: 5%" class="col-sm-4">@lang( 'lang.quantity' )</th>
+                                            <th style="width: 10%" class="col-sm-4">@lang( 'lang.unit' )</th>
+                                            <th style="width: 10%" class="col-sm-4">@lang( 'lang.action' )</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <h4>@lang('lang.items_count'): <span class="items_quantity_count"style="margin-right: 15px;">0</span> </h4>
+                                <h4>@lang('lang.items_quantity'): <span class="items_product_count" style="margin-right: 15px;">0</span> </h4>
+                            </div>
+
+
 
 
                             <input type="hidden" name="active" value="1">
@@ -81,35 +98,28 @@
                                 </div>
                             </div>
                             {!! Form::close() !!}
-
-                            @include('layouts.partials.translation_inputs', [
-                              'attribute' => 'name',
-                              'translations' => [],
-                              'type' => 'manufacturings',
-                          ])
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-
-{{--    <div class="modal" tabindex="-1" role="dialog">--}}
+{{--    <div class="modal fade" id="ProductsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">--}}
 {{--        <div class="modal-dialog" role="document">--}}
 {{--            <div class="modal-content">--}}
 {{--                <div class="modal-header">--}}
-{{--                    <h5 class="modal-title">Modal title</h5>--}}
+{{--                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>--}}
 {{--                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">--}}
 {{--                        <span aria-hidden="true">&times;</span>--}}
 {{--                    </button>--}}
 {{--                </div>--}}
 {{--                <div class="modal-body">--}}
-{{--                    <table id="product-modal">--}}
+{{--                    <table id="product-modal" class="table table-striped table-bordered">--}}
 {{--                        <thead>--}}
-{{--                        <th>name</th>--}}
-{{--                        <th>stock</th>--}}
-{{--                        <th>quentity</th>--}}
-{{--                        <th>unit</th>--}}
+{{--                            <th>@lang('lang.name')</th>--}}
+{{--                            <th>@lang('lang.stock')</th>--}}
+{{--                            <th>@lang('lang.quantity')</th>--}}
+{{--                            <th>@lang('lang.unit')</th>--}}
 {{--                        </thead>--}}
 {{--                        <tbody>--}}
 
@@ -117,62 +127,272 @@
 {{--                    </table>--}}
 {{--                </div>--}}
 {{--                <div class="modal-footer">--}}
-{{--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Add</button>--}}
+{{--                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>--}}
+{{--                    <button type="button" id="addQuantity" class="btn btn-primary">Understood</button>--}}
 {{--                </div>--}}
 {{--            </div>--}}
 {{--        </div>--}}
 {{--    </div>--}}
-
-    <div class="modal fade" id="ProductsModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table id="product-modal" class="table table-striped table-bordered">
-                        <thead>
-                            <th>@lang('lang.name')</th>
-                            <th>@lang('lang.stock')</th>
-                            <th>@lang('lang.quantity')</th>
-                            <th>@lang('lang.unit')</th>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                    </table>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" id="addQuantity" class="btn btn-primary">Understood</button>
-                </div>
-            </div>
-        </div>
-    </div>
 @endsection
 
-@section('javascript')
-    <script>
-        let data = [];
-        let Quantities = [];
-        $(document).ready(function () {
-            calculate_price_base_on_raw_material();
-            gert_unit_base_for_select_material_id();
+@push('javascripts')
 
+    <script src="{{ asset('js/add_stock.js') }}"></script>
+    <script src="{{ asset('js/product_selection_manufacturing.js') }}"></script>
+    <script type="text/javascript">
+        function get_label_product_row(product_id, variation_id) {
+            var add_via_ajax = true;
+            var store_id = $("#store_id").val();
+            var is_added = false;
+            let q = 0;
+            //Search for variation id in each row of pos table
+            $("#product_table tbody")
+                .find("tr")
+                .each(function () {
+                    var row_v_id = $(this).find(".variation_id").val();
+                    if (row_v_id == variation_id && !is_added) {
+                        add_via_ajax = false;
+                        is_added = true;
+                        //Increment product quantity
+                        qty_element = $(this).find(".quantity");
+                        var qty = __read_number(qty_element);
+                        __write_number(qty_element, qty + 1);
+                        qty_element.change;
+                        calculate_sub_totals();
+                        $("input#search_product").val("");
+                        $("input#search_product").focus();
+                    }
+                });
+
+            if (add_via_ajax) {
+                var row_count = parseInt($("#row_count").val());
+                let currency_id = $('#paying_currency_id').val()
+                $("#row_count").val(row_count + 1);
+                $.ajax({
+                    method: "GET",
+                    url: "/manufacturing/add-product-row",
+                    dataType: "html",
+                    async: false,
+                    data: {
+                        product_id: product_id,
+                        row_count: row_count,
+                        variation_id: variation_id,
+                        store_id: store_id,
+                        currency_id: currency_id,
+                    },
+                    success: function (result) {
+                        $('.items_quantity_count').text(0);
+                        $("table#product_table tbody").prepend(result);
+
+                        let product_id = $("#product_id").val();
+
+                        $("#input_product_"+product_id).on('keyup',function (e){
+                            if(Number($("#input_product_"+product_id).val()) == 0){
+                                $("#input_product_"+product_id).val(1)
+                                swal("Error", "Sorry You Should enter quentity more than 0", "error");
+                            }
+                            if(Number($("#input_product_"+product_id).val()) > Number(document.getElementById("product_stock_"+product_id).innerHTML) ){
+                                $("#input_product_"+product_id).val(1)
+                                swal("Error", "Sorry Out Of Stock", "error");
+                            }else{
+
+                            }
+                            let q = 0;
+                            for(i=0;i < $('#product_table tbody tr').length;i++){
+                                q+= Number($($(".product_row")[i].children[3].children[1]).val())
+                            }
+                            $('.items_product_count').text(q);
+                        })
+                        let items_quantity_count = $('#product_table tbody tr').length;
+                        $('.items_quantity_count').text(items_quantity_count);
+
+
+                       setTimeout(t=>{
+                           for(i=0;i < $('#product_table tbody tr').length;i++){
+                               q+= Number($($(".product_row")[i].children[3].children[1]).val())
+                           }
+                           $('.items_product_count').text(q);
+                       },1000)
+
+
+
+                        $("input#search_product").val("");
+                        $("input#search_product").focus();
+                        calculate_sub_totals();
+                        reset_row_numbering();
+                    },
+                });
+            }
+        }
+        $(document).on("click", ".remove_product_row", function () {
+            let index = $(this).data("index");
+            let q = 0;
+            $(this).closest("tr").remove();
+            $(".row_details_" + index).remove();
+            $(".bounce_details_td_" + index).remove();
+
+
+            for(i=0;i < $('#product_table tbody tr').length;i++){
+                q+= Number($($(".product_row")[i].children[3].children[1]).val())
+            }
+            $('.items_product_count').text(q);
+
+            let items_quantity_count = $('#product_table tbody tr').length;
+            $('.items_quantity_count').text(items_quantity_count);
+
+
+
+            calculate_sub_totals();
+            reset_row_numbering();
+        });
+        $(document).on('click', '#add-selected-btn', function() {
+            $('#select_products_modal').modal('hide');
+            $.each(product_selected, function(index, value) {
+                get_label_product_row(value.product_id, value.variation_id);
+            });
+            product_selected = [];
+            product_table.ajax.reload();
+        })
+        @if (!empty($product_id) && !empty($variation_id))
+        $(document).ready(function(){
+            $('.items_quantity_count').text(0);
+            get_label_product_row({{ $product_id }},{{ $variation_id }});
+
+        })
+        @endif
+        $('#po_no').change(function() {
+            let po_no = $(this).val();
+
+            if (po_no) {
+                $.ajax({
+                    method: 'get',
+                    url: '/add-stock/get-purchase-order-details/' + po_no,
+                    data: {},
+                    contentType: 'html',
+                    success: function(result) {
+                        $("table#product_table tbody").empty().append(result);
+                        calculate_sub_totals()
+                    },
+                });
+            }
+        });
+        $(document).on("click", '#submit-btn-add-product', function(e) {
+            e.preventDefault();
+            var sku = $('#sku').val();
+            if ($("#product-form-quick-add").valid()) {
+                tinyMCE.triggerSave();
+                $.ajax({
+                    type: "POST",
+                    url: "/product",
+                    data: $("#product-form-quick-add").serialize(),
+                    success: function(response) {
+                        if (response.success) {
+                            swal("Success", response.msg, "success");
+                            $("#search_product").val(sku);
+                            $('input#search_product').autocomplete("search");
+                            $('.view_modal').modal('hide');
+                        }
+                    },
+                    error: function(response) {
+                        if (!response.success) {
+                            swal("Error", response.msg, "error");
+                        }
+                    },
+                });
+            }
+        });
+        $(document).on("change", "#category_id", function() {
+            $.ajax({
+                method: "get",
+                url: "/category/get-sub-category-dropdown?category_id=" +
+                    $("#category_id").val(),
+                data: {},
+                contentType: "html",
+                success: function(result) {
+                    $("#sub_category_id").empty().append(result).change();
+                    $("#sub_category_id").selectpicker("refresh");
+
+                    if (sub_category_id) {
+                        $("#sub_category_id").selectpicker("val", sub_category_id);
+                    }
+                },
+            });
+        });
+        $('#payment_status').change(function() {
+            var payment_status = $(this).val();
+
+            if (payment_status === 'paid' || payment_status === 'partial') {
+                $('.not_cash_fields').addClass('hide');
+                $('#method').change();
+                $('#method').attr('required', true);
+                $('#paid_on').attr('required', true);
+                $('.payment_fields').removeClass('hide');
+            } else {
+                $('.payment_fields').addClass('hide');
+            }
+            if (payment_status === 'pending' || payment_status === 'partial') {
+                $('.due_fields').removeClass('hide');
+            } else {
+                $('.due_fields').addClass('hide');
+            }
+            if (payment_status === 'pending') {
+                $('.not_cash_fields').addClass('hide');
+                $('.not_cash').attr('required', false);
+                $('#method').attr('required', false);
+                $('#paid_on').attr('required', false);
+            } else {
+                $('#method').attr('required', true);
+            }
+            if (payment_status === 'paid') {
+                $('.due_fields').addClass('hide');
+            }
+        })
+        $('#method').change(function() {
+            var method = $(this).val();
+
+            if (method === 'cash') {
+                $('.not_cash_fields').addClass('hide');
+                $('.not_cash').attr('required', false);
+            } else {
+                $('.not_cash_fields').removeClass('hide');
+                $('.not_cash').attr('required', true);
+            }
+        });
+
+        $(document).ready(function() {
+            $('#payment_status').change();
+            $('#source_type').change();
+        })
+        $('#source_type').change(function() {
+            if ($(this).val() !== '') {
+                $.ajax({
+                    method: 'get',
+                    url: '/add-stock/get-source-by-type-dropdown/' + $(this).val(),
+                    data: {},
+                    success: function(result) {
+                        $("#source_id").empty().append(result);
+                        $("#source_id").selectpicker("refresh");
+                    },
+                });
+            }
+        });
+
+        $(document).on('change', '.expiry_date', function() {
+            if ($(this).val() != '') {
+                let tr = $(this).parents('tr');
+                tr.find('.days_before_the_expiry_date').val(15);
+            }
+        })
+
+
+        $(document).ready(function () {
             $("#submit-btn").on("click", function (e) {
                 e.preventDefault();
                 if ($("#product-edit-form").valid()) {
                     $.ajax({
                         type: "POST",
                         url: $("#product-edit-form").attr("action"),
-                        data: {
-                            "store_id" :$("#store_id").val(),
-                            "manufacturer_id" :$("#manufacturer_id").val(),
-                            "product_quentity" :Quantities,
-                        },
+                        data:  $("#product-edit-form").serialize(),
                         success: function (response) {
                             if (response.success) {
                                 swal("Success", response.msg, "success")
@@ -190,441 +410,136 @@
 
                 }
             });
-
-            $(document).on("change", "#product_ids", function (e) {
-
-                if(data.length < $(this).val().length){
-                    let product_current;
-                    $(this).val().forEach(e=>{
-                        if (data.filter(function(g) { return g.id == e; }).length == 0) {
-                            product_current =e;
-                        }
-                    })
-                    // select added new value
-                    $("#product-modal tbody").empty()
-                    $("#product-modal tbody").append(`
-                <tr>
-                        <td>
-                            ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('name'): $('#product_'+product_current).attr('name')}
-                        </td>
-                        <td>
-                              ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('stock'): $('#product_'+product_current).attr('stock')}
-                        </td>
-                        <td>
-                            <input class="form-control" type="number" id="product_quantity">
-                            <input type="hidden" id="product_stock" value=" ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('stock'): $('#product_'+product_current).attr('stock')}">
-                            <input type="hidden" id="product_id" value=" ${data.length == 0 ? $('#product_'+$(this).val()[0]).val(): $('#product_'+product_current).val()}">
-                        </td>
-                        <td>
-                            GM
-                        </td>
-                    </tr>
-                `)
-                    $("#ProductsModal").modal("show")
-                }else{
-                    // select  remove old  value
-
-                    console.log("$(this).val()",$(this).val())
-                    if($(this).val().length == 0){
-                        Quantities =[];
-                    }else{
-                        Quantities.forEach(a=>{
-                            if ($(this).val().filter(function(g) { return g == a.product_id; }).length == 0) {
-                                const index = Quantities.indexOf(a);
-                                if (index > -1) {
-                                    Quantities.splice(index, 1);
-                                }
-                            }
-                        })
-                    }
-
-                    console.log(Quantities)
-
-                }
-
-                data = [];
-                product_ids = $(this).val();
-                product_ids.forEach(e => {
-                    data.push({
-                        "id": e,
-                        "name": $('#product_' + e).attr('name'),
-                        "stock": $('#product_' + e).attr('stock')
-                    })
-                });
-
-            });
-            $(document).on("click", "#addQuantity", function (e) {
-                let userQuantity= Number($("#product_quantity").val());
-                let product_stock= Number($("#product_stock").val());
-                let product_id= Number($("#product_id").val());
-                if(userQuantity == null || userQuantity==''){
-                    swal("Error", "Please Fill Quantity Input", "error");
-                }else if(userQuantity > product_stock){
-                    swal("Error", "Sorry Out Of Stock", "error");
-                }else{
-                    Quantities.push({
-                        "product_id" :product_id,
-                        "quantity" :userQuantity,
-                    })
-                    // console.log(Quantities)
-                    swal("Success", 'Quantity Added Successfully', "success");
-                    $("#ProductsModal").modal("hide")
-                }
-            });
-
-
-            /*$("#submit-btn").on("click", function (e) {
-                e.preventDefault();
-                document.getElementById("loader").style.display = "block";
-                document.getElementById("content").style.display = "none";
-                $.ajax({
-                    type: "get",
-                    url: $("form#product-form").attr("action"),
-                    data: $("#product-form").serialize(),
-                    success: function (response) {
-                        //myFunction();
-                        if (response.success) {
-                            swal("Success", response.msg, "success");
-
-                        } else {
-                            console.log( response.msg);
-                            swal("Error", response.msg, "error");
-                        }
-                    },
-                    error: function (response) {
-                        myFunction();
-                        if (!response.success) {
-                            console.log( response.msg);
-                            swal("Error", response.msg, "error");
-                        }
-                    },
-                });
-            });*/
-
-            $(document).on("change", "#purchase_price", function () {
-                $(".default_purchase_price").val($(this).val());
-            });
-            $(document).on("change", "#quantity_product", function () {
-                var new_quantity_product = __read_number($(this));
-                $("#consumption_table > tbody > tr").each(function () {
-                    let raw_material_quantity = __read_number(
-                        $(this).find(".raw_material_quantity")
-                    );
-                    let q_raw_material_price = parseFloat($(this).find(".raw_material_quantity").attr('amount_used_per_unit')).toFixed(3);
-                    let new_raw_material_quantity = parseFloat((new_quantity_product * q_raw_material_price) / 100).toFixed(2);
-                    __write_number($(this).find(".raw_material_quantity"), new_raw_material_quantity);
-
-                    let raw_material_price = __read_number(
-                        $(this).find(".raw_material_price")
-                    );
-                    let raw_material_total = raw_material_price * new_raw_material_quantity;
-
-                    $(this)
-                        .find(".cost_label")
-                        .text(__currency_trans_from_en(raw_material_total, false));
-                    $(this)
-                        .find(".cost_input")
-                        .val(__currency_trans_from_en(raw_material_total, false));
-                });
-                var purchase_price_per_unit = __read_number($('#purchase_price_per_unit'));
-                var other_cost = __read_number($('#other_cost'));
-                __write_number($("#purchase_price"), purchase_price_per_unit * new_quantity_product);
-                __write_number($("#sell_price"), purchase_price_per_unit * new_quantity_product);
-
-
-            });
-            $(document).on("change", "select.select_material_id", function () {
-                gert_unit_base_for_select_material_id();
-            });
-
-            $(document).on("change", "select.raw_material_id", function () {
-                let tr = $(this).closest("tr");
-                let raw_material_id = $(this).val();
-
-                $.ajax({
-                    method: "get",
-                    url: "/product/get-raw-material-details/" + raw_material_id,
-                    data: {},
-                    success: function (result) {
-                        tr.find(".raw_material_price").val(
-                            result.raw_material.purchase_price
-                        );
-                        tr.find(".raw_material_unit_id").val(
-                            result.raw_material.multiple_units[0]
-                        );
-                        tr.find(".raw_material_unit_id").selectpicker("refresh");
-                        tr.find(".unit_label").text(
-                            tr.find("select.raw_material_unit_id option:selected").text()
-                        );
-                    },
-                });
-            });
-            $(document).on("click", ".add_raw_material_row", function () {
-                let row_id = parseInt($("#raw_material_row_index").val());
-                $("#raw_material_row_index").val(row_id + 1);
-
-                $.ajax({
-                    method: "get",
-                    url: "/product/get-raw-material-row",
-                    data: {row_id: row_id},
-                    success: function (result) {
-                        $("#consumption_table > tbody").prepend(result);
-                        $(".selectpicker").selectpicker("refresh");
-                        $(".raw_material_unit_id").selectpicker("refresh");
-                        calculate_price_base_on_raw_material();
-
-                    },
-                });
-            });
-            $(document).on("change", ".raw_material_quantity, .raw_material_id, .raw_material_unit_id, #price_based_on_raw_material, #other_cost ", function () {
-                    calculate_price_base_on_raw_material();
-                }
-            );
-            //Prevent enter key function except texarea
-            $("form").on("keyup keypress", function (e) {
-                var keyCode = e.keyCode || e.which;
-                if (keyCode === 13 && e.target.tagName != "TEXTAREA") {
-                    e.preventDefault();
-                    return false;
-                }
-            });
-
-            tinymce.init({
-                selector: "#product_details",
-                height: 130,
-                plugins: [
-                    "advlist autolink lists link charmap print preview anchor textcolor",
-                    "searchreplace visualblocks code fullscreen",
-                    "insertdatetime table contextmenu paste code wordcount",
-                ],
-                toolbar:
-                    "insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat",
-                branding: false,
-            });
-        });
-
-        $(document).on("click", ".remove_row", function () {
-            row_id = $(this).closest("tr").data("row_id");
-            $(this).closest("tr").remove();
-            $(".variant_store_checkbox_" + row_id).remove();
-            $(".variant_store_prices_" + row_id).remove();
-        });
-
-        $(document).on("click", ".add_row", function () {
-            var row_id = parseInt($("#row_id").val());
-
-            $.ajax({
-                method: "get",
-                url: "/product/get-variation-row?row_id=" + row_id,
-                data: {
-                    name: $("#name").val(),
-                    purchase_price: $("#purchase_price").val(),
-                    sell_price: $("#sell_price").val(),
-                },
-                contentType: "html",
-                success: function (result) {
-                    $("#variation_table tbody").prepend(result);
-                    $(".row_" + row_id)
-                        .find(".selectpicker")
-                        .selectpicker("refresh");
-                    $(".variant_store_prices_" + row_id).slideUp();
-
-                    $("#row_id").val(row_id + 1);
-                },
-            });
         });
 
 
-        // transform cropper dataURI output to a Blob which Dropzone accepts
-
-        function dataURItoBlob(dataURI) {
-            var byteString = atob(dataURI.split(",")[1]);
-            var ab = new ArrayBuffer(byteString.length);
-            var ia = new Uint8Array(ab);
-            for (var i = 0; i < byteString.length; i++) {
-                ia[i] = byteString.charCodeAt(i);
-            }
-            return new Blob([ab], {type: "image/jpeg"});
-        }
-
-
-        var multiple_units_array = [];
-        $("#multiple_units").change(function () {
-            multiple_units_array.push($(this).val());
-        });
-        $(document).on("submit", "form#quick_add_unit_form", function (e) {
-            $("form#quick_add_unit_form").validate();
-            e.preventDefault();
-            var data = new FormData(this);
-            $.ajax({
-                method: "post",
-                url: $(this).attr("action"),
-                dataType: "json",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.success) {
-                        swal("Success", result.msg, "success");
-                        $(".view_modal").modal("hide");
-                        var unit_id = result.unit_id;
-                        multiple_units_array.push(unit_id);
-                        $.ajax({
-                            method: "get",
-                            url: "/unit/get-dropdown",
-                            data: {},
-                            contactType: "html",
-                            success: function (data_html) {
-                                $("#multiple_units").empty().append(data_html);
-                                $("#multiple_units").selectpicker("refresh");
-                                $("#multiple_units").selectpicker(
-                                    "val",
-                                    multiple_units_array
-                                );
-                                $("select.unit_id").empty().append(data_html);
-                                $("select.unit_id").selectpicker("refresh");
-                                $("select#multiple_units").change();
-                            },
-                        });
-                    } else {
-                        swal("Error", result.msg, "error");
-                    }
-                },
-            });
-        });
-
-        $(document).on("submit", "form#quick_add_size_form", function (e) {
-            $("form#quick_add_size_form").validate();
-            e.preventDefault();
-            var data = new FormData(this);
-            $.ajax({
-                method: "post",
-                url: $(this).attr("action"),
-                dataType: "json",
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (result) {
-                    if (result.success) {
-                        swal("Success", result.msg, "success");
-                        $(".view_modal").modal("hide");
-                        var size_id = result.size_id;
-                        multiple_sizes_array.push(size_id);
-                        $.ajax({
-                            method: "get",
-                            url: "/size/get-dropdown",
-                            data: {},
-                            contactType: "html",
-                            success: function (data_html) {
-                                $("#multiple_sizes").empty().append(data_html);
-                                $("#multiple_sizes").selectpicker("refresh");
-                                $("#multiple_sizes").selectpicker(
-                                    "val",
-                                    multiple_sizes_array
-                                );
-                            },
-                        });
-                    } else {
-                        swal("Error", result.msg, "error");
-                    }
-                },
-            });
-        });
-
-        $(document).on("change", "#sell_price", function () {
-            let sell_price = __read_number($("#sell_price"));
-            let default_purchase_price_percentage = __read_number(
-                $("#default_purchase_price_percentage")
-            );
-            if (default_purchase_price_percentage > 0) {
-                let purchase_price_percentage =
-                    (sell_price * default_purchase_price_percentage) / 100;
-                __write_number($("#purchase_price"), purchase_price_percentage);
-            }
-            $(".store_prices").val($(this).val());
-            $(".default_sell_price").val($(this).val());
-        });
-        $(document).on("change", "#purchase_price", function () {
-            let purchase_price = __read_number($("#purchase_price"));
-            let default_profit_percentage = __read_number(
-                $("#default_profit_percentage")
-            );
-            if (default_profit_percentage > 0) {
-                let sell_price_percentage =
-                    (purchase_price * default_profit_percentage) / 100;
-                let sell_price = purchase_price + sell_price_percentage;
-                __write_number($("#sell_price"), sell_price);
-                $(".store_prices").val(sell_price);
-            }
-        });
-
-        function calculate_price_base_on_raw_material() {
-            if ($("#price_based_on_raw_material").prop("checked")) {
-                $("#automatic_consumption").prop("checked", true);
-                let total_raw_material_price = 0;
-                $("#consumption_table > tbody > tr").each(function () {
-                    let raw_material_price = __read_number(
-                        $(this).find(".raw_material_price")
-                    );
-                    let raw_material_quantity = __read_number(
-                        $(this).find(".raw_material_quantity")
-                    );
-                    let raw_material_total = raw_material_price * raw_material_quantity;
-                    total_raw_material_price += raw_material_total;
-
-                    $(this)
-                        .find(".cost_label")
-                        .text(__currency_trans_from_en(raw_material_total, false));
-                    $(this)
-                        .find(".cost_input")
-                        .val(__currency_trans_from_en(raw_material_total, false));
-                });
-                let other_cost = __read_number($("#other_cost"));
-                total_raw_material_price += other_cost;
-                __write_number($("#purchase_price"), total_raw_material_price);
-            } else {
-                __write_number($("#purchase_price"), 0);
-            }
-            $("#purchase_price").change();
-        }
-
-        function gert_unit_base_for_select_material_id() {
-            let raw_material_id = $('select.select_material_id').val();
-
-            $.ajax({
-                method: "get",
-                url: "/product/get-raw-material-details/" + raw_material_id + '?type=units',
-                data: {},
-                success: function (result) {
-                    console.log(result.raw_material);
-                    $("#unit_id_material").val(result.raw_material.id);
-                    $("#label_unit_id_material").text(result.raw_material.name);
-                },
-            });
-        }
 
 
     </script>
 
 
 
-    <script>
-        function get_unit(units, row_id) {
-            $v = document.getElementById('select_unit_id_' + row_id).value;
 
-            $.each(units, function (key, value) {
-                if ($v == key) {
-                    $('#number_vs_base_unit_' + row_id).val(value);
-                    if (value == 1) {
-                        $('#number_vs_base_unit_' + row_id).attr("disabled", true);
-                    } else {
-                        $('#number_vs_base_unit_' + row_id).attr("disabled", false);
-                    }
 
-                    // console.log(value);
-                }
-            });
-        }
-    </script>
 
-@endsection
+
+
+
+
+
+{{--     select multi js--}}
+
+{{--        let data = [];--}}
+{{--        let Quantities = [];--}}
+{{--        $(document).ready(function () {--}}
+{{--            $("#submit-btn").on("click", function (e) {--}}
+{{--                e.preventDefault();--}}
+{{--                if ($("#product-edit-form").valid()) {--}}
+{{--                    $.ajax({--}}
+{{--                        type: "POST",--}}
+{{--                        url: $("#product-edit-form").attr("action"),--}}
+{{--                        data: {--}}
+{{--                            "store_id" :$("#store_id").val(),--}}
+{{--                            "manufacturer_id" :$("#manufacturer_id").val(),--}}
+{{--                            "product_quentity" :Quantities,--}}
+{{--                        },--}}
+{{--                        success: function (response) {--}}
+{{--                            if (response.success) {--}}
+{{--                                swal("Success", response.msg, "success")--}}
+{{--                            }--}}
+{{--                            if (!response.success) {--}}
+{{--                                swal("Error", response.msg, "error");--}}
+{{--                            }--}}
+{{--                        },--}}
+{{--                        error: function (response) {--}}
+{{--                            if (!response.success) {--}}
+{{--                                swal("Error", response.msg, "error");--}}
+{{--                            }--}}
+{{--                        },--}}
+{{--                    });--}}
+
+{{--                }--}}
+{{--            });--}}
+{{--            });--}}
+
+{{--            $(document).on("change", "#product_ids", function (e) {--}}
+
+{{--                if(data.length < $(this).val().length){--}}
+{{--                    let product_current;--}}
+{{--                    $(this).val().forEach(e=>{--}}
+{{--                        if (data.filter(function(g) { return g.id == e; }).length == 0) {--}}
+{{--                            product_current =e;--}}
+{{--                        }--}}
+{{--                    })--}}
+{{--                    // select added new value--}}
+{{--                    $("#product-modal tbody").empty()--}}
+{{--                    $("#product-modal tbody").append(`--}}
+{{--                <tr>--}}
+{{--                        <td>--}}
+{{--                            ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('name'): $('#product_'+product_current).attr('name')}--}}
+{{--                        </td>--}}
+{{--                        <td>--}}
+{{--                              ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('stock'): $('#product_'+product_current).attr('stock')}--}}
+{{--                        </td>--}}
+{{--                        <td>--}}
+{{--                            <input class="form-control" type="number" id="product_quantity">--}}
+{{--                            <input type="hidden" id="product_stock" value=" ${data.length == 0 ? $('#product_'+$(this).val()[0]).attr('stock'): $('#product_'+product_current).attr('stock')}">--}}
+{{--                            <input type="hidden" id="product_id" value=" ${data.length == 0 ? $('#product_'+$(this).val()[0]).val(): $('#product_'+product_current).val()}">--}}
+{{--                        </td>--}}
+{{--                        <td>--}}
+{{--                            GM--}}
+{{--                        </td>--}}
+{{--                    </tr>--}}
+{{--                `)--}}
+{{--                    $("#ProductsModal").modal("show")--}}
+{{--                }else{--}}
+{{--                    // select  remove old  value--}}
+
+{{--                    console.log("$(this).val()",$(this).val())--}}
+{{--                    if($(this).val().length == 0){--}}
+{{--                        Quantities =[];--}}
+{{--                    }else{--}}
+{{--                        Quantities.forEach(a=>{--}}
+{{--                            if ($(this).val().filter(function(g) { return g == a.product_id; }).length == 0) {--}}
+{{--                                const index = Quantities.indexOf(a);--}}
+{{--                                if (index > -1) {--}}
+{{--                                    Quantities.splice(index, 1);--}}
+{{--                                }--}}
+{{--                            }--}}
+{{--                        })--}}
+{{--                    }--}}
+
+{{--                    console.log(Quantities)--}}
+
+{{--                }--}}
+
+{{--                data = [];--}}
+{{--                product_ids = $(this).val();--}}
+{{--                product_ids.forEach(e => {--}}
+{{--                    data.push({--}}
+{{--                        "id": e,--}}
+{{--                        "name": $('#product_' + e).attr('name'),--}}
+{{--                        "stock": $('#product_' + e).attr('stock')--}}
+{{--                    })--}}
+{{--                });--}}
+
+{{--            });--}}
+{{--            $(document).on("click", "#addQuantity", function (e) {--}}
+{{--                let userQuantity= Number($("#product_quantity").val());--}}
+{{--                let product_stock= Number($("#product_stock").val());--}}
+{{--                let product_id= Number($("#product_id").val());--}}
+{{--                if(userQuantity == null || userQuantity==''){--}}
+{{--                    swal("Error", "Please Fill Quantity Input", "error");--}}
+{{--                }else if(userQuantity > product_stock){--}}
+{{--                    swal("Error", "Sorry Out Of Stock", "error");--}}
+{{--                }else{--}}
+{{--                    Quantities.push({--}}
+{{--                        "product_id" :product_id,--}}
+{{--                        "quantity" :userQuantity,--}}
+{{--                    })--}}
+{{--                    // console.log(Quantities)--}}
+{{--                    swal("Success", 'Quantity Added Successfully', "success");--}}
+{{--                    $("#ProductsModal").modal("hide")--}}
+{{--                }--}}
+{{--            });--}}
+@endpush

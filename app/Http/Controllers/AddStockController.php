@@ -726,7 +726,6 @@ class AddStockController extends Controller
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProduct($product_id, $variation_id, $store_id);
-
                 return view('add_stock.partials.product_row')
                     ->with(compact('products', 'index', 'currency', 'exchange_rate'));
             }

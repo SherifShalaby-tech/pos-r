@@ -412,9 +412,9 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     // manufacturers
     Route::resource('manufacturers', 'ManufacturerController');
     Route::resource('manufacturing-s', 'ManufacturingController');
-
 });
 
+Route::get('manufacturing/add-product-row', 'ManufacturingController@addProductRow')->name("manufacturing.add_product_row");
 
 Route::get('contact-us', 'ContactUsController@getContactUs');
 Route::post('contact-us', 'ContactUsController@sendContactUs');

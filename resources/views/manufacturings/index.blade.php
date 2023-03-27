@@ -23,6 +23,7 @@
                                 <th>@lang('lang.raw_material')</th>
                                 <th>@lang('lang.quantity')</th>
                                 <th>@lang('lang.manufacturing_date')</th>
+                                <th>@lang('lang.product_received')</th>
                                 <th>@lang('lang.created_by')</th>
                                 <th>@lang('lang.edited_by')</th>
                                 @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
@@ -42,10 +43,11 @@
                                 </td>
                                 <td>
                                     @foreach($manufacturing->materials as $material)
-                                          {{$material->quantity ??""}}  GM<br>
+                                          {{$material->quantity ??""}} <br>
                                     @endforeach
                                 </td>
                                 <td>{{date('Y/m/d H:i',strtotime($manufacturing->created_at))}}</td>
+                                <td>لم يتم استلام منتجات المواد المصنعه </td>
                                 <td>{{$manufacturing->createdUser->name ??""}}</td>
                                 <td>{{$manufacturing->editedUser->name ??""}}</td>
                                 @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
@@ -71,7 +73,7 @@
                                                 <li class="divider"></li>
                                                <li>
 {{--                                                   {{route('productions.delete', $manufacturing->id)}}--}}
-                                                    <a data-href="#"
+                                                    <a data-href="{{route('ManufacturingController@edit', $manufacturing->id)}}--}}"
                                                         data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"
                                                         class="btn text-red delete_item"><i class="fa fa-trash"></i>
                                                         @lang('lang.delete')</a>

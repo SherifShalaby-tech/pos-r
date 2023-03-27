@@ -22,6 +22,10 @@ return [
     'manufacturer' => 'المصنع',
     'manufacturing_status' => 'حالة التصنيع',
     'edit_manufacturing_status' => 'تعديل حالة التصنيع ',
+    'manufacturing_material' => 'مادة التصنيع ',
+    'product_received' => 'المنتجات المستلمة',
+
+
 
 
     'have_weight'=>'يعتمد علي الميزان',
