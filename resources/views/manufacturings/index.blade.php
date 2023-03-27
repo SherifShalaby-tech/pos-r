@@ -35,8 +35,16 @@
                             <tr>
                                 <td>{{$manufacturing->store->name ??""}}</td>
                                 <td>{{$manufacturing->manufacturer->name ??""}}</td>
-                                <td>{{$manufacturing->material->name ??""}}</td>
-                                <td>{{$manufacturing->quantity_product ??""}}</td>
+                                <td>
+                                    @foreach($manufacturing->materials as $material)
+                                        {{$material->product->name ??""}}  <br>
+                                    @endforeach
+                                </td>
+                                <td>
+                                    @foreach($manufacturing->materials as $material)
+                                          {{$material->quantity ??""}}  GM<br>
+                                    @endforeach
+                                </td>
                                 <td>{{date('Y/m/d H:i',strtotime($manufacturing->created_at))}}</td>
                                 <td>{{$manufacturing->createdUser->name ??""}}</td>
                                 <td>{{$manufacturing->editedUser->name ??""}}</td>

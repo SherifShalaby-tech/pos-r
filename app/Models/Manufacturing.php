@@ -21,7 +21,7 @@ class Manufacturing extends Model
         return $this->belongsTo(Manufacturer::class,"manufacturer_id","id");
     }
     public function materials(){
-        return $this->many(manufacturingProduct::class,"manufacturing_id","id");
+        return $this->hasMany(manufacturingProduct::class,"manufacturing_id","id");
     }
     public function createdUser(){
         return $this->belongsTo(User::class,"created_by","id");

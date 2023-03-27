@@ -116,10 +116,12 @@ class ManufacturingController extends Controller
             DB::beginTransaction();
             $manufacturing = Manufacturing::firstOrCreate($data);
             foreach ($request->product_quentity as $product_quentity) {
+                $product = Product::find($product_quentity["product_id"]);
+                $product->product_stores->first()->decrement("qty_available",$product_quentity["quantity"]);
                 $manufacturingProducts = manufacturingProduct::query()->firstOrCreate([
                     "manufacturing_id" => $manufacturing->id,
-                    "product_id" => $product_quentity->product_id,
-                    "quantity" => $product_quentity->quantity,
+                    "product_id" => $product_quentity["product_id"],
+                    "quantity" => $product_quentity["quantity"],
                 ]);
             }
             DB::commit();
@@ -127,8 +129,8 @@ class ManufacturingController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-
         } catch (\Exception $e) {
+            DB::rollBack();
             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
             $output = [
                 'success' => false,
