@@ -373,8 +373,8 @@ class CustomerController extends Controller
                 })
                 ->addColumn('paid', function ($row) use ($request, $default_currency_id) {
                     $amount_paid = 0;
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
+                    if (!empty($request["method"])) {
+                        $payments = $row->transaction_payments->where('method', $request["method"]);
                     } else {
                         $payments = $row->transaction_payments;
                     }
@@ -407,8 +407,8 @@ class CustomerController extends Controller
                 ->editColumn('paid_on', '@if(!empty($paid_on)){{@format_datetime($paid_on)}}@endif')
                 ->addColumn('method', function ($row) use ($payment_types, $request) {
                     $methods = '';
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
+                    if (!empty($request["method"])) {
+                        $payments = $row->transaction_payments->where('method', $request["method"]);
                     } else {
                         $payments = $row->transaction_payments;
                     }
@@ -429,8 +429,8 @@ class CustomerController extends Controller
                 ->addColumn('store_name', '{{$store_name}}')
                 ->addColumn('ref_number', function ($row) use ($request) {
                     $ref_numbers = '';
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
+                    if (!empty($request["method"])) {
+                        $payments = $row->transaction_payments->where('method', $request["method"]);
                     } else {
                         $payments = $row->transaction_payments;
                     }

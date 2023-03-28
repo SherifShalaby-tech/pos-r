@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AddStockLine;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Color;
@@ -25,8 +26,10 @@ use App\Models\Unit;
 use App\Models\User;
 use App\Utils\ProductUtil;
 use App\Utils\Util;
+use Carbon\Carbon;
 use Doctrine\DBAL\Exception\DatabaseDoesNotExist;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -59,7 +62,6 @@ class ManufacturingController extends Controller
         $store_query = '';
 //        $products =all();
         $suppliers = Supplier::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
-
         $po_nos = Transaction::where('type', 'purchase_order')->where('status', '!=', 'received')->pluck('po_no', 'id');
         $status_array = $this->commonUtil->getPurchaseOrderStatusArray();
         $payment_status_array = $this->commonUtil->getPaymentStatusArray();
@@ -122,48 +124,65 @@ class ManufacturingController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->all());
-        $this->validate(
-            $request,
-            [
-                'store_id' => ['required', 'numeric'],
-                'manufacturer_id' => ['required', 'numeric'],
-            ]
-        );
-        try {
-            $data = $request->only('store_id', 'manufacturer_id');
-            $data["created_by"] = auth()->id();
-            DB::beginTransaction();
-            $manufacturing = Manufacturing::create($data);
-            foreach ($request->product_quentity as $key => $product_quentity) {
-                $product = Product::find($key);
-                $product->product_stores->first()->decrement("qty_available", $product_quentity["quantity"]);
-                $manufacturingProducts = manufacturingProduct::create([
-                    "manufacturing_id" => $manufacturing->id,
-                    "product_id" => $key,
-                    "quantity" => $product_quentity["quantity"],
-                ]);
-            }
-
-            DB::commit();
-            $output = [
-                'success' => true,
-                'msg' => __('lang.success')
-            ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
+        $this->validate($request, [
+            'store_id' => ['required', 'numeric'],
+            'manufacturer_id' => ['required', 'numeric'],
+        ]);
+//        try {
+        $data = $request->only('store_id', 'manufacturer_id');
+        $data["created_by"] = auth()->id();
+        DB::beginTransaction();
+        $manufacturing = Manufacturing::create($data);
+        $transaction = Transaction::query()->create([
+            "store_id" => $request->store_id,
+            "manufacturing_id" => $manufacturing->id,
+            "type" => "material_under_manufacture",
+            "status" => "pending",
+            "transaction_date" => Carbon::now()->toDateTimeString(),
+            "is_raw_material" => "1",
+        ]);
+        foreach ($request->product_quentity as $key => $product_quentity) {
+            $qty = $this->num_uf($product_quentity["quantity"]);
+            $product = Product::find($key);
+            $variation = $product->variations->first();
+            $product->product_stores->first()->decrement("qty_available", $product_quentity["quantity"]);
+            $manufacturingProducts = manufacturingProduct::create([
+                "manufacturing_id" => $manufacturing->id,
+                "product_id" => $key,
+                "quantity" => $product_quentity["quantity"],
+            ]);
+            $this->productUtil->decreaseProductQuantity($product->id, $variation->id, $transaction->store_id, $qty, 0);
         }
+        DB::commit();
+        $output = [
+            'success' => true,
+            'msg' => __('lang.success')
+        ];
+//        } catch (\Exception $e) {
+//            DB::rollBack();
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
         return $output;
     }
 
     public function show($id)
     {
         //
+    }
+
+    public function num_uf($input_number, $currency_details = null)
+    {
+        $thousand_separator = ',';
+        $decimal_separator = '.';
+
+        $num = str_replace($thousand_separator, '', $input_number);
+        $num = str_replace($decimal_separator, '.', $num);
+
+        return (float)$num;
     }
 
     public function getReceivedProductsPage($id)
@@ -232,19 +251,58 @@ class ManufacturingController extends Controller
     public function postReceivedProductsPage(Request $request)
     {
         $data = $request->product_quentity;
-        try {
+//        try {
             $manufacturing = Manufacturing::find($request->manufacturing_id);
+
             DB::beginTransaction();
+            $transaction = Transaction::query()->create([
+                "store_id" => $request->store_id,
+                "manufacturing_id" => $manufacturing->id,
+                "type" => "material_manufactured",
+                "status" => "approved",
+                "transaction_date" => Carbon::now()->toDateTimeString(),
+                "is_raw_material" => "1",
+                "invoice_no" => $request->invoice_no,
+                "other_expenses" => $request->other_expenses,
+                "discount_amount" => $request->discount_amount,
+                "other_payments" => $request->other_payments?? 0.0000,
+                "source_type" => $request->source_type,
+                "source_id" => $request->source_id,
+                "payment_status" => $request->payment_status,
+                "amount" => $request->amount,
+                "method" => $request["method"],
+                "paid_on" => $request->paid_on,
+                "ref_number" => $request->ref_number,
+                "bank_deposit_date" => $request->bank_deposit_date,
+                "bank_name" => $request->bank_name,
+                "due_date" => $request->due_date,
+                "notify_before_days" => $request->notify_before_days ?? 0,
+                "notes" => $request->notes,
+                'created_by' => Auth::user()->id,
+            ]);
+            if ($request->files) {
+                foreach ($request->file('files', []) as $key => $file) {
+                    $transaction->addMedia($file)->toMediaCollection('add_stock');
+                }
+            }
+
             foreach ($data as $productId => $quantity) {
                 $product = Product::find($productId);
-                $product->product_stores->first()->increment("qty_available", $quantity["quantity"]);
+                $variation = $product->variations->first();
                 $manufacturingProducts = manufacturingProduct::create([
                     "status" => "1",
                     "manufacturing_id" => $manufacturing->id,
                     "product_id" => $productId,
                     "quantity" => $quantity["quantity"],
                 ]);
-
+                $add_stock_data = [
+                    'transaction_id' => $transaction->id,
+                    'product_id' => $product->id,
+                    'variation_id' => $variation->id,
+                    'quantity' => $quantity["quantity"],
+                ];
+                $add_stock = AddStockLine::create($add_stock_data);
+                $this->productUtil->updateProductQuantityStore($product->id, $variation->id, $transaction->store_id,  $quantity["quantity"], 0);
             }
 
             DB::commit();
@@ -252,14 +310,14 @@ class ManufacturingController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
-        }
+//        } catch (\Exception $e) {
+//            DB::rollBack();
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
         return $output;
 
     }
@@ -267,16 +325,18 @@ class ManufacturingController extends Controller
     public function edit($id)
     {
         $manufacturing = Manufacturing::findOrFail($id);
-        $underManufacturings = manufacturingProduct::query()->where('manufacturing_id',$id)->where("status","0")->get();
-        $manufactureds = manufacturingProduct::query()->where("manufacturing_id",$id)->where("status","1")->get();
-        $product_ids = manufacturingProduct::query()->where("manufacturing_id",$id)->pluck("quantity","product_id")->toArray();
-        return view('manufacturings.edit', compact('manufacturing','underManufacturings','manufactureds','product_ids'));
+        $underManufacturings = manufacturingProduct::query()->where('manufacturing_id', $id)->where("status", "0")->get();
+        $manufactureds = manufacturingProduct::query()->where("manufacturing_id", $id)->where("status", "1")->get();
+        $product_ids = manufacturingProduct::query()->where("manufacturing_id", $id)->pluck("quantity", "product_id")->toArray();
+
+        return view('manufacturings.edit', compact('manufacturing', 'underManufacturings', 'manufactureds', 'product_ids'));
     }
 
     public function updates(Request $request)
     {
         $manufacturing = Manufacturing::find($request->manufacturing_id);
         try {
+            // stock
             DB::beginTransaction();
             if (isset($request->product_material_recived) && is_array($request->product_material_recived) && count($request->product_material_recived) > 0) {
                 $deleted_product_material_recived = array_values(array_diff($manufacturing->material_recived->pluck("product_id")->toArray(), array_keys($request->product_material_recived)));
@@ -293,6 +353,7 @@ class ManufacturingController extends Controller
                     $product = Product::find($product_id);
                     $manufacturingProductOldQuantity = $manufacturingProduct->quantity;
                     $manufacturingProductNewQuantity = (double)$material_recived["quantity"];
+                    $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
                     if ($manufacturingProductOldQuantity < $manufacturingProductNewQuantity) {
                         $increased = $manufacturingProductNewQuantity - $manufacturingProductOldQuantity;
                         $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
@@ -319,16 +380,16 @@ class ManufacturingController extends Controller
                     $product = Product::find($p_id);
                     $manufacturingProductOldQuantity = $manufacturingProduct->quantity;
                     $manufacturingProductNewQuantity = $material_under_manufactured["quantity"];
+                    $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
                     $ProductStock = $product->product_stores->pluck("qty_available")->first();
-                    if ($manufacturingProductNewQuantity  < ($ProductStock+$manufacturingProductNewQuantity)) {
-                        if ($manufacturingProductNewQuantity < $manufacturingProductOldQuantity){
+                    if ($manufacturingProductNewQuantity < ($ProductStock + $manufacturingProductNewQuantity)) {
+                        if ($manufacturingProductNewQuantity < $manufacturingProductOldQuantity) {
                             $increased = $manufacturingProductOldQuantity - $manufacturingProductNewQuantity;
                             $product->product_stores->first()->increment("qty_available", $increased);
-                        }else if ($manufacturingProductNewQuantity > $manufacturingProductOldQuantity && $manufacturingProductNewQuantity < ($ProductStock+$manufacturingProductOldQuantity)){
+                        } else if ($manufacturingProductNewQuantity > $manufacturingProductOldQuantity && $manufacturingProductNewQuantity < ($ProductStock + $manufacturingProductOldQuantity)) {
                             $decreased = $manufacturingProductNewQuantity - $manufacturingProductOldQuantity;
                             $product->product_stores->first()->decrement("qty_available", $decreased);
-
-                        }else{
+                        } else {
                             // error new value out of stock
                         }
                     } else {
@@ -337,6 +398,13 @@ class ManufacturingController extends Controller
                 }
             }
 
+            $transaction = Transaction::query()->create([
+                "store_id" => $request->store_id,
+                "type" => "material_manufactured",
+                "status" => "received",
+                "transaction_date" => Carbon::now()->toDateTimeString(),
+                "is_raw_material" => "1",
+            ]);
             DB::commit();
             $output = [
                 'success' => true,
@@ -394,22 +462,22 @@ class ManufacturingController extends Controller
     {
         try {
             $manufacturing = Manufacturing::find($id);
-            if (isset($manufacturing->material_recived)  && count($manufacturing->material_recived) > 0) {
-                    foreach ($manufacturing->material_recived as $deleted_product) {
-                        $product = Product::find($deleted_product->product_id);
+            if (isset($manufacturing->material_recived) && count($manufacturing->material_recived) > 0) {
+                foreach ($manufacturing->material_recived as $deleted_product) {
+//                        $product = Product::find($deleted_product->product_id);
 //                        $product->product_stores->first()->increment("qty_available", $deleted_product->quantity);
-//                        $deleted_product->delete();
-                    }
+                    $deleted_product->delete();
+                }
             }
 
-            if (isset($manufacturing->materials)  && count($manufacturing->materials) > 0) {
-                    foreach ($manufacturing->materials as $deleted_product) {
-                        $product = Product::find($deleted_product->product_id);
-//                        $product->product_stores->first()->increment("qty_available", $deleted_product->quantity);
-//                        $deleted_product->delete();
-                    }
+            if (isset($manufacturing->materials) && count($manufacturing->materials) > 0) {
+                foreach ($manufacturing->materials as $deleted_product) {
+                    $product = Product::find($deleted_product->product_id);
+                    $product->product_stores->first()->increment("qty_available", $deleted_product->quantity);
+                    $deleted_product->delete();
+                }
             }
-//            $manufacturing->delete();
+            $manufacturing->delete();
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')

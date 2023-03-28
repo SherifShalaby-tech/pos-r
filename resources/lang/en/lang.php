@@ -27,7 +27,7 @@ return [
     'received' => 'Received',
     'underManufacturing' => 'Under Manufacturing',
     'manufactured' => 'Manufactured',
-
+    'edit_manufacturing_status' => 'Edit Manufacturing Status',
 
     'have_weight'=>'depends on weight',
     'type_Debt' => 'Pay Debt',
