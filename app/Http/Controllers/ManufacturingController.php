@@ -353,6 +353,7 @@ class ManufacturingController extends Controller
                     $product = Product::find($product_id);
                     $manufacturingProductOldQuantity = $manufacturingProduct->quantity;
                     $manufacturingProductNewQuantity = (double)$material_recived["quantity"];
+                    $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
                     if ($manufacturingProductOldQuantity < $manufacturingProductNewQuantity) {
                         $increased = $manufacturingProductNewQuantity - $manufacturingProductOldQuantity;
                         $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
@@ -379,6 +380,7 @@ class ManufacturingController extends Controller
                     $product = Product::find($p_id);
                     $manufacturingProductOldQuantity = $manufacturingProduct->quantity;
                     $manufacturingProductNewQuantity = $material_under_manufactured["quantity"];
+                    $manufacturingProduct->update(["quantity" => $manufacturingProductNewQuantity]);
                     $ProductStock = $product->product_stores->pluck("qty_available")->first();
                     if ($manufacturingProductNewQuantity < ($ProductStock + $manufacturingProductNewQuantity)) {
                         if ($manufacturingProductNewQuantity < $manufacturingProductOldQuantity) {
@@ -387,7 +389,6 @@ class ManufacturingController extends Controller
                         } else if ($manufacturingProductNewQuantity > $manufacturingProductOldQuantity && $manufacturingProductNewQuantity < ($ProductStock + $manufacturingProductOldQuantity)) {
                             $decreased = $manufacturingProductNewQuantity - $manufacturingProductOldQuantity;
                             $product->product_stores->first()->decrement("qty_available", $decreased);
-
                         } else {
                             // error new value out of stock
                         }
