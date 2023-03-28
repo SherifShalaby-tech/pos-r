@@ -181,7 +181,7 @@ class CashRegisterUtil extends Util
      *
      * @return boolean
      */
-    public function updatePayments($transaction, $payment, $type = 'credit', $user_id = null, $transaction_payment_id = null,)
+    public function updatePayments($transaction, $payment, $type = 'credit', $user_id = null, $transaction_payment_id = null)
     {
         if (empty($user_id)) {
             $user_id = auth()->user()->id;

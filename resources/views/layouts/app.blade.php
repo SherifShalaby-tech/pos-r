@@ -126,6 +126,7 @@
         });
     </script>
     @yield('javascript')
+    @stack('javascripts')
 
     <script type="text/javascript">
         @if (session('status'))

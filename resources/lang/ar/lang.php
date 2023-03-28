@@ -12,8 +12,27 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    'have_weight'=>'يعتمد علي الميزان',
 
+    'manufacturers' => 'المصنعين',
+    'add_manufacturer' => 'اضافة مصنع جديد',
+    'edit_manufacturer' => 'تعديل مصنع',
+    'manufacturings' => 'التصنيع الخارجي',
+    'view_all_manufacturings' => 'عرض كل عمليات التصنيع',
+    'manufacturing' => 'تصنيع',
+    'manufacturer' => 'المصنع',
+    'manufacturing_status' => 'حالة التصنيع',
+    'edit_manufacturing_status' => 'تعديل حالة التصنيع ',
+    'manufacturing_material' => 'مادة التصنيع ',
+    'product_received' => 'المنتجات المستلمة',
+    'product_received_quantity' => 'كميه',
+    'received' => 'استلام',
+    'underManufacturing' => 'تحت التصنيع',
+    'manufactured' => 'تم تصنيعها',
+
+
+
+
+    'have_weight'=>'يعتمد علي الميزان',
     'type_Debt'=>'سداد دين',
     'clear_all_input_form'=>'الاحتفاظ بالبيانات بعد عملية الإدخال',
     'product_extension'=>'اضافات مع المنتج',

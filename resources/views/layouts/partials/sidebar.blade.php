@@ -231,7 +231,20 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 </li>
                 @endif
                 @endif
+                    {{--                TODO permissions--}}
+                    <li><a href="#manufacturings" aria-expanded="false" data-toggle="collapse"> <i
+                                class="fa fa-retweet "></i><span>{{__('lang.manufacturings')}}</span><span></a>
+                        <ul id="manufacturings"  class="collapse list-unstyled @if(in_array(request()->segment(1), ['manufacturings'])) show @endif">
+                            <li
+                                class="@if(request()->segment(1) == 'manufacturers' && empty(request()->segment(2))) active @endif">
+                                <a href="{{action('ManufacturerController@index')}}">{{__('lang.manufacturers')}}</a>
+                            </li>
+                            <li class="@if(request()->segment(1) == 'email' && empty(request()->segment(2))) active @endif">
+                                <a href="{{action('ManufacturingController@index')}}">{{__('lang.view_all_manufacturings')}}</a>
+                            </li>
 
+                        </ul>
+                    </li>
                 @if( !empty($module_settings['stock']) )
                 @if(auth()->user()->can('stock.add_stock.view')
                 ||auth()->user()->can('stock.add_stock.create_and_edit')
@@ -1166,11 +1179,14 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 @endif
                 @endif
 
+
+
                 @if( !empty($module_settings['settings']) )
                 <li><a href="#setting" aria-expanded="false" data-toggle="collapse"> <i
                             class="dripicons-gear"></i><span>@lang('lang.settings')</span></a>
                     <ul id="setting"
-                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions', 'settings', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
+                        class="collapse list-unstyled @if(in_array(request()->segment(1), ['store', 'store-pos', 'terms-and-conditions','manufacturers', 'settings', 'product-class', 'category', 'sub-category', 'brand', 'unit', 'color', 'size', 'grade', 'tax', 'dining-room', 'dining-table', 'exchange-rate'])) show @endif">
+
                         @can('product_module.product_class.view')
                         <li
                             class="@if(request()->segment(1) == 'product-class' && empty(request()->segment(2))) active @endif">

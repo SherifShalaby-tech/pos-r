@@ -12,8 +12,24 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    'have_weight'=>'depends on weight',
 
+    'manufacturers' => 'Manufacturers',
+    'add_manufacturer' => 'Add New Manufacturer',
+    'edit_manufacturer' => 'Edit Manufacturer',
+    'manufacturings' => 'Out Manufacturings',
+    'view_all_manufacturings' => 'View All Manufacturings',
+    'manufacturing' => 'Manufacturing',
+    'manufacturer' => 'Manufacturer',
+    'manufacturing_status' => 'Manufacturing Status',
+    'edit_manufacturing_status' => 'Edit Manufacturing Status',
+    'manufacturing_material' => 'Manufacturing Material',
+    'product_received' => 'Products Received',
+    'received' => 'Received',
+    'underManufacturing' => 'Under Manufacturing',
+    'manufactured' => 'Manufactured',
+
+
+    'have_weight'=>'depends on weight',
     'type_Debt' => 'Pay Debt',
     'product_extension'=>'Extras with the product',
     'clear_all_input_form'=>'Keeping data after saving product',

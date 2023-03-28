@@ -1289,7 +1289,6 @@ class SellPosController extends Controller
                 $result = ['valid' => true, 'sale_promotion_details' => $sale_promotion_details];
             }
         }
-
         return $result;
     }
 

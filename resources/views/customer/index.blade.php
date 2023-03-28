@@ -194,7 +194,7 @@
                 },
             ],
             columns: [
-                { data: "customer_type_name", name: "customer_type_name" },
+                { data: "customer_type_name", name: "customer_types.name" },
                 { data: "name", name: "name" },
                 { data: "image", name: "image" },
                 { data: "mobile_number", name: "mobile_number" },
@@ -204,7 +204,7 @@
                 { data: "discounts", name: "discounts" },
                 { data: "points", name: "points" },
                 { data: "created_at", name: "created_at" },
-                { data: "created_by_name", name: "created_by_name" },
+                { data: "created_by_name", name: "users.name" },
                 { data: "action", name: "action" },
             ],
             createdRow: function (row, data, dataIndex) {},
