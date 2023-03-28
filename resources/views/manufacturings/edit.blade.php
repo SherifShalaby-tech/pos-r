@@ -9,7 +9,7 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
-                            <h4>@lang('lang.add_new_production')</h4>
+                            <h4>@lang('lang.edit_manufacturing_status')</h4>
                         </div>
                         <div class="card-body">
                             <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
@@ -138,7 +138,6 @@
                                                                value="{{ $material->quantity }}">
                                                     </td>
                                                     <td>
-
                                                     </td>
                                                     <td>
                                                         <button style="margin-top: 33px;" type="button"
@@ -148,11 +147,11 @@
                                                 </tr>
                                             @endforeach
                                         @endif
-
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
+
 
                             <input type="hidden" name="active" value="1">
                             <div class="row">

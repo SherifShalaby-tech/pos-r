@@ -82,6 +82,89 @@
                             </div>
 
 
+                            <br>
+                            <br>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('files', __('lang.files'), []) !!} <br>
+                                        <input type="file" name="files[]" id="files" multiple>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('invoice_no', __('lang.invoice_no'), []) !!} <br>
+                                        {!! Form::text('invoice_no', null, ['class' => 'form-control', 'placeholder' => __('lang.invoice_no')]) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('other_expenses', __('lang.other_expenses'), []) !!} <br>
+                                        {!! Form::text('other_expenses', null, ['class' => 'form-control', 'placeholder' => __('lang.other_expenses'), 'id' => 'other_expenses']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('discount_amount', __('lang.discount'), []) !!} <br>
+                                        {!! Form::text('discount_amount', null, ['class' => 'form-control', 'placeholder' => __('lang.discount'), 'id' => 'discount_amount']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('other_payments', __('lang.other_payments'), []) !!} <br>
+                                        {!! Form::text('other_payments', null, ['class' => 'form-control', 'placeholder' => __('lang.other_payments'), 'id' => 'other_payments']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('source_type', __('lang.source_type'), []) !!} <br>
+                                        {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' => __('lang.pos'), 'store' => __('lang.store'), 'safe' => __('lang.safe')], 'user', ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
+                                        {!! Form::select('source_id', $users, null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id', 'required']) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        {!! Form::label('payment_status', __('lang.payment_status') . ':*', []) !!}
+                                        {!! Form::select('payment_status', $payment_status_array, 'paid', ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                    </div>
+                                </div>
+
+                                @include('add_stock.partials.payment_form')
+
+                                <div class="col-md-3 due_amount_div hide">
+                                    <label for="due_amount" style="margin-top: 25px;">@lang('lang.due'): <span
+                                            class="due_amount_span">{{ @num_format(0) }}</span></label>
+                                </div>
+
+                                <div class="col-md-3 due_fields hide">
+                                    <div class="form-group">
+                                        {!! Form::label('due_date', __('lang.due_date') . ':', []) !!} <br>
+                                        {!! Form::text('due_date', !empty($payment) ? $payment->due_date : null, ['class' => 'form-control datepicker', 'placeholder' => __('lang.due_date')]) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 due_fields hide">
+                                    <div class="form-group">
+                                        {!! Form::label('notify_before_days', __('lang.notify_before_days') . ':', []) !!}
+                                        <br>
+                                        {!! Form::text('notify_before_days', !empty($payment) ? $payment->notify_before_days : null, ['class' => 'form-control', 'placeholder' => __('lang.notify_before_days')]) !!}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        {!! Form::label('notes', __('lang.notes') . ':', []) !!} <br>
+                                        {!! Form::textarea('notes', null, ['class' => 'form-control', 'rows' => 3]) !!}
+                                    </div>
+                                </div>
+
+                            </div>
 
 
                             <input type="hidden" name="active" value="1">

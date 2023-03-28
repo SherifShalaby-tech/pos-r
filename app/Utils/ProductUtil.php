@@ -1357,7 +1357,7 @@ class ProductUtil extends Util
         $product = Product::find($product_id);
 
         //Check if stock is enabled or not.
-        if ($product->is_service != 1) {
+//        if ($product->is_service != 1) {
             //Decrement Quantity in variations store table
             $details = ProductStore::where('variation_id', $variation_id)
                 ->where('product_id', $product_id)
@@ -1375,8 +1375,7 @@ class ProductUtil extends Util
             }
 
             $details->decrement('qty_available', $qty_difference);
-        }
-
+//        }
         return true;
     }
     /**

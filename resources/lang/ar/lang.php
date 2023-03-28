@@ -28,6 +28,7 @@ return [
     'received' => 'استلام',
     'underManufacturing' => 'تحت التصنيع',
     'manufactured' => 'تم تصنيعها',
+    'edit_manufacturing_status' => 'تعديل حالة تصنيع',
 
 
 
