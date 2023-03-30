@@ -140,6 +140,7 @@ class ManufacturingController extends Controller
             "status" => "pending",
             "transaction_date" => Carbon::now()->toDateTimeString(),
             "is_raw_material" => "1",
+            "created_by" => auth()->id(),
         ]);
         foreach ($request->product_quentity as $key => $product_quentity) {
             $qty = $this->num_uf($product_quentity["quantity"]);
