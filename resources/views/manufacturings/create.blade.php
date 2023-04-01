@@ -93,7 +93,7 @@
                                         <input type="button" value="{{trans('lang.manufacturing')}}" id="submit-btn"
                                                class="btn btn-primary">
                                         <a href="{{ route("manufacturing-s.index") }}"
-                                           class="btn btn-dark">{{trans('lang.back')}}</a>
+                                           class="btn btn-dark">{{trans('lang.cancel')}}</a>
                                     </div>
                                 </div>
                             </div>

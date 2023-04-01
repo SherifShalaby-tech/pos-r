@@ -160,7 +160,7 @@
                                         <input type="button" value="{{trans('lang.edit')}}" id="submit-btns"
                                                class="btn btn-primary">
                                         <a href="{{ route("manufacturing-s.index") }}"
-                                           class="btn btn-dark">{{trans('lang.back')}}</a>
+                                           class="btn btn-dark">{{trans('lang.cancel')}}</a>
                                     </div>
                                 </div>
                             </div>

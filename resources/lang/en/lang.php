@@ -17,17 +17,27 @@ return [
     'add_manufacturer' => 'Add New Manufacturer',
     'edit_manufacturer' => 'Edit Manufacturer',
     'manufacturings' => 'Out Manufacturings',
-    'view_all_manufacturings' => 'View All Manufacturings',
+    'view_all_manufacturings' => 'Manufacturing',
+    'view_all_processes' => 'Processes',
     'manufacturing' => 'Manufacturing',
     'manufacturer' => 'Manufacturer',
     'manufacturing_status' => 'Manufacturing Status',
     'edit_manufacturing_status' => 'Edit Manufacturing Status',
     'manufacturing_material' => 'Manufacturing Material',
     'product_received' => 'Products Received',
+    'product_received_quantity' => 'Product Received Quantity',
+    'product_received_date' => 'Product Received Date',
+
     'received' => 'Received',
     'underManufacturing' => 'Under Manufacturing',
     'manufactured' => 'Manufactured',
     'edit_manufacturing_status' => 'Edit Manufacturing Status',
+    'add_new_manufacturing' => 'Add New Manufacturing',
+
+
+
+
+
 
     'have_weight'=>'depends on weight',
     'type_Debt' => 'Pay Debt',

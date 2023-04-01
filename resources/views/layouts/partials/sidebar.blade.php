@@ -239,10 +239,16 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 class="@if(request()->segment(1) == 'manufacturers' && empty(request()->segment(2))) active @endif">
                                 <a href="{{action('ManufacturerController@index')}}">{{__('lang.manufacturers')}}</a>
                             </li>
-                            <li class="@if(request()->segment(1) == 'email' && empty(request()->segment(2))) active @endif">
-                                <a href="{{action('ManufacturingController@index')}}">{{__('lang.view_all_manufacturings')}}</a>
+                            <li
+                                class="@if(request()->segment(1) == 'manufacturers' && empty(request()->segment(2))) active @endif">
+                                <a href="{{action('ManufacturingController@create')}}">{{__('lang.add_new_manufacturing')}}</a>
                             </li>
-
+                            <li class="@if(request()->segment(1) == 'email' && empty(request()->segment(2))) active @endif">
+                                <a href="{{action('ManufacturingController@index',['manufacture'])}}">{{__('lang.view_all_manufacturings')}}</a>
+                            </li>
+                            <li class="@if(request()->segment(1) == 'email' && empty(request()->segment(2))) active @endif">
+                                <a href="{{action('ManufacturingController@index',["process"])}}">{{__('lang.view_all_processes')}}</a>
+                            </li>
                         </ul>
                     </li>
                 @if( !empty($module_settings['stock']) )

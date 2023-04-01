@@ -22,6 +22,7 @@ $(document).ready(function () {
         ajax: {
             url: "/product",
             data: function (d) {
+                d.process_type = $("#process_type").val();
                 d.product_class_id = $("#filter_product_class_id").val();
                 d.category_id = $("#filter_category_id").val();
                 d.sub_category_id = $("#filter_sub_category_id").val();
@@ -50,6 +51,7 @@ $(document).ready(function () {
                 searchable: false,
             },
         ],
+
         columns: [
             {
                 data: "selection_checkbox",
