@@ -18,13 +18,17 @@
                     <table id="store_table" class="table dataTable">
                         <thead>
                             <tr>
-                                <th >@lang('lang.store')</th>
-                                <th>@lang('lang.manufacturer')</th>
                                 <th>@lang('lang.raw_material')</th>
                                 <th>@lang('lang.quantity')</th>
                                 <th>@lang('lang.manufacturing_date')</th>
-                                <th>@lang('lang.product_received')</th>
-                                <th>@lang('lang.product_received_quantity')</th>
+                                <th>@lang('lang.status')</th>
+                                <th >@lang('lang.store')</th>
+                                <th>@lang('lang.manufacturer')</th>
+                                @if($type == "process")
+                                    <th>@lang('lang.product_received')</th>
+                                    <th>@lang('lang.product_received_quantity')</th>
+                                    <th>@lang('lang.product_received_date')</th>
+                                @endif
                                 <th>@lang('lang.created_by')</th>
                                 <th>@lang('lang.edited_by')</th>
                                 @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
@@ -35,8 +39,6 @@
                         <tbody>
                             @foreach($manufacturings as $manufacturing)
                             <tr>
-                                <td>{{$manufacturing->store->name ??""}}</td>
-                                <td>{{$manufacturing->manufacturer->name ??""}}</td>
                                 <td>
                                     @foreach($manufacturing->materials as $material)
                                         @if($material->status == "0")
@@ -50,19 +52,31 @@
                                     @endforeach
                                 </td>
                                 <td>{{date('Y/m/d H:i',strtotime($manufacturing->created_at))}}</td>
-                                <td>
-                                    @foreach($manufacturing->material_recived as $material)
-                                        @if($material->status == "1")
-                                            {{$material->product->name ??""}}  <br>
-                                        @endif
-                                    @endforeach
-                                </td>
-                                <td>
-                                    @foreach($manufacturing->material_recived as $material)
-                                        {{$material->quantity ??""}}  <br>
-                                    @endforeach
+                                <td>{{$type}}</td>
+                                <td>{{$manufacturing->store->name ??""}}</td>
+                                <td>{{$manufacturing->manufacturer->name ??""}}</td>
+                                @if($type == "process")
+                                    <td>
+                                        @foreach($manufacturing->material_recived as $material)
+                                            @if($material->status == "1")
+                                                {{$material->product->name ??""}}  <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @foreach($manufacturing->material_recived as $material)
+                                            {{$material->quantity ??""}}  <br>
+                                        @endforeach
 
-                                </td>
+                                    </td>
+                                    <td>
+                                        @foreach($manufacturing->material_recived as $material)
+                                            @if($material->status == "1")
+                                                {{date('Y/m/d H:i',strtotime($material->created_at))  ??""}}  <br>
+                                            @endif
+                                        @endforeach
+                                    </td>
+                                @endif
                                 <td>{{$manufacturing->createdUser->name ??""}}</td>
                                 <td>{{$manufacturing->editedUser->name ??""}}</td>
                                 @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
@@ -76,12 +90,15 @@
                                             </button>
                                             <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
                                                 user="menu">
+                                                @isset($manufacturing->material_recived)
+                                                    @if(count($manufacturing->material_recived) < 1)
+                                                        <li>
+                                                            <a href="{{route('manufacturing.getReceivedProductsPage',$manufacturing->id)}}" class="btn "><i
+                                                                    class="dripicons-retweet"></i> @lang('lang.status')</a>
+                                                        </li>
+                                                    @endif
+                                                @endisset
                                                 <li>
-                                                    <a href="{{route('manufacturing.getReceivedProductsPage',$manufacturing->id)}}" class="btn "><i
-                                                            class="dripicons-retweet"></i> @lang('lang.manufacturing_status')</a>
-                                                </li>
-                                                <li>
-{{--                                                    {{route('productions.edit', $manufacturing->id)}}--}}
                                                     <a href="{{action('ManufacturingController@edit', $manufacturing->id)}}" class="btn "><i
                                                             class="dripicons-document-edit"></i> @lang('lang.edit')</a>
                                                 </li>

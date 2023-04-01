@@ -17,18 +17,21 @@ return [
     'add_manufacturer' => 'اضافة مصنع جديد',
     'edit_manufacturer' => 'تعديل مصنع',
     'manufacturings' => 'التصنيع الخارجي',
-    'view_all_manufacturings' => 'عرض كل عمليات التصنيع',
+    'view_all_manufacturings' => 'عمليات التصنيع',
+    'view_all_processes' => 'عمليات المعالجة',
     'manufacturing' => 'تصنيع',
     'manufacturer' => 'المصنع',
     'manufacturing_status' => 'حالة التصنيع',
     'edit_manufacturing_status' => 'تعديل حالة التصنيع ',
     'manufacturing_material' => 'مادة التصنيع ',
     'product_received' => 'المنتجات المستلمة',
-    'product_received_quantity' => 'كميه',
+    'product_received_quantity' => 'الكميه المستلمه',
+    'product_received_date' => 'تاريخ الاستلام',
     'received' => 'استلام',
     'underManufacturing' => 'تحت التصنيع',
     'manufactured' => 'تم تصنيعها',
     'edit_manufacturing_status' => 'تعديل حالة تصنيع',
+    'add_new_manufacturing' => 'اضافه عملية تصنيع جديدة',
 
 
 

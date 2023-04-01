@@ -168,13 +168,14 @@
 
 
                             <input type="hidden" name="active" value="1">
+                            <input type="hidden" id="process_type" name="process_type" value="received_manufacturing_products">
                             <div class="row">
                                 <div class="col-md-4 mt-5">
                                     <div class="form-group">
                                         <input type="button" value="{{trans('lang.received')}}" id="submit-btns"
                                                class="btn btn-primary">
                                         <a href="{{ route("manufacturing-s.index") }}"
-                                           class="btn btn-dark">{{trans('lang.back')}}</a>
+                                           class="btn btn-dark">{{trans('lang.cancel')}}</a>
                                     </div>
                                 </div>
                             </div>

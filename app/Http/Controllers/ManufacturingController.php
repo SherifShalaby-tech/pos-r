@@ -51,16 +51,17 @@ class ManufacturingController extends Controller
 
     public function index()
     {
-        $manufacturings = Manufacturing::all();
+        $type = explode("?",\request()->getRequestUri())[1];
+        $manufacturings = Manufacturing::query()->whereHas( explode("?",\request()->getRequestUri())[1] == "process" ? "material_recived": "materials")->latest()->get();
         return view('manufacturings.index')->with(compact(
-            'manufacturings'
+            'manufacturings',
+                    'type'
         ));
     }
 
     public function create()
     {
         $store_query = '';
-//        $products =all();
         $suppliers = Supplier::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
         $po_nos = Transaction::where('type', 'purchase_order')->where('status', '!=', 'received')->pluck('po_no', 'id');
         $status_array = $this->commonUtil->getPurchaseOrderStatusArray();
@@ -128,7 +129,7 @@ class ManufacturingController extends Controller
             'store_id' => ['required', 'numeric'],
             'manufacturer_id' => ['required', 'numeric'],
         ]);
-//        try {
+        try {
         $data = $request->only('store_id', 'manufacturer_id');
         $data["created_by"] = auth()->id();
         DB::beginTransaction();
@@ -159,14 +160,14 @@ class ManufacturingController extends Controller
             'success' => true,
             'msg' => __('lang.success')
         ];
-//        } catch (\Exception $e) {
-//            DB::rollBack();
-//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//            $output = [
-//                'success' => false,
-//                'msg' => __('lang.something_went_wrong')
-//            ];
-//        }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
         return $output;
     }
 
@@ -252,9 +253,8 @@ class ManufacturingController extends Controller
     public function postReceivedProductsPage(Request $request)
     {
         $data = $request->product_quentity;
-//        try {
+        try {
             $manufacturing = Manufacturing::find($request->manufacturing_id);
-
             DB::beginTransaction();
             $transaction = Transaction::query()->create([
                 "store_id" => $request->store_id,
@@ -266,7 +266,7 @@ class ManufacturingController extends Controller
                 "invoice_no" => $request->invoice_no,
                 "other_expenses" => $request->other_expenses,
                 "discount_amount" => $request->discount_amount,
-                "other_payments" => $request->other_payments?? 0.0000,
+                "other_payments" => $request->other_payments ?? 0.0000,
                 "source_type" => $request->source_type,
                 "source_id" => $request->source_id,
                 "payment_status" => $request->payment_status,
@@ -303,7 +303,7 @@ class ManufacturingController extends Controller
                     'quantity' => $quantity["quantity"],
                 ];
                 $add_stock = AddStockLine::create($add_stock_data);
-                $this->productUtil->updateProductQuantityStore($product->id, $variation->id, $transaction->store_id,  $quantity["quantity"], 0);
+                $this->productUtil->updateProductQuantityStore($product->id, $variation->id, $transaction->store_id, $quantity["quantity"], 0);
             }
 
             DB::commit();
@@ -311,14 +311,14 @@ class ManufacturingController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-//        } catch (\Exception $e) {
-//            DB::rollBack();
-//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//            $output = [
-//                'success' => false,
-//                'msg' => __('lang.something_went_wrong')
-//            ];
-//        }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
         return $output;
 
     }

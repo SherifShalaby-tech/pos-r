@@ -60,11 +60,6 @@ class ProductController extends Controller
         $this->transactionUtil = $transactionUtil;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getProductStocks(Request $request)
     {
         $product_classes = ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
@@ -103,15 +98,12 @@ class ProductController extends Controller
             'page'
         ));
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
-        if (request()->ajax()) {
+        $process_type = $request->process_type??null;
 
+        if (request()->ajax()) {
             $products = Product::leftjoin('variations', function ($join) {
                 $join->on('products.id', 'variations.product_id')->whereNull('variations.deleted_at');
             })
@@ -306,14 +298,20 @@ class ProductController extends Controller
                         ->first();
                     return $query->name ?? '';
                 })
-                ->addColumn('selection_checkbox', function ($row) use ($is_add_stock) {
+                ->addColumn('selection_checkbox', function ($row) use ($is_add_stock,$process_type) {
                     if ($row->is_service == 1 || $is_add_stock == 1) {
                         $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                     } else {
                         if ($row->current_stock > 0) {
                             $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                         } else {
-                            $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+                            // if received_manufacturing_products open all products to add to stock
+                            if ($process_type == "received_manufacturing_products"){
+                                $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+                            }else{
+                                $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+
+                            }
                         }
                     }
 
