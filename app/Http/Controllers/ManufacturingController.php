@@ -253,7 +253,7 @@ class ManufacturingController extends Controller
     public function postReceivedProductsPage(Request $request)
     {
         $data = $request->product_quentity;
-//        try {
+        try {
             $manufacturing = Manufacturing::find($request->manufacturing_id);
             DB::beginTransaction();
             $transaction = Transaction::query()->create([
@@ -311,14 +311,14 @@ class ManufacturingController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-//        } catch (\Exception $e) {
-//            DB::rollBack();
-//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-//            $output = [
-//                'success' => false,
-//                'msg' => __('lang.something_went_wrong')
-//            ];
-//        }
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
         return $output;
 
     }

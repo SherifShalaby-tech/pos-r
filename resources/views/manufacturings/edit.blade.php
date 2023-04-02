@@ -158,9 +158,9 @@
                                 <div class="col-md-4 mt-5">
                                     <div class="form-group">
                                         <input type="button" value="{{trans('lang.edit')}}" id="submit-btns"
-                                               class="btn btn-primary">
+                                               class="btn btn-primary mr-3">
                                         <a href="{{ route("manufacturing-s.index") }}"
-                                           class="btn btn-dark">{{trans('lang.cancel')}}</a>
+                                           class="btn btn-danger">{{trans('lang.cancel')}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -190,10 +190,13 @@
                       let stock = Number($("#product_stock_"+product_id).val())
                       let status = $("#input_product_"+product_id).val()
                       $("#input_product_" + product_id).on('keyup', function (e) {
-                          if (Number($("#input_product_" + product_id).val()) == 0 ) {
-                              $("#input_product_" + product_id).val(1)
-                              swal("Error", "Sorry You Should enter quentity more than 0", "error");
-                          }else if( Number($("#input_product_" + product_id).val()) > (quentity+stock)){
+                          setTimeout(g=>{
+                              if(Number($("#input_product_"+product_id).val()) == 0){
+                                  $("#input_product_"+product_id).val(1)
+                                  swal("Error", "Sorry You Should enter quentity more than 0", "error");
+                              }
+                          },5000)
+                          if( Number($("#input_product_" + product_id).val()) > (quentity+stock)){
                               $("#input_product_" + product_id).val(1)
                               swal("Error", "Sorry Out Of Stock", "error");
                           }

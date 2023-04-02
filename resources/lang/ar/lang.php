@@ -27,6 +27,10 @@ return [
     'product_received' => 'المنتجات المستلمة',
     'product_received_quantity' => 'الكميه المستلمه',
     'product_received_date' => 'تاريخ الاستلام',
+    'processed' => 'العمليات المستلمة',
+    'under_processing' => 'تحت التصنيع',
+    'path' => 'مسار القسم الفرعي',
+
     'received' => 'استلام',
     'underManufacturing' => 'تحت التصنيع',
     'manufactured' => 'تم تصنيعها',

@@ -27,6 +27,10 @@ return [
     'product_received' => 'Products Received',
     'product_received_quantity' => 'Product Received Quantity',
     'product_received_date' => 'Product Received Date',
+    'processed' => 'Processed',
+    'under_processing' => 'Under Processing',
+    'path' => 'Path',
+
 
     'received' => 'Received',
     'underManufacturing' => 'Under Manufacturing',
