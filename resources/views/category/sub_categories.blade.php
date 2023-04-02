@@ -22,7 +22,7 @@
                                 <td><img src="@if(!empty($category->getFirstMediaUrl('category'))){{$category->getFirstMediaUrl('category')}}@else{{asset('images/default.jpg')}}@endif"
                                     alt="photo" width="50" height="50"></td>
                                 <td>{{$category->name}}</td>
-                                <td>{{$category->productClass?->name.' / '.$category->mainCategory?->name." / ".$category->name}}</td>
+                                <td>{{$category->category_path}}</td>
                                 <td>
                                     <div class="btn-group">
                                         <button type="button" class="btn btn-default btn-sm dropdown-toggle"
