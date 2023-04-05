@@ -35,6 +35,7 @@ use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Http;
+use Lang;
 class ProductController extends Controller
 {
     /**
@@ -229,7 +230,7 @@ class ProductController extends Controller
                 @endif')
                 ->editColumn('sub_sku', '{{$sub_sku}}')
                 ->editColumn('is_service',function ($row) {
-                    return $row->is_service=='1'?'<span class="badge badge-danger">Out Of Stock</span>':'';
+                    return $row->is_service=='1'?'<span class="badge badge-danger">'.Lang::get('lang.is_have_service').'</span>':'';
                 })
                 ->addColumn('product_class', '{{$product_class}}')
                 ->addColumn('category', '{{$category}}')

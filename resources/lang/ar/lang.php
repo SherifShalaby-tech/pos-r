@@ -284,6 +284,7 @@ return [
     'amount' => 'المبلغ',
     'notes' => 'ملاحظات',
     'is_service' => 'هي خدمة',
+    'is_have_service'=>'خدمة',
     'paid_amount' => 'المبلغ المدفوع',
     'pending_amount' => 'المبلغ المتبقي',
     'invoice_date' => 'تاريخ الفاتورة',
