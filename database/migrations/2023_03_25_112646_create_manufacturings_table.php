@@ -19,7 +19,6 @@ class CreateManufacturingsTable extends Migration
             $table->integer("created_by");
             $table->integer("edited_by");
             $table->integer("manufacturer_id");
-            $table->integer("manufacturer_id");
             $table->timestamps();
         });
     }

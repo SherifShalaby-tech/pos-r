@@ -253,10 +253,10 @@ class ManufacturingController extends Controller
     public function postReceivedProductsPage(Request $request)
     {
         $data = $request->product_quentity;
-        try {
+        // try {
             $manufacturing = Manufacturing::find($request->manufacturing_id);
             DB::beginTransaction();
-            $transaction = Transaction::query()->create([
+            $transaction_data=[
                 "store_id" => $request->store_id,
                 "manufacturing_id" => $manufacturing->id,
                 "type" => "material_manufactured",
@@ -280,12 +280,33 @@ class ManufacturingController extends Controller
                 "notify_before_days" => $request->notify_before_days ?? 0,
                 "notes" => $request->notes ?? null,
                 'created_by' => Auth::user()->id,
-            ]);
+            ];
+            $transaction = Transaction::query()->create($transaction_data);
+            $transaction->transaction_payments()->create($transaction_data);
             if ($request->files) {
                 foreach ($request->file('files', []) as $key => $file) {
                     $transaction->addMedia($file)->toMediaCollection('add_stock');
                 }
             }
+            $product_cost_purchase=0;
+            $product_cost_sell=0;
+            //calc price of one
+            foreach($manufacturing->manufacturing_products as $product){
+                $product_cost_purchase+=($product->product->purchase_price*$product->quantity);
+                $product_cost_sell+=($product->product->selling_price*$product->quantity);
+                }
+                $product_cost_purchase+=($request->amount ??0);
+                foreach ($request->product_quentity as $key => $product_quentity) {
+                    $qty = $this->num_uf($product_quentity["quantity"]);
+                    $product_cost_purchase/=$qty;
+                }
+                // return $product_cost_purchase;
+                $manufacturing->manufacture_cost_unit=$product_cost_purchase;
+                $manufacturing->manufacture_cost_unit=$product_cost_sell;
+                $manufacturing->save();
+
+
+
 
             foreach ($data as $productId => $quantity) {
                 $product = Product::find($productId);
@@ -302,6 +323,9 @@ class ManufacturingController extends Controller
                     'variation_id' => $variation->id,
                     'quantity' => $quantity["quantity"],
                 ];
+
+                
+                
                 $add_stock = AddStockLine::create($add_stock_data);
                 $this->productUtil->updateProductQuantityStore($product->id, $variation->id, $transaction->store_id, $quantity["quantity"], 0);
             }
@@ -311,14 +335,14 @@ class ManufacturingController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
-        }
+        // } catch (\Exception $e) {
+        //     DB::rollBack();
+        //     Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+        //     $output = [
+        //         'success' => false,
+        //         'msg' => __('lang.something_went_wrong')
+        //     ];
+        // }
         return $output;
 
     }

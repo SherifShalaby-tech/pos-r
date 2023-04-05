@@ -228,6 +228,9 @@ class ProductController extends Controller
                 ->editColumn('variation_name', '@if($variation_name != "Default"){{$variation_name}} @else {{$name}}
                 @endif')
                 ->editColumn('sub_sku', '{{$sub_sku}}')
+                ->editColumn('is_service',function ($row) {
+                    return $row->is_service=='1'?'<span class="badge badge-danger">Out Of Stock</span>':'';
+                })
                 ->addColumn('product_class', '{{$product_class}}')
                 ->addColumn('category', '{{$category}}')
                 ->addColumn('sub_category', '{{$sub_category}}')
@@ -299,20 +302,18 @@ class ProductController extends Controller
                     return $query->name ?? '';
                 })
                 ->addColumn('selection_checkbox', function ($row) use ($is_add_stock,$process_type) {
-                    if ($row->is_service == 1 || $is_add_stock == 1) {
-                        $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
-                    } else {
-                        if ($row->current_stock > 0) {
+                    if($row->is_service == 0 ){
+                        if ($is_add_stock == 1) {
                             $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                         } else {
-                            // if received_manufacturing_products open all products to add to stock
-                            if ($process_type == "received_manufacturing_products"){
+                            if ($row->current_stock > 0 ) {
                                 $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
-                            }else{
+                            } else {
                                 $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
-
                             }
                         }
+                    }else{
+                        $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                     }
 
                     return $html;
