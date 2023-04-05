@@ -315,20 +315,24 @@ function get_label_product_row(
     //Get item addition method
     var add_via_ajax = true;
 
-    var is_added = false;
-
+    // var is_added = false;
+    var qty;
     //Search for variation id in each row of pos table
     $("#product_table tbody")
         .find("tr")
         .each(function () {
+            
             var row_v_id = $(this).find(".variation_id").val();
 
-            if (row_v_id == variation_id && !is_added) {
-
+            if (row_v_id == variation_id ) {
+                qty_element = $(this).find(".quantity");
+                qty = __read_number(qty_element);
+                qty+=1;
+                console.log(qty);
 
                 //Increment product quantity
-                qty_element = $(this).find(".quantity");
-                var qty = __read_number(qty_element);
+                
+                // console.log(qty);
                 $.ajax({
                     method: "GET",
                     url: "/pos/count-product-row-extension/"+variation_id,
@@ -340,13 +344,14 @@ function get_label_product_row(
                         if(result.count == 0){
                             add_via_ajax = false;
                             is_added = true;
-                            __write_number(qty_element, qty + 1);
-                            qty_element.change;
+                            $(this).closest("tr").remove();
+                            // __write_number(qty_element, qty + 1);
+                            // qty_element.change;
                             check_for_sale_promotion();
                             calculate_sub_totals();
-                            $("input#search_product").val("");
-                            $("input#search_product").focus();
-                            $(this).insertBefore($("#product_table  tbody tr:first"));
+                            // $("input#search_product").val("");
+                            // $("input#search_product").focus();
+                            // $(this).insertBefore($("#product_table  tbody tr:first"));
 
                         }
                     },
@@ -355,7 +360,7 @@ function get_label_product_row(
             }
         });
 
-    if (add_via_ajax) {
+    // if (add_via_ajax) {
         var store_id = $("#store_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
@@ -392,7 +397,8 @@ function get_label_product_row(
                 }
                 if(result.success&&(result.html_content==0||result.html_content == '')){
                     get_ajax_add_row_product(product_id,row_count,variation_id,store_id
-                        ,customer_id,currency_id,edit_quantity,weighing_scale_barcode)
+                        ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
+                        extensions_sell_prices=null,qty)
                 }else{
                     $('#product_extension_tbody').html(result.html_content);
                     $('#product_extension').addClass('view_modal no-print show');
@@ -400,7 +406,7 @@ function get_label_product_row(
                 }
             },
         });
-       }
+    //    }
 }
 $('#save_btn_product_extension').click(function () {
     // var extensions_ids = $('input[name^=extensions_checkboxs]').map(function(idx, elem) {
@@ -448,15 +454,20 @@ $('#save_btn_product_extension').click(function () {
             is_added = true;
             qty_element =
                 $('#'+ex).parent().parent().parent().find(".quantity");
-
+            console.log(ex)
             var qty = __read_number(qty_element);
             console.log('ddddd='+qty)
-            __write_number(qty_element, qty + 1);
-            qty_element.change;
+            qty+=1;
+            // __write_number(qty_element, qty + 1);
+            // qty_element.change;
+            $('#'+ex).closest("tr").remove();
             check_for_sale_promotion();
             calculate_sub_totals();
             $("input#search_product").val("");
             $("input#search_product").focus();
+            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+                ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
+                extensions_sell_prices,qty);
         }else{
             get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
                 ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
@@ -466,7 +477,7 @@ $('#save_btn_product_extension').click(function () {
 });
 function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
                                   ,edit_quantity,weighing_scale_barcode,extensions_ids=[]
-                                  ,extensions_quantity=[],extensions_sell_prices=[]) {
+                                  ,extensions_quantity=[],extensions_sell_prices=[],qty) {
 
     $.ajax({
         method: "GET",
@@ -487,6 +498,7 @@ function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,cus
             weighing_scale_barcode: weighing_scale_barcode,
             dining_table_id: $("#dining_table_id").val(),
             is_direct_sale: $("#is_direct_sale").val(),
+            qty:qty
         },
         success: function (result) {
             if (!result.success) {

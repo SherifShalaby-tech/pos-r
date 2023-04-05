@@ -288,22 +288,25 @@ class ManufacturingController extends Controller
                     $transaction->addMedia($file)->toMediaCollection('add_stock');
                 }
             }
+            
+            //calc price of one
             $product_cost_purchase=0;
             $product_cost_sell=0;
-            //calc price of one
             foreach($manufacturing->manufacturing_products as $product){
                 $product_cost_purchase+=($product->product->purchase_price*$product->quantity);
-                $product_cost_sell+=($product->product->selling_price*$product->quantity);
-                }
-                $product_cost_purchase+=($request->amount ??0);
-                foreach ($request->product_quentity as $key => $product_quentity) {
-                    $qty = $this->num_uf($product_quentity["quantity"]);
-                    $product_cost_purchase/=$qty;
-                }
-                // return $product_cost_purchase;
-                $manufacturing->manufacture_cost_unit=$product_cost_purchase;
-                $manufacturing->manufacture_cost_unit=$product_cost_sell;
-                $manufacturing->save();
+                $product_cost_sell+=($product->product->sell_price*$product->quantity);
+            }
+            $product_cost_purchase+=($request->amount ??0);
+            $product_cost_sell+=($request->amount ??0);
+            foreach ($request->product_quentity as $key => $product_quentity) {
+                $qty = $this->num_uf($product_quentity["quantity"]);
+                $product_cost_purchase/=$qty;
+                $product_cost_sell/=$qty;
+            }
+            $manufacturing->manufacture_cost_unit_purchase=$product_cost_purchase;
+            $manufacturing->manufacture_cost_unit_sell=$product_cost_sell;
+            $manufacturing->save();
+            /// end calc purchase and selling price for manufacturer///
 
 
 

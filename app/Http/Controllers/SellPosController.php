@@ -1012,7 +1012,7 @@ class SellPosController extends Controller
             $extensions_ids = $request->input('extensions_ids');
             $extensions_quantity = $request->input('extensions_quantity');
             $extensions_sell_prices = $request->input('extensions_sell_prices');
-
+            $qty = $request->qty?$request->qty:0;
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
             $store_id = $request->input('store_id');
@@ -1026,7 +1026,7 @@ class SellPosController extends Controller
             $currency_id = $request->currency_id;
             $currency = Currency::find($currency_id);
             $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id, $request->store_id);
-
+            
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
             if (empty($variation_id) && !empty($weighing_barcode)) {
@@ -1067,7 +1067,7 @@ class SellPosController extends Controller
                         "sum_extensions_sell_prices",
                         "extensions_ids","extensions_quantity",
                         "extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
-                        'exchange_rate'))->render();
+                        'exchange_rate','qty'))->render();
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
             } else {

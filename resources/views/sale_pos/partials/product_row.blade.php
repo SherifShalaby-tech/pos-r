@@ -103,6 +103,14 @@
                     <span class="dripicons-minus"></span>
                 </button>
             </span>
+            @if($qty)
+            <input type="number" class="form-control quantity  qty numkey input-number" min="0.01" step="any"
+                autocomplete="off" style="width: 50px;"
+                @if(!$product->is_service)max="{{$product->qty_available}}"@endif
+            name="transaction_sell_line[{{$loop->index + $index}}][quantity]"
+            required
+            value="{{$qty}}">
+            @else
             <input type="number" class="form-control quantity  qty numkey input-number" min="0.01" step="any"
                 autocomplete="off" style="width: 50px;"
                 @if(!$product->is_service)max="{{$product->qty_available}}"@endif
@@ -110,6 +118,7 @@
             required
             value="@if(!empty($edit_quantity)){{$edit_quantity}}@else
             @if(isset($product->quantity)){{$product->quantity}}@else{{1}}@endif @endif">
+            @endif
             <span class="input-group-btn">
                 <button type="button" class="btn btn-success btn-xs plus">
                     <span class="dripicons-plus"></span>
