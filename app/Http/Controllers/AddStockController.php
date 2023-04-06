@@ -68,27 +68,28 @@ class AddStockController extends Controller
     }
 
     public function index(Request $request)
-    {
+    { 
+
         if (request()->ajax()) {
             $default_currency_id = System::getProperty('currency');
             $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
             $pos_id = $this->transactionUtil->getFilterOptionValues($request)['pos_id'];
 
             $query = Transaction::leftjoin('add_stock_lines', 'transactions.id', 'add_stock_lines.transaction_id')
-                ->leftjoin('suppliers', 'transactions.supplier_id', '=', 'suppliers.id')
-                ->leftjoin('users', 'transactions.created_by', '=', 'users.id')
-                ->leftjoin('currencies as paying_currency', 'transactions.paying_currency_id', 'paying_currency.id')
-                ->where('type', 'add_stock')->where('status', '!=', 'draft');
+            ->leftjoin('suppliers', 'transactions.supplier_id', '=', 'suppliers.id')
+            ->leftjoin('users', 'transactions.created_by', '=', 'users.id')
+            ->leftjoin('currencies as paying_currency', 'transactions.paying_currency_id', 'paying_currency.id')
+            ->whereIn('type',['material_manufactured','material_under_manufacture','add_stock'])->where('status', '!=', 'draft');
 
             if (!empty($store_id)) {
                 $query->where('transactions.store_id', $store_id);
             }
 
-            if (!empty(request()->is_raw_material)) {
-                $query->where('transactions.is_raw_material', 1);
-            } else {
-                $query->where('transactions.is_raw_material', 0);
-            }
+            // if (!empty(request()->is_raw_material)) {
+            //     $query->where('transactions.is_raw_material', 1);
+            // } else {
+            //     $query->where('transactions.is_raw_material', 0);
+            // }
             if (!empty(request()->supplier_id)) {
                 $query->where('transactions.supplier_id', request()->supplier_id);
             }
@@ -120,6 +121,7 @@ class AddStockController extends Controller
                 'suppliers.name as supplier',
                 'paying_currency.symbol as paying_currency_symbol'
             )->with(['add_stock_variations'])->groupBy('transactions.id')->orderBy('transaction_date', 'desc')->get();
+            // return $add_stocks;
             return DataTables::of($add_stocks)
                 ->editColumn('created_at', '{{@format_datetime($created_at)}}')
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
