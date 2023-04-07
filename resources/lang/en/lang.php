@@ -30,12 +30,14 @@ return [
     'processed' => 'Processed',
     'under_processing' => 'Under Processing',
     'path' => 'Path',
-
+    'delete_all' => 'Delete All',
+    'add_new_production' => 'Produce Primary material',
+    'productions'=>'Produce Primary material ',
+    'select_to_delete'=>'Select To Delete',
 
     'received' => 'Received',
     'underManufacturing' => 'Under Manufacturing',
     'manufactured' => 'Manufactured',
-    'edit_manufacturing_status' => 'Edit Manufacturing Status',
     'add_new_manufacturing' => 'Add New Manufacturing',
 
 
@@ -59,7 +61,7 @@ return [
     'add_manual_production' => 'Produce Primary material',
     'add_new_recipe' => 'Add new Recipe',
     'add_recipe' => 'Add recipe',
-    'add_new_production' => 'Produce Primary material',
+
     'sendTo'=>'Send To',
     'edit_recipe'=>'edit Produce process',
     'edit_production'=>'edit Produce Primary material',
