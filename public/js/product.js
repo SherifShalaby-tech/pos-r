@@ -119,92 +119,40 @@ function getImages() {
         return images
     }, 1);
 }
-Dropzone.autoDiscover = false;
-myDropzone = new Dropzone("div#my-dropzone", {
-    addRemoveLinks: true,
-    autoProcessQueue: false,
-    uploadMultiple: true,
-    parallelUploads: 100,
-    maxFilesize: 12,
-    paramName: "images",
-    clickable: true,
-    method: "POST",
-    url: $("form#product-form").attr("action"),
-    headers: {
-        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
-    },
-    renameFile: function (file) {
-        var dt = new Date();
-        var time = dt.getTime();
-        return time + file.name;
-    },
-    acceptedFiles: ".jpeg,.jpg,.png,.gif",
-    init: function () {
-        var myDropzone = this;
-        $("#submit-btn").on("click", function (e) {
-            e.preventDefault();
-            getImages()
+$("#submit-btn").on("click", function (e) {
+    e.preventDefault();
+    getImages()
 
-           setTimeout(()=>{
-               if ($("#product-form").valid()) {
-                   tinyMCE.triggerSave();
-                   document.getElementById("loader").style.display = "block";
-                   document.getElementById("content").style.display = "none";
-                   $.ajax({
-                       type: "POST",
-                       url: $("form#product-form").attr("action"),
-                       data:  $("#product-form").serialize(),
-                       success: function (response) {
-                           myFunction();
-                           if (response.success) {
-                               swal("Success", response.msg, "success");
-                               $("#sku").val("").change();
-                               $("#name").val("").change();
-                               $(".translations").val("").change();
-                           } else {
-                               swal("Error", response.msg, "error");
-                           }
-                       },
-                       error: function (response) {
-                           myFunction();
-                           if (!response.success) {
-                               swal("Error", response.msg, "error");
-                           }
-                       },
-                   });
-
-               }
-           },500)
-        });
-
-        this.on("sending", function (file, xhr, formData) {
+    setTimeout(()=>{
+        if ($("#product-form").valid()) {
+            tinyMCE.triggerSave();
             document.getElementById("loader").style.display = "block";
             document.getElementById("content").style.display = "none";
-            var data = $("#product-form").serializeArray();
-            $.each(data, function (key, el) {
-                formData.append(el.name, el.value);
+            $.ajax({
+                type: "POST",
+                url: $("form#product-form").attr("action"),
+                data:  $("#product-form").serialize(),
+                success: function (response) {
+                    myFunction();
+                    if (response.success) {
+                        swal("Success", response.msg, "success");
+                        $("#sku").val("").change();
+                        $("#name").val("").change();
+                        $(".translations").val("").change();
+                    } else {
+                        swal("Error", response.msg, "error");
+                    }
+                },
+                error: function (response) {
+                    myFunction();
+                    if (!response.success) {
+                        swal("Error", response.msg, "error");
+                    }
+                },
             });
-        });
-        this.on("complete", function (file) {
-            this.removeAllFiles(true);
-            myFunction();
-        });
-    },
-    error: function (file, response) {
-        console.log(response);
-    },
-    successmultiple: function (file, response) {
-        if (response.success) {
-            swal("Success", response.msg, "success");
+
         }
-        if (!response.success) {
-            swal("Error", response.msg, "error");
-        }
-    },
-    completemultiple: function (file, response) {},
-    reset: function () {
-        this.removeAllFiles(true);
-    },
+    },500)
 });
 
 var modalTemplate = $("#product_cropper_modal");
