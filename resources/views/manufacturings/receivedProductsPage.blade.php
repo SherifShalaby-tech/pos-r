@@ -173,9 +173,9 @@
                                 <div class="col-md-4 mt-5">
                                     <div class="form-group">
                                         <input type="button" value="{{trans('lang.received')}}" id="submit-btns"
-                                               class="btn btn-primary">
+                                               class="btn btn-primary mr-3">
                                         <a href="{{ route("manufacturing-s.index") }}"
-                                           class="btn btn-dark">{{trans('lang.cancel')}}</a>
+                                           class="btn btn-danger">{{trans('lang.cancel')}}</a>
                                     </div>
                                 </div>
                             </div>
@@ -240,10 +240,12 @@
                         let product_id = $("#product_id").val();
 
                         $("#input_product_"+product_id).on('keyup',function (e){
-                            if(Number($("#input_product_"+product_id).val()) == 0){
-                                $("#input_product_"+product_id).val(1)
-                                swal("Error", "Sorry You Should enter quentity more than 0", "error");
-                            }
+                            setTimeout(g=>{
+                                if(Number($("#input_product_"+product_id).val()) == 0){
+                                    $("#input_product_"+product_id).val(1)
+                                    swal("Error", "Sorry You Should enter quentity more than 0", "error");
+                                }
+                            },5000)
                             let q = 0;
                             for(i=0;i < $('#product_table tbody tr').length;i++){
                                 q+= Number($($(".product_row")[i].children[2].children[1]).val())

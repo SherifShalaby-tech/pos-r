@@ -51,6 +51,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('product/get-products', 'ProductController@getProducts');
     Route::get('product/get-purchase-history/{id}', 'ProductController@getPurchaseHistory');
     Route::post('product/save-import', 'ProductController@saveImport');
+
     Route::get('product/import', 'ProductController@getImport');
     Route::get('product/check-sku/{sku}', 'ProductController@checkSku');
     Route::get('product/check-name', 'ProductController@checkName');
@@ -58,7 +59,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('product-send-branch', 'ProductController@sendBranch');
     Route::get('product/delete-product-image/{id}', 'ProductController@deleteProductImage');
     Route::resource('product', ProductController::class);
-
+    Route::post('product/multiDeleteRow', 'ProductController@multiDeleteRow');
     //item borrowed controller
     Route::resource('item-borrowed',ItemBorrowedController::class);
     Route::post('item-borrowed/give','ItemBorrowedController@give')->name('item-borrowed.give');
@@ -419,6 +420,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
 Route::get('manufacturing/add-product-row', 'ManufacturingController@addProductRow')->name("manufacturing.add_product_row");
 Route::get('manufacturing/add-product-to-stock', 'ManufacturingController@add_product_stock')->name("manufacturing.add_product_stock");
+
+
 
 Route::get('contact-us', 'ContactUsController@getContactUs');
 Route::post('contact-us', 'ContactUsController@sendContactUs');

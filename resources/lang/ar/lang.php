@@ -27,12 +27,18 @@ return [
     'product_received' => 'المنتجات المستلمة',
     'product_received_quantity' => 'الكميه المستلمه',
     'product_received_date' => 'تاريخ الاستلام',
+    'processed' => 'العمليات المستلمة',
+    'under_processing' => 'تحت التصنيع',
+    'path' => 'مسار القسم الفرعي',
+    'delete_all' => 'حذف جماعي',
+    'select_to_delete'=>'حدد للحذف',
+
     'received' => 'استلام',
     'underManufacturing' => 'تحت التصنيع',
     'manufactured' => 'تم تصنيعها',
-    'edit_manufacturing_status' => 'تعديل حالة تصنيع',
     'add_new_manufacturing' => 'اضافه عملية تصنيع جديدة',
-
+    'add_new_production'=>'عملية تصنيع جديدة',
+    'productions'=>'عمليات التصنيع',
 
 
 
@@ -51,11 +57,11 @@ return [
     'add_manual_production'=>'تصنيع مادة جديدة',
     'add_new_recipe'=>'اضافة وصفة جديدة',
     'add_recipe'=>'اضافة وصفة',
-    'add_new_production'=>'عملية تصنيع جديدة',
+
     'sendTo'=>'ارسال الي',
     'edit_recipe'=>'تعديل عملية التصنيع',
     'StorePosReq'=>'للانتاج يجب تخصيص نقاط البيع للمستخدم',
-    'productions'=>'عمليات التصنيع',
+
     "please_select_any_product"=>"من فضلك , قم بأختيار منتج واحد علي الاقل",
     'you_dont_have_any_branch'=>'عفوا , لا يوجد اي فرع لدينا يرجي التواصل مع الادارة',
     'send_to_branch'=>'ارسال الي الفرعي',
