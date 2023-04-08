@@ -106,7 +106,19 @@ $(document).on("click", ".variant_different_prices_for_stores", function () {
         $(".variant_store_prices_" + row_id).slideUp();
     }
 });
-
+function getImages() {
+    setTimeout(() => {
+        $("#cropped_images").empty();
+        const container = document.querySelectorAll('.preview-container');
+        let images = [];
+        for (let i = 0; i < container[0].children.length; i++) {
+            var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
+            $("#cropped_images").append(newInput);
+            images.push(container[0].children[i].children[0].src)
+        }
+        return images
+    }, 1);
+}
 Dropzone.autoDiscover = false;
 myDropzone = new Dropzone("div#my-dropzone", {
     addRemoveLinks: true,
@@ -131,37 +143,38 @@ myDropzone = new Dropzone("div#my-dropzone", {
         var myDropzone = this;
         $("#submit-btn").on("click", function (e) {
             e.preventDefault();
-            if ($("#product-form").valid()) {
-                tinyMCE.triggerSave();
-                if (myDropzone.getAcceptedFiles().length) {
-                    myDropzone.processQueue();
-                } else {
-                    document.getElementById("loader").style.display = "block";
-                    document.getElementById("content").style.display = "none";
-                    $.ajax({
-                        type: "POST",
-                        url: $("form#product-form").attr("action"),
-                        data: $("#product-form").serialize(),
-                        success: function (response) {
-                            myFunction();
-                            if (response.success) {
-                                swal("Success", response.msg, "success");
-                                $("#sku").val("").change();
-                                $("#name").val("").change();
-                                $(".translations").val("").change();
-                            } else {
-                                swal("Error", response.msg, "error");
-                            }
-                        },
-                        error: function (response) {
-                            myFunction();
-                            if (!response.success) {
-                                swal("Error", response.msg, "error");
-                            }
-                        },
-                    });
-                }
-            }
+            getImages()
+
+           setTimeout(()=>{
+               if ($("#product-form").valid()) {
+                   tinyMCE.triggerSave();
+                   document.getElementById("loader").style.display = "block";
+                   document.getElementById("content").style.display = "none";
+                   $.ajax({
+                       type: "POST",
+                       url: $("form#product-form").attr("action"),
+                       data:  $("#product-form").serialize(),
+                       success: function (response) {
+                           myFunction();
+                           if (response.success) {
+                               swal("Success", response.msg, "success");
+                               $("#sku").val("").change();
+                               $("#name").val("").change();
+                               $(".translations").val("").change();
+                           } else {
+                               swal("Error", response.msg, "error");
+                           }
+                       },
+                       error: function (response) {
+                           myFunction();
+                           if (!response.success) {
+                               swal("Error", response.msg, "error");
+                           }
+                       },
+                   });
+
+               }
+           },500)
         });
 
         this.on("sending", function (file, xhr, formData) {
