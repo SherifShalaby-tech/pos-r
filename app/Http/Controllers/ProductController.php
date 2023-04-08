@@ -637,9 +637,14 @@ class ProductController extends Controller
                 }
 
             }
-            if ($request->cropImages) {
+
+            if ($request->has("cropImages") && count($request->cropImages) > 0) {
                 foreach ($request->cropImages as $imageData) {
-                    $product->addMediaFromBase64($imageData)->toMediaCollection('product');
+                    $extention = explode(";",explode("/",$imageData)[1])[0];
+                    $image = rand(1,1500)."_image.".$extention;
+                    $filePath = public_path('uploads/' . $image);
+                    $fp = file_put_contents($filePath,base64_decode(explode(",",$imageData)[1]));
+                    $product->addMedia($filePath)->toMediaCollection('product');
 
                 }
             }
