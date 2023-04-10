@@ -105,6 +105,7 @@ return [
     'help' => 'مساعدة',
 
     'required_fields_info' => 'الحقول المميزة بعلامة * هي حقول إدخال مطلوبة.',
+    'add_a_new_batch'=>'تشغيلة جديدة',
     'product' => 'منتج',
     'add_new_product' => 'اضافة منتج جديد',
     'class' => 'فئة',

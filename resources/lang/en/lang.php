@@ -295,6 +295,7 @@ return [
     'notes' => 'Notes',
     'is_service' => 'Is Service',
     'is_have_service'=>'Service',
+    'add_a_new_batch'=>"Add New Batch",
     'paid_amount' => 'Paid Amount',
     'pending_amount' => 'Pending Amount',
     'invoice_date' => 'Invoice Date',

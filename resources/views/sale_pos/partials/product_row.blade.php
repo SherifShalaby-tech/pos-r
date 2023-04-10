@@ -19,6 +19,7 @@
         @else
             <b>{{$product->product_name}}</b>
         @endif
+        <br><small>@if($product->batch_number){{$product->batch_number}}@endif</small>
         <p class="m-0">
             @php
                 $ex='id'.$product->variation_id;
@@ -32,7 +33,7 @@
             <input type="hidden" id="{{$ex}}" name="old_ex" value="1">
         </p>
 
-
+        
 
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][is_service]" class="is_service"
             value="{{$product->is_service}}">
@@ -40,6 +41,8 @@
             value="{{$product->product_id}}">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][variation_id]" class="variation_id"
             value="{{$product->variation_id}}">
+        <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][batch_number]" class="batch_number"
+        value="@if($product->batch_number){{$product->batch_number}}@endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][price_hidden]" class="price_hidden"
             value="@if(isset($default_sell_price)){{@num_format(($default_sell_price+$sum_extensions_sell_prices) / $exchange_rate)}}@else{{0}}@endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][purchase_price]" class="purchase_price"

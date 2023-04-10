@@ -117,9 +117,8 @@
                             </div>
                             <div class="col-md-12 text-center">
                                 <h4>@lang('lang.items_count'): <span class="items_count_span"
-                                        style="margin-right: 15px;">0</span>
-                                        <br> @lang('lang.items_quantity'): <span
-                                        class="items_quantity_span" style="margin-right: 15px;">0</span></h4>
+                                    style="margin-right: 15px;">0</span><br> @lang('lang.items_quantity'): <span
+                                    class="items_quantity_span" style="margin-right: 15px;">0</span></h4>
                             </div>
                             <br>
                             <div class="col-md-12">

@@ -81,7 +81,7 @@
                                         @endforeach
                                     </td>
                                 @endif
-                                <td>{{number_format($manufacturing->manufacture_cost_unit, 2, '.', ',')}}</td>
+                                <td>{{number_format($manufacturing->manufacture_cost_unit_purchase, 2, '.', ',')}}</td>
                                 <td>{{number_format($manufacturing->manufacture_cost_unit_sell, 2, '.', ',')}}</td>
                                 <td>
                                     @foreach($manufacturing->transactions as $transaction) 
