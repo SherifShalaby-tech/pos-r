@@ -122,7 +122,6 @@ function getImages() {
 $("#submit-btn").on("click", function (e) {
     e.preventDefault();
     getImages()
-
     setTimeout(()=>{
         if ($("#product-form").valid()) {
             tinyMCE.triggerSave();
@@ -157,49 +156,49 @@ $("#submit-btn").on("click", function (e) {
 
 var modalTemplate = $("#product_cropper_modal");
 
-myDropzone.on("thumbnail", function (file) {
-    if (file.cropped) return;
-
-    var cachedFilename = file.name;
-    myDropzone.removeFile(file);
-
-    var $cropperModal = $(modalTemplate);
-    var $uploadCrop = $cropperModal.find("#product_crop");
-
-    $cropperModal.find(".product_preview_div").empty();
-
-    var $img = document.getElementById("product_sample_image");
-
-    var reader = new FileReader();
-    var cropper;
-    reader.onloadend = function () {
-        $($img).attr("src", reader.result);
-        $cropperModal.modal("show");
-        modalTemplate.on("shown.bs.modal", function () {
-            cropper= null;
-            cropper = new Cropper($img, {
-                initialAspectRatio: 1 / 1,
-                aspectRatio: 1 / 1,
-                cropBoxResizable: false,
-                viewMode: 2,
-                preview: ".product_preview_div",
-            });
-        });
-    };
-    reader.readAsDataURL(file);
-
-    $uploadCrop.on("click", function () {
-        var blob = cropper.getCroppedCanvas().toDataURL();
-        var newFile = dataURItoBlob(blob);
-        newFile.cropped = true;
-        newFile.name = cachedFilename;
-
-        myDropzone.addFile(newFile);
-        $cropperModal.modal("hide");
-        cropper.destroy();
-        cropper = null;
-    });
-});
+// myDropzone.on("thumbnail", function (file) {
+//     if (file.cropped) return;
+//
+//     var cachedFilename = file.name;
+//     myDropzone.removeFile(file);
+//
+//     var $cropperModal = $(modalTemplate);
+//     var $uploadCrop = $cropperModal.find("#product_crop");
+//
+//     $cropperModal.find(".product_preview_div").empty();
+//
+//     var $img = document.getElementById("product_sample_image");
+//
+//     var reader = new FileReader();
+//     var cropper;
+//     reader.onloadend = function () {
+//         $($img).attr("src", reader.result);
+//         $cropperModal.modal("show");
+//         modalTemplate.on("shown.bs.modal", function () {
+//             cropper= null;
+//             cropper = new Cropper($img, {
+//                 initialAspectRatio: 1 / 1,
+//                 aspectRatio: 1 / 1,
+//                 cropBoxResizable: false,
+//                 viewMode: 2,
+//                 preview: ".product_preview_div",
+//             });
+//         });
+//     };
+//     reader.readAsDataURL(file);
+//
+//     $uploadCrop.on("click", function () {
+//         var blob = cropper.getCroppedCanvas().toDataURL();
+//         var newFile = dataURItoBlob(blob);
+//         newFile.cropped = true;
+//         newFile.name = cachedFilename;
+//
+//         myDropzone.addFile(newFile);
+//         $cropperModal.modal("hide");
+//         cropper.destroy();
+//         cropper = null;
+//     });
+// });
 // modalTemplate.on("hidden.bs.modal", function () {
 //     console.log(cropper);
 //     if (typeof cropper !== "undefined") {
@@ -366,6 +365,7 @@ function get_brand_dropdown() {
         data: {},
         contactType: "html",
         success: function (data_html) {
+
             $("#brand_id").empty().append(data_html);
             $("#brand_id").selectpicker("refresh");
             if (brand_id) {
