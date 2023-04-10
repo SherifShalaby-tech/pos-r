@@ -42,7 +42,7 @@
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][variation_id]" class="variation_id"
             value="{{$product->variation_id}}">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][batch_number]" class="batch_number"
-        value="@if($product->batch_number){{$product->batch_number}}@endif">
+        value="@if($product->batch_number){{$product->batch_number}}@else {{false}}@endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][price_hidden]" class="price_hidden"
             value="@if(isset($default_sell_price)){{@num_format(($default_sell_price+$sum_extensions_sell_prices) / $exchange_rate)}}@else{{0}}@endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][purchase_price]" class="purchase_price"

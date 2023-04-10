@@ -928,22 +928,7 @@ class SellPosController extends Controller
                 $qProduct->where('product_stores.store_id', request()->store_id);
             }
             $qProducts=$qProduct->get();
-            // $products_without_batch_array = [];
-            // foreach ($products_without_batch_array as $product) {
-            //     $products_array[$product->product_id]['name'] = $product->name;
-            //     $products_array[$product->product_id]['sku'] = $product->sub_sku;
-            //     $products_array[$product->product_id]['type'] = $product->type;
-            //     $products_array[$product->product_id]['is_service'] = $product->is_service;
-            //     $products_array[$product->product_id]['qty'] = $this->productUtil->num_uf($product->qty_available - $product->block_qty);
-            //     $products_array[$product->product_id]['variations'][]
-            //         = [
-            //             'variation_id' => $product->variation_id,
-            //             'variation_name' => $product->variation,
-            //             'sub_sku' => $product->sub_sku,
-            //             'qty' => $product->qty_available
-            //         ];
-            // }
-////////////////////
+            ////////////////////////
             $q = Product::leftjoin('product_stores','products.id','=','product_stores.product_id')->leftJoin(
                     'variations',
                     'products.id',

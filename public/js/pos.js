@@ -300,7 +300,7 @@ $(document).ready(function () {
             } else {
                 if(item.batch_number==null){
                 string += item.text ;
-            }
+                }
                 else{
                 string += item.text +"  "+ item.batch_number;
                 }
@@ -350,7 +350,7 @@ function get_label_product_search_row(
                     $(this).insertBefore($("#product_table  tbody tr:first"));
                 }
             }else{
-                if (row_v_id == variation_id && row_batch_number ==null && !is_added) {
+                if (row_v_id == variation_id && row_batch_number ==false && !is_added) {
                     add_via_ajax = false;
                     is_added = true;
                     is_batch=false;
