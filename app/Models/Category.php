@@ -17,7 +17,7 @@ class Category extends Model implements HasMedia
      * @var array
      */
     protected $guarded = ['id'];
-
+    protected $appends = ["category_path"];
     /**
      * The attributes that should be cast to native types.
      *
@@ -37,5 +37,29 @@ class Category extends Model implements HasMedia
             }
         }
         return $name;
+    }
+
+
+
+
+    public function getPathAttribute()
+    {
+        $path = [$this->name]; // Initialize the path with the current category name
+        // If the category has a parent, add the parent's path to the current path recursively
+        if ($this->parent) {
+            $path = array_merge($this->parent->path, $path);
+        }
+
+        return $path;
+    }
+
+    public function parent()
+    {
+        return $this->belongsTo(Category::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(Category::class, 'parent_id');
     }
 }

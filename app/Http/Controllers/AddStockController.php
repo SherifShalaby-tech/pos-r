@@ -55,12 +55,7 @@ class AddStockController extends Controller
     protected $cashRegisterUtil;
     protected $moneysafeUtil;
 
-    /**
-     * Constructor
-     *
-     * @param ProductUtils $product
-     * @return void
-     */
+
     public function __construct(Util $commonUtil, ProductUtil $productUtil, TransactionUtil $transactionUtil, NotificationUtil $notificationUtil, CashRegisterUtil $cashRegisterUtil, MoneySafeUtil $moneysafeUtil)
     {
         $this->commonUtil = $commonUtil;
@@ -72,11 +67,6 @@ class AddStockController extends Controller
 
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(Request $request)
     {
         if (request()->ajax()) {
@@ -249,15 +239,9 @@ class AddStockController extends Controller
         ));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $suppliers = Supplier::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
-
         $po_nos = Transaction::where('type', 'purchase_order')->where('status', '!=', 'received')->pluck('po_no', 'id');
         $status_array = $this->commonUtil->getPurchaseOrderStatusArray();
         $payment_status_array = $this->commonUtil->getPaymentStatusArray();
@@ -315,15 +299,8 @@ class AddStockController extends Controller
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-
          try {
         $data = $request->except('_token');
 
@@ -359,10 +336,8 @@ class AddStockController extends Controller
             'source_type' => !empty($data['source_type']) ? $data['source_type'] : null,
             'is_raw_material' => !empty($data['is_raw_material']) ? 1 : 0,
         ];
-
         DB::beginTransaction();
         $transaction = Transaction::create($transaction_data);
-
         $this->productUtil->createOrUpdateAddStockLines($request->add_stock_lines, $transaction);
 
         if ($request->files) {
@@ -375,7 +350,7 @@ class AddStockController extends Controller
             $payment_data = [
                 'transaction_id' => $transaction->id,
                 'amount' => $this->commonUtil->num_uf($request->amount),
-                'method' => $request->method,
+                'method' => $request["method"],
                 'paid_on' => $this->commonUtil->uf_date($data['paid_on']),
                 'ref_number' => $request->ref_number,
                 'source_type' => $request->source_type,
@@ -605,7 +580,7 @@ class AddStockController extends Controller
                 'transaction_payment_id' => !empty($request->transaction_payment_id) ? $request->transaction_payment_id : null,
                 'transaction_id' => $transaction->id,
                 'amount' => $this->commonUtil->num_uf($request->amount),
-                'method' => $request->method,
+                'method' => $request["method"],
                 'paid_on' => !empty($data['bank_deposit_date']) ? $this->commonUtil->uf_date($data['paid_on']) : null,
                 'ref_number' => $request->ref_number,
                 'source_type' => $request->source_type,
@@ -747,7 +722,6 @@ class AddStockController extends Controller
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProduct($product_id, $variation_id, $store_id);
-
                 return view('add_stock.partials.product_row')
                     ->with(compact('products', 'index', 'currency', 'exchange_rate'));
             }
@@ -852,7 +826,7 @@ class AddStockController extends Controller
                 $payment_data = [
                     'transaction_id' => $transaction->id,
                     'amount' => $this->commonUtil->num_uf($request->amount),
-                    'method' => $request->method,
+                    'method' => $request["method"],
                     'paid_on' => $this->commonUtil->uf_date($data['paid_on']),
                     'ref_number' => $request->ref_number,
                     'source_type' => $request->source_type,

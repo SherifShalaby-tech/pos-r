@@ -12,8 +12,40 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    'have_weight'=>'depends on weight',
 
+    'manufacturers' => 'Manufacturers',
+    'add_manufacturer' => 'Add New Manufacturer',
+    'edit_manufacturer' => 'Edit Manufacturer',
+    'manufacturings' => 'Out Manufacturings',
+    'view_all_manufacturings' => 'Manufacturing',
+    'view_all_processes' => 'Processes',
+    'manufacturing' => 'Manufacturing',
+    'manufacturer' => 'Manufacturer',
+    'manufacturing_status' => 'Manufacturing Status',
+    'edit_manufacturing_status' => 'Edit Manufacturing Status',
+    'manufacturing_material' => 'Manufacturing Material',
+    'product_received' => 'Products Received',
+    'product_received_quantity' => 'Product Received Quantity',
+    'product_received_date' => 'Product Received Date',
+    'processed' => 'Processed',
+    'under_processing' => 'Under Processing',
+    'path' => 'Path',
+    'delete_all' => 'Delete All',
+    'add_new_production' => 'Produce Primary material',
+    'productions'=>'Produce Primary material ',
+    'select_to_delete'=>'Select To Delete',
+
+    'received' => 'Received',
+    'underManufacturing' => 'Under Manufacturing',
+    'manufactured' => 'Manufactured',
+    'add_new_manufacturing' => 'Add New Manufacturing',
+
+
+
+
+
+
+    'have_weight'=>'depends on weight',
     'type_Debt' => 'Pay Debt',
     'product_extension'=>'Extras with the product',
     'clear_all_input_form'=>'Keeping data after saving product',
@@ -29,7 +61,7 @@ return [
     'add_manual_production' => 'Produce Primary material',
     'add_new_recipe' => 'Add new Recipe',
     'add_recipe' => 'Add recipe',
-    'add_new_production' => 'Produce Primary material',
+
     'sendTo'=>'Send To',
     'edit_recipe'=>'edit Produce process',
     'edit_production'=>'edit Produce Primary material',

@@ -32,7 +32,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Http;
 class ProductController extends Controller
@@ -60,11 +62,6 @@ class ProductController extends Controller
         $this->transactionUtil = $transactionUtil;
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function getProductStocks(Request $request)
     {
         $product_classes = ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
@@ -103,15 +100,12 @@ class ProductController extends Controller
             'page'
         ));
     }
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index(Request $request)
     {
-        if (request()->ajax()) {
+        $process_type = $request->process_type??null;
 
+        if (request()->ajax()) {
             $products = Product::leftjoin('variations', function ($join) {
                 $join->on('products.id', 'variations.product_id')->whereNull('variations.deleted_at');
             })
@@ -306,20 +300,31 @@ class ProductController extends Controller
                         ->first();
                     return $query->name ?? '';
                 })
-                ->addColumn('selection_checkbox', function ($row) use ($is_add_stock) {
+                ->addColumn('selection_checkbox', function ($row) use ($is_add_stock,$process_type) {
                     if ($row->is_service == 1 || $is_add_stock == 1) {
                         $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                     } else {
                         if ($row->current_stock > 0) {
                             $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                         } else {
-                            $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+                            // if received_manufacturing_products open all products to add to stock
+                            if ($process_type == "received_manufacturing_products"){
+                                $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+                            }else{
+                                $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+
+                            }
                         }
                     }
 
                     return $html;
                 })->addColumn('selection_checkbox_send', function ($row)  {
                     $html = '<input type="checkbox" name="product_selected_send" class="product_selected_send" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
+
+                    return $html;
+                })
+                ->addColumn('selection_checkbox_delete', function ($row)  {
+                    $html = '<input type="checkbox" name="product_selected_delete" class="product_selected_delete" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
 
                     return $html;
                 })
@@ -358,6 +363,7 @@ class ProductController extends Controller
                         }
                         $html .= '<li class="divider"></li>';
                         if (auth()->user()->can('product_module.product.delete')) {
+
                             $html .=
                                 '<li>
                             <a data-href="' . action('ProductController@destroy', $row->variation_id) . '"
@@ -385,6 +391,7 @@ class ProductController extends Controller
                 ->rawColumns([
                     'selection_checkbox',
                     'selection_checkbox_send',
+                    'selection_checkbox_delete',
                     'image',
                     'variation_name',
                     'sku',
@@ -411,8 +418,6 @@ class ProductController extends Controller
                 ])
                 ->make(true);
         }
-
-
         $product_classes = ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
         $categories = Category::whereNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
         $sub_categories = Category::whereNotNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
@@ -527,14 +532,9 @@ class ProductController extends Controller
         ));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+
         if (!auth()->user()->can('product_module.product.create_and_edit')) {
             abort(403, 'Unauthorized action.');
         }
@@ -545,7 +545,7 @@ class ProductController extends Controller
             ['sell_price' => ['max:25', 'decimal']],
         );
 
-        try {
+//        try {
             $discount_customers = $this->getDiscountCustomerFromType($request->discount_customer_types);
 
             $product_data = [
@@ -583,16 +583,12 @@ class ProductController extends Controller
                 'purchase_price_depends' => $request->purchase_price_depends,
                 'have_weight' => !empty($request->have_weight) ? 1 : 0,
             ];
-
-
             DB::beginTransaction();
-
             $product = Product::create($product_data);
             $index_discounts=[];
             if(count($request->discount_type)>0){
                 $index_discounts=array_keys($request->discount_type);
             }
-
             foreach ($index_discounts as $index_discount){
                 $discount_customers = $this->getDiscountCustomerFromType($request->get('discount_customer_types_'.$index_discount));
                 $data_des=[
@@ -623,10 +619,7 @@ class ProductController extends Controller
                     }
                 }
             }
-
             $this->productUtil->createOrUpdateVariations($product, $request);
-
-
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {
@@ -645,9 +638,14 @@ class ProductController extends Controller
 
             }
 
-            if ($request->images) {
-                foreach ($request->images as $image) {
-                    $product->addMedia($image)->toMediaCollection('product');
+            if ($request->has("cropImages") && count($request->cropImages) > 0) {
+                foreach ($request->cropImages as $imageData) {
+                    $extention = explode(";",explode("/",$imageData)[1])[0];
+                    $image = rand(1,1500)."_image.".$extention;
+                    $filePath = public_path('uploads/' . $image);
+                    $fp = file_put_contents($filePath,base64_decode(explode(",",$imageData)[1]));
+                    $product->addMedia($filePath)->toMediaCollection('product');
+
                 }
             }
             if (!empty($request->supplier_id)) {
@@ -662,13 +660,13 @@ class ProductController extends Controller
                 'success' => true,
                 'msg' => __('lang.success')
             ];
-        } catch (\Exception $e) {
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
-        }
+//        } catch (\Exception $e) {
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
 
         return $output;
     }
@@ -1006,6 +1004,58 @@ class ProductController extends Controller
 
         return $output;
     }
+
+    public function multiDeleteRow(Request $request){
+        if (!auth()->user()->can('product_module.product.delete')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            DB::beginTransaction();
+            foreach ($request->ids as $id){
+                $variation = Variation::find($id);
+                $variation_count = Variation::where('product_id', $variation->product_id)->count();
+                if ($variation_count > 1) {
+                    $variation->delete();
+                    ProductStore::where('variation_id', $id)->delete();
+                    $output = [
+                        'success' => true,
+                        'msg' => __('lang.deleted')
+                    ];
+                } else {
+                    ProductStore::where('product_id', $variation->product_id)->delete();
+                    $product = Product::where('id', $variation->product_id)->first();
+                    $product->clearMediaCollection('product');
+                    $product->delete();
+                    $variation->delete();
+                }
+                $ENABLE_POS_Branch = env('ENABLE_POS_Branch', false);
+                $POS_SYSTEM_URL = env('Branch_SYSTEM_URL', null);
+                $POS_ACCESS_TOKEN = env('Branch_ACCESS_TOKEN', null);
+                if($ENABLE_POS_Branch && $POS_SYSTEM_URL &&$POS_ACCESS_TOKEN ){
+                    $response = Http::withHeaders([
+                        'Authorization' => 'Bearer ' . $POS_ACCESS_TOKEN,
+                    ])->post($POS_SYSTEM_URL . '/api/delete_product/'.$id, [])->json();
+
+                }
+            }
+            $output = [
+                'success' => true,
+                'msg' => __('lang.success')
+            ];
+
+            DB::commit();
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
+
+        return $output;
+    }
+
     /**
      * get raw material row
      *

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ManufacturerController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -50,6 +51,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('product/get-products', 'ProductController@getProducts');
     Route::get('product/get-purchase-history/{id}', 'ProductController@getPurchaseHistory');
     Route::post('product/save-import', 'ProductController@saveImport');
+
     Route::get('product/import', 'ProductController@getImport');
     Route::get('product/check-sku/{sku}', 'ProductController@checkSku');
     Route::get('product/check-name', 'ProductController@checkName');
@@ -57,25 +59,23 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('product-send-branch', 'ProductController@sendBranch');
     Route::get('product/delete-product-image/{id}', 'ProductController@deleteProductImage');
     Route::resource('product', ProductController::class);
-
+    Route::post('product/multiDeleteRow', 'ProductController@multiDeleteRow');
     //item borrowed controller
     Route::resource('item-borrowed',ItemBorrowedController::class);
     Route::post('item-borrowed/give','ItemBorrowedController@give')->name('item-borrowed.give');
-
     Route::get('raw-material/add-stock/create', 'AddStockController@create');
     Route::get('raw-material/add-stock', 'AddStockController@index');
     Route::get('raw-material/add-product-row', 'RawMaterialController@addProductRow');
     Route::resource('raw-material', RawMaterialController::class);
     Route::get('recipe/get-raw-recipe-details/{raw_recipe_id}', 'RecipeController@getRecipeDetail');
     Route::post('recipe_uesd/send_uesd', 'RecipeController@sendUesd')->name('recipeUesd.sendUesd');
+
     Route::get('recipe_uesd/send/{id?}', 'RecipeController@used')->name('recipeUesd.show.sendUesd');
     Route::get('productions', 'RecipeController@ProductionIndex')->name('productions.index');
     Route::get('productions/edit/{id}', 'RecipeController@editProduction')->name('productions.edit');
     Route::put('productions/edit/{id}', 'RecipeController@updateProduction')->name('productions.update');
     Route::delete('productions/delete/{id}', 'RecipeController@destroyProduction')->name('productions.delete');
-
     Route::resource('recipe', RecipeController::class);
-
     // printer controller
     Route::resource('printers',PrinterController::class);
     Route::get('consumption/get-sufficient-suggestions/{raw_material_id}', 'ConsumptionController@getSufficientSuggestions');
@@ -409,7 +409,18 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('money-safe/get-dropdown', 'MoneySafeController@getDropdown');
     Route::get('money-safe/get-details-by-id/{id}', 'MoneySafeController@getDetailsById');
     Route::resource('money-safe', MoneySafeController::class);
+
+    // manufacturers
+    Route::resource('manufacturers', 'ManufacturerController');
+    Route::resource('manufacturing-s', 'ManufacturingController');
+    Route::get('manufacturing-s/getReceivedProductsPage/{id}', 'ManufacturingController@getReceivedProductsPage')->name("manufacturing.getReceivedProductsPage");
+    Route::post('manufacturing-s/getReceivedProductsPage', 'ManufacturingController@postReceivedProductsPage');
+    Route::post('manufacturing-s/update', 'ManufacturingController@updates');
 });
+
+Route::get('manufacturing/add-product-row', 'ManufacturingController@addProductRow')->name("manufacturing.add_product_row");
+Route::get('manufacturing/add-product-to-stock', 'ManufacturingController@add_product_stock')->name("manufacturing.add_product_stock");
+
 
 
 Route::get('contact-us', 'ContactUsController@getContactUs');

@@ -283,7 +283,6 @@ $(document).on("change", ".bounce_qty,.quantity ,.purchase_price ,.selling_price
         sell_price = parseInt($(".selling_price_"+index_id).val()),
         all_ty = parseInt($('.bounce_qty_'+index_id).val()) + quantity;
         console.log(all_ty);
-
             let bounce_purchase_price_val = (purchase_price * quantity ) / all_ty ;
             let bounce_profit_val = sell_price - bounce_purchase_price_val;
             $(".bounce_purchase_price_"+index_id).val(bounce_purchase_price_val.toFixed(2));

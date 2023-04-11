@@ -29,6 +29,30 @@
             </div>
         </div>
     </section>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="croppie-modal" style="display:none">
+                        <div id="croppie-container"></div>
+                        <button data-dismiss="modal" id="croppie-cancel-btn" type="button" class="btn btn-secondary"><i
+                                class="fas fa-times"></i></button>
+                        <button id="croppie-submit-btn" type="button" class="btn btn-primary"><i
+                                class="fas fa-crop"></i></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <div class="modal fade" id="product_cropper_modal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -61,6 +85,143 @@
 
 @endsection
 
+@push('javascripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    <script>
+        const fileInput = document.querySelector('#file-input');
+        const previewContainer = document.querySelector('.preview-container');
+        const croppieModal = document.querySelector('#croppie-modal');
+        const croppieContainer = document.querySelector('#croppie-container');
+        const croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
+        const croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
+
+        // let currentFiles = [];
+        fileInput.addEventListener('change', () => {
+            // let files = fileInput.files;
+            // previewContainer.innerHTML = '';
+            let files = Array.from(fileInput.files)
+            // files.concat(currentFiles)
+            // currentFiles.push(...files)
+            // currentFiles && (files = currentFiles)
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    reader.addEventListener('load', () => {
+                        const preview = document.createElement('div');
+                        preview.classList.add('preview');
+                        const img = document.createElement('img');
+                        const actions = document.createElement('div');
+                        actions.classList.add('action_div');
+                        img.src = reader.result;
+                        preview.appendChild(img);
+                        preview.appendChild(actions);
+
+                        const container = document.createElement('div');
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.classList.add('delete-btn');
+                        deleteBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-trash"></i>';
+                        deleteBtn.addEventListener('click', () => {
+                            swal({
+                                title: "Delete",
+                                text: "Are you sure you want to delete this image ?",
+                                icon: "warning",
+                                buttons: true,
+                                dangerMode: true,
+                                buttons: ["Cancel", "Delete"],
+                            }).then((addPO) => {
+                                if (addPO) {
+                                    files.splice(file, 1)
+                                    preview.remove();
+                                    getImages()
+                                }
+                            });
+
+                            // if (window.confirm('Are you sure you want to delete this image?')) {
+                            //
+                            // }
+                        });
+
+                        preview.appendChild(deleteBtn);
+                        const cropBtn = document.createElement('button');
+                        cropBtn.setAttribute("data-toggle", "modal")
+                        cropBtn.setAttribute("data-target", "#exampleModal")
+                        cropBtn.classList.add('crop-btn');
+                        cropBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-crop"></i>';
+                        cropBtn.addEventListener('click', () => {
+                            setTimeout(() => {
+                                launchCropTool(img);
+                            }, 500);
+                        });
+                        preview.appendChild(cropBtn);
+                        previewContainer.appendChild(preview);
+                    });
+                    reader.readAsDataURL(file);
+                }
+            }
+
+            getImages()
+        });
+        function launchCropTool(img) {
+            // Set up Croppie options
+            const croppieOptions = {
+                viewport: {
+                    width: 200,
+                    height: 200,
+                    type: 'square' // or 'square'
+                },
+                boundary: {
+                    width: 300,
+                    height: 300,
+                },
+                enableOrientation: true
+            };
+
+            // Create a new Croppie instance with the selected image and options
+            const croppie = new Croppie(croppieContainer, croppieOptions);
+            croppie.bind({
+                url: img.src,
+                orientation: 1,
+            });
+
+            // Show the Croppie modal
+            croppieModal.style.display = 'block';
+
+            // When the user clicks the "Cancel" button, hide the modal
+            croppieCancelBtn.addEventListener('click', () => {
+                croppieModal.style.display = 'none';
+                $('#exampleModal').modal('hide');
+                croppie.destroy();
+            });
+
+            // When the user clicks the "Crop" button, get the cropped image and replace the original image in the preview
+            croppieSubmitBtn.addEventListener('click', () => {
+                croppie.result('base64').then((croppedImg) => {
+                    img.src = croppedImg;
+                    croppieModal.style.display = 'none';
+                    $('#exampleModal').modal('hide');
+                    croppie.destroy();
+                    getImages()
+
+                    // blob = new Blob(croppedImg, { type: 'image/*' });
+                    let blob = new Blob([croppedImg], {
+                        type: "image/png"
+                    });
+                    // console.log(blob);
+                    // console.log(fileInput.files);
+                    // let files = Array.from(fileInput.files)
+                    // files.concat(currentFiles)
+                    // currentFiles.push(...files)
+                    // currentFiles && (files = currentFiles)
+                    // currentFiles = files
+                });
+            });
+        }
+
+
+
+    </script>
+@endpush
 @section('javascript')
     <script>
         function get_unit(units,row_id) {

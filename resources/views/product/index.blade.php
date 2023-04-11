@@ -235,12 +235,20 @@
 
         <button type="button"
                 class="badge badge-pill badge-primary column-toggle send_to_branch" id="send_to_branch">@lang('lang.send_to_branch')</button>
+
+        <a data-href="{{ action('ProductController@multiDeleteRow') }}" id="delete_all"
+           data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
+           class="btn btn-danger text-white delete_all"><i class="fa fa-trash"></i>
+            @lang('lang.delete_all')</a>
+
+
         <table id="product_table" class="table" style="width: auto">
             <thead>
                 <tr>
                     @if(env('ENABLE_POS_Branch',false))
                         <th>@lang('lang.select')</th>
                     @endif
+                        <th>@lang('lang.select_to_delete')</th>
                     <th>@lang('lang.image')</th>
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.product_code')</th>
@@ -298,6 +306,122 @@
         </table>
     </div>
 @endsection
+@push('javascripts')
+    <script>
+        $(document).on('click', '#delete_all', function() {
+            var checkboxes = document.querySelectorAll('input[name="product_selected_delete"]');
+            var selected_delete_ids = [];
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].checked) {
+                    selected_delete_ids.push(checkboxes[i].value);
+                }
+            }
+            if (selected_delete_ids.length ==0){
+                swal({
+                    title: 'Warning',
+                    text: "@lang('lang.sorry you should select products to continue delete')",
+                    icon: 'warning',
+                })
+            }else{
+                swal({
+                    title: 'Are you sure?',
+                    text: "@lang('lang.all_transactions_related_to_this_products_will_be_deleted')",
+                    icon: 'warning',
+                }).then(willDelete => {
+                    if (willDelete) {
+                        var check_password = $(this).data('check_password');
+                        var href = $(this).data('href');
+                        var data = $(this).serialize();
+
+                        swal({
+                            title: 'Please Enter Your Password',
+                            content: {
+                                element: "input",
+                                attributes: {
+                                    placeholder: "Type your password",
+                                    type: "password",
+                                    autocomplete: "off",
+                                    autofocus: false,
+                                },
+                            },
+                            inputAttributes: {
+                                autocapitalize: 'off',
+                                autoComplete: 'off',
+                            },
+                            focusConfirm: true
+                        }).then((result) => {
+                            if (result) {
+                                $.ajax({
+                                    url: check_password,
+                                    method: 'POST',
+                                    data: {
+                                        value: result
+                                    },
+                                    dataType: 'json',
+                                    success: (data) => {
+
+                                        if (data.success == true) {
+                                            swal(
+                                                'Success',
+                                                'Correct Password!',
+                                                'success'
+                                            );
+                                            $.ajax({
+                                                method: 'POST',
+                                                url: "{{ action("ProductController@multiDeleteRow") }}",
+                                                dataType: 'json',
+                                                data: {
+                                                    "ids": selected_delete_ids
+                                                },
+                                                success: function(result) {
+                                                    if (result.success == true) {
+                                                        swal(
+                                                            'Success',
+                                                            result.msg,
+                                                            'success'
+                                                        );
+                                                        setTimeout(() => {
+                                                            location
+                                                                .reload();
+                                                        }, 1500);
+                                                        location.reload();
+                                                    } else {
+                                                        swal(
+                                                            'Error',
+                                                            result.msg,
+                                                            'error'
+                                                        );
+                                                    }
+                                                },
+                                            });
+
+                                        } else {
+                                            swal(
+                                                'Failed!',
+                                                'Wrong Password!',
+                                                'error'
+                                            )
+
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+
+
+
+
+
+
+
+
+        });
+    </script>
+
+@endpush
 
 @section('javascript')
     <script>
@@ -384,6 +508,12 @@
                             orderable: false,
                         },
                     @endif
+                    {
+                        data: "selection_checkbox_delete",
+                        name: "selection_checkbox_delete",
+                        searchable: false,
+                        orderable: false,
+                    },
                     {
                         data: 'image',
                         name: 'image'
@@ -540,6 +670,10 @@
 
             });
         });
+
+
+
+
 
         $(document).on('click', '.column-toggle', function() {
             let column_index = parseInt($(this).val());

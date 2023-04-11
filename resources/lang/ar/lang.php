@@ -12,8 +12,37 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-    'have_weight'=>'يعتمد علي الميزان',
 
+    'manufacturers' => 'المصنعين',
+    'add_manufacturer' => 'اضافة مصنع جديد',
+    'edit_manufacturer' => 'تعديل مصنع',
+    'manufacturings' => 'التصنيع الخارجي',
+    'view_all_manufacturings' => 'عمليات التصنيع',
+    'view_all_processes' => 'عمليات المعالجة',
+    'manufacturing' => 'تصنيع',
+    'manufacturer' => 'المصنع',
+    'manufacturing_status' => 'حالة التصنيع',
+    'edit_manufacturing_status' => 'تعديل حالة التصنيع ',
+    'manufacturing_material' => 'مادة التصنيع ',
+    'product_received' => 'المنتجات المستلمة',
+    'product_received_quantity' => 'الكميه المستلمه',
+    'product_received_date' => 'تاريخ الاستلام',
+    'processed' => 'العمليات المستلمة',
+    'under_processing' => 'تحت التصنيع',
+    'path' => 'مسار القسم الفرعي',
+    'delete_all' => 'حذف جماعي',
+    'select_to_delete'=>'حدد للحذف',
+
+    'received' => 'استلام',
+    'underManufacturing' => 'تحت التصنيع',
+    'manufactured' => 'تم تصنيعها',
+    'add_new_manufacturing' => 'اضافه عملية تصنيع جديدة',
+    'add_new_production'=>'عملية تصنيع جديدة',
+    'productions'=>'عمليات التصنيع',
+
+
+
+    'have_weight'=>'يعتمد علي الميزان',
     'type_Debt'=>'سداد دين',
     'clear_all_input_form'=>'الاحتفاظ بالبيانات بعد عملية الإدخال',
     'product_extension'=>'اضافات مع المنتج',
@@ -28,11 +57,11 @@ return [
     'add_manual_production'=>'تصنيع مادة جديدة',
     'add_new_recipe'=>'اضافة وصفة جديدة',
     'add_recipe'=>'اضافة وصفة',
-    'add_new_production'=>'عملية تصنيع جديدة',
+
     'sendTo'=>'ارسال الي',
     'edit_recipe'=>'تعديل عملية التصنيع',
     'StorePosReq'=>'للانتاج يجب تخصيص نقاط البيع للمستخدم',
-    'productions'=>'عمليات التصنيع',
+
     "please_select_any_product"=>"من فضلك , قم بأختيار منتج واحد علي الاقل",
     'you_dont_have_any_branch'=>'عفوا , لا يوجد اي فرع لدينا يرجي التواصل مع الادارة',
     'send_to_branch'=>'ارسال الي الفرعي',
