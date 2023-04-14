@@ -264,6 +264,7 @@ $(document).ready(function () {
                     if (!ui.item.is_service) {
                         if (ui.item.qty_available > 0) {
                             $(this).val(null);
+                            
                             get_label_product_search_row(
                                 ui.item.product_id,
                                 ui.item.variation_id,
