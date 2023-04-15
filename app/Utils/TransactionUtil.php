@@ -318,7 +318,7 @@ class TransactionUtil extends Util
      * @param float $old_quantity
      * @return void
      */
-    public function updateSoldQuantityInAddStockLine($product_id, $variation_id, $store_id, $new_quantity, $old_quantity)
+    public function updateSoldQuantityInAddStockLine($product_id, $variation_id, $store_id, $new_quantity, $old_quantity,$stock_id=null)
     {
 
         $qty_difference = $this->num_uf($new_quantity) - $this->num_uf($old_quantity);
@@ -329,6 +329,7 @@ class TransactionUtil extends Util
                 ->where('transactions.store_id', $store_id)
                 ->where('product_id', $product_id)
                 ->where('variation_id', $variation_id)
+                ->orWhere('add_stock_lines.id',$stock_id)
                 ->select('add_stock_lines.id', DB::raw('SUM(quantity - quantity_sold) as remaining_qty'))
                 ->having('remaining_qty', '>', 0)
                 ->groupBy('add_stock_lines.id')
@@ -341,10 +342,16 @@ class TransactionUtil extends Util
 
                 if ($line->remaining_qty >= $qty_difference) {
                     $line->increment('quantity_sold', $qty_difference);
+                    // if($stock_id){
+                    //     $line->decrement('quantity', $qty_difference);
+                    // }
                     $qty_difference = 0;
                 }
                 if ($line->remaining_qty < $qty_difference) {
                     $line->increment('quantity_sold', $line->remaining_qty);
+                    // if($stock_id){
+                    //     $line->decrement('quantity', $line->remaining_qty);
+                    // }
                     $qty_difference = $qty_difference - $line->remaining_qty;
                 }
             }
@@ -1434,7 +1441,7 @@ class TransactionUtil extends Util
                 }
             }
 
-            $this->updateSoldQuantityInAddStockLine($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $line['quantity'], $old_qty);
+            $this->updateSoldQuantityInAddStockLine($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $line['quantity'], $old_qty,$stock_id);
         }
 
         //update stock for deleted lines

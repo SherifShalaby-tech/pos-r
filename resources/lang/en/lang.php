@@ -1373,6 +1373,9 @@ return [
     'penalties_cause' => 'penalties cause',
     'the_amount_of_the_fine' => 'penalty amount',
     'cause_the_penalties' => 'cause the penalties',
-    'Borrowed_products' => 'Products to be borrowed'
+    'Borrowed_products' => 'Products to be borrowed',
 
+    'select_discount'=>'select',
+    'discount_category'=>'Brief Discount Name',
+    'category_discount'=>'Category',
 ];

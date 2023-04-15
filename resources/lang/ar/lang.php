@@ -103,7 +103,9 @@ return [
     'December' => 'ديسمبر',
     'site_title' => 'عنوان الموقع',
     'help' => 'مساعدة',
-
+    'discount_category'=>'الاسم المختصر للخصم',
+    'category_discount'=>'فئة',
+    'select_discount'=>'اختر',
     'required_fields_info' => 'الحقول المميزة بعلامة * هي حقول إدخال مطلوبة.',
     'add_a_new_batch'=>'تشغيلة جديدة',
     'product' => 'منتج',

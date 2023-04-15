@@ -27,6 +27,7 @@ use App\Models\TermsAndCondition;
 use App\Models\Transaction;
 use App\Models\DiningTable;
 use App\Models\MoneySafeTransaction;
+use App\Models\ProductDiscount;
 use App\Models\ServiceFee;
 use App\Models\TransactionPayment;
 use App\Models\TransactionSellLine;
@@ -895,13 +896,12 @@ class SellPosController extends Controller
             if (empty($term)) {
                 return json_encode([]);
             }
-            $result = [];
-            $qProduct = Product::leftjoin('product_stores','products.id','=','product_stores.product_id')->leftJoin(
+            $query = Product::leftJoin(
                 'variations',
                 'products.id',
                 '=',
                 'variations.product_id'
-            )
+            )->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id')
             ->where(function ($query) use ($term) {
                 $query->where('products.name', 'like', '%' . $term . '%');
                 $query->orWhere('variations.name', 'like', '%' . $term . '%');
@@ -909,67 +909,35 @@ class SellPosController extends Controller
                 $query->orWhere('sub_sku', 'like', '%' . $term . '%');
             })
             ->where('is_raw_material', 0)
-            ->whereNull('variations.deleted_at')
-            ->select(
+            ->whereNull('variations.deleted_at');
+            if (!empty(request()->store_id)) {
+                $query->where('product_stores.store_id', request()->store_id);
+            }
+            $selectRaws=[
                 'products.id as product_id',
                 'products.name',
                 'products.type',
-                'products.multiple_colors',
-                'products.multiple_sizes',
                 'products.is_service',
                 'variations.id as variation_id',
                 'variations.name as variation',
                 'variations.sub_sku as sub_sku',
                 'product_stores.qty_available',
                 'product_stores.block_qty',
-            );
-            $productwithoutBatchs = $qProduct->get();
-            if (!empty(request()->store_id)) {
-                $qProduct->where('product_stores.store_id', request()->store_id);
-            }
-            $qProducts=$qProduct->get();
-            ////////////////////////
-            $q = Product::leftjoin('product_stores','products.id','=','product_stores.product_id')->leftJoin(
-                    'variations',
-                    'products.id',
-                    '=',
-                    'variations.product_id'
-                )
-                ->leftjoin('add_stock_lines', 'variations.id','=','add_stock_lines.variation_id')
-                ->where(function ($query) use ($term) {
-                    $query->where('products.name', 'like', '%' . $term . '%');
-                    $query->orWhere('variations.name', 'like', '%' . $term . '%');
-                    $query->orWhere('sku', 'like', '%' . $term . '%');
-                    $query->orWhere('sub_sku', 'like', '%' . $term . '%');
-                })
-                ->where('is_raw_material', 0)
-                ->whereNull('variations.deleted_at')
-                ->select(
-                    'products.id as product_id',
-                    'products.name',
-                    'products.type',
-                    'products.multiple_colors',
-                    'products.multiple_sizes',
-                    'products.is_service',
-                    'variations.id as variation_id',
-                    'variations.name as variation',
-                    'variations.sub_sku as sub_sku',
-                    'product_stores.qty_available',
-                    'product_stores.block_qty',
-                    'add_stock_lines.batch_number',
-                    'add_stock_lines.quantity'
-                );
+            ];
+            $q=$query;
+            $productsWithoutBatchNumber=$q->select($selectRaws)->get();
 
-            if (!empty(request()->store_id)) {
-                $q->where('product_stores.store_id', request()->store_id);
-                $q->where('add_stock_lines.batch_number', '!=',null);
-            }
 
-            $products = $q->get();
+            array_push($selectRaws,'add_stock_lines.batch_number');
+            array_push($selectRaws,'add_stock_lines.id');
+            $productsWithBatchNumber=$query->leftjoin('add_stock_lines', 'variations.id','=','add_stock_lines.variation_id')
+            ->where('add_stock_lines.batch_number', '!=',null)
+            ->select($selectRaws)->get();
             
-            foreach($qProducts as $p) {
-                $products->add($p);
+            foreach($productsWithoutBatchNumber as $product) {
+                $productsWithBatchNumber->add($product);
             }
+            $products=$productsWithBatchNumber;
             $products_array = [];
             foreach ($products as $product) {
                 $products_array[$product->product_id]['name'] = $product->name;
@@ -982,16 +950,14 @@ class SellPosController extends Controller
                         'variation_id' => $product->variation_id,
                         'variation_name' => $product->variation,
                         'sub_sku' => $product->sub_sku,
-                        'qty' => $product->qty_available
+                        'qty' => $product->qty_available,
+                        'batch_number' => $product->batch_number,
+                        'add_stock_lines.id' => $product->id,
+                        'quantity' => $product->quantity,
                     ];
-                $products_array[$product->product_id]['add_stock_lines'][]
-                = [
-                    'batch_number' => $product->batch_number,
-                    'quantity' => $product->quantity,
-                ];
-            }
 
-            
+            }
+            $result = [];
             $i = 1;
             // $no_of_records = $products->count();
             if (!empty($products_array)) {
@@ -1009,27 +975,14 @@ class SellPosController extends Controller
                         $i++;
                         $result[] = [
                             'id' => $i,
-                            'text' =>$text . ' - ' . $variation['sub_sku'],
+                            'text' => $text . ' - ' . $variation['sub_sku'],
                             'product_id' => $key,
                             'variation_id' => $variation['variation_id'],
+                            'batch_number'=>$variation['batch_number'],
+                            'add_stock_lines_id'=>$variation['add_stock_lines.id'],
                             'qty_available' => $variation['qty'],
                             'is_service' => $value['is_service']
-                        ];
-                    }
-
-                    $x=0;
-                    foreach ($value['add_stock_lines'] as $add_stock) {
-                            $result[$x] = [
-                                'id' => $i,
-                                'text' => $text . ' - ' . $variation['sub_sku'],
-                                'product_id' => $key,
-                                'variation_id' => $variation['variation_id'],
-                                'qty_available' => $variation['qty'],
-                                'is_service' => $value['is_service'],
-                                'batch_number' => $add_stock['batch_number'],
-                                'quantity' => $add_stock['quantity'],
-                            ];
-                        $x++;
+                        ];    
                     }
                     $i++;
                 }
@@ -1139,7 +1092,26 @@ class SellPosController extends Controller
             return  $output;
         }
     }
-
+    public function addDiscounts(Request $request){
+        if($request->ajax()){
+            $customer_id = $request->input('customer_id');
+            $product_id = $request->input('product_id');
+            $result = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
+            return response()->json(['result'=>$result]);
+        }
+    }
+    public function getProductDiscount(Request $request)
+    {
+        if($request->ajax()){
+            $product_discount_id = $request->input('product_discount_id');
+            $result=ProductDiscount::find($product_discount_id);
+            if($result==null){
+                return response()->json(['result'=>0]);
+            }else{
+                return response()->json(['result'=>$result]);
+            }
+        }
+    }
     /**
      * Returns the Extensions for product row
      *
@@ -1214,7 +1186,7 @@ class SellPosController extends Controller
     {
         $count=  ProductExtension::where('variation_id',$variation_id)->count();
         $output['count'] = $count;
-        return  $output;
+        return  response()->json(['output'=>$output]);
 
     }
 
@@ -1254,7 +1226,7 @@ class SellPosController extends Controller
 
         if (!empty($product_id)) {
             $index = $request->input('row_count');
-            $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id);
+            $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id,null);
 
             $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
             // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
