@@ -136,10 +136,6 @@
                                     getImages()
                                 }
                             });
-
-                            // if (window.confirm('Are you sure you want to delete this image?')) {
-                            //
-                            // }
                         });
 
                         preview.appendChild(deleteBtn);
@@ -202,18 +198,6 @@
                     $('#exampleModal').modal('hide');
                     croppie.destroy();
                     getImages()
-
-                    // blob = new Blob(croppedImg, { type: 'image/*' });
-                    let blob = new Blob([croppedImg], {
-                        type: "image/png"
-                    });
-                    // console.log(blob);
-                    // console.log(fileInput.files);
-                    // let files = Array.from(fileInput.files)
-                    // files.concat(currentFiles)
-                    // currentFiles.push(...files)
-                    // currentFiles && (files = currentFiles)
-                    // currentFiles = files
                 });
             });
         }
