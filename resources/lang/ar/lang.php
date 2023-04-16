@@ -1352,7 +1352,9 @@ return [
     'penalties_cause' => 'سبب العقوبات',
     'the_amount_of_the_fine' => 'مبلغ العقوبة',
     'Borrowed_products' => 'المنتجات المراد استعارتها',
-    'creator_name' => 'اسم المنشئ'
+    'creator_name' => 'اسم المنشئ',
+    'new_batch'=>'رقم التشغيلة الجديدة',
+    'watsapp_numbers'=>'رقم واتساب للتواصل',
 
 
 ];
