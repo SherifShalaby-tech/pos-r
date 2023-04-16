@@ -7,7 +7,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title>@yield('title') - {{ config('app.name', 'POS') }}</title>
 
     <!-- Fonts -->
@@ -31,6 +31,14 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
     <style>
         .preview-container {
+            /* display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px; */
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 170px);
+        }
+        .preview-edit-product-container {
             /* display: flex;
             flex-wrap: wrap;
             gap: 10px;
