@@ -246,7 +246,7 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="projectinput2"> {{ __('categories.image') }}</label>
+                        <label for="file-input-category"> {{ __('categories.image') }}</label>
                         <div class="container mt-3">
                             <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
                                 <div class="col-12">
@@ -271,13 +271,8 @@
                                 </div>
                             </div>
                         </div>
-                        {{--                                                            <input type="file" id="projectinput2"--}}
-                        {{--                                                                   class="form-control img" name="image" accept="image/*" />--}}
-                        {{--                                                                   <img src="{{ asset('images/logo.png') }}" alt="" class="img-thumbnail img-preview " style="width: 100px">--}}
                     </div>
-                    @error('image')
-                    <p class="text-danger" style="font-size: 12px">{{ $message }}</p>
-                    @enderror
+
                 </div>
 
             </div>
@@ -285,13 +280,13 @@
         </div>
 
         <div class="modal-footer">
-            <button id="submit-btn"  class="btn btn-primary">@lang( 'lang.save' )</button>
+            <button id="add-category-btn"  class="btn btn-primary">@lang( 'lang.save' )</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
-        <div id="cropped_images"></div>
+        <div id="cropped_add_category_images"></div>
         {!! Form::close() !!}
     <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -334,24 +329,24 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script>
-    $("#submit-btn").on("click",function (e){
+    $("#add-category-btn").on("click",function (e){
         e.preventDefault();
         setTimeout(()=>{
-            getImages();
+            getAddCategoryImages();
             $("#category_add_form").submit();
-        },1000)
+        },500)
     });
 
-    const fileCreateCatInput = document.querySelector('#file-input-category');
-    const previewContainer = document.querySelector('.preview-category-container');
-    const croppieModal = document.querySelector('#croppie-category-modal');
-    const croppieContainer = document.querySelector('#croppie-category-container');
-    const croppieCancelBtn = document.querySelector('#croppie-category-cancel-btn');
-    const croppieSubmitBtn = document.querySelector('#croppie-category-submit-btn');
+    var fileAddCategoryInput = document.querySelector('#file-input-category');
+    var previewAddCategoryContainer = document.querySelector('.preview-category-container');
+    var croppieAddCategoryModal = document.querySelector('#croppie-category-modal');
+    var croppieAddCategoryContainer = document.querySelector('#croppie-category-container');
+    var croppieAddCategoryCancelBtn = document.querySelector('#croppie-category-cancel-btn');
+    var croppieAddCategorySubmitBtn = document.querySelector('#croppie-category-submit-btn');
     // let currentFiles = [];
-    fileCreateCatInput.addEventListener('change', () => {
-        previewContainer.innerHTML = '';
-        let files = Array.from(fileCreateCatInput.files)
+    fileAddCategoryInput.addEventListener('change', () => {
+        previewAddCategoryContainer.innerHTML = '';
+        let files = Array.from(fileAddCategoryInput.files)
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             let fileType = file.type.slice(file.type.indexOf('/') + 1);
@@ -390,23 +385,23 @@
                                 )
                                 files.splice(file, 1)
                                 preview.remove();
-                                getImages()
+                                getAddCategoryImages()
                             }
                         });
                     });
                     preview.appendChild(deleteBtn);
                     const cropBtn = document.createElement('span');
                     cropBtn.setAttribute("data-toggle", "modal")
-                    cropBtn.setAttribute("data-target", "#exampleModal")
+                    cropBtn.setAttribute("data-target", "#addCategoryModal")
                     cropBtn.classList.add('crop-btn');
                     cropBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-crop"></i>';
                     cropBtn.addEventListener('click', () => {
                         setTimeout(() => {
-                            launchCropTool(img);
+                            launchAddCategoryCropTool(img);
                         }, 500);
                     });
                     preview.appendChild(cropBtn);
-                    previewContainer.appendChild(preview);
+                    previewAddCategoryContainer.appendChild(preview);
                 });
                 reader.readAsDataURL(file);
             }else{
@@ -418,9 +413,9 @@
             }
         }
 
-        getImages()
+        getAddCategoryImages()
     });
-    function launchCropTool(img) {
+    function launchAddCategoryCropTool(img) {
         // Set up Croppie options
         const croppieOptions = {
             viewport: {
@@ -436,42 +431,42 @@
         };
 
         // Create a new Croppie instance with the selected image and options
-        const croppie = new Croppie(croppieContainer, croppieOptions);
+        const croppie = new Croppie(croppieAddCategoryContainer, croppieOptions);
         croppie.bind({
             url: img.src,
             orientation: 1,
         });
 
         // Show the Croppie modal
-        croppieModal.style.display = 'block';
+        croppieAddCategoryModal.style.display = 'block';
 
         // When the user clicks the "Cancel" button, hide the modal
-        croppieCancelBtn.addEventListener('click', () => {
-            croppieModal.style.display = 'none';
-            $('#exampleModal').modal('hide');
+        croppieAddCategoryCancelBtn.addEventListener('click', () => {
+            croppieAddCategoryModal.style.display = 'none';
+            $('#addCategoryModal').modal('hide');
             croppie.destroy();
         });
 
         // When the user clicks the "Crop" button, get the cropped image and replace the original image in the preview
-        croppieSubmitBtn.addEventListener('click', () => {
+        croppieAddCategorySubmitBtn.addEventListener('click', () => {
             croppie.result('base64').then((croppedImg) => {
                 img.src = croppedImg;
-                croppieModal.style.display = 'none';
-                $('#exampleModal').modal('hide');
+                croppieAddCategoryModal.style.display = 'none';
+                $('#addCategoryModal').modal('hide');
                 croppie.destroy();
-                getImages()
+                getAddCategoryImages()
             });
         });
     }
-    function getImages() {
+    function getAddCategoryImages() {
         setTimeout(() => {
             const container = document.querySelectorAll('.preview-category-container');
             let images = [];
-            $("#cropped_images").empty();
+            $("#cropped_add_category_images").empty();
             for (let i = 0; i < container[0].children.length; i++) {
                 images.push(container[0].children[i].children[0].src)
                 var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
-                $("#cropped_images").append(newInput);
+                $("#cropped_add_category_images").append(newInput);
             }
             return images
         }, 300);
@@ -480,6 +475,4 @@
 </script>
 
 
-
-{{--TODO update product and filteration in add or edit product --}}
 

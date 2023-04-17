@@ -294,8 +294,7 @@
             <button id="submit-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
-        <div id="cropped_images"></div>
-
+        <div id="cropped_product_class_images"></div>
         {!! Form::close() !!}
         <div class="modal fade" id="exampleClassModal" tabindex="-1" role="dialog" aria-labelledby="exampleClassModalLabel"
              aria-hidden="true">
@@ -327,12 +326,12 @@
 <script>
 
 
-    const fileClassInput = document.querySelector('#file-class-input');
-    const previewClassContainer = document.querySelector('.preview-class-container');
-    const croppieClassModal = document.querySelector('#croppie-class-modal');
-    const croppieClassContainer = document.querySelector('#croppie-class-container');
-    const croppieClassCancelBtn = document.querySelector('#croppie-class-cancel-btn');
-    const croppieClassSubmitBtn = document.querySelector('#croppie-class-submit-btn');
+    var fileClassInput = document.querySelector('#file-class-input');
+    var previewClassContainer = document.querySelector('.preview-class-container');
+    var croppieClassModal = document.querySelector('#croppie-class-modal');
+    var croppieClassContainer = document.querySelector('#croppie-class-container');
+    var croppieClassCancelBtn = document.querySelector('#croppie-class-cancel-btn');
+    var croppieClassSubmitBtn = document.querySelector('#croppie-class-submit-btn');
     // let currentFiles = [];
     fileClassInput.addEventListener('change', () => {
         previewClassContainer.innerHTML = '';
@@ -376,7 +375,7 @@
                                 )
                                 files.splice(file, 1)
                                 preview.remove();
-                                getImages()
+                                getClassImages()
                             }
                         });
                     });
@@ -404,7 +403,7 @@
             }
         }
 
-        getImages()
+        getClassImages()
     });
     function launchClassCropTool(img) {
         // Set up Croppie options
@@ -445,19 +444,19 @@
                 croppieClassModal.style.display = 'none';
                 $('#exampleClassModal').modal('hide');
                 croppie.destroy();
-                getImages()
+                getClassImages()
             });
         });
     }
-    function getImages() {
+    function getClassImages() {
         setTimeout(() => {
             const container = document.querySelectorAll('.preview-class-container');
             let images = [];
-            $("#cropped_images").empty();
+            $("#cropped_product_class_images").empty();
             for (let i = 0; i < container[0].children.length; i++) {
                 images.push(container[0].children[i].children[0].src)
                 var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
-                $("#cropped_images").append(newInput);
+                $("#cropped_product_class_images").append(newInput);
             }
             return images
         }, 300);

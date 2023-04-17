@@ -249,7 +249,7 @@
         </div>
         <div id="cropped_brand_images"></div>
         <div class="modal-footer">
-            <button id="submit-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
+            <button id="submit-create-brand-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
         {!! Form::close() !!}
@@ -295,20 +295,20 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script>
-    $("#submit-btn").on("click",function (e){
+    $("#submit-create-brand-btn").on("click",function (e){
         e.preventDefault();
         setTimeout(()=>{
             getBrandImages();
             $("#brand_add_form").submit();
-        },1000)
+        },500)
     });
 
-    const fileBrandInput = document.querySelector('#file-input-brand');
-    const previewBrandContainer = document.querySelector('.preview-brand-container');
-    const croppieBrandModal = document.querySelector('#croppie-brand-modal');
-    const croppieBrandContainer = document.querySelector('#croppie-brand-container');
-    const croppieBrandCancelBtn = document.querySelector('#croppie-brand-cancel-btn');
-    const croppieBrandSubmitBtn = document.querySelector('#croppie-brand-submit-btn');
+    var fileBrandInput = document.querySelector('#file-input-brand');
+    var previewBrandContainer = document.querySelector('.preview-brand-container');
+    var croppieBrandModal = document.querySelector('#croppie-brand-modal');
+    var croppieBrandContainer = document.querySelector('#croppie-brand-container');
+    var croppieBrandCancelBtn = document.querySelector('#croppie-brand-cancel-btn');
+    var croppieBrandSubmitBtn = document.querySelector('#croppie-brand-submit-btn');
     // let currentFiles = [];
     fileBrandInput.addEventListener('change', () => {
         previewBrandContainer.innerHTML = '';
