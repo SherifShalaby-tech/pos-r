@@ -98,7 +98,7 @@
         // let currentFiles = [];
         fileInput.addEventListener('change', () => {
             // let files = fileInput.files;
-            // previewContainer.innerHTML = '';
+            previewContainer.innerHTML = '';
             let files = Array.from(fileInput.files)
             // files.concat(currentFiles)
             // currentFiles.push(...files)

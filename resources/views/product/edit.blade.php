@@ -231,7 +231,7 @@
                                                                         <i class="fas fa-cloud-upload-alt"></i>Upload
                                                                     </label>
                                                                     <!-- <input  id="file-input" multiple type='file' /> -->
-                                                                    <input type="file" id="file-input-edit-product" multiple>
+                                                                    <input type="file" id="file-input-edit-product">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -734,7 +734,7 @@
         // let currentFiles = [];
         fileEditProductInput.addEventListener('change', () => {
             // let files = fileEditProductInput.files;
-            // previewEditProductContainer.innerHTML = '';
+            previewEditProductContainer.innerHTML = '';
             let files = Array.from(fileEditProductInput.files)
             // files.concat(currentFiles)
             // currentFiles.push(...files)
