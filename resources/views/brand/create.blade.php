@@ -303,12 +303,12 @@
         },500)
     });
 
-    const fileBrandInput = document.querySelector('#file-input-brand');
-    const previewBrandContainer = document.querySelector('.preview-brand-container');
-    const croppieBrandModal = document.querySelector('#croppie-brand-modal');
-    const croppieBrandContainer = document.querySelector('#croppie-brand-container');
-    const croppieBrandCancelBtn = document.querySelector('#croppie-brand-cancel-btn');
-    const croppieBrandSubmitBtn = document.querySelector('#croppie-brand-submit-btn');
+    var fileBrandInput = document.querySelector('#file-input-brand');
+    var previewBrandContainer = document.querySelector('.preview-brand-container');
+    var croppieBrandModal = document.querySelector('#croppie-brand-modal');
+    var croppieBrandContainer = document.querySelector('#croppie-brand-container');
+    var croppieBrandCancelBtn = document.querySelector('#croppie-brand-cancel-btn');
+    var croppieBrandSubmitBtn = document.querySelector('#croppie-brand-submit-btn');
     // let currentFiles = [];
     fileBrandInput.addEventListener('change', () => {
         previewBrandContainer.innerHTML = '';

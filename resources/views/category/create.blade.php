@@ -337,12 +337,12 @@
         },500)
     });
 
-    const fileAddCategoryInput = document.querySelector('#file-input-category');
-    const previewAddCategoryContainer = document.querySelector('.preview-category-container');
-    const croppieAddCategoryModal = document.querySelector('#croppie-category-modal');
-    const croppieAddCategoryContainer = document.querySelector('#croppie-category-container');
-    const croppieAddCategoryCancelBtn = document.querySelector('#croppie-category-cancel-btn');
-    const croppieAddCategorySubmitBtn = document.querySelector('#croppie-category-submit-btn');
+    var fileAddCategoryInput = document.querySelector('#file-input-category');
+    var previewAddCategoryContainer = document.querySelector('.preview-category-container');
+    var croppieAddCategoryModal = document.querySelector('#croppie-category-modal');
+    var croppieAddCategoryContainer = document.querySelector('#croppie-category-container');
+    var croppieAddCategoryCancelBtn = document.querySelector('#croppie-category-cancel-btn');
+    var croppieAddCategorySubmitBtn = document.querySelector('#croppie-category-submit-btn');
     // let currentFiles = [];
     fileAddCategoryInput.addEventListener('change', () => {
         previewAddCategoryContainer.innerHTML = '';

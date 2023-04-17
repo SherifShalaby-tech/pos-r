@@ -326,12 +326,12 @@
 <script>
 
 
-    const fileClassInput = document.querySelector('#file-class-input');
-    const previewClassContainer = document.querySelector('.preview-class-container');
-    const croppieClassModal = document.querySelector('#croppie-class-modal');
-    const croppieClassContainer = document.querySelector('#croppie-class-container');
-    const croppieClassCancelBtn = document.querySelector('#croppie-class-cancel-btn');
-    const croppieClassSubmitBtn = document.querySelector('#croppie-class-submit-btn');
+    var fileClassInput = document.querySelector('#file-class-input');
+    var previewClassContainer = document.querySelector('.preview-class-container');
+    var croppieClassModal = document.querySelector('#croppie-class-modal');
+    var croppieClassContainer = document.querySelector('#croppie-class-container');
+    var croppieClassCancelBtn = document.querySelector('#croppie-class-cancel-btn');
+    var croppieClassSubmitBtn = document.querySelector('#croppie-class-submit-btn');
     // let currentFiles = [];
     fileClassInput.addEventListener('change', () => {
         previewClassContainer.innerHTML = '';
