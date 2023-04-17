@@ -278,7 +278,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="cropped_images"></div>
+                            <div id="cropped_product_class_edit_images"></div>
                             <div class="col-10 offset-1">
                                 <div class="preview-edit-container">
                                     @if($product_class)
@@ -464,7 +464,7 @@
     }
 
     function getProductImages() {
-        $("#cropped_images").empty();
+        $("#cropped_product_class_edit_images").empty();
         setTimeout(() => {
             const container = document.querySelectorAll('.preview-edit-container');
             let images = [];
@@ -472,7 +472,7 @@
                 images.push(container[0].children[i].children[0].src)
                 // console.log(images.push(container[0].children[i].children[0].src))
                 var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
-                $("#cropped_images").append(newInput);
+                $("#cropped_product_class_edit_images").append(newInput);
             }
             return images
         }, 300);

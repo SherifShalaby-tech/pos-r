@@ -249,7 +249,7 @@
         </div>
         <div id="cropped_brand_images"></div>
         <div class="modal-footer">
-            <button id="submit-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
+            <button id="submit-create-brand-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
         {!! Form::close() !!}
@@ -295,12 +295,12 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script>
-    $("#submit-btn").on("click",function (e){
+    $("#submit-create-brand-btn").on("click",function (e){
         e.preventDefault();
         setTimeout(()=>{
             getBrandImages();
             $("#brand_add_form").submit();
-        },1000)
+        },500)
     });
 
     const fileBrandInput = document.querySelector('#file-input-brand');

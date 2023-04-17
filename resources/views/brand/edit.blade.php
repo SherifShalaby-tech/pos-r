@@ -200,7 +200,7 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('BrandController@update', $brand->id), 'method' => 'put', 'id' => 'brand_add_form', 'files' => true ]) !!}
+        {!! Form::open(['url' => action('BrandController@update', $brand->id), 'method' => 'put', 'id' => 'brand_edit_form', 'files' => true ]) !!}
 
         <div class="modal-header">
 
@@ -258,7 +258,7 @@
         </div>
         <div id="cropped_edit_brand_images"></div>
         <div class="modal-footer">
-            <button id="submit-edit-brand-btn" class="btn btn-primary">@lang( 'lang.update' )</buttonid>
+            <button id="submit-edit-brand-btn" class="btn btn-primary">@lang( 'lang.update' )</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
@@ -302,9 +302,8 @@
         e.preventDefault();
         getEditBrandImages();
         setTimeout(()=>{
-
-            $("#brand_add_form").submit();
-        },1000)
+            $("#brand_edit_form").submit();
+        },500)
     });
 
     const fileEditBrandInput = document.querySelector('#file-input-edit-brand');
