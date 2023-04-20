@@ -161,7 +161,10 @@ class Product extends Model implements HasMedia
     {
         return $this->hasMany(AddStockLine::class,'product_id');
     }
-
+    public function product_discounts()
+    {
+        return $this->hasMany(ProductDiscount::class,'product_id','id');
+    }
 //    public function getSellPriceAttribute($value)
 //    {
 //        $quantityDiffrenceInLineStock = AddStockLine::where('product_id',$this->id)->whereColumn('quantity',">",'quantity_sold')->first();

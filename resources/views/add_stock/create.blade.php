@@ -12,12 +12,15 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
+                            
                             @if (!empty($is_raw_material))
                                 <h4>@lang('lang.add_stock_for_raw_material')</h4>
                             @else
                                 <h4>@lang('lang.add_stock')</h4>
                             @endif
                         </div>
+                        <p class="italic pt-3 pl-3"><small>@lang('lang.required_fields_info')</small></p>
+
                         {!! Form::open(['url' => action('AddStockController@store'), 'method' => 'post', 'id' => 'add_stock_form', 'enctype' => 'multipart/form-data']) !!}
                         <input type="hidden" name="row_count" id="row_count" value="0">
                         <input type="hidden" name="is_raw_material" id="is_raw_material" value="{{ $is_raw_material }}">
@@ -89,7 +92,7 @@
                             <br>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <table class="table table-bordered table-striped table-condensed" id="product_table">
+                                    <table class="table table-bordered table-condensed" id="product_table">
                                         <thead>
                                             <tr>
                                                 <th>#</th>
@@ -114,8 +117,8 @@
                             </div>
                             <div class="col-md-12 text-center">
                                 <h4>@lang('lang.items_count'): <span class="items_count_span"
-                                        style="margin-right: 15px;">0</span> @lang('lang.items_quantity'): <span
-                                        class="items_quantity_span" style="margin-right: 15px;">0</span></h4>
+                                    style="margin-right: 15px;">0</span><br> @lang('lang.items_quantity'): <span
+                                    class="items_quantity_span" style="margin-right: 15px;">0</span></h4>
                             </div>
                             <br>
                             <div class="col-md-12">

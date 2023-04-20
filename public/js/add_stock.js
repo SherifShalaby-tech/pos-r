@@ -57,7 +57,69 @@ $(document).on("change", "#store_id", function () {
         getCurrencyDropDown();
     }
 });
+$(document).on("click", ".add_bounce_btn", function () {
+    var index_id=$(this).attr('index_id');
+    console.log(index_id);
+    let bounce_details_td = $(".bounce_details_td_"+index_id),
+        add_qty_bounce_dive = $(".add_qty_bounce_dive_"+index_id);
+    if(add_qty_bounce_dive.hasClass('hide') && bounce_details_td.hasClass('hide')){
+        add_qty_bounce_dive.removeClass('hide');
+        bounce_details_td.removeClass('hide');
+    }else{
+        add_qty_bounce_dive.addClass('hide');
+        bounce_details_td.addClass('hide');
+    }
 
+});
+$(document).on("click", "#addBatch", function () {
+    var index=$(this).data('index');
+    $('#batch_number_row'+index).toggle();
+    if($('#batch_number_row'+index+' .batchNumber').prop('required')){
+        $('#batch_number_row'+index+' .batchNumber').prop('required', false);
+    } else {
+        $('#batch_number_row'+index+' .batchNumber').prop('required', true);
+    }
+    ///
+    if($('.stockId'+index).prop('checked')){
+        $('.stockId'+index).prop('checked', false);
+    } else {
+        $('.stockId'+index).prop('checked', true);
+    }
+    
+});
+// $(document).on("click", "#addBatch", function () {
+//     $('#addNewBatch').modal('show');
+    
+//     var store_id = $("#store_id").val();
+//     let currency_id = $('#paying_currency_id').val()
+//     $product=$(this).data("product");
+
+//     $.ajax({
+//         method: "GET",
+//         url: "/add-stock/add-product-different-batch-row",
+//         dataType: "html",
+//         async: false,
+//         data: {
+//             product_id: $product.id,
+//             variation_id: $product.variation_id,
+//             currency_id: currency_id,
+//             store_id:store_id
+//         },
+//         success: function (result) {
+//             $("table#product_batch_table tbody").html(result);
+//             $("input#search_product").val("");
+//             $("input#search_product").focus();
+//             calculate_sub_totals();
+//             reset_row_numbering();
+//         },
+//     });
+// });
+// $(document).on("click", ".addProductBatchBtn", function () {
+//     var productId=$('.productbatch_id').val();
+//     var variationId=$('.variationbatch_id').val();
+
+//     get_label_product_row(productId,variationId,true);
+// });
 function getCurrencyDropDown() {
     let store_id = $("#store_id").val();
     let default_currency_id = $("#default_currency_id").val();
@@ -91,34 +153,36 @@ $(document).on("change", "select#paying_currency_id", function () {
         },
     });
 });
-
-function get_label_product_row(product_id, variation_id) {
+function get_label_product_row(product_id, variation_id,is_batch=false) {
     //Get item addition method
     var add_via_ajax = true;
     var store_id = $("#store_id").val();
     var is_added = false;
+    var qty;
     //Search for variation id in each row of pos table
-    $("#product_table tbody")
-        .find("tr")
-        .each(function () {
-            var row_v_id = $(this).find(".variation_id").val();
-
-            if (row_v_id == variation_id && !is_added) {
-                add_via_ajax = false;
-                is_added = true;
-
-                //Increment product quantity
-                qty_element = $(this).find(".quantity");
-                var qty = __read_number(qty_element);
-                __write_number(qty_element, qty + 1);
-                qty_element.change;
-                calculate_sub_totals();
-                $("input#search_product").val("");
-                $("input#search_product").focus();
-            }
-        });
-
-    if (add_via_ajax) {
+        $("#product_table tbody")
+            .find("tr")
+            .each(function () {
+                var row_v_id = $(this).find(".variation_id").val();
+                if (row_v_id == variation_id && !is_added) {
+                    add_via_ajax = false;
+                    is_added = true;
+                    //Increment product quantity
+                    //get product qty
+                    qty_element = $(this).find(".quantity");
+                    qty = __read_number(qty_element);
+                    qty+=1;
+                    calculate_sub_totals();
+                    $("input#search_product").val("");
+                    $("input#search_product").focus();
+                    //remove if exist
+                    $(this).closest("tr").next().remove();
+                    $(this).closest("tr").next().next().remove();
+                    $(this).closest("tr").remove();
+                }
+            });
+    // }
+    // if (add_via_ajax) {
         var row_count = parseInt($("#row_count").val());
         let currency_id = $('#paying_currency_id').val()
         $("#row_count").val(row_count + 1);
@@ -133,17 +197,95 @@ function get_label_product_row(product_id, variation_id) {
                 variation_id: variation_id,
                 store_id: store_id,
                 currency_id: currency_id,
+                qty:qty,
+                is_batch:is_batch,
             },
             success: function (result) {
-                $("table#product_table tbody").prepend(result);
+                $("#product_table tbody").prepend(result);
                 $("input#search_product").val("");
                 $("input#search_product").focus();
                 calculate_sub_totals();
                 reset_row_numbering();
             },
         });
-    }
+    // }
 }
+
+
+// function get_label_product_row(product_id, variation_id,is_batch=false) {
+//     //Get item addition method
+//     var add_via_ajax = true;
+//     var store_id = $("#store_id").val();
+//     var is_added = false;
+//     var qty;
+//     if(is_batch==true){
+//         if ( product_id!=null && variation_id!=null) {
+//             $('#addNewBatch').modal('hide');
+//             qty_element = $('tr td').find(".batchquantity");
+//             $('.stockId'+product_id).prop('checked', false);
+//             qty = __read_number(qty_element);
+//             calculate_sub_totals();
+//             $("input#search_product").val("");
+//             $("input#search_product").focus();
+//         }
+//     }else{
+//     //Search for variation id in each row of pos table
+//         $("#product_table tbody")
+//             .find("tr")
+//             .each(function () {
+//                 var row_v_id = $(this).find(".variation_id").val();
+//                 var is_row_batch;
+//                 is_row_batch = $(this).find(".is_batch_product").val();
+//                 if (row_v_id == variation_id && !is_added && is_row_batch=="false") {
+//                     add_via_ajax = false;
+//                     is_added = true;
+//                     //Increment product quantity
+//                     //get product qty
+//                     qty_element = $(this).find(".quantity");
+//                     qty = __read_number(qty_element);
+//                     qty+=1;
+//                     calculate_sub_totals();
+//                     $("input#search_product").val("");
+//                     $("input#search_product").focus();
+//                     //remove if exist
+//                     $(this).closest("tr").next().remove();
+//                     $(this).closest("tr").next().next().remove();
+//                     $(this).closest("tr").remove();
+//                 }
+//             });
+//     }
+//     // if (add_via_ajax) {
+//         var row_count = parseInt($("#row_count").val());
+//         let currency_id = $('#paying_currency_id').val()
+//         $("#row_count").val(row_count + 1);
+//         $.ajax({
+//             method: "GET",
+//             url: "/add-stock/add-product-row",
+//             dataType: "html",
+//             async: false,
+//             data: {
+//                 product_id: product_id,
+//                 row_count: row_count,
+//                 variation_id: variation_id,
+//                 store_id: store_id,
+//                 currency_id: currency_id,
+//                 qty:qty,
+//                 is_batch:is_batch,
+//             },
+//             success: function (result) {
+//                 $("#product_table tbody").prepend(result);
+//                 $("input#search_product").val("");
+//                 $("input#search_product").focus();
+//                 calculate_sub_totals();
+//                 reset_row_numbering();
+//                 if(is_batch==true){
+                    
+//                     $('#product_batch_table tbody').html('');
+//                 }
+//             },
+//         });
+//     // }
+// }
 function calculate_sub_totals() {
     var total = 0;
     $("#product_table > tbody  > tr").each((ele, tr) => {
@@ -186,13 +328,15 @@ $(document).on("change", "#amount", function () {
 function calculate_final_cost_for_products() {
     var total_qauntity = 0;
     var item_count = 0;
-    $("#product_table > tbody  > tr").each((ele, tr) => {
+    $("#product_table > tbody  > .product_row").each((ele, tr) => {
         let quantity = __read_number($(tr).find(".quantity"));
         total_qauntity += quantity;
-        item_count++;
+        if($(tr).find(".quantity").val()){
+            item_count++;
+        }
     });
 
-    $('.items_count_span').text(item_count / 2);
+    $('.items_count_span').text(item_count);
     $('.items_quantity_span').text(total_qauntity);
     let unit_other_expenses =
         __read_number($("#other_expenses")) / total_qauntity;
@@ -238,7 +382,7 @@ $(document).on("click", ".remove_row", function () {
     $(this).closest("tr").remove();
     $(".row_details_" + index).remove();
     $(".bounce_details_td_" + index).remove();
-
+    $(".row_batch_details_" + index).remove();
     calculate_sub_totals();
     reset_row_numbering();
 });
@@ -249,41 +393,17 @@ function reset_row_numbering() {
             .text(ele + 2 - 1);
     });
 }
-
-$(document).on("click", ".add_bounce_btn", function () {
-    var index_id=$(this).attr('index_id');
-    console.log(index_id);
-    let bounce_details_td = $(".bounce_details_td_"+index_id),
-        add_qty_bounce_dive = $(".add_qty_bounce_dive_"+index_id);
-    if(add_qty_bounce_dive.hasClass('hide') && bounce_details_td.hasClass('hide')){
-        add_qty_bounce_dive.removeClass('hide');
-        bounce_details_td.removeClass('hide');
-    }else{
-        add_qty_bounce_dive.addClass('hide');
-        bounce_details_td.addClass('hide');
-    }
-
-});
-// let quantity = parseInt($(".quantity").val()),
-//     purchase_price = parseInt($(".purchase_price").val()),
-//     sell_price = parseInt($(".selling_price").val()),
-//     bounce_profit = $(".bounce_profit").val(),
-//     bounce_purchase_price = $(".bounce_purchase_price").val();
-//
-// $(":input").on("keyup change", function(e) {
-//     // do stuff!
-// })
-// $(".bounce_qty:input").on("keyup keypress", function (e) {
-// $(".bounce_qty").keyup(function(){
 $(document).on("change", ".bounce_qty,.quantity ,.purchase_price ,.selling_price", function () {
 
     index_id = $(this).attr('index_id');
+     console.log(index_id);
     if($(".quantity_"+index_id).val() != null){
     let quantity = parseInt($(".quantity_"+index_id).val()),
         purchase_price = parseInt($(".purchase_price_"+index_id).val()),
         sell_price = parseInt($(".selling_price_"+index_id).val()),
         all_ty = parseInt($('.bounce_qty_'+index_id).val()) + quantity;
-        console.log(all_ty);
+
+
             let bounce_purchase_price_val = (purchase_price * quantity ) / all_ty ;
             let bounce_profit_val = sell_price - bounce_purchase_price_val;
             $(".bounce_purchase_price_"+index_id).val(bounce_purchase_price_val.toFixed(2));
@@ -291,3 +411,4 @@ $(document).on("change", ".bounce_qty,.quantity ,.purchase_price ,.selling_price
         }
 
 });
+

@@ -166,6 +166,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::get('add-stock/get-source-by-type-dropdown/{type}', 'AddStockController@getSourceByTypeDropdown');
     Route::get('add-stock/add-product-row', 'AddStockController@addProductRow');
+    Route::get('add-stock/add-product-different-batch-row', 'AddStockController@addProductBatchRow');
     Route::get('add-stock/get-purchase-order-details/{id}', 'AddStockController@getPurchaseOrderDetails');
     Route::post('add-stock/save-import', 'AddStockController@saveImport');
     Route::get('add-stock/get-import', 'AddStockController@getImport');
@@ -216,6 +217,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('pos/get-non-identifiable-item-row', 'SellPosController@getNonIdentifiableItemRow');
     Route::get('pos/get-products', 'SellPosController@getProducts');
     Route::get('pos/add-product-row', 'SellPosController@addProductRow');
+    Route::get('pos/add-discounts', 'SellPosController@addDiscounts');
+    Route::get('pos/get-product-discount', 'SellPosController@getProductDiscount');
     Route::get('pos/get-product-items-by-filter', 'SellPosController@getProductItemsByFilter');
     Route::get('pos/get-online-order-transactions', 'SellPosController@getOnlineOrderTransactions');
     Route::get('pos/get-draft-transactions', 'SellPosController@getDraftTransactions');
