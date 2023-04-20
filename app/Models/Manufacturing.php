@@ -23,6 +23,12 @@ class Manufacturing extends Model
     public function materials(){
         return $this->hasMany(manufacturingProduct::class,"manufacturing_id","id")->where("status","0");
     }
+    public function transactions(){
+        return $this->hasMany(Transaction::class,"manufacturing_id","id")->where("status","approved");
+    }
+    public function manufacturing_products(){
+        return $this->hasMany(manufacturingProduct::class,"manufacturing_id","id")->where("status","0");
+    }
     public function material_recived(){
         return $this->hasMany(manufacturingProduct::class,"manufacturing_id","id")->where("status","1");
     }
@@ -31,5 +37,6 @@ class Manufacturing extends Model
     }   public function editedUser(){
         return $this->belongsTo(User::class,"edited_by","id");
     }
+
 
 }

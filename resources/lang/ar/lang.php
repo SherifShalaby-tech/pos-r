@@ -26,6 +26,9 @@ return [
     'manufacturing_material' => 'مادة التصنيع ',
     'product_received' => 'المنتجات المستلمة',
     'product_received_quantity' => 'الكميه المستلمه',
+    'manufactured_cost'=>'التكلفة',
+    'manufactured_unit_cost_sell'=>'تكلفة الوحده للبيع ',
+    'manufactured_unit_cost_purchase'=>'تكلفة الوحده للشراء ',
     'product_received_date' => 'تاريخ الاستلام',
     'processed' => 'العمليات المستلمة',
     'under_processing' => 'تحت التصنيع',
@@ -102,8 +105,11 @@ return [
     'December' => 'ديسمبر',
     'site_title' => 'عنوان الموقع',
     'help' => 'مساعدة',
-
+    'discount_category'=>'الاسم المختصر للخصم',
+    'category_discount'=>'فئة',
+    'select_discount'=>'اختر',
     'required_fields_info' => 'الحقول المميزة بعلامة * هي حقول إدخال مطلوبة.',
+    'add_a_new_batch'=>'تشغيلة جديدة',
     'product' => 'منتج',
     'add_new_product' => 'اضافة منتج جديد',
     'class' => 'فئة',
@@ -283,6 +289,7 @@ return [
     'amount' => 'المبلغ',
     'notes' => 'ملاحظات',
     'is_service' => 'هي خدمة',
+    'is_have_service'=>'خدمة',
     'paid_amount' => 'المبلغ المدفوع',
     'pending_amount' => 'المبلغ المتبقي',
     'invoice_date' => 'تاريخ الفاتورة',
@@ -1347,7 +1354,9 @@ return [
     'penalties_cause' => 'سبب العقوبات',
     'the_amount_of_the_fine' => 'مبلغ العقوبة',
     'Borrowed_products' => 'المنتجات المراد استعارتها',
-    'creator_name' => 'اسم المنشئ'
+    'creator_name' => 'اسم المنشئ',
+    'new_batch'=>'رقم التشغيلة الجديدة',
+    'watsapp_numbers'=>'رقم واتساب للتواصل',
 
 
 ];

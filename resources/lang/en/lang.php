@@ -25,6 +25,9 @@ return [
     'edit_manufacturing_status' => 'Edit Manufacturing Status',
     'manufacturing_material' => 'Manufacturing Material',
     'product_received' => 'Products Received',
+    'manufactured_cost'=>'Cost',
+    'manufactured_unit_cost_purchase'=>'Unit cost purchasing',
+    'manufactured_unit_cost_sell'=>'Unit cost selling',
     'product_received_quantity' => 'Product Received Quantity',
     'product_received_date' => 'Product Received Date',
     'processed' => 'Processed',
@@ -293,6 +296,8 @@ return [
     'amount' => 'Amount',
     'notes' => 'Notes',
     'is_service' => 'Is Service',
+    'is_have_service'=>'Service',
+    'add_a_new_batch'=>"Add New Batch",
     'paid_amount' => 'Paid Amount',
     'pending_amount' => 'Pending Amount',
     'invoice_date' => 'Invoice Date',
@@ -1370,6 +1375,11 @@ return [
     'penalties_cause' => 'penalties cause',
     'the_amount_of_the_fine' => 'penalty amount',
     'cause_the_penalties' => 'cause the penalties',
-    'Borrowed_products' => 'Products to be borrowed'
+    'Borrowed_products' => 'Products to be borrowed',
 
+    'select_discount'=>'select',
+    'discount_category'=>'Brief Discount Name',
+    'category_discount'=>'Category',
+    'new_batch'=>'New Batch Number',
+    'watsapp_numbers'=>'Watsapp Numbers',
 ];

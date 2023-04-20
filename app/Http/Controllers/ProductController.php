@@ -37,6 +37,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Http;
+use Lang;
 class ProductController extends Controller
 {
     /**
@@ -230,6 +231,9 @@ class ProductController extends Controller
                 ->editColumn('variation_name', '@if($variation_name != "Default"){{$variation_name}} @else {{$name}}
                 @endif')
                 ->editColumn('sub_sku', '{{$sub_sku}}')
+                ->editColumn('is_service',function ($row) {
+                    return $row->is_service=='1'?'<span class="badge badge-danger">'.Lang::get('lang.is_have_service').'</span>':'';
+                })
                 ->addColumn('product_class', '{{$product_class}}')
                 ->addColumn('category', '{{$category}}')
                 ->addColumn('sub_category', '{{$sub_category}}')
@@ -329,20 +333,18 @@ class ProductController extends Controller
                     return $query->name ?? '';
                 })
                 ->addColumn('selection_checkbox', function ($row) use ($is_add_stock,$process_type) {
-                    if ($row->is_service == 1 || $is_add_stock == 1) {
-                        $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
-                    } else {
-                        if ($row->current_stock > 0) {
+                    if($row->is_service == 0 ){
+                        if ($is_add_stock == 1) {
                             $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                         } else {
-                            // if received_manufacturing_products open all products to add to stock
-                            if ($process_type == "received_manufacturing_products"){
+                            if ($row->current_stock > 0 ) {
                                 $html = '<input type="checkbox" name="product_selected" class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
-                            }else{
+                            } else {
                                 $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
-
                             }
                         }
+                    }else{
+                        $html = '<input type="checkbox" name="product_selected" disabled class="product_selected" value="' . $row->variation_id . '" data-product_id="' . $row->id . '" />';
                     }
 
                     return $html;
@@ -622,6 +624,7 @@ class ProductController extends Controller
                 $data_des=[
                     'product_id' => $product->id,
                     'discount_type' => $request->discount_type[$index_discount],
+                    'discount_category' => $request->discount_category[$index_discount],
                     'discount_customer_types' => $request->get('discount_customer_types_'.$index_discount),
                     'discount_customers' => $discount_customers,
                     'discount' => $this->commonUtil->num_uf($request->discount[$index_discount]),
@@ -890,6 +893,7 @@ class ProductController extends Controller
                         'product_id' => $product->id,
                         'discount_type' => $request->discount_type[$index_discount],
                         'discount_customer_types' => $request->get('discount_customer_types_'.$index_discount),
+                        'discount_category' => $request->discount_category[$index_discount],
                         'discount_customers' => $discount_customers,
                         'discount' => $this->commonUtil->num_uf($request->discount[$index_discount]),
                         'discount_start_date' => !empty($request->discount_start_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_start_date[$index_discount]) : null,
