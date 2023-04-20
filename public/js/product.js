@@ -122,85 +122,99 @@ function getImages() {
 
 $("#submit-btn").on("click", function (e) {
     e.preventDefault();
-    getImages()
-
-    setTimeout(()=>{
-        if ($("#product-form").valid()) {
-            tinyMCE.triggerSave();
-            document.getElementById("loader").style.display = "block";
-            document.getElementById("content").style.display = "none";
-            $.ajax({
-                type: "POST",
-                url: $("form#product-form").attr("action"),
-                data:  $("#product-form").serialize(),
-                success: function (response) {
-                    myFunction();
-                    if (response.success) {
-                        swal("Success", response.msg, "success");
-                        $("#sku").val("").change();
-                        $("#name").val("").change();
-                        $(".translations").val("").change();
-                    } else {
-                        swal("Error", response.msg, "error");
-                    }
-                },
-                error: function (response) {
-                    myFunction();
-                    if (!response.success) {
-                        swal("Error", response.msg, "error");
-                    }
-                },
-            });
-
-        }
-    },500)
+    let sku = $("#sku").val();
+    if(sku == null || sku ==""){
+        swal("Error", "sku cant null", "error");
+    }else{
+        $.ajax({
+            method: "get",
+            url: "/product/check-sku/" + sku,
+            data: {},
+            success: function (result) {
+                if (!result.success) {
+                    swal("Error", result.msg, "error");
+                }else if (result.success){
+                    getImages()
+                    setTimeout(()=>{
+                        if ($("#product-form").valid()) {
+                            tinyMCE.triggerSave();
+                            document.getElementById("loader").style.display = "block";
+                            document.getElementById("content").style.display = "none";
+                            $.ajax({
+                                type: "POST",
+                                url: $("form#product-form").attr("action"),
+                                data:  $("#product-form").serialize(),
+                                success: function (response) {
+                                    myFunction();
+                                    if (response.success) {
+                                        swal("Success", response.msg, "success");
+                                        $("#sku").val("").change();
+                                        $("#name").val("").change();
+                                        $(".translations").val("").change();
+                                    } else {
+                                        swal("Error", response.msg, "error");
+                                    }
+                                },
+                                error: function (response) {
+                                    myFunction();
+                                    if (!response.success) {
+                                        swal("Error", response.msg, "error");
+                                    }
+                                },
+                            });
+                        }
+                    },500);
+                }
+            },
+        });
+    }
 });
 
 var modalTemplate = $("#product_cropper_modal");
 
-myDropzone.on("thumbnail", function (file) {
-    if (file.cropped) return;
-
-    var cachedFilename = file.name;
-    myDropzone.removeFile(file);
-
-    var $cropperModal = $(modalTemplate);
-    var $uploadCrop = $cropperModal.find("#product_crop");
-
-    $cropperModal.find(".product_preview_div").empty();
-
-    var $img = document.getElementById("product_sample_image");
-
-    var reader = new FileReader();
-    var cropper;
-    reader.onloadend = function () {
-        $($img).attr("src", reader.result);
-        $cropperModal.modal("show");
-        modalTemplate.on("shown.bs.modal", function () {
-            cropper= null;
-            cropper = new Cropper($img, {
-                initialAspectRatio: 1 / 1,
-                aspectRatio: 1 / 1,
-                cropBoxResizable: false,
-                viewMode: 2,
-                preview: ".product_preview_div",
-            });
-        });
-    };
-    reader.readAsDataURL(file);
-
-    $uploadCrop.on("click", function () {
-        var blob = cropper.getCroppedCanvas().toDataURL();
-        var newFile = dataURItoBlob(blob);
-        newFile.cropped = true;
-        newFile.name = cachedFilename;
-
-        myDropzone.addFile(newFile);
-        $cropperModal.modal("hide");
-        cropper.destroy();
-        cropper = null;
-    });
-});
+// myDropzone.on("thumbnail", function (file) {
+//     if (file.cropped) return;
+//
+//     var cachedFilename = file.name;
+//     myDropzone.removeFile(file);
+//
+//     var $cropperModal = $(modalTemplate);
+//     var $uploadCrop = $cropperModal.find("#product_crop");
+//
+//     $cropperModal.find(".product_preview_div").empty();
+//
+//     var $img = document.getElementById("product_sample_image");
+//
+//     var reader = new FileReader();
+//     var cropper;
+//     reader.onloadend = function () {
+//         $($img).attr("src", reader.result);
+//         $cropperModal.modal("show");
+//         modalTemplate.on("shown.bs.modal", function () {
+//             cropper= null;
+//             cropper = new Cropper($img, {
+//                 initialAspectRatio: 1 / 1,
+//                 aspectRatio: 1 / 1,
+//                 cropBoxResizable: false,
+//                 viewMode: 2,
+//                 preview: ".product_preview_div",
+//             });
+//         });
+//     };
+//     reader.readAsDataURL(file);
+//
+//     $uploadCrop.on("click", function () {
+//         var blob = cropper.getCroppedCanvas().toDataURL();
+//         var newFile = dataURItoBlob(blob);
+//         newFile.cropped = true;
+//         newFile.name = cachedFilename;
+//
+//         myDropzone.addFile(newFile);
+//         $cropperModal.modal("hide");
+//         cropper.destroy();
+//         cropper = null;
+//     });
+// });
 // modalTemplate.on("hidden.bs.modal", function () {
 //     console.log(cropper);
 //     if (typeof cropper !== "undefined") {
@@ -649,7 +663,6 @@ $(document).on("change", "#purchase_price", function () {
 });
 $(document).on("change", "#sku", function () {
     let sku = $(this).val();
-
     $.ajax({
         method: "get",
         url: "/product/check-sku/" + sku,
@@ -657,6 +670,7 @@ $(document).on("change", "#sku", function () {
         success: function (result) {
             if (!result.success) {
                 swal("Error", result.msg, "error");
+                $("#sku").val("");
             }
         },
     });

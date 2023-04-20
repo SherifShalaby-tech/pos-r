@@ -95,14 +95,9 @@
         var croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
         var croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
 
-        // let currentFiles = [];
         fileInput.addEventListener('change', () => {
-            // let files = fileInput.files;
             previewContainer.innerHTML = '';
             let files = Array.from(fileInput.files)
-            // files.concat(currentFiles)
-            // currentFiles.push(...files)
-            // currentFiles && (files = currentFiles)
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.type.match('image.*')) {

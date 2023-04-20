@@ -252,30 +252,8 @@
                                                                         id="deleteBtn{{ $product->id }}"
                                                                         class="fas fa-trash"></i>
                                                                 </button>
-{{--                                                                <button type="button"--}}
-{{--                                                                        data-toggle="modal"--}}
-{{--                                                                        id="cropBtn{{ $product->id }}"--}}
-{{--                                                                        data-target="#editProductModal"--}}
-{{--                                                                        class="crop-btn"><i--}}
-{{--                                                                        style="font-size: 20px;"--}}
-{{--                                                                        class="fas fa-crop"></i>--}}
-{{--                                                                </button>--}}
                                                             </div>
                                                     @endif
-{{--                                                    @if($product)--}}
-{{--                                                        <div class="preview">--}}
-{{--                                                            @if (!empty($product->getFirstMediaUrl('product')))--}}
-{{--                                                                <img src="{{ $product->getFirstMediaUrl('product') }}"--}}
-{{--                                                                     id="img{{  $product->id }}" alt="">--}}
-{{--                                                            @else--}}
-{{--                                                                <img src="{{ asset('/uploads/' . session('logo')) }}" alt=""--}}
-{{--                                                                     id="img{{  $product->id }}">--}}
-{{--                                                            @endif--}}
-{{--                                                                <span data-toggle="modal" data-target="#editProductModal" class="crop-btn"><i style="font-size: 20px;" class="fas fa-crop"></i></span>--}}
-{{--                                                                <span id="d" class="delete-btn"><i style="font-size: 20px;" class="fas fa-trash"></i></span>--}}
-{{--                                                        </div>--}}
-{{--                                                    @endif--}}
-
                                                 </div>
                                             </div>
                                         </div>
