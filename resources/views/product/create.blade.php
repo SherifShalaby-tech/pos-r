@@ -88,17 +88,17 @@
 @push('javascripts')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
     <script>
-        const fileInput = document.querySelector('#file-input');
-        const previewContainer = document.querySelector('.preview-container');
-        const croppieModal = document.querySelector('#croppie-modal');
-        const croppieContainer = document.querySelector('#croppie-container');
-        const croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
-        const croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
+        var fileInput = document.querySelector('#file-input');
+        var previewContainer = document.querySelector('.preview-container');
+        var croppieModal = document.querySelector('#croppie-modal');
+        var croppieContainer = document.querySelector('#croppie-container');
+        var croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
+        var croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
 
         // let currentFiles = [];
         fileInput.addEventListener('change', () => {
             // let files = fileInput.files;
-            // previewContainer.innerHTML = '';
+            previewContainer.innerHTML = '';
             let files = Array.from(fileInput.files)
             // files.concat(currentFiles)
             // currentFiles.push(...files)
@@ -136,10 +136,6 @@
                                     getImages()
                                 }
                             });
-
-                            // if (window.confirm('Are you sure you want to delete this image?')) {
-                            //
-                            // }
                         });
 
                         preview.appendChild(deleteBtn);
@@ -202,18 +198,6 @@
                     $('#exampleModal').modal('hide');
                     croppie.destroy();
                     getImages()
-
-                    // blob = new Blob(croppedImg, { type: 'image/*' });
-                    let blob = new Blob([croppedImg], {
-                        type: "image/png"
-                    });
-                    // console.log(blob);
-                    // console.log(fileInput.files);
-                    // let files = Array.from(fileInput.files)
-                    // files.concat(currentFiles)
-                    // currentFiles.push(...files)
-                    // currentFiles && (files = currentFiles)
-                    // currentFiles = files
                 });
             });
         }

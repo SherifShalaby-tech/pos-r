@@ -119,6 +119,7 @@ function getImages() {
         return images
     }, 1);
 }
+
 $("#submit-btn").on("click", function (e) {
     e.preventDefault();
     getImages()
