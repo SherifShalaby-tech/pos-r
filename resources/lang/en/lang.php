@@ -1379,7 +1379,7 @@ return [
 
     'select_discount'=>'select',
     'discount_category'=>'Brief Discount Name',
-    'category_discount'=>'Category',
+    'category_discount'=>'Discount Category',
     'new_batch'=>'New Batch Number',
     'watsapp_numbers'=>'Watsapp Numbers',
 ];

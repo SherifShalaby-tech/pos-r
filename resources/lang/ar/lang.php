@@ -106,7 +106,7 @@ return [
     'site_title' => 'عنوان الموقع',
     'help' => 'مساعدة',
     'discount_category'=>'الاسم المختصر للخصم',
-    'category_discount'=>'فئة',
+    'category_discount'=>'فئة الخصم',
     'select_discount'=>'اختر',
     'required_fields_info' => 'الحقول المميزة بعلامة * هي حقول إدخال مطلوبة.',
     'add_a_new_batch'=>'تشغيلة جديدة',
