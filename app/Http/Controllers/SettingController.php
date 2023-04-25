@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use PDF;
+
 class SettingController extends Controller
 {
     /**
@@ -57,7 +58,7 @@ class SettingController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -68,7 +69,7 @@ class SettingController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -79,7 +80,7 @@ class SettingController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -90,8 +91,8 @@ class SettingController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -102,7 +103,7 @@ class SettingController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -118,7 +119,7 @@ class SettingController extends Controller
         foreach ($config_languages as $key => $value) {
             $languages[$key] = $value['full_name'];
         }
-        $currencies  = $this->commonUtil->allCurrencies();
+        $currencies = $this->commonUtil->allCurrencies();
 
         $timezone_list = $this->commonUtil->allTimeZones();
         $terms_and_conditions = TermsAndCondition::where('type', 'invoice')->orderBy('name', 'asc')->pluck('name', 'id');
@@ -131,132 +132,149 @@ class SettingController extends Controller
             'languages'
         ));
     }
+
     public function updateGeneralSetting(Request $request)
     {
-        try {
-            System::updateOrCreate(
-                ['key' => 'site_title'],
-                ['value' => $request->site_title, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'developed_by'],
-                ['value' => $request->developed_by, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'time_format'],
-                ['value' => $request->time_format, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'timezone'],
-                ['value' => $request->timezone, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'invoice_terms_and_conditions'],
-                ['value' => $request->invoice_terms_and_conditions, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'language'],
-                ['value' => $request->language, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'show_the_window_printing_prompt'],
-                ['value' => $request->show_the_window_printing_prompt ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'enable_the_table_reservation'],
-                ['value' => $request->enable_the_table_reservation ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'currency'],
-                ['value' => $request->currency, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            if (!empty($request->currency)) {
-                $currency = Currency::find($request->currency);
-                $currency_data = [
-                    'country' => $currency->country,
-                    'code' => $currency->code,
-                    'symbol' => $currency->symbol,
-                    'decimal_separator' => '.',
-                    'thousand_separator' => ',',
-                    'currency_precision' => 2,
-                    'currency_symbol_placement' => 'before',
-                ];
-                $request->session()->put('currency', $currency_data);
-            }
-            System::updateOrCreate(
-                ['key' => 'invoice_lang'],
-                ['value' => $request->invoice_lang, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'default_purchase_price_percentage'],
-                ['value' => $request->default_purchase_price_percentage ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'default_profit_percentage'],
-                ['value' => $request->default_profit_percentage ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'help_page_content'],
-                ['value' => $request->help_page_content, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            System::updateOrCreate(
-                ['key' => 'watsapp_numbers'],
-                ['value' => $request->watsapp_numbers, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-            );
-            if (!empty($request->language)) {
-                session()->put('language', $request->language);
-            }
 
-            $data['letter_header'] = null;
-            if ($request->hasFile('letter_header')) {
-                $file = $request->file('letter_header');
-                $data['letter_header'] = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path() . '/uploads/', $data['letter_header']);
-            }
-            $data['letter_footer'] = null;
-            if ($request->hasFile('letter_footer')) {
-                $file = $request->file('letter_footer');
-                $data['letter_footer'] = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path() . '/uploads/', $data['letter_footer']);
-            }
-            $data['login_screen'] = null;
-            if ($request->hasFile('login_screen')) {
-                $file = $request->file('login_screen');
-                $data['login_screen'] = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path() . '/uploads/', $data['login_screen']);
-            }
-            $data['logo'] = null;
-            if ($request->hasFile('logo')) {
-                $file = $request->file('logo');
-                $data['logo'] = time() . '_' . $file->getClientOriginalName();
-                $file->move(public_path() . '/uploads/', $data['logo']);
-            }
+//        try {
+        System::updateOrCreate(
+            ['key' => 'site_title'],
+            ['value' => $request->site_title, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'developed_by'],
+            ['value' => $request->developed_by, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'time_format'],
+            ['value' => $request->time_format, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'timezone'],
+            ['value' => $request->timezone, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'invoice_terms_and_conditions'],
+            ['value' => $request->invoice_terms_and_conditions, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'language'],
+            ['value' => $request->language, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'show_the_window_printing_prompt'],
+            ['value' => $request->show_the_window_printing_prompt ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'enable_the_table_reservation'],
+            ['value' => $request->enable_the_table_reservation ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'currency'],
+            ['value' => $request->currency, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        if (!empty($request->currency)) {
+            $currency = Currency::find($request->currency);
+            $currency_data = [
+                'country' => $currency->country,
+                'code' => $currency->code,
+                'symbol' => $currency->symbol,
+                'decimal_separator' => '.',
+                'thousand_separator' => ',',
+                'currency_precision' => 2,
+                'currency_symbol_placement' => 'before',
+            ];
+            $request->session()->put('currency', $currency_data);
+        }
+        System::updateOrCreate(
+            ['key' => 'invoice_lang'],
+            ['value' => $request->invoice_lang, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'default_purchase_price_percentage'],
+            ['value' => $request->default_purchase_price_percentage ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'default_profit_percentage'],
+            ['value' => $request->default_profit_percentage ?? 0, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'help_page_content'],
+            ['value' => $request->help_page_content, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
 
-            foreach ($data as $key => $value) {
-                if (!empty($value)) {
-                    System::updateOrCreate(
-                        ['key' => $key],
-                        ['value' => $value, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
-                    );
-                    if ($key == 'logo') {
-                        $logo = System::getProperty('logo');
-                        $request->session()->put('logo', $logo);
-                    }
+        if (!empty($request->language)) {
+            session()->put('language', $request->language);
+        }
+        $data['login_screen'] = null;
+        if ($request->hasFile('login_screen')) {
+            $file = $request->file('login_screen');
+            $data['login_screen'] = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path() . '/uploads/', $data['login_screen']);
+        }
+//        dd($request->all());
+        $data['letter_header'] = null;
+        if ($request->has('letter_header') && !is_null('letter_header')) {
+//            $file = $request->file('letter_header');
+//            $data['letter_header'] = time() . '_' . $file->getClientOriginalName();
+//            $file->move(public_path() . '/uploads/', $data['letter_header']);
+            $imageData = $this->getCroppedImage($request->letter_header);
+            $extention = explode(";", explode("/", $imageData)[1])[0];
+            $image = rand(1, 1500) . "_image." . $extention;
+            $filePath = public_path('uploads/' . $image);
+            $data['letter_header'] = $image;
+            $fp = file_put_contents($filePath, base64_decode(explode(",", $imageData)[1]));
+        }
+        $data['letter_footer'] = null;
+        if ($request->has('letter_footer') && !is_null('letter_footer')) {
+//            $file = $request->file('letter_footer');
+//            $data['letter_footer'] = time() . '_' . $file->getClientOriginalName();
+//            $file->move(public_path() . '/uploads/', $data['letter_footer']);
+            $imageData = $this->getCroppedImage($request->letter_footer);
+            $extention = explode(";", explode("/", $imageData)[1])[0];
+            $image = rand(1, 1500) . "_image." . $extention;
+            $filePath = public_path('uploads/' . $image);
+            $data['letter_footer'] = $image;
+            $fp = file_put_contents($filePath, base64_decode(explode(",", $imageData)[1]));
+        }
+        $data['logo'] = null;
+        if ($request->has('logo') && !is_null('logo')) {
+//            $file = $request->file('logo');
+//            $data['logo'] = time() . '_' . $file->getClientOriginalName();
+//            $file->move(public_path() . '/uploads/', $data['logo']);
+            $imageData = $this->getCroppedImage($request->logo);
+            $extention = explode(";", explode("/", $imageData)[1])[0];
+            $image = rand(1, 1500) . "_image." . $extention;
+            $filePath = public_path('uploads/' . $image);
+            $data['logo'] = $image;
+            $fp = file_put_contents($filePath, base64_decode(explode(",", $imageData)[1]));
+        }
+
+        foreach ($data as $key => $value) {
+            if (!empty($value)) {
+                System::updateOrCreate(
+                    ['key' => $key],
+                    ['value' => $value, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+                );
+                if ($key == 'logo') {
+                    $logo = System::getProperty('logo');
+                    $request->session()->put('logo', $logo);
                 }
             }
-
-
-            $output = [
-                'success' => true,
-                'msg' => __('lang.success')
-            ];
-        } catch (\Exception $e) {
-            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-            $output = [
-                'success' => false,
-                'msg' => __('lang.something_went_wrong')
-            ];
         }
+
+
+        $output = [
+            'success' => true,
+            'msg' => __('lang.success')
+        ];
+//        } catch (\Exception $e) {
+//            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+//            $output = [
+//                'success' => false,
+//                'msg' => __('lang.something_went_wrong')
+//            ];
+//        }
 
         return redirect()->back()->with('status', $output);
     }
@@ -375,6 +393,7 @@ class SettingController extends Controller
 
         return redirect()->back()->with('status', $output);
     }
+
     public function updateVersionData($version_number)
     {
         try {
@@ -423,6 +442,7 @@ class SettingController extends Controller
 
         return $output;
     }
+
     public function runQuery($query)
     {
         try {
@@ -443,7 +463,8 @@ class SettingController extends Controller
     }
 
 
-    public function getPdf(Request $request ){
+    public function getPdf(Request $request)
+    {
 
         // return response()->json('ssssssssssss');
 
@@ -452,10 +473,33 @@ class SettingController extends Controller
         $data = $request['data'];
         $title = $request['title'];
 
-        $pdf = PDF::loadView('layouts.partials.pdf',compact('data','title'));
+        $pdf = PDF::loadView('layouts.partials.pdf', compact('data', 'title'));
 
-        return response()->download( $pdf->download('Report.pdf') );
+        return response()->download($pdf->download('Report.pdf'));
         // return $pdf->download('Admins.pdf') ;
 
+    }
+
+    function getBase64Image($Image)
+    {
+        $image_path = str_replace(env("APP_URL") . "/", "", $Image);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $image_path);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $image_content = curl_exec($ch);
+        curl_close($ch);
+//    $image_content = file_get_contents($image_path);
+        $base64_image = base64_encode($image_content);
+        $b64image = "data:image/jpeg;base64," . $base64_image;
+        return $b64image;
+    }
+
+    function getCroppedImage($img)
+    {
+        if (strlen($img) < 200) {
+            return $this->getBase64Image($img);
+        } else {
+            return $img;
+        }
     }
 }
