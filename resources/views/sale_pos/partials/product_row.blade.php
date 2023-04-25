@@ -8,7 +8,8 @@
          $Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
             if($Variation){
                 $stockLines=\App\Models\AddStockLine::where('variation_id',$Variation->id)->whereColumn('quantity',">",'quantity_sold')->first();
-                $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
+                $default_sell_price=$stockLines?($stockLines->sell_price == 0? $Variation->default_sell_price : $stockLines->sell_price )  : $Variation->default_sell_price;
+                // $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
                 $default_purchase_price=$stockLines?$stockLines->purchase_price : $Variation->default_purchase_price;
 
             }
@@ -134,7 +135,7 @@
         <input type="text" class="form-control sell_price"
             name="transaction_sell_line[{{$loop->index + $index}}][sell_price]" required
             @if(!auth()->user()->can('product_module.sell_price.create_and_edit')) readonly @elseif(env('IS_SUB_BRANCH',false)) readonly @endif
-        value="@if(isset($default_sell_price)){{@num_format(($default_sell_price+$sum_extensions_sell_prices) / $exchange_rate)}}@else{{0}}@endif">
+        value="@if(isset($default_sell_price)){{@num_format(($default_sell_price) / $exchange_rate)}}@else{{0}}@endif">
     </td>
     <td style="width: @if(session('system_mode')  != 'restaurant') 13% @else 14% @endif">
         <div class="input-group">
