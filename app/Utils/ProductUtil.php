@@ -1031,6 +1031,7 @@ class ProductUtil extends Util
 
         $keep_lines_ids = [];
         $batch_numbers=[];
+        $qty=0;
         foreach ($add_stocks as $line) {
             if (!empty($line['add_stock_line_id'])) {
                 $add_stock = AddStockLine::find($line['add_stock_line_id']);
@@ -1086,6 +1087,7 @@ class ProductUtil extends Util
                 ];
               
                 $add_stock = AddStockLine::create($add_stock_data);
+                $qty =  $this->num_uf($line['quantity']);
                 if($add_stock){
                     if(!empty($line['new_batch_number'])){
                         $add_stock_batch_data = [
@@ -1114,6 +1116,8 @@ class ProductUtil extends Util
                         // $batch_number=$add_stock->batch_number;
                         $add_stock_batch = AddStockLine::create($add_stock_batch_data);
                         $batch_numbers[]=$add_stock_batch->batch_number;
+                        $qty =  $this->num_uf($line['batch_quantity']);
+                $this->updateProductQuantityStore($line['product_id'], $line['variation_id'], $transaction->store_id,  $qty, 0);
 
                         // return $add_stock_batch;
                 }
@@ -1121,9 +1125,10 @@ class ProductUtil extends Util
                 if(isset($line['bounce_purchase_price'])){
                     $product = Product::where('id',$line['product_id'])->update(['purchase_price' =>$line['bounce_purchase_price'] ,'purchase_price_depends' => $line['bounce_purchase_price']]);
                 }
-                $qty =  $this->num_uf($line['quantity']);
                 $keep_lines_ids[] = $add_stock->id;
                 $batch_numbers[]=$add_stock->batch_number;
+                $qty =  $this->num_uf($line['quantity']);
+
                 $this->updateProductQuantityStore($line['product_id'], $line['variation_id'], $transaction->store_id,  $qty, 0);
             }
             if(!empty($line['stock_pricechange'])){
