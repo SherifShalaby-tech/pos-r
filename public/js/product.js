@@ -122,48 +122,29 @@ function getImages() {
 
 $("#submit-btn").on("click", function (e) {
     e.preventDefault();
-    let sku = $("#sku").val();
-    if(sku == null || sku ==""){
-        swal("Error", "sku cant null", "error");
-    }else{
+    if ($("#product-form").valid()) {
+        tinyMCE.triggerSave();
+        document.getElementById("loader").style.display = "block";
+        document.getElementById("content").style.display = "none";
         $.ajax({
-            method: "get",
-            url: "/product/check-sku/" + sku,
-            data: {},
-            success: function (result) {
-                if (!result.success) {
-                    swal("Error", result.msg, "error");
-                }else if (result.success){
-                    getImages()
-                    setTimeout(()=>{
-                        if ($("#product-form").valid()) {
-                            tinyMCE.triggerSave();
-                            document.getElementById("loader").style.display = "block";
-                            document.getElementById("content").style.display = "none";
-                            $.ajax({
-                                type: "POST",
-                                url: $("form#product-form").attr("action"),
-                                data:  $("#product-form").serialize(),
-                                success: function (response) {
-                                    myFunction();
-                                    if (response.success) {
-                                        swal("Success", response.msg, "success");
-                                        $("#sku").val("").change();
-                                        $("#name").val("").change();
-                                        $(".translations").val("").change();
-                                    } else {
-                                        swal("Error", response.msg, "error");
-                                    }
-                                },
-                                error: function (response) {
-                                    myFunction();
-                                    if (!response.success) {
-                                        swal("Error", response.msg, "error");
-                                    }
-                                },
-                            });
-                        }
-                    },500);
+            type: "POST",
+            url: $("form#product-form").attr("action"),
+            data:  $("#product-form").serialize(),
+            success: function (response) {
+                myFunction();
+                if (response.success) {
+                    swal("Success", response.msg, "success");
+                    $("#sku").val("").change();
+                    $("#name").val("").change();
+                    $(".translations").val("").change();
+                } else {
+                    swal("Error", response.msg, "error");
+                }
+            },
+            error: function (response) {
+                myFunction();
+                if (!response.success) {
+                    swal("Error", response.msg, "error");
                 }
             },
         });
