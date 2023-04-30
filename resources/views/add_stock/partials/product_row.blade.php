@@ -1,6 +1,9 @@
-@forelse ($products as $product)
 @php
 $i = $index;
+@endphp
+@forelse ($products as $product)
+@php
+$i=$i+1;
 @endphp
 <tr class="product_row">
     <td class="row_number"></td>
@@ -13,7 +16,8 @@ $i = $index;
         {{$product->product_name}}
         @endif
         <input type="hidden" name="is_batch_product" class="is_batch_product"
-            value="{{$is_batch}}">
+            value="{{isset($is_batch)?$iS_batch:null}}">
+        <input type="hidden" name="row_count" class="row_count" value="{{$i}}">
         <input type="hidden" name="add_stock_lines[{{$i}}][is_service]" class="is_service"
             value="{{$product->is_service}}">
         <input type="hidden" name="add_stock_lines[{{$i}}][product_id]" class="product_id"
@@ -31,9 +35,9 @@ $i = $index;
         
     </td>
     <td>
-        @if($qty)
+        @if($product->qty || $qty)
         <input type="text" class="form-control quantity quantity_{{$i}}" min=1 name="add_stock_lines[{{$i}}][quantity]" required
-        value="{{$qty}}"  index_id="{{$i}}">
+        value="{{$product->qty ?? $qty}}"  index_id="{{$i}}">
         @else
         <input type="text" class="form-control quantity quantity_{{$i}}" min=1 name="add_stock_lines[{{$i}}][quantity]" required
             value="@if(isset($product->quantity)){{@num_format($product->quantity)}}@else{{1}}@endif"  index_id="{{$i}}">

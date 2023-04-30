@@ -7,7 +7,9 @@
         @php
          $Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
             if($Variation){
-                $stockLines=\App\Models\AddStockLine::where('variation_id',$Variation->id)->whereColumn('quantity',">",'quantity_sold')->first();
+                $stockLines=\App\Models\AddStockLine::where('sell_price','>',0)->where('variation_id',$Variation->id)->where('batch_number',$product->batch_number)->whereColumn('quantity',">",'quantity_sold')->first();
+
+                // $stockLines=\App\Models\AddStockLine::where('variation_id',$Variation->id)->where('batch_number',$product->batch_number)->whereColumn('quantity',">",'quantity_sold')->first();
                 // $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
                 $default_sell_price=$stockLines?($stockLines->sell_price == 0? $Variation->default_sell_price : $stockLines->sell_price )  : $Variation->default_sell_price;
                 $default_purchase_price=$stockLines?$stockLines->purchase_price : $Variation->default_purchase_price;
@@ -15,6 +17,7 @@
             }
 
         @endphp
+        {{-- {{$stockLines}} --}}
         @if($product->variation_name != "Default")
             <b>{{$product->variation_name}}</b> {{$product->sub_sku}}
         @else
@@ -139,23 +142,6 @@
     </td>
     <td style="width: @if(session('system_mode')  != 'restaurant') 13% @else 14% @endif">
         <div class="input-group">
-            @if(count(($product_discount_details))>0)
-                @foreach ($product_discount_details as $key => $value) 
-                    <input type="hidden" class="form-control product_discount_type discount_type{{$product->product_id}}"
-                   name="transaction_sell_line[{{$loop->index + $index}}][product_discount_type]"
-                   value="@if(!empty($value->discount_type)){{$value->discount_type}}@else{{0}}@endif">
-                    <input type="hidden" class="form-control product_discount_value discount_value{{$product->product_id}}"
-                   name="transaction_sell_line[{{$loop->index + $index}}][product_discount_value]"
-                   value="@if(!empty($value->discount)){{@num_format($value->discount)}}@else{{0}}@endif">
-                <div class="input-group">
-                    <button type="button" class="btn btn-lg" id="search_button"><span class="plus_sign_text"></span></button>
-                    <input type="text" class="form-control product_discount_amount discount_amount{{$product->product_id}}"
-                        name="transaction_sell_line[{{$loop->index + $index}}][product_discount_amount]" readonly
-                        value="@if(!empty($value->discount)){{@num_format($value->discount)}}@else{{0}}@endif">
-                </div>
-                @break
-                @endforeach
-            @else
             <div class="input-group">
                 <input type="hidden" class="form-control product_discount_type  discount_type{{$product->product_id}}"
                    name="transaction_sell_line[{{$loop->index + $index}}][product_discount_type]"
@@ -168,7 +154,6 @@
                         name="transaction_sell_line[{{$loop->index + $index}}][product_discount_amount]" readonly
                         value="@if(!empty($product_discount_details->discount)){{@num_format($product_discount_details->discount)}}@else{{0}}@endif">
                         </div>
-            @endif
         </div>
     </td>
     <td style="width: @if(session('system_mode')  != 'restaurant') 12% @else 14% @endif ">
@@ -178,7 +163,7 @@
                 || auth()->user()->can('sp_module.sales_promotion.delete'))
                 <select class="custom-select custom-select-sm discount_category discount_category{{$product->product_id}}" style="height:30% !important">
                     <option selected>select</option>
-                    @foreach($product_discount_details as $discount)
+                    @foreach($product_all_discounts_categories as $discount)
                             <option value="{{$discount->id}}">{{$discount->discount_category}}</option>
                     @endforeach
                 </select>
@@ -186,7 +171,7 @@
             <select class="custom-select custom-select-sm discount_category discount_category{{$product->product_id}}" style="height:30% !important"
                  disabled="disabled">
                 <option selected>select</option>
-                @foreach($product_discount_details as $discount)
+                @foreach($product_all_discounts_categories as $discount)
                         <option value="{{$discount->id}}">{{$discount->discount_category}}</option>
                 @endforeach
             </select>
