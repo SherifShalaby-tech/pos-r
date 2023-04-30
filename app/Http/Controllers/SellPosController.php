@@ -1013,7 +1013,7 @@ class SellPosController extends Controller
     {
         if ($request->ajax()) {
             $weighing_scale_barcode = $request->input('weighing_scale_barcode');
-            $batch_number = $request->input('batch_number');
+            $batch_number_id = $request->input('batch_number_id');
 
             $extensions_ids = $request->input('extensions_ids');
             $extensions_quantity = $request->input('extensions_quantity');
@@ -1063,7 +1063,7 @@ class SellPosController extends Controller
             }
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
-                $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id,$batch_number);
+                $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id, $batch_number_id);
                 $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
                 $product_all_discounts_categories = $this->productUtil->getProductAllDiscountCategories($product_id);
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
