@@ -43,9 +43,9 @@ $exchange_rate = !empty($sale->exchange_rate) ? $sale->exchange_rate : 1;
                         <span class="dripicons-minus"></span>
                     </button>
                 </span>
-                <input type="text" class="form-control quantity  qty numkey input-number" min="0.01" step="any"
+                <input type="text" class="form-control quantity  qty numkey input-number" step="any"
                     name="transaction_sell_line[{{ $loop->index }}][quantity]" required
-                    value="@if (isset($product->quantity)) {{ @num_format($product->quantity) }}@else{{ 1 }} @endif">
+                    value="@if (isset($product->quantity)) {{ preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity) }}@else{{ 1 }} @endif">
                 <span class="input-group-btn">
                     <button type="button" class="btn btn-success plus">
                         <span class="dripicons-plus"></span>

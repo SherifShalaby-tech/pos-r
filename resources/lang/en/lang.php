@@ -12,7 +12,7 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'numbers_length_after_dot' => 'Number Of Digits',
     'manufacturers' => 'Manufacturers',
     'add_manufacturer' => 'Add New Manufacturer',
     'edit_manufacturer' => 'Edit Manufacturer',

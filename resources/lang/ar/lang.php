@@ -12,7 +12,7 @@ return [
     | these language lines according to your application's requirements.
     |
     */
-
+    'numbers_length_after_dot' => 'الكسور',
     'manufacturers' => 'المصنعين',
     'add_manufacturer' => 'اضافة مصنع جديد',
     'edit_manufacturer' => 'تعديل مصنع',

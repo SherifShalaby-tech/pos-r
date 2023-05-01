@@ -238,7 +238,7 @@ $is_first_after_extra=0;
                                     {{ @num_format($line->sell_price) }}</td>
                             @endif
                             <td style="text-align:center;vertical-align:bottom; width: 20%;">
-                                {{ @num_format($line->quantity) }}</td>
+                                {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
                             @if (empty($print_gift_invoice))
                                 <td style="text-align:center;vertical-align:bottom; width: 30%;">
                                     @if ($line->product_discount_type != 'surplus')

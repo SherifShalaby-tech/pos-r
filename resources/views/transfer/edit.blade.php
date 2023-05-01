@@ -83,8 +83,8 @@
                                                 $qty_available = App\Models\ProductStore::where('variation_id', $product->variation_id)->where('store_id', $transfer->sender_store_id)->first();
                                             @endphp
                                             <td>
-                                                <input type="text" class="form-control quantity" min=1 max="{{$qty_available ? $qty_available->qty_available : $product->quantity}}"
-                                                name="transfer_lines[{{$loop->index}}][quantity]" required value="@if(isset($product->quantity)){{$product->quantity}}@else{{1}}@endif">
+                                                <input type="text" class="form-control quantity"  max="{{$qty_available ? preg_match('/\.\d*[1-9]+/', (string)$qty_available->qty_available) ? $qty_available->qty_available : @num_format($qty_available->qty_available) : preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}"
+                                                name="transfer_lines[{{$loop->index}}][quantity]" required value="@if(isset($product->quantity)){{ preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}@else{{1}}@endif">
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control purchase_price"
