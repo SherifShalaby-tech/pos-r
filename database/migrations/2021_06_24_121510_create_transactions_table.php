@@ -24,6 +24,7 @@ class CreateTransactionsTable extends Migration
             $table->unsignedBigInteger('employee_id')->nullable();
             $table->unsignedBigInteger('store_pos_id')->nullable();
             $table->unsignedBigInteger('manufacturing_id')->nullable();
+            $table->foreign('manufacturing_id')->references('id')->on('manufacturings')->onDelete('cascade');
             $table->string('type')->nullable();
             $table->string('sub_type')->nullable();
             $table->enum('status', ['received', 'pending', 'ordered', 'final', 'draft', 'sent_admin', 'sent_supplier', 'partially_received', 'approved', 'rejected', 'expired', 'valid', 'declined', 'send_the_goods', 'compensated', 'canceled']);

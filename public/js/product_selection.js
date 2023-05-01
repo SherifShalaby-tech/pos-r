@@ -60,6 +60,7 @@ $(document).ready(function () {
             { data: "image", name: "image" },
             { data: "variation_name", name: "products.name" },
             { data: "sub_sku", name: "variations.sub_sku" },
+            { data: "is_service", name: "products.is_service" },
             { data: "product_class", name: "product_classes.name" },
             { data: "category", name: "categories.name" },
             { data: "sub_category", name: "categories.name" },
@@ -171,6 +172,7 @@ $(document).on("change", ".product_selected", function () {
         var obj = {};
         obj["product_id"] = this_product_id;
         obj["variation_id"] = this_variation_id;
+        obj["qty"] = 1;
         product_selected.push(obj);
     } else {
         product_selected = product_selected.filter(function (item) {

@@ -172,7 +172,10 @@ class Transaction extends Model  implements HasMedia
     {
         return $this->belongsTo(CustomerSize::class);
     }
-
+    public function manufacturing()
+    {
+        return $this->belongsTo(Manufacturing::class);
+    }
     public function transaction_payments()
     {
         return $this->hasMany(TransactionPayment::class);
