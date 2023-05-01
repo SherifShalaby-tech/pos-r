@@ -17,7 +17,7 @@
     </td>
     @endif
     <td>
-        <input type="text" class="form-control quantity" min=1
+        <input type="text" class="form-control quantity"
             name="purchase_order_lines[{{$loop->index + $index}}][quantity]" required
             value="@if(isset($product->quantity)){{preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}@else{{1}}@endif">
     </td>
