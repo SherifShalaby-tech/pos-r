@@ -45,7 +45,7 @@
         @if(!empty($product->variation->unit)) {{$product->variation->unit->name}} @endif
     </td>
     <td>
-        <input type="text" class="form-control quantity" min=1 name="remove_stock_lines[{{$loop->index}}][quantity]"
+        <input type="text" class="form-control quantity" name="remove_stock_lines[{{$loop->index}}][quantity]"
             required value="{{preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}">
         <input type="hidden" class="form-control sub_total" min=1 name="remove_stock_lines[{{$loop->index}}][sub_total]"
             required value="{{$product->sub_total}}">
