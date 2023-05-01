@@ -90,7 +90,7 @@
                                                     </td>
                                                     <td>
                                                         @if (isset($line->quantity))
-                                                            {{ @num_format($line->quantity) }}@else{{ 1 }}
+                                                            {{preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}@else{{ 1 }}
                                                         @endif
                                                     </td>
                                                     <td>

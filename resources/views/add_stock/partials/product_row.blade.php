@@ -24,7 +24,7 @@ $i = $index;
     </td>
     <td>
         <input type="text" class="form-control quantity quantity_{{$i}}" min=1 name="add_stock_lines[{{$i}}][quantity]" required
-            value="@if(isset($product->quantity)){{@num_format($product->quantity)}}@else{{1}}@endif"  index_id="{{$i}}">
+            value="@if(isset($product->quantity)){{preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}@else{{1}}@endif"  index_id="{{$i}}">
     </td>
     <td>
         {{$product->units->pluck('name')[0]??''}}
