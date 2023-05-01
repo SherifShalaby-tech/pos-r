@@ -36,5 +36,4 @@
     </td>
 </tr>
 @empty
-
 @endforelse
