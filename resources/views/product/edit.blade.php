@@ -175,7 +175,7 @@
                                     <div class="col-md-4">
                                         {!! Form::label('multiple_colors', __('lang.color'), []) !!}
                                         <div class="input-group my-group">
-                                            {!! Form::select('multiple_colors[]', $colors, $product->multiple_colors, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'disabled' => $product->type == 'variable' ? true : false, 'style' => 'width: 80%', 'multiple', 'id' => 'multiple_colors']) !!}
+                                            {!! Form::select('multiple_colors[]', $colors, $product->multiple_colors, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'disabled' => false, 'style' => 'width: 80%', 'multiple', 'id' => 'multiple_colors']) !!}
                                             <span class="input-group-btn">
                                                 @can('product_module.color.create_and_edit')
                                                     <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
@@ -463,6 +463,7 @@
                                             <th style="width: 20%;">@lang('lang.discount_type')</th>
                                             <th style="width: 15%;">@lang('lang.discount')</th>
                                             <th style="width: 7%;">@lang('lang.discount_category')</th>
+                                            <th style="width: 5%;"></th>
                                             <th style="width: 20%;">@lang('lang.discount_start_date')</th>
                                             <th style="width: 20%;">@lang('lang.discount_end_date')</th>
                                             <th style="width: 20%;">@lang('lang.customer_type') <i class="dripicons-question" data-toggle="tooltip"
@@ -576,8 +577,8 @@
                                                 <th>@lang('lang.unit')</th>
                                                 <th>@lang('lang.number_vs_base_unit')</th>
                                                 {{-- @if($product->is_service) hide @endif --}}
-                                                <th class="purchase_price_th @if(empty($is_service)) hide @endif">@lang('lang.purchase_price')</th>
-                                                <th class="sell_price_th @if(empty($is_service)) hide @endif">@lang('lang.sell_price')</th>
+                                                <th class="purchase_price_th @if(isset($product->is_service) && $product->is_service == 0) hide @endif">@lang('lang.purchase_price')</th>
+                                                <th class="sell_price_th @if(isset($product->is_service) && $product->is_service == 0) hide @endif">@lang('lang.sell_price')</th>
                                                 <th><button type="button" class="btn btn-success btn-xs add_row mt-2"><i
                                                             class="dripicons-plus"></i></button></th>
                                             </tr>
@@ -587,6 +588,7 @@
                                                 @include('product.partial.edit_variation_row', [
                                                     'row_id' => $loop->index,
                                                     'item' => $item,
+                                                    'is_service' => $product->is_service,
                                                 ])
                                             @endforeach
                                         </tbody>

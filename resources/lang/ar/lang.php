@@ -1358,5 +1358,5 @@ return [
     'new_batch'=>'رقم التشغيلة الجديدة',
     'watsapp_numbers'=>'رقم واتساب للتواصل',
 
-
+    'permenant'=>'دائم',
 ];

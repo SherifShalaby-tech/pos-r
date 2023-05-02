@@ -101,7 +101,34 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
     </div>
 
     <div id="cropped_images"></div>
-
+    @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+        <div class="col-md-4">
+            {!! Form::label('multiple_units', __('lang.unit'), []) !!}
+            <div class="input-group my-group">
+                {!! Form::select('multiple_units[]', $units, !empty($recent_product) ? $recent_product->multiple_units : false, ['class' => 'clear_input_form selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'multiple_units']) !!}
+                <span class="input-group-btn">
+                    @can('product_module.unit.create_and_edit')
+                        <button class="btn-modal btn btn-default bg-white btn-flat"
+                            data-href="{{ action('UnitController@create') }}?quick_add=1" data-container=".view_modal"><i
+                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                    @endcan
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            {!! Form::label('multiple_colors', __('lang.color'), []) !!}
+            <div class="input-group my-group">
+                {!! Form::select('multiple_colors[]', $colors, !empty($recent_product) ? $recent_product->multiple_colors : false, ['class' => 'clear_input_form selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'multiple_colors']) !!}
+                <span class="input-group-btn">
+                    @can('product_module.color.create_and_edit')
+                        <button class="btn-modal btn btn-default bg-white btn-flat"
+                            data-href="{{ action('ColorController@create') }}?quick_add=1" data-container=".view_modal"><i
+                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                    @endcan
+                </span>
+            </div>
+        </div>
+    @endif
     <div class="col-md-4">
         {!! Form::label('multiple_sizes', __('lang.size'), []) !!}
         <div class="input-group my-group">
@@ -313,6 +340,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
                 <th style="width: 20%;">@lang('lang.discount_type')</th>
                 <th style="width: 15%;">@lang('lang.discount')</th>
                 <th style="width: 10%;">@lang('lang.discount_category')</th>
+                <th style="width: 5%;"></th>
                 <th style="width: 20%;">@lang('lang.discount_start_date')</th>
                 <th style="width: 20%;">@lang('lang.discount_end_date')</th>
                 <th style="width: 20%;">@lang('lang.customer_type') <i class="dripicons-question" data-toggle="tooltip"
@@ -401,7 +429,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
                     <th>@lang('lang.grade')</th>
                     <th>@lang('lang.unit')</th>
                     <th>@lang('lang.number_vs_base_unit')</th>
-                    <th class="purchase_price_th @if(empty($is_service)) hide @endif">@lang('lang.purchase_price')</th>
+                    <th class="purchase_price_th  @if(empty($is_service)) hide @endif">@lang('lang.purchase_price')</th>
                     <th class="sell_price_th @if(empty($is_service)) hide @endif">@lang('lang.sell_price')</th>
                     <th><button type="button" class="btn btn-success btn-xs add_row mt-2"><i
                                 class="dripicons-plus"></i></button></th>
