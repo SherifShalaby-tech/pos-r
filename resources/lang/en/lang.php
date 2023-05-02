@@ -22,8 +22,6 @@ return [
     'annual_incentive' => 'Annual Incentive',
     'recognition' => 'Recognition',
     'other_reward' => 'Other Reward',
-
-
     'numbers_length_after_dot' => 'Number Of Digits',
     'manufacturers' => 'Manufacturers',
     'add_manufacturer' => 'Add New Manufacturer',
