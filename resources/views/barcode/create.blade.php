@@ -12,7 +12,7 @@
                         </div>
                         {!! Form::open(['url' => '#', 'method' => 'post', 'id' => 'preview_setting_form', 'onsubmit' => 'return false']) !!}
                         <div class="card-body">
-                            <input type="hidden" name="is_add_stock" id="is_add_stock" value="1">
+                            {{-- <input type="hidden" name="is_add_stock" id="is_add_stock" value="1"> --}}
                             <input type="hidden" name="row_count" id="row_count" value="0">
                             <div class="row">
                                 <div class="col-md-2"></div>

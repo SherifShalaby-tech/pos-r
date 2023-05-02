@@ -14,6 +14,9 @@
 
 @endsection
 @section('content')
+    @php
+    $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
+    @endphp
     <section class="forms pos-section no-print">
         <div class="container-fluid">
 
@@ -220,27 +223,30 @@
                                                 <thead>
                                                     <tr>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 18% @else 20% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 16% @else 18% @endif; font-size: 12px !important;">
                                                             @lang('lang.product')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 18% @else 20% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 18% @endif; font-size: 12px !important;">
                                                             @lang('lang.quantity')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 16% @else 15% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 14% @else 14% @endif; font-size: 12px !important;">
                                                             @lang('lang.price')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 13% @else 15% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 11% @else 14% @endif; font-size: 12px !important;">
                                                             @lang('lang.discount')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 10% @else 15% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 11% @else 14% @endif; font-size: 12px !important;">
+                                                            @lang('lang.category_discount')</th>
+                                                        <th
+                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
                                                             @lang('lang.sub_total')</th>
                                                         @if (session('system_mode') != 'restaurant')
                                                             <th
-                                                                style="width: @if (session('system_mode') != 'restaurant') 10% @else 15% @endif; font-size: 12px !important;">
+                                                                style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
                                                                 @lang('lang.current_stock')</th>
                                                         @endif
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 10% @else 15% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
                                                             @lang('lang.action')</th>
                                                     </tr>
                                                 </thead>
@@ -523,13 +529,16 @@
                                                 </a>
                                             </li>
                                             <li class="nav-item">
-                                                <a target="_blank"
+                                                <a target="_blank" href="https://api.whatsapp.com/send?phone={{$watsapp_numbers}}" id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
+                                                    style="background-image:  url('{{asset('images/watsapp.jpg')}}');background-size: 40px;" class="btn no-print">
+                                                </a>
+                                                {{-- <a target="_blank"
                                                     href="{{ action('ContactUsController@getUserContactUs') }}"
                                                     id="contact_us_btn" data-toggle="tooltip"
                                                     data-title="@lang('lang.contact_us')"
                                                     style="background-image: url('{{ asset('images/handshake.jpg') }}');"
                                                     class="btn no-print">
-                                                </a>
+                                                </a> --}}
                                             </li>
                                             <li class="nav-item"><button class="btn-danger btn-sm hide"
                                                     id="power_off_btn"><i class="fa fa-power-off"></i></button></li>

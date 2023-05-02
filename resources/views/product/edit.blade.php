@@ -462,6 +462,7 @@
                                         <tr>
                                             <th style="width: 20%;">@lang('lang.discount_type')</th>
                                             <th style="width: 15%;">@lang('lang.discount')</th>
+                                            <th style="width: 7%;">@lang('lang.discount_category')</th>
                                             <th style="width: 20%;">@lang('lang.discount_start_date')</th>
                                             <th style="width: 20%;">@lang('lang.discount_end_date')</th>
                                             <th style="width: 20%;">@lang('lang.customer_type') <i class="dripicons-question" data-toggle="tooltip"
@@ -574,8 +575,9 @@
                                                 <th>@lang('lang.grade')</th>
                                                 <th>@lang('lang.unit')</th>
                                                 <th>@lang('lang.number_vs_base_unit')</th>
-                                                <th class="purchase_price_th @if($product->is_service) hide @endif">@lang('lang.purchase_price')</th>
-                                                <th class="sell_price_th @if($product->is_service) hide @endif">@lang('lang.sell_price')</th>
+                                                {{-- @if($product->is_service) hide @endif --}}
+                                                <th class="purchase_price_th @if(empty($is_service)) hide @endif">@lang('lang.purchase_price')</th>
+                                                <th class="sell_price_th @if(empty($is_service)) hide @endif">@lang('lang.sell_price')</th>
                                                 <th><button type="button" class="btn btn-success btn-xs add_row mt-2"><i
                                                             class="dripicons-plus"></i></button></th>
                                             </tr>

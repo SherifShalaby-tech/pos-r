@@ -177,6 +177,7 @@
 <script>
     $('.datepicker').datepicker({
         language: '{{session('language')}}',
+        todayHighlight: true,
     });
     $('.selectpicker').selectpicker('render');
     tinymce.init({
