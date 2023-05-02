@@ -12,6 +12,19 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+    'salary' => 'الراتب',
+    'paid_leave' => 'إجازة مدفوعة',
+    'paid_annual_leave' => 'إجازة سنوية مدفوعة',
+    'payment_type' => 'طريقة الدفع',
+    'wages_and_compensations' => 'الأجور ',
+    'commission_%' => 'عمولة٪',
+    'commission' => 'عمولة',
+    'annual_bonus' => 'مكافأة سنوية',
+    'annual_incentive' => 'حوافز سنوية',
+    'recognition' => 'مكافأة تقديرية',
+    'other_reward' => 'مكافآت أخرى',
+
+
     'numbers_length_after_dot' => 'الكسور',
     'manufacturers' => 'المصنعين',
     'add_manufacturer' => 'اضافة مصنع جديد',
