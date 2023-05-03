@@ -672,7 +672,6 @@
             let new_price = 0;
             var total_sell_price = 0;
             $("#sale_promotion_table > tbody > tr").each((ele, tr) => {
-                let purchase_price = __read_number($(tr).find(".purchase_price"));
                 let sell_price = __read_number($(tr).find(".sell_price"));
                 let qty = __read_number($(tr).find(".qty"));
                 total_sell_price += sell_price * qty;
@@ -694,6 +693,13 @@
             $(".start_date").val(null);
             $(".end_date").prop('disabled', (i, v) => !v);
             $(".end_date").val(null);
+        });
+        $(document).on('change','.qty',function(){
+            let tr = $(this).closest("tr");
+            let qty=parseInt($(this).val());
+            let sell_price = __read_number($(tr).find(".sell_price"));
+            let newsellprice=qty*sell_price;
+            $(tr).find('td:eq(4)').text(newsellprice);
         });
     </script>
 @endsection

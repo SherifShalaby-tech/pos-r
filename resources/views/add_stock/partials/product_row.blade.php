@@ -27,13 +27,7 @@ $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->fi
             value="{{$product->variation_id}}">
     </td>
     <td>
-        {{-- @if($sku_sub)
-            {{$sku_sub}}
-            <input type="hidden" name="add_stock_lines[{{$i}}][sku_sub]" value="{{$sku_sub}}">
-        @else --}}
-            {{$product->sub_sku}}
-        {{-- @endif --}}
-        
+        {{$product->sub_sku}}
     </td>
     <td>
         {{-- @if($product->qty || $qty)
@@ -43,7 +37,7 @@ $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->fi
         <input type="text" class="form-control quantity quantity_{{$i}}" min=1 name="add_stock_lines[{{$i}}][quantity]" required
             value="@if(isset($product->quantity)){{@num_format($product->quantity)}}@else{{1}}@endif"  index_id="{{$i}}">
         @endif --}}
-        <input type="text" class="form-control quantity quantity_{{$i}}" data-val="0" min=1 name="add_stock_lines[{{$i}}][quantity]" required
+        <input type="text" class="form-control quantity quantity_{{$i}}" data-val="0"  name="add_stock_lines[{{$i}}][quantity]" required
             value="0"  index_id="{{$i}}">
     </td>
     <td>
