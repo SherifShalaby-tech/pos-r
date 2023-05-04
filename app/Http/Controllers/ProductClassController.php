@@ -132,12 +132,12 @@ class ProductClassController extends Controller
             $class = ProductClass::where('id', $id)->first();
             $class->update($data);
 
-            if ($request->has('uploaded_image_name')) {
-                if (!empty($request->input('uploaded_image_name'))) {
-                    $class->clearMediaCollection('product_class');
-                    $class->addMediaFromDisk($request->input('uploaded_image_name'), 'temp')->toMediaCollection('product_class');
-                }
-            }
+//            if ($request->has('uploaded_image_name')) {
+//                if (!empty($request->input('uploaded_image_name'))) {
+//                    $class->clearMediaCollection('product_class');
+//                    $class->addMediaFromDisk($request->input('uploaded_image_name'), 'temp')->toMediaCollection('product_class');
+//                }
+//            }
             if ($request->has("cropImages") && count($request->cropImages) > 0) {
                 foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
                     $class->clearMediaCollection('product_class');

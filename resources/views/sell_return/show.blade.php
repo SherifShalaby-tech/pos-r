@@ -83,7 +83,7 @@
                                     {{$line->variation->sub_sku}}
                                 </td>
                                 <td>
-                                    @if(isset($line->quantity_returned)){{@num_format($line->quantity_returned)}}@else{{0}}@endif
+                                    @if(isset($line->quantity_returned)){{preg_match('/\.\d*[1-9]+/', (string)$line->quantity_returned) ? $line->quantity_returned : @num_format($line->quantity_returned)}}@else{{0}}@endif
                                 </td>
                                 <td>
                                     @if(isset($line->sell_price)){{@num_format($line->sell_price)}}@else{{0}}@endif

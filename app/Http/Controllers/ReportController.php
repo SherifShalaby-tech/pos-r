@@ -529,7 +529,7 @@ class ReportController extends Controller
                     }
 
                     $received_currency_id = $row->received_currency_id ?? $default_currency_id;
-                    return '<span data-currency_id="' . $received_currency_id . '">' . $final_total . '</span>';
+                    return '<span data-currency_id="' . $received_currency_id . '">' . $this->commonUtil->num_f($final_total) . '</span>';
                 })
                 ->addColumn('paid', function ($row) use ($request, $default_currency_id) {
                     $amount_paid = 0;

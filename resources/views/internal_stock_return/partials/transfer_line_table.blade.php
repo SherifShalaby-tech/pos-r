@@ -31,7 +31,7 @@
                         {{$product->variation->sub_sku}}
                     </td>
                     <td style="border: 1px solid #999;">
-                        @if(isset($product->quantity)){{@num_format($product->quantity)}}@else{{0}}@endif
+                        @if(isset($product->quantity)){{preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity) }}@else{{0}}@endif
                     </td>
                     <td style="border: 1px solid #999;">
                         @if(isset($product->purchase_price)){{@num_format($product->purchase_price)}}@else{{0}}@endif

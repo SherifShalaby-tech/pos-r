@@ -279,7 +279,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="cropped_images"></div>
+
                             <div class="col-10 offset-1">
                                 <div class="preview-edit-container">
                                     @if($category)
@@ -299,7 +299,7 @@
                 </div>
             </div>
         </div>
-
+        <div id="cropped_images"></div>
         <div class="modal-footer">
             <button id="sub-button-form" class="btn btn-primary">@lang( 'lang.update' )</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>

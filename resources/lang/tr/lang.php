@@ -12,6 +12,19 @@ return [
     | these language lines according to your application's requirements.
     |
     */
+
+    'salary' => 'Maaş',
+    'paid_leave' => 'Ücretli izin',
+    'paid_annual_leave' => 'Ücretli yıllık izin',
+    'payment_type' => 'Ödeme şekli',
+    'wages_and_compensations' => 'Ücretler ve Tazminatlar',
+    'commission' => 'Ücretler ve Tazminatlar',
+    'annual_bonus' => 'Yıllık Bonus',
+    'annual_incentive' => 'Yıllık teşvik',
+    'recognition' => 'Tanınma',
+    'other_reward' => 'Diğer ödül',
+
+
     'number_vs_base_unit'=>'Birim denklemi',
 
     'dashboard' => 'Gösterge Paneli',
