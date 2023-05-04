@@ -1395,4 +1395,17 @@ return [
 
     'permenant'=>'Permenant',
 
+    'actual_stock' => 'Actual Stock',
+    'shortage' => 'Shortage',
+    'value_of_shortage' => 'Value of Shortage',
+    'total_shortage_value' => 'Total shortage value',
+    'old_stock' => 'Old Stock',
+    'new_stock' => 'New Stock',
+    'adjustment_save' =>'This will change the product stock , please enter admin password to confirm',
+
+    
+    'product_in_adjustment' => 'Product In Adjustment',
+    'view_product_in_adjustment' => 'View Product In Adjustment',
+    'add_product_in_adjustment' => 'Add Product In Adjustment',
+
 ];
