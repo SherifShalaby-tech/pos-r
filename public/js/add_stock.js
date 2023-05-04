@@ -524,7 +524,7 @@ $(document).on("change",".batch_purchase_price", function () {
 $(document).on('focus','.batch_quantity', function(){
     $(this).data('val', $(this).val());
 });
-$(document).on("change", ".batch_quantity",".batch_purchase_price", function () {
+$(document).on("change", ".batch_quantity", function () {
     let tr = $(this).closest("tr");
     let productId=$(this).data('id');
     let current_stock = parseInt($(".current_stock"+productId).val());
