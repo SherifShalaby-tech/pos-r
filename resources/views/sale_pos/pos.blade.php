@@ -281,6 +281,9 @@
                                             <div class="col-sm-4">
                                                 <span class="totals-title">{{ __('lang.items') }}</span><span
                                                     id="item">0</span>
+                                                <br>
+                                                <span class="totals-title  text-dark" style="font-weight:1000">{{ __('lang.quantity') }}</span><span
+                                                id="item-quantity">0</span>
                                             </div>
                                             <div class="col-sm-4">
                                                 <span class="totals-title">{{ __('lang.total') }}</span><span
@@ -304,6 +307,11 @@
                                             <div class="col-sm-4">
                                                 <span class="totals-title">{{ __('lang.Insurance') }}</span><span
                                                     id="delivery-cost">0.00</span>
+                                                <div class=" red">
+                                                    <span class="totals-title red">{{ __('lang.sales_promotion') }}</span><span
+                                                        id="sales_promotion-cost_span">0.00</span>
+                                                    <input type="hidden" id="sales_promotion-cost" value="0">
+                                            </div>
                                             </div>
                                         </div>
                                     </div>

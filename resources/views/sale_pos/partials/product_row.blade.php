@@ -7,7 +7,7 @@
         @php
          $Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
             if($Variation){
-                $stockLines=\App\Models\AddStockLine::where('sell_price','>',0)->where('variation_id',$Variation->id)->where('batch_number',$product->batch_number)->whereColumn('quantity',">",'quantity_sold')->first();
+                $stockLines=\App\Models\AddStockLine::where('sell_price','>',0)->where('variation_id',$Variation->id)->whereColumn('quantity',">",'quantity_sold')->first();
 
                 // $stockLines=\App\Models\AddStockLine::where('variation_id',$Variation->id)->where('batch_number',$product->batch_number)->whereColumn('quantity',">",'quantity_sold')->first();
                 // $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
@@ -28,12 +28,14 @@
             @php
                 $ex='id'.$product->variation_id;
             @endphp
+            @if(!empty($extensions))
             @foreach($extensions as $extension)
                 {{'('.$extension['extensions_quantity'].'-'.$extension['name']. ') '}}
                 @php
                     $ex.='q'.$extension['extensions_quantity'].'e'.$extension['extensions_id'];
                 @endphp
             @endforeach
+            @endif
             <input type="hidden" id="{{$ex}}" name="old_ex" value="1">
         </p>
 
@@ -48,7 +50,7 @@
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][stock_id]" class="batch_number_id"
         value="@if($product->stock_id){{$product->stock_id}}@else {{false}} @endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][price_hidden]" class="price_hidden"
-            value="@if(isset($default_sell_price)){{@num_format(($default_sell_price+$sum_extensions_sell_prices) / $exchange_rate)}}@else{{0}}@endif">
+            value="@if(isset($default_sell_price)){{@num_format(($default_sell_price+(isset($sum_extensions_sell_prices)?$sum_extensions_sell_prices:0)) / $exchange_rate)}}@else{{0}}@endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][purchase_price]" class="purchase_price"
             value="@if(isset($default_purchase_price)){{@num_format($default_purchase_price / $exchange_rate)}}@else{{0}}@endif">
         <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][tax_id]" class="tax_id"
@@ -110,7 +112,11 @@
                     <span class="dripicons-minus"></span>
                 </button>
             </span>
+
+            @if(isset($qty))
+
             <input type="number" class="form-control quantity  qty numkey input-number" step="any"
+
                 autocomplete="off" style="width: 50px;"
                 @if(!$product->is_service)max="{{preg_match('/\.\d*[1-9]+/', (string)$product->qty_available) ? $product->qty_available : @num_format($product->qty_available)}}"@endif
             name="transaction_sell_line[{{$loop->index + $index}}][quantity]"
@@ -158,17 +164,21 @@
                 || auth()->user()->can('sp_module.sales_promotion.delete'))
                 <select class="custom-select custom-select-sm discount_category discount_category{{$product->product_id}}" style="height:30% !important">
                     <option selected>select</option>
+                    @if(!empty($product_all_discounts_categories))
                     @foreach($product_all_discounts_categories as $discount)
                             <option value="{{$discount->id}}">{{$discount->discount_category}}</option>
                     @endforeach
+                    @endif
                 </select>
         @else
             <select class="custom-select custom-select-sm discount_category discount_category{{$product->product_id}}" style="height:30% !important"
                  disabled="disabled">
                 <option selected>select</option>
+                @if(!empty($product_all_discounts_categories))
                 @foreach($product_all_discounts_categories as $discount)
                         <option value="{{$discount->id}}">{{$discount->discount_category}}</option>
                 @endforeach
+                @endif
             </select>
         @endif
     </td>

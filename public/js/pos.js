@@ -676,24 +676,19 @@ function check_for_sale_promotion() {
             if (result.valid) {
                 let  discount = 0;
                 let  sum_item_discount = 0;
-                console.log('sales_promotion-cost_span=>',result.sale_promotion_details)
                 result.sale_promotion_details.forEach((data, index) => {
                     let sum_discount = 0;
                     if (
                         data.type === "package_promotion"
                     ) {
-
+                        console.log("dis", data.actual_sell_price, data.discount_value)
                         if (
                             data.discount_type === "fixed"
                         ) {
                             sum_discount =
-                                ( parseFloat(
-                                        data.actual_sell_price
-                                    ) -
-                                    parseFloat(
-                                        data.discount_value
-                                    ) ) *  parseFloat(data.count_discount_number);
-
+                                (parseFloat(
+                                    data.discount_value
+                                ) ) *  parseFloat(data.count_discount_number);
                         }
                         if (
                             data.discount_type ===
@@ -701,18 +696,17 @@ function check_for_sale_promotion() {
                         ) {
                             let discount_value =
                                 (parseFloat(
-                                        data.actual_sell_price
-                                    ) *
+                                    data.actual_sell_price
+                                ) *
                                     parseFloat(
                                         data.discount_value
                                     )) /
                                 100;
                             sum_discount =
-                                (parseFloat(
-                                    data.actual_sell_price
-                                ) - discount_value ) *  parseFloat(data.count_discount_number);;
+                                ( discount_value ) *  parseFloat(data.count_discount_number);;
 
                         }
+                        console.log("sum_discount",sum_discount)
                         if (data.purchase_condition) {
                             let purchase_condition_amount =
                                 data
@@ -792,7 +786,7 @@ function check_for_sale_promotion() {
                 });
                 console.log('sales_promotion-cost_span=>',sum_item_discount,discount)
                 $("span#sales_promotion-cost_span").text(
-                    __currency_trans_from_en(sum_item_discount+discount, false)
+                    __currency_trans_from_en(discount, false)
                 );
                 __write_number($("#total_pp_discount"), discount);
 
@@ -817,10 +811,11 @@ function calculate_sub_totals() {
     var total_tax_payable = 0;
     var total_coupon_discount = 0;
     var sales_promotion_cost = __read_number($("#sales_promotion-cost"));
-
+    let item_quantity=0;
     var exchange_rate = __read_number($("#exchange_rate"));
     $("#product_table > tbody  > tr").each((ele, tr) => {
         let quantity = __read_number($(tr).find(".quantity"));
+        item_quantity+=quantity;
         let sell_price = __read_number($(tr).find(".sell_price"));
         let price_hidden = __read_number($(tr).find(".price_hidden"));
         let sub_total = 0;
@@ -908,6 +903,8 @@ function calculate_sub_totals() {
     $("#subtotal").text(__currency_trans_from_en(total, false));
     $(".subtotal").text(__currency_trans_from_en(total, false));
     $("#item").text(item_count);
+    
+    $("#item-quantity").text(item_quantity);
     $(".payment_modal_discount_text").text(
         __currency_trans_from_en(product_discount_total, false)
     );

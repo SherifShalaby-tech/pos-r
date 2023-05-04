@@ -58,7 +58,7 @@ class ProductUtil extends Util
         $sub_sku = $sku . $c;
 
         if (in_array($barcode_type, ['C128', 'C39'])) {
-            $sub_sku = $sku . '-' . $c;
+            $sub_sku = $sku . $c;
         }
 
         return $sub_sku;
@@ -168,7 +168,12 @@ class ProductUtil extends Util
                 }
             }
         }
-        $sku = $sku . '-' . $number;
+        // if(strlen($sku)==0){
+        //     $sku = $number;
+        // }else{
+            $sku = $sku . $number;
+            // $sku = $sku . '-' . $number;
+        // }
         $sku_exist = Product::where('sku', $sku)->exists();
 
         if ($sku_exist) {
@@ -257,12 +262,12 @@ class ProductUtil extends Util
             $variation_data['unit_id'] = !empty($request->multiple_units) ? $request->multiple_units[0] : null;
 
             $variation_data['is_dummy'] = 1;
-            $variation_data['default_purchase_price'] = $purchase_price;
-            $variation_data['default_sell_price'] = $sell_price;
+            $variation_data['default_purchase_price'] = $request->purchase_price;
+            $variation_data['default_sell_price'] = $request->sell_price;
 
-            $variation = Variation::create($variation_data);
-            $variation_array[] = ['variation' => $variation, 'variant_stores' =>  []];
-            $keey_variations[] = $variation->id;
+            // $variation = Variation::create($variation_data);
+            // $variation_array[] = ['variation' => $variation, 'variant_stores' =>  []];
+            // $keey_variations[] = $variation->id;
             foreach ($variations as $v) {
                 $c = Variation::where('product_id', $product->id)
                     ->count() + 1;
@@ -749,7 +754,7 @@ class ProductUtil extends Util
             if (!empty($product)) {
                 if (!empty($product->discount_start_date) && !empty($product->discount_end_date)) {
                     //if end date set then check for expiry
-                    if ($product->discount_start_date <= date('Y-m-d') && $product->discount_end_date >= date('Y-m-d')) {
+                    if (($product->discount_start_date <= date('Y-m-d') && $product->discount_end_date >= date('Y-m-d'))||$product->is_discount_permenant=='1') {
                         return $product;
                     } else {
                         return false;
@@ -819,6 +824,7 @@ class ProductUtil extends Util
                 ->whereJsonContains('product_ids', $product_id)
                 ->whereDate('start_date', '<=', date('Y-m-d'))
                 ->whereDate('end_date', '>=', date('Y-m-d'))
+                ->orWhere('is_discount_permenant','1')
                 ->get();
             foreach ($sales_promotions as $sales_promotion) {
                 if ($sales_promotion->type == 'item_discount') {
@@ -856,6 +862,7 @@ class ProductUtil extends Util
                 ->whereJsonContains('store_ids', $store_id)
                 ->whereDate('start_date', '<=', date('Y-m-d'))
                 ->whereDate('end_date', '>=', date('Y-m-d'))
+                ->orWhere('is_discount_permenant','1')
                 ->get();
             foreach ($sales_promotions as $sales_promotion) {
                 $v_sales_promotion = $this->getSalePromotionDetailsIfValidForThisSaleArray($sales_promotion, $added_products, $qty_array);
@@ -923,15 +930,19 @@ class ProductUtil extends Util
      */
     public function comparePackagePromotionData($package_promotion_qty, $qty_array)
     {
+        $count_discount_array=[];
         foreach ($package_promotion_qty as $product_id => $qty) {
             if (!isset($qty_array[$product_id])) {
-                return false;
+                return 0;
             }
             if ($qty_array[$product_id] < $qty) {
-                return false;
+                return 0;
             }
+
+            $count_discount_for=(int)($qty_array[$product_id]/(float)$qty );
+            array_push($count_discount_array,$count_discount_for);
         }
-        return true;
+        return min($count_discount_array);
     }
 
     //function to compare two array have equal value or not
@@ -1195,7 +1206,7 @@ class ProductUtil extends Util
                                     'batch_number' => $batch['new_batch_number'],
                                     'manufacturing_date' => !empty($batch['batch_manufacturing_date']) ? $this->uf_date($line['manufacturing_date']) : null,
                                     'expiry_date' => !empty($batch['batch_expiry_date']) ? $this->uf_date($line['batch_expiry_date']) : null,
-                                    'expiry_warning' => $line['expiry_warning'],
+                                    'expiry_warning' => $batch['batch_expiry_warning'],
                                     'convert_status_expire' => $line['convert_status_expire'],
                                     'sell_price' => $batch['batch_selling_price'],
                                     'bounce_qty' => $line['bounce_qty'],

@@ -19,7 +19,14 @@ $(document).ready(function () {
             "insert | undo redo |  formatselect | bold italic backcolor  | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat",
         branding: false,
     });
+
+    if ($('#is_service').prop("checked")) {
+        //purchase_price rows
+        $(".purchase_price_th").removeClass('hide');
+        $(".sell_price_th").removeClass('hide');
+    }
 });
+
 $(".different_prices_for_stores_div").slideUp();
 $("#different_prices_for_stores").change(function () {
     if ($(this).prop("checked")) {
@@ -872,4 +879,12 @@ $(document).on("change", "select.extension_id", function () {
             );
         },
     });
+});
+
+
+$(document).on("change","#is_discount_permenant",function () {
+    $(".discount_start_date").prop('disabled', (i, v) => !v);
+    $(".discount_start_date").val(null);
+    $(".discount_end_date").prop('disabled', (i, v) => !v);
+    $(".discount_end_date").val(null);
 });

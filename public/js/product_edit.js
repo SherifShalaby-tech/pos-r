@@ -66,6 +66,7 @@ $(document).on("click", ".add_row", function () {
             name: $("#name").val(),
             purchase_price: $("#purchase_price").val(),
             sell_price: $("#sell_price").val(),
+            is_service: $("#is_service").val(),
         },
         contentType: "html",
         success: function (result) {
@@ -882,4 +883,10 @@ $(document).on("change", "select.extension_id", function () {
             );
         },
     });
+});
+$(document).on("change","#is_discount_permenant",function () {
+    $(".discount_start_date").prop('disabled', (i, v) => !v);
+    $(".discount_start_date").val(null);
+    $(".discount_end_date").prop('disabled', (i, v) => !v);
+    $(".discount_end_date").val(null);
 });

@@ -342,7 +342,7 @@ class AddStockController extends Controller
         ];
         DB::beginTransaction();
         $transaction = Transaction::create($transaction_data);
-        $this->productUtil->createOrUpdateAddStockLines($request->add_stock_lines, $transaction);
+        $this->productUtil->createOrUpdateAddStockLines($request->add_stock_lines, $transaction,$request->batch_row);
 
         if ($request->files) {
             foreach ($request->file('files', []) as $key => $file) {
