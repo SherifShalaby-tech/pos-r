@@ -149,6 +149,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('store/get-dropdown', 'StoreController@getDropdown');
     Route::resource('store', StoreController::class);
     Route::post('user/check-password/{id}', 'UserController@checkPassword');
+    Route::post('user/check-admin-password/{id}', 'UserController@checkAdminPassword');
     Route::get('user/get-dropdown', 'UserController@getDropdown');
     Route::get('user/get-profile', 'UserController@getProfile');
     Route::put('user/update-profile', 'UserController@updateProfile');
@@ -334,6 +335,12 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::resource('customer-balance-adjustment', CustomerBalanceAdjustmentController::class);
     Route::resource('customer-point-adjustment', CustomerPointAdjustmentController::class);
 
+    Route::resource('product-in-adjustment', ProductInAdjustmentsController::class);
+    Route::get('product-in-adjustment-index', 'ProductInAdjustmentsController@index');
+    Route::get('product-in-adjustment-create', 'ProductInAdjustmentsController@create');
+    Route::post('product-in-adjustment-store', 'ProductInAdjustmentsController@store')->name('add_product_adjustment');
+    Route::delete('product-in-adjustment-delete/{id}', 'ProductInAdjustmentsController@delete')->name('delete_product_adjustment');
+    Route::get('product-in-adjustment/get-details/{id}', 'ProductInAdjustmentsController@getDetails');
 
     Route::get('report/get-profit-loss', 'ReportController@getProfitLoss');
     Route::get('report/daily-sales-summary', 'ReportController@getDailySalesSummary');
