@@ -372,7 +372,7 @@ function get_label_product_search_row(
         var store_id = $("#store_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
-
+        var store_pos_id = $("#store_pos_id").val();
         if (edit_row_count !== 0) {
             row_count = edit_row_count;
         } else {
@@ -390,6 +390,7 @@ function get_label_product_search_row(
                 row_count: row_count,
                 variation_id: variation_id,
                 store_id: store_id,
+                store_pos_id : store_pos_id,
                 customer_id: customer_id,
                 currency_id: currency_id,
                 edit_quantity: edit_quantity,
@@ -474,6 +475,7 @@ function get_label_product_row(
 
     // if (add_via_ajax) {
         var store_id = $("#store_id").val();
+        var store_pos_id = $("#store_pos_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
 
@@ -494,6 +496,7 @@ function get_label_product_row(
                 row_count: row_count,
                 variation_id: variation_id,
                 store_id: store_id,
+                store_pos_id : store_pos_id,
                 customer_id: customer_id,
                 currency_id: currency_id,
                 edit_quantity: edit_quantity,
@@ -508,7 +511,7 @@ function get_label_product_row(
                     return;
                 }
                 if(result.success&&(result.html_content==0||result.html_content == '')){
-                    get_ajax_add_row_product(product_id,row_count,variation_id,store_id
+                    get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id
                         ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
                         extensions_sell_prices=null,qty)
                 }else{
@@ -550,6 +553,7 @@ $('#save_btn_product_extension').click(function () {
         let row_count= $('#extension_row_count').val();
         let variation_id= $('#extension_variation_id').val();
         let store_id = $("#store_id").val();
+        var store_pos_id = $("#store_pos_id").val();
         let customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
         var edit_quantity= $('#extension_edit_quantity').val();
@@ -577,17 +581,17 @@ $('#save_btn_product_extension').click(function () {
             calculate_sub_totals();
             $("input#search_product").val("");
             $("input#search_product").focus();
-            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id,customer_id,currency_id
                 ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
                 extensions_sell_prices,qty);
         }else{
-            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id,customer_id,currency_id
                 ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
                 extensions_sell_prices);
         }
 
 });
-function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
+function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id,customer_id,currency_id
                                   ,edit_quantity,weighing_scale_barcode,extensions_ids=[]
                                   ,extensions_quantity=[],extensions_sell_prices=[],qty) {
 
@@ -601,6 +605,7 @@ function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,cus
             row_count: row_count,
             variation_id: variation_id,
             store_id: store_id,
+            store_pos_id : store_pos_id,
             customer_id: customer_id,
             currency_id: currency_id,
             edit_quantity: edit_quantity,
