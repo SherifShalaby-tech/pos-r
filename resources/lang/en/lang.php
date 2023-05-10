@@ -1407,5 +1407,6 @@ return [
     'product_in_adjustment' => 'Product In Adjustment',
     'view_product_in_adjustment' => 'View Product In Adjustment',
     'add_product_in_adjustment' => 'Add Product In Adjustment',
+    'avg_purchase_price' => 'Avg Purchase Price',
 
 ];

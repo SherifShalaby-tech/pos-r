@@ -188,7 +188,7 @@
         <div class="row">
             <div class="col-md-12">
                 
-                <button type="button" value="10" class="badge badge-pill badge-primary column-toggle">
+                <button type="button" value="14" class="badge badge-pill badge-primary column-toggle">
                     @if (session('system_mode') == 'restaurant')
                         @lang('lang.category')
                     @else
@@ -196,54 +196,56 @@
                     @endif
                 </button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="11"
+                    <button type="button" value="15"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
-                    <button type="button" value="12"
+                    <button type="button" value="16"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
                 @endif
-                <button type="button" value="13"
+                <button type="button" value="17"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_history')</button>
-                <button type="button" value="14"
+                <button type="button" value="18"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.batch_number')</button>
-                <button type="button" value="15"
+                <button type="button" value="12"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.selling_price')</button>
-                <button type="button" value="16"
+                <button type="button" value="19"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.tax')</button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="17"
+                    <button type="button" value="20"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
                 @endif
-                <button type="button" value="18"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
-                <button type="button" value="19"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.color')</button>
-                <button type="button" value="20"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
                 <button type="button" value="21"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
+                <button type="button" value="22"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.color')</button>
+                <button type="button" value="23"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
+                <button type="button" value="24"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.grade')</button>
                 @if (empty($page))
                     <button type="button" value="5"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
                 @endif
                 @if (!empty($page))
-                    <button type="button" value="22"
+                    <button type="button" value="25"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
                 @endif
-                <button type="button" value="23"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
-                <button type="button" value="24"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.expiry_date')</button>
-                <button type="button" value="25"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.manufacturing_date')</button>
                 <button type="button" value="26"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
+                <button type="button" value="27"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.expiry_date')</button>
+                <button type="button" value="28"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.manufacturing_date')</button>
+                <button type="button" value="29"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.discount')</button>
                 @can('product_module.purchase_price.view')
-                    <button type="button" value="9"
+                    <button type="button" value="10"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
+                    <button type="button" value="9"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.avg_purchase_price')</button>
                 @endcan
-                <button type="button" value="27"
+                <button type="button" value="30"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.supplier')</button>
-                <button type="button" value="28"
+                <button type="button" value="31"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.active')</button>
             </div>
         </div>
@@ -262,8 +264,12 @@
                     <th>@lang('lang.shortage')</th>
                     <th>@lang('lang.value_of_shortage')</th>
                     @can('product_module.purchase_price.view')
-                        <th>@lang('lang.purchase_price')</th>
+                        <th>@lang('lang.avg_purchase_price')</th>
+                        <th>@lang('lang.purchase_price')</th>  
+                        <th></th>
                     @endcan
+                    <th>@lang('lang.selling_price')</th>
+                    <th></th> 
                     <th>
                         @if (session('system_mode') == 'restaurant')
                             @lang('lang.category')
@@ -277,7 +283,7 @@
                     @endif
                     <th>@lang('lang.purchase_history')</th>
                     <th>@lang('lang.batch_number')</th>
-                    <th>@lang('lang.selling_price')</th>
+                    
                     <th>@lang('lang.tax')</th>
                     @if (session('system_mode') != 'restaurant')
                         <th>@lang('lang.brand')</th>
@@ -330,6 +336,7 @@
             </tfoot>
         </table>
     </div>
+    <input type="hidden" id="des" value="{{\App\Models\System::getProperty('numbers_length_after_dot')}}" />
     <input hidden value="" name="total_shortage_value" id="total_shortage_value">
     <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="btn btn-primary check_pass">Save</button>
     <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="check_pass btn btn-primary"  onclick="printTable()" >Print Table</button>
@@ -453,7 +460,8 @@
                         data: 'current_stock',
                         name: 'current_stock',
                         'render': function (data, type, val, meta){
-                            return '<span type="text" readonly="readonly" class="current_stock" name="current_stock" />'+data+'</span>';
+                            return '<span type="text" readonly="readonly" class="current_stock" name="current_stock" />'+data+'</span> '+
+                           '<input type="hidden"  class="current_stock_hidden"  value="'+data+'">';
                         },
                         className: "current_stock",
                         searchable: false
@@ -462,7 +470,7 @@
                         name: 'actual_stock',
                         // type:  "text",
                         'render': function (data, type, val, meta){
-                            return '<input type="text" class="actual_stock" name="actual_stock"  value="">';
+                            return '<input type="text" class="actual_stock " name="actual_stock"  value="">';
                         },
                         searchable: false,
                         sortable: false
@@ -486,11 +494,51 @@
                     @can('product_module.purchase_price.view')
                         {
                             data: 'avg_purchase_price',
-                            name: 'default_purchase_price',
-                            className: "default_purchase_price",
+                            name: 'avg_purchase_price',
+                            'render': function (data, type, val, meta){
+                            return '<span type="text" readonly="readonly" class="avg_purchase_price" name="avg_purchase_price" />'+data+'</span>';
+                            },
+                            className: "avg_purchase_price",
                             searchable: false
                         },
+
+                        {
+                            data: 'default_purchase_price',
+                            name: 'default_purchase_price',
+                            // className: "default_purchase_price",
+                            'render': function (data, type, val, meta){
+                                return '<input type="text" class="default_purchase_price" name="default_purchase_price"  value="'+data+'">';
+                            },
+                            searchable: false
+                        },
+                        {
+                            data: 'default_purchase_price',
+                            name: 'default_purchase_price',
+                            // className: "default_purchase_price",
+                            'render': function (data, type, val, meta){
+                                return '<input hidden type="text" class="hidden_default_purchase_price"  value="'+data+'">';
+                            },
+                            searchable: false,
+                            // visible : false,
+                        },
                     @endcan
+                    {
+                        data: 'default_sell_price',
+                        name: 'variations.default_sell_price',
+                        'render': function (data, type, val, meta){
+                                return '<input type="text" class="default_sell_price" name="default_sell_price"  value="'+data+'">';
+                        },
+                    },
+                    {
+                            data: 'default_sell_price',
+                            name: 'default_sell_price',
+                            // className: "default_purchase_price",
+                            'render': function (data, type, val, meta){
+                                return '<input hidden type="text" class="hidden_default_sell_price"  value="'+data+'">';
+                            },
+                            searchable: false,
+                            // visible : false,
+                        },
                     {
                         data: 'product_class',
                         name: 'product_classes.name'
@@ -511,10 +559,7 @@
                         data: 'batch_number',
                         name: 'add_stock_lines.batch_number'
                     },
-                    {
-                        data: 'default_sell_price',
-                        name: 'variations.default_sell_price'
-                    },
+                    
                     {
                         data: 'tax',
                         name: 'taxes.name'
@@ -782,36 +827,55 @@
 
             // function to update the total value in the HTML element
             function updateTotal() {
+                // loop through all the valid rows and calculate the sum of their shortage values
+                var sum = 0;
+                $("#product_table tbody tr").each(function() {
+                    var shortage_val = parseFloat($(this).find(".shortage_value").text());
+                    if (!isNaN(shortage_val)) {
+                        sum += shortage_val;
+                    }
+                });
+                total = sum;
+                
+                // update the total value in the HTML element
                 const totalElement = document.getElementById('total');
                 const totalElementinput = document.getElementById('total_shortage_value');
-                totalElement.textContent = total;
-                totalElementinput.value = total;
+                totalElement.textContent = total.toFixed(2);
+                totalElementinput.value = total.toFixed(2);
             }
 
             // function to calculate the end value for each row and update the total
-            function calculateTotal() {
-                total = 0;
-                $("#product_table tbody tr").each(function() {
-                var current_stock = parseFloat($(this).find(".current_stock").text().replace(",", ""));
-                var actual_stock = parseFloat($(this).find(".actual_stock").val());
-                var purchase_price = parseFloat($(this).find(".default_purchase_price").text().replace(",", ""));
-                var shortage = (current_stock - actual_stock).toFixed(2);
-                var shortage_val =( shortage * purchase_price).toFixed(2);
-                if (!isNaN(shortage_val)) {
-                    total += parseFloat(shortage_val);
-                    $(this).find(".shortage").text(shortage);
-                    $(this).find(".shortage_value").text(shortage_val);
+            function calculateTotal(tr) {
+                // total = 0;
+                // var tr = $(this).closest('tr');
+                var des = document.getElementById("des").value;
+                console.log(tr);
+                var current_stock = __read_number(tr.find(".current_stock_hidden"));
+                var actual_stock = tr.find(".actual_stock").val();
+                var purchase_price = parseFloat(tr.find(".avg_purchase_price").text()).toFixed(2);
+                var shortage = 0 ;
+                var shortage_val = 0;
+                if (actual_stock != "") {
+                     shortage = (current_stock - actual_stock);
+                     shortage_val = (current_stock - actual_stock) * purchase_price;
                 }
-                });
+                
+                if (!isNaN(shortage_val)) {
+                    // total += parseFloat(shortage_val);
+                    tr.find(".shortage").text(shortage.toFixed(des));
+                    tr.find(".shortage_value").text(shortage_val.toFixed(2));
+                    console.log("total :"+ total);
+                }
                 updateTotal();
             }
 
-            // calculate the total initially
-            calculateTotal();
+            // // calculate the total initially
+            // calculateTotal();
 
             // add event listener to parent element (table)
             $("#product_table").on("input", ".actual_stock", function() {
-                calculateTotal();
+                var tr = $(this).closest('tr');
+                calculateTotal(tr);
             });
 
             // add event listener to change event on actual_stock input field
@@ -842,20 +906,41 @@
                 var id = $('span[name="product_id"]', this.node()).text();
                 var variation_id = $('span[name="variation_id"]', this.node()).text();
                 console.log(variation_id);
-
                 // Check if actualStock has a value
                 if (actualStock != '') {
-                // Add the required data to the selectedData array
-                var dataObj = {
-                    id: id,
-                    variation_id : variation_id,
-                    current_stock: current_stock,
-                    actual_stock: actualStock,
-                    shortage: shortage,
-                    shortage_value: shortage_value
-                };
-                selectedData.push(dataObj);
+                    // Add the required data to the selectedData array
+                    var dataObj = {
+                        id: id,
+                        variation_id : variation_id,
+                        current_stock: current_stock,
+                        actual_stock: actualStock,
+                        shortage: shortage,
+                        shortage_value: shortage_value
+                    };
+                    selectedData.push(dataObj);
                 }
+                var data = this.data();
+                var purchasePrice = parseFloat($(this.node()).find('.default_purchase_price').val());
+                var sellPrice = parseFloat($(this.node()).find('.default_sell_price').val());
+                var purchasePriceHidden = parseFloat($(this.node()).find('.hidden_default_purchase_price').val());
+                var sellPriceHidden = parseFloat($(this.node()).find('.hidden_default_sell_price').val());
+                console.log("purchasePrice :" + purchasePrice)
+                console.log("purchasePriceHidden :" + purchasePriceHidden)
+                console.log("sellPrice :" + sellPrice)
+                console.log("sellPriceHidden :" + sellPriceHidden)
+                    // Check if either the purchase price or sell price has changed
+                    if (purchasePrice !== purchasePriceHidden || sellPrice !== sellPriceHidden) {
+                        // Create an object with the updated values
+                        var updatedData = {
+                            id: id,
+                            variation_id : variation_id,
+                            default_purchase_price: purchasePrice,
+                            default_sell_price: sellPrice
+                        };
+                        // Add the updated data to the selectedData array
+                        selectedData.push(updatedData);
+                    }
+
             });
 
             // Send the data to the server
