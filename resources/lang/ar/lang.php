@@ -1372,4 +1372,6 @@ return [
     'watsapp_numbers'=>'رقم واتساب للتواصل',
 
     'permenant'=>'دائم',
+
+    'add_sub_category' => 'اضافة قسم فرعى',
 ];

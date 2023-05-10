@@ -31,7 +31,7 @@ $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->fi
     </td>
     <td>
 
-        <input type="text" class="form-control quantity quantity_{{$i}}" data-val="0"  name="add_stock_lines[{{$i}}][quantity]" required
+        <input type="text" class="form-control quantity quantity_{{$i}}" data-val="0"  name="add_stock_lines[{{$i}}][quantity]" required value="0"/>
 
     </td>
     <td>
@@ -60,7 +60,7 @@ $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->fi
             class="current_stock_text current_stock_text{{$product->id}}">@if($current_stock->is_service) {{'-'}} @else @if(isset($current_stock->qty_available)){{@num_format($current_stock->qty_available)}}@else{{0}}@endif @endif</span>
     </td>
     <td>
-        <div class="i-checks"><input name="stock_pricechange" id="active" type="checkbox" class="stock_pricechange stockId{{$i}}" checked value="1"></div>
+        <div class="i-checks"><input name="add_stock_lines[{{$i}}][stock_pricechange]" id="active" type="checkbox" class="stock_pricechange stockId{{$i}}" checked value="1"></div>
     </td>
     <td rowspan="2">
         <button style="margin-top: 33px;" type="button" class="btn btn-danger btn-sx remove_row" data-index="{{$i}}"><i
