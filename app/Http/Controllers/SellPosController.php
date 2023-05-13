@@ -1020,6 +1020,7 @@ class SellPosController extends Controller
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
             $store_id = $request->input('store_id');
+            $store_pos_id = $request->input('store_pos_id');
             $customer_id = $request->input('customer_id');
             $currency_id = $request->input('currency_id');
             $dining_table_id = $request->input('dining_table_id');
@@ -1030,22 +1031,13 @@ class SellPosController extends Controller
             $currency_id = $request->currency_id;
             $currency = Currency::find($currency_id);
             $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id, $request->store_id);
-            
+            $store_pos = StorePos::where('user_id', auth()->id())->first();
+            if($store_pos && $store_pos_id == null ){
+               $store_pos_id = $store_pos->id; 
+            }
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
-            if (empty($variation_id) && !empty($weighing_barcode)) {
-                $product_details = $this->__parseWeighingBarcode($weighing_barcode);
-                if ($product_details['success']) {
-                    $product_id = $product_details['product_id'];
-                    $variation_id = $product_details['variation_id'];
-                    $quantity = $product_details['qty'];
-                    $edit_quantity = $quantity;
-                } else {
-                    $output['success'] = false;
-                    $output['msg'] = $product_details['msg'];
-                    return $output;
-                }
-            }
+            
             if(!empty($extensions_quantity)){
                 $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
             }else{
@@ -1062,6 +1054,34 @@ class SellPosController extends Controller
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id, $batch_number_id);
+                $System=System::where('key','weight_product'.$store_pos_id)->first();
+                if(!$System){
+                    System::Create([
+                        'key' => 'weight_product'.$store_pos_id,
+                        'value' => 0,
+                        'date_and_time' => Carbon::now(),
+                        'created_by' => Auth::id()
+                    ]);
+                }
+
+                $have_weight = System::getProperty('weight_product'.$store_pos_id);
+
+                $quantity =  $have_weight? (float)$have_weight: 1;
+                $edit_quantity = !$products->first()->have_weight ? $request->input('edit_quantity') : $quantity;
+                
+                if (empty($variation_id) && !empty($weighing_barcode) && $products->first()->have_weight != 1) {
+                    $product_details = $this->__parseWeighingBarcode($weighing_barcode);
+                    if ($product_details['success']) {
+                        $product_id = $product_details['product_id'];
+                        $variation_id = $product_details['variation_id'];
+                        $quantity = $product_details['qty'];
+                        $edit_quantity = $quantity;
+                    } else {
+                        $output['success'] = false;
+                        $output['msg'] = $product_details['msg'];
+                        return $output;
+                    }
+                }
                 $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
                 $product_all_discounts_categories = $this->productUtil->getProductAllDiscountCategories($product_id);
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);

@@ -2,21 +2,9 @@
 @section('title', __('lang.product'))
 
 @section('content')
+{{-- <form  id="product_form" method="POST" action="{{route('add_product_adjustment')}}"> --}}
+    {{-- @csrf --}}
     <div class="container-fluid">
-        @if (empty($page))
-            @can('product_module.product.create_and_edit')
-                <a style="color: white" href="{{ action('ProductController@create') }}" class="btn btn-info"><i
-                        class="dripicons-plus"></i>
-                    @lang('lang.add_product')</a>
-            @endcan
-            <a style="color: white" href="{{ action('ProductController@getImport') }}" class="btn btn-primary"><i
-                    class="fa fa-arrow-down"></i>
-                @lang('lang.import')</a>
-        @else
-            <a style="color: white" href="{{ action('AddStockController@getImport') }}" class="btn btn-primary"><i
-                    class="fa fa-arrow-down"></i>
-                @lang('lang.import')</a>
-        @endif
         <div class="card mt-3">
             <div class="col-md-12">
                 <div class="row">
@@ -91,7 +79,18 @@
 ]) !!}
                         </div>
                     </div>
-
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('color_id', __('lang.color') . ':', []) !!}
+                            {!! Form::select('color_id', $colors, request()->color_id, [
+    'class' => 'form-control
+                        filter_product
+                        selectpicker',
+    'data-live-search' => 'true',
+    'placeholder' => __('lang.all'),
+]) !!}
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('size_id', __('lang.size') . ':', []) !!}
@@ -104,7 +103,18 @@
 ]) !!}
                         </div>
                     </div>
-
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('grade_id', __('lang.grade') . ':', []) !!}
+                            {!! Form::select('grade_id', $grades, request()->grade_id, [
+    'class' => 'form-control
+                        filter_product
+                        selectpicker',
+    'data-live-search' => 'true',
+    'placeholder' => __('lang.all'),
+]) !!}
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('tax_id', __('lang.tax') . ':', []) !!}
@@ -120,7 +130,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('store_id', __('lang.store'), []) !!}
-                            {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control filter_product', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                            {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control filter_product', 'data-live-search' => 'true']) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -177,9 +187,8 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <button type="button" value="0"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.image')</button>
-                <button type="button" value="3" class="badge badge-pill badge-primary column-toggle">
+                
+                <button type="button" value="14" class="badge badge-pill badge-primary column-toggle">
                     @if (session('system_mode') == 'restaurant')
                         @lang('lang.category')
                     @else
@@ -187,107 +196,110 @@
                     @endif
                 </button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="4"
+                    <button type="button" value="15"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
-                    <button type="button" value="5"
+                    <button type="button" value="16"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
                 @endif
-                <button type="button" value="6"
+                <button type="button" value="17"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_history')</button>
-                <button type="button" value="7"
+                <button type="button" value="18"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.batch_number')</button>
-                <button type="button" value="8"
+                <button type="button" value="12"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.selling_price')</button>
-                <button type="button" value="9"
+                <button type="button" value="19"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.tax')</button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="10"
+                    <button type="button" value="20"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
                 @endif
-                <button type="button" value="11"
+                <button type="button" value="21"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
-
-                <button type="button" value="13"
+                <button type="button" value="22"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.color')</button>
+                <button type="button" value="23"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
-
+                <button type="button" value="24"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.grade')</button>
                 @if (empty($page))
-                    <button type="button" value="15"
+                    <button type="button" value="5"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
                 @endif
                 @if (!empty($page))
-                    <button type="button" value="16"
+                    <button type="button" value="25"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
                 @endif
-                <button type="button" value="17"
+                <button type="button" value="26"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
-                <button type="button" value="18"
+                <button type="button" value="27"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.expiry_date')</button>
-                <button type="button" value="19"
+                <button type="button" value="28"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.manufacturing_date')</button>
-                <button type="button" value="20"
+                <button type="button" value="29"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.discount')</button>
                 @can('product_module.purchase_price.view')
-                    <button type="button" value="21"
+                    <button type="button" value="10"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
+                    <button type="button" value="9"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.avg_purchase_price')</button>
                 @endcan
-                <button type="button" value="21"
+                <button type="button" value="30"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.supplier')</button>
-                <button type="button" value="21"
+                <button type="button" value="31"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.active')</button>
-                <button type="button" value="22"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.created_by')</button>
-                <button type="button" value="23"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
             </div>
         </div>
-
-
     </div>
     <div class="table-responsive">
-
-        <button type="button"
-                class="badge badge-pill badge-primary column-toggle send_to_branch" id="send_to_branch">@lang('lang.send_to_branch')</button>
-
-        <a data-href="{{ action('ProductController@multiDeleteRow') }}" id="delete_all"
-           data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
-           class="btn btn-danger text-white delete_all"><i class="fa fa-trash"></i>
-            @lang('lang.delete_all')</a>
-
-
         <table id="product_table" class="table" style="width: auto">
             <thead>
-                <tr>
-                    @if(env('ENABLE_POS_Branch',false))
-                        <th>@lang('lang.select')</th>
-                    @endif
-                        <th>@lang('lang.select_to_delete')</th>
+                <tr class="input-row">
+                    <th></th>
+                    <th></th>
                     <th>@lang('lang.image')</th>
-                    <th>@lang('lang.name')</th>
+                    <th style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@lang('lang.name')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
                     <th>@lang('lang.product_code')</th>
+                    <th class="sum">@lang('lang.current_stock')</th>
+                    <th>@lang('lang.actual_stock')</th>
+                    <th>@lang('lang.shortage')</th>
+                    <th>@lang('lang.value_of_shortage')</th>
+                    @can('product_module.purchase_price.view')
+                        <th>@lang('lang.avg_purchase_price')</th>
+                        <th>@lang('lang.purchase_price')</th>  
+                        <th></th>
+                    @endcan
+                    <th>@lang('lang.selling_price')</th>
+                    <th></th> 
                     <th>
+                        @if (session('system_mode') == 'restaurant')
                             @lang('lang.category')
-
+                        @else
+                            @lang('lang.class')
+                        @endif
                     </th>
+                    @if (session('system_mode') != 'restaurant')
+                        <th>@lang('lang.category')</th>
+                        <th>@lang('lang.sub_category')</th>
+                    @endif
                     <th>@lang('lang.purchase_history')</th>
                     <th>@lang('lang.batch_number')</th>
-                    <th>@lang('lang.selling_price')</th>
+                    
                     <th>@lang('lang.tax')</th>
+                    @if (session('system_mode') != 'restaurant')
+                        <th>@lang('lang.brand')</th>
+                    @endif
                     <th>@lang('lang.unit')</th>
+                    <th>@lang('lang.color')</th>
                     <th>@lang('lang.size')</th>
-                    <th class="sum">@lang('lang.current_stock')</th>
+                    <th>@lang('lang.grade')</th>
                     <th class="sum">@lang('lang.current_stock_value')</th>
                     <th>@lang('lang.customer_type')</th>
                     <th>@lang('lang.expiry_date')</th>
                     <th>@lang('lang.manufacturing_date')</th>
                     <th>@lang('lang.discount')</th>
-                    @can('product_module.purchase_price.view')
-                        <th>@lang('lang.purchase_price')</th>
-                    @endcan
+                    
                     <th>@lang('lang.supplier')</th>
                     <th>@lang('lang.active')</th>
-                    <th>@lang('lang.created_by')</th>
-                    <th>@lang('lang.edited_by')</th>
-                    <th class="notexport">@lang('lang.action')</th>
                 </tr>
             </thead>
             <tbody>
@@ -297,19 +309,26 @@
                 <tr>
                     <td></td>
                     <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
                     <th style="text-align: right">@lang('lang.total')</th>
+                    <td></td>
+                    <td></td>
+                    
+                    <td></td>
+
+                    <td>@lang('lang.total_shortage_value')</td>
+                    <td></td>
+                    <td id="total"></td>
+                    <td></td>
+
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>
@@ -317,156 +336,48 @@
             </tfoot>
         </table>
     </div>
+    <input type="hidden" id="des" value="{{\App\Models\System::getProperty('numbers_length_after_dot')}}" />
+    <input hidden value="" name="total_shortage_value" id="total_shortage_value">
+    <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="btn btn-primary check_pass">Save</button>
+    <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="check_pass btn btn-primary"  onclick="printTable()" >Print Table</button>
+
+    {{-- </form> --}}
 @endsection
-@push('javascripts')
-    <script>
-        $(document).on('click', '#delete_all', function() {
-            var checkboxes = document.querySelectorAll('input[name="product_selected_delete"]');
-            var selected_delete_ids = [];
-            for (var i = 0; i < checkboxes.length; i++) {
-                if (checkboxes[i].checked) {
-                    selected_delete_ids.push(checkboxes[i].value);
-                }
-            }
-            if (selected_delete_ids.length ==0){
-                swal({
-                    title: 'Warning',
-                    text: "@lang('lang.sorry you should select products to continue delete')",
-                    icon: 'warning',
-                })
-            }else{
-                swal({
-                    title: 'Are you sure?',
-                    text: "@lang('lang.all_transactions_related_to_this_products_will_be_deleted')",
-                    icon: 'warning',
-                }).then(willDelete => {
-                    if (willDelete) {
-                        var check_password = $(this).data('check_password');
-                        var href = $(this).data('href');
-                        var data = $(this).serialize();
-
-                        swal({
-                            title: 'Please Enter Your Password',
-                            content: {
-                                element: "input",
-                                attributes: {
-                                    placeholder: "Type your password",
-                                    type: "password",
-                                    autocomplete: "off",
-                                    autofocus: false,
-                                },
-                            },
-                            inputAttributes: {
-                                autocapitalize: 'off',
-                                autoComplete: 'off',
-                            },
-                            focusConfirm: true
-                        }).then((result) => {
-                            if (result) {
-                                $.ajax({
-                                    url: check_password,
-                                    method: 'POST',
-                                    data: {
-                                        value: result
-                                    },
-                                    dataType: 'json',
-                                    success: (data) => {
-
-                                        if (data.success == true) {
-                                            swal(
-                                                'Success',
-                                                'Correct Password!',
-                                                'success'
-                                            );
-                                            $.ajax({
-                                                method: 'POST',
-                                                url: "{{ action("ProductController@multiDeleteRow") }}",
-                                                dataType: 'json',
-                                                data: {
-                                                    "ids": selected_delete_ids
-                                                },
-                                                success: function(result) {
-                                                    if (result.success == true) {
-                                                        swal(
-                                                            'Success',
-                                                            result.msg,
-                                                            'success'
-                                                        );
-                                                        setTimeout(() => {
-                                                            location
-                                                                .reload();
-                                                        }, 1500);
-                                                        location.reload();
-                                                    } else {
-                                                        swal(
-                                                            'Error',
-                                                            result.msg,
-                                                            'error'
-                                                        );
-                                                    }
-                                                },
-                                            });
-
-                                        } else {
-                                            swal(
-                                                'Failed!',
-                                                'Wrong Password!',
-                                                'error'
-                                            )
-
-                                        }
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-
-
-
-
-
-
-
-
-        });
-    </script>
-
-@endpush
 
 @section('javascript')
     <script>
-        var product_selected_send = [];
         $(document).ready(function() {
-            $('.column-toggle').each(function(i, obj) {
-                if (i > 0) {
-                    i = i + 2;
-                }
-                @if (session('system_mode') != 'restaurant')
-                    @if (empty($page))
-                        if (i > 15) {
-                            i = i + 1;
-                        }
-                    @else
-                        if (i > 14) {
-                            i = i + 1;
-                        }
-                    @endif
-                @else
-                    @if (empty($page))
-                        if (i > 12) {
-                            i = i + 1;
-                        }
-                    @else
-                        if (i > 11) {
-                            i = i + 1;
-                        }
-                    @endif
-                @endif
-                $(obj).val(i)
-            });
+            // $('.column-toggle').each(function(i, obj) {
+            //     if (i > 0) {
+            //         i = i + 2;
+            //     }
+            //     @if (session('system_mode') != 'restaurant')
+            //         @if (empty($page))
+            //             if (i > 15) {
+            //                 i = i + 1;
+            //             }
+            //         @else
+            //             if (i > 14) {
+            //                 i = i + 1;
+            //             }
+            //         @endif
+            //     @else
+            //         @if (empty($page))
+            //             if (i > 12) {
+            //                 i = i + 1;
+            //             }
+            //         @else
+            //             if (i > 11) {
+            //                 i = i + 1;
+            //             }
+            //         @endif
+            //     @endif
+            //     $(obj).val(i)
+            // });
+            var actualStockColIndex = null;
+            var currentStockColIndex = null;
             product_table = $('#product_table').DataTable({
+                
                 lengthChange: true,
                 paging: true,
                 info: false,
@@ -481,14 +392,14 @@
                 ],
                 dom: "lBfrtip",
                 // stateSave: true,
-                buttons: buttons,
+                buttons:buttons,
                 processing: true,
                 serverSide: true,
                 aaSorting: [
                     [2, 'asc']
                 ],
                 "ajax": {
-                    "url": "/product",
+                    "url": "/product-in-adjustment-create",
                     "data": function(d) {
                         d.product_id = $('#product_id').val();
                         d.product_class_id = $('#product_class_id').val();
@@ -497,35 +408,41 @@
                         d.brand_id = $('#brand_id').val();
                         d.supplier_id = $('#supplier_id').val();
                         d.unit_id = $('#unit_id').val();
+                        d.color_id = $('#color_id').val();
                         d.size_id = $('#size_id').val();
-
+                        d.grade_id = $('#grade_id').val();
                         d.tax_id = $('#tax_id').val();
                         d.store_id = $('#store_id').val();
                         d.customer_type_id = $('#customer_type_id').val();
                         d.active = $('#active').val();
                         d.created_by = $('#created_by').val();
                         d.show_zero_stocks = $('#show_zero_stocks').val();
-                    }
+                        // d.shortage = true;
+                        // d.shortage_value = true;
+                    },
                 },
                 columnDefs: [{
-                    "targets": [0, 3],
+                    "targets": [2, 10],  
                     "orderable": false,
                     "searchable": false
                 }],
                 columns: [
-                    @if(env('ENABLE_POS_Branch',false))
-                        {
-                            data: "selection_checkbox_send",
-                            name: "selection_checkbox_send",
-                            searchable: false,
-                            orderable: false,
-                        },
-                    @endif
                     {
-                        data: "selection_checkbox_delete",
-                        name: "selection_checkbox_delete",
+                        data: 'id', 
+                        'render': function (data, type, val, meta){
+                            return '<span hidden type="text" readonly="readonly" class="pro_id" name="product_id" />'+data+'</span>';
+                        },
+                        // visible: false
+                        sortable: false,
+                    },
+                    {
+                        data: 'variation_id', 
+                        'render': function (data, type, val, meta){
+                            return '<span hidden type="text" readonly="readonly" class="variation_id" name="variation_id" />'+data+'</span>';
+                        },
+                        // visible: false
                         searchable: false,
-                        orderable: false,
+                        sortable: false
                     },
                     {
                         data: 'image',
@@ -540,10 +457,101 @@
                         name: 'variations.sub_sku'
                     },
                     {
+                        data: 'current_stock',
+                        name: 'current_stock',
+                        'render': function (data, type, val, meta){
+                            return '<span type="text" readonly="readonly" class="current_stock" name="current_stock" />'+data+'</span> '+
+                           '<input type="hidden"  class="current_stock_hidden"  value="'+data+'">';
+                        },
+                        className: "current_stock",
+                        searchable: false
+                    },
+                    {
+                        name: 'actual_stock',
+                        // type:  "text",
+                        'render': function (data, type, val, meta){
+                            return '<input type="text" class="actual_stock " name="actual_stock"  value="">';
+                        },
+                        searchable: false,
+                        sortable: false
+                    },
+                    {
+                        name: 'shortage',
+                        'render': function (data, type, val, meta){
+                            return '<span type="text" readonly="readonly" class="shortage" name="shortage"  /></span>';
+                        },
+                        searchable: false,
+                        sortable: false
+                    },
+                    {
+                        name: 'shortage_value',
+                        'render': function (data, type, val, meta){
+                            return '<span type="text" readonly="readonly" class="shortage_value" name="shortage_value"  /></span>';
+                        },
+                        searchable: false,
+                        sortable: false
+                    },
+                    @can('product_module.purchase_price.view')
+                        {
+                            data: 'avg_purchase_price',
+                            name: 'avg_purchase_price',
+                            'render': function (data, type, val, meta){
+                            return '<span type="text" readonly="readonly" class="avg_purchase_price" name="avg_purchase_price" />'+data+'</span>';
+                            },
+                            className: "avg_purchase_price",
+                            searchable: false
+                        },
+
+                        {
+                            data: 'default_purchase_price',
+                            name: 'default_purchase_price',
+                            // className: "default_purchase_price",
+                            'render': function (data, type, val, meta){
+                                return '<input type="text" class="default_purchase_price" name="default_purchase_price"  value="'+data+'">';
+                            },
+                            searchable: false
+                        },
+                        {
+                            data: 'default_purchase_price',
+                            name: 'default_purchase_price',
+                            // className: "default_purchase_price",
+                            'render': function (data, type, val, meta){
+                                return '<input hidden type="text" class="hidden_default_purchase_price"  value="'+data+'">';
+                            },
+                            searchable: false,
+                            // visible : false,
+                        },
+                    @endcan
+                    {
+                        data: 'default_sell_price',
+                        name: 'variations.default_sell_price',
+                        'render': function (data, type, val, meta){
+                                return '<input type="text" class="default_sell_price" name="default_sell_price"  value="'+data+'">';
+                        },
+                    },
+                    {
+                            data: 'default_sell_price',
+                            name: 'default_sell_price',
+                            // className: "default_purchase_price",
+                            'render': function (data, type, val, meta){
+                                return '<input hidden type="text" class="hidden_default_sell_price"  value="'+data+'">';
+                            },
+                            searchable: false,
+                            // visible : false,
+                        },
+                    {
                         data: 'product_class',
                         name: 'product_classes.name'
                     },
-                     {
+                    @if (session('system_mode') != 'restaurant')
+                        {
+                            data: 'category',
+                            name: 'categories.name'
+                        }, {
+                            data: 'sub_category',
+                            name: 'categories.name'
+                        },
+                    @endif {
                         data: 'purchase_history',
                         name: 'purchase_history'
                     },
@@ -551,28 +559,31 @@
                         data: 'batch_number',
                         name: 'add_stock_lines.batch_number'
                     },
-                    {
-                        data: 'default_sell_price',
-                        name: 'variations.default_sell_price'
-                    },
+                    
                     {
                         data: 'tax',
                         name: 'taxes.name'
                     },
-                   {
+                    @if (session('system_mode') != 'restaurant')
+                        {
+                            data: 'brand',
+                            name: 'brands.name'
+                        },
+                    @endif {
                         data: 'unit',
                         name: 'units.name'
                     },
-
+                    {
+                        data: 'color',
+                        name: 'colors.name'
+                    },
                     {
                         data: 'size',
                         name: 'sizes.name'
                     },
-
                     {
-                        data: 'current_stock',
-                        name: 'current_stock',
-                        searchable: false
+                        data: 'grade',
+                        name: 'grades.name'
                     },
                     {
                         data: 'current_stock_value',
@@ -598,32 +609,14 @@
                         data: 'discount',
                         name: 'discount'
                     },
-                   @can('product_module.purchase_price.view')
-                        {
-                            data: 'default_purchase_price',
-                            name: 'default_purchase_price',
-                            searchable: false
-                        },
-                    @endcan
                     {
                         data: 'supplier_name',
-                        name: 'supplier.name'
+                        name: 'supplier_name',
+                        searchable: false
                     },
                     {
                         data: 'active',
                         name: 'active'
-                    },
-                    {
-                        data: 'created_by',
-                        name: 'users.name'
-                    },
-                    {
-                        data: 'edited_by_name',
-                        name: 'edited.name'
-                    },
-                    {
-                        data: 'action',
-                        name: 'action'
                     },
 
                 ],
@@ -670,6 +663,19 @@
         });
 
 
+        function printTable() {
+            // var printContents = document.getElementById('product_table').outerHTML;
+            // var originalContents = document.body.innerHTML;
+            // document.body.outerHTML = printContents;
+            // window.print();
+            // // document.body.innerHTML = originalContents;
+            // sendData();
+            var divToPrint=document.getElementById("product_table");
+            newWin= window.open("");
+            newWin.document.write(divToPrint.outerHTML);
+            newWin.print();
+            newWin.close();
+        }
 
         var hidden_column_array = $.cookie('column_visibility') ? JSON.parse($.cookie('column_visibility')) : [];
         $(document).ready(function() {
@@ -683,10 +689,6 @@
 
             });
         });
-
-
-
-
 
         $(document).on('click', '.column-toggle', function() {
             let column_index = parseInt($(this).val());
@@ -707,6 +709,7 @@
 
         function toggleColumnVisibility(column_index, this_btn) {
             column = product_table.column(column_index);
+            console.log(column_index);
             column.visible(!column.visible());
 
             if (column.visible()) {
@@ -754,16 +757,16 @@
             });
         @endif
 
-        $(document).on('click', '.delete_product', function(e) {
+        $(document).on('click', '.check_pass', function(e) {
             e.preventDefault();
             swal({
                 title: 'Are you sure?',
-                text: "@lang('lang.all_transactions_related_to_this_product_will_be_deleted')",
+                text: "@lang('lang.adjustment_save')",
                 icon: 'warning',
             }).then(willDelete => {
                 if (willDelete) {
                     var check_password = $(this).data('check_password');
-                    var href = $(this).data('href');
+                    // var href = $(this).data('href');
                     var data = $(this).serialize();
 
                     swal({
@@ -774,7 +777,7 @@
                                 placeholder: "Type your password",
                                 type: "password",
                                 autocomplete: "off",
-                                autofocus: true,
+                                autofocus: false,
                             },
                         },
                         inputAttributes: {
@@ -800,33 +803,7 @@
                                             'success'
                                         );
 
-                                        $.ajax({
-                                            method: 'DELETE',
-                                            url: href,
-                                            dataType: 'json',
-                                            data: data,
-                                            success: function(result) {
-                                                if (result.success ==
-                                                    true) {
-                                                    swal(
-                                                        'Success',
-                                                        result.msg,
-                                                        'success'
-                                                    );
-                                                    setTimeout(() => {
-                                                        location
-                                                            .reload();
-                                                    }, 1500);
-                                                    location.reload();
-                                                } else {
-                                                    swal(
-                                                        'Error',
-                                                        result.msg,
-                                                        'error'
-                                                    );
-                                                }
-                                            },
-                                        });
+                                       sendData();
 
                                     } else {
                                         swal(
@@ -843,67 +820,152 @@
                 }
             });
         });
-        $(document).on("change", ".product_selected_send", function () {
-            let this_variation_id = $(this).val();
-            let this_product_id = $(this).data("product_id");
-            if ($(this).prop("checked")) {
-                var obj = {};
-                obj["product_id"] = this_product_id;
-                obj["variation_id"] = this_variation_id;
-                product_selected_send.push(obj);
-            } else {
-                product_selected_send = product_selected_send.filter(function (item) {
-                    return (
-                        item.product_id !== this_product_id &&
-                        item.variation_id !== this_variation_id
-                    );
+        
+
+        $(document).ready(function() {
+            var total = 0;
+
+            // function to update the total value in the HTML element
+            function updateTotal() {
+                // loop through all the valid rows and calculate the sum of their shortage values
+                var sum = 0;
+                $("#product_table tbody tr").each(function() {
+                    var shortage_val = parseFloat($(this).find(".shortage_value").text());
+                    if (!isNaN(shortage_val)) {
+                        sum += shortage_val;
+                    }
                 });
+                total = sum;
+                
+                // update the total value in the HTML element
+                const totalElement = document.getElementById('total');
+                const totalElementinput = document.getElementById('total_shortage_value');
+                totalElement.textContent = total.toFixed(2);
+                totalElementinput.value = total.toFixed(2);
             }
-            //remove duplicate object from array
-            product_selected_send = product_selected_send.filter(
-                (value, index, self) =>
-                    index ===
-                    self.findIndex(
-                        (t) =>
-                            t.product_id === value.product_id &&
-                            t.variation_id === value.variation_id
-                    )
-            );
-            if(product_selected_send.length > 0){
-                $('#send_to_branch').css('display','block');
-            }else{
-                $('#send_to_branch').css('display','none');
+
+            // function to calculate the end value for each row and update the total
+            function calculateTotal(tr) {
+                // total = 0;
+                // var tr = $(this).closest('tr');
+                var des = document.getElementById("des").value;
+                console.log(tr);
+                var current_stock = __read_number(tr.find(".current_stock_hidden"));
+                var actual_stock = tr.find(".actual_stock").val();
+                var purchase_price = parseFloat(tr.find(".avg_purchase_price").text()).toFixed(2);
+                var shortage = 0 ;
+                var shortage_val = 0;
+                if (actual_stock != "") {
+                     shortage = (current_stock - actual_stock);
+                     shortage_val = (current_stock - actual_stock) * purchase_price;
+                }
+                
+                if (!isNaN(shortage_val)) {
+                    // total += parseFloat(shortage_val);
+                    tr.find(".shortage").text(shortage.toFixed(des));
+                    tr.find(".shortage_value").text(shortage_val.toFixed(2));
+                    console.log("total :"+ total);
+                }
+                updateTotal();
             }
+
+            // // calculate the total initially
+            // calculateTotal();
+
+            // add event listener to parent element (table)
+            $("#product_table").on("input", ".actual_stock", function() {
+                var tr = $(this).closest('tr');
+                calculateTotal(tr);
+            });
+
+            // add event listener to change event on actual_stock input field
+            $("#product_table").on("input", ".actual_stock", function() {
+                if ($(this).val() === "") {
+                var row = $(this).closest("tr");
+                row.find(".shortage").text("");
+                row.find(".shortage_value").text("");
+                calculateTotal();
+                }
+            });
         });
 
-        $('#send_to_branch').click(function (e) {
-            e.preventDefault();
-            console.log(product_selected_send);
-            $.ajax({
-                method: "GET",
-                url: '/product-send-branch',
-                data: {
-                    store_id: product_selected_send
-                },
-                success: function (result) {
-                    if (result.success) {
-                        $('#product_table').find('.product_selected_send').each(function(item) {
-                            $(this).prop('checked', false)
-                        });
-                        $('#send_to_branch').css('display','none');
-                        swal("Success!", result.msg, "success");
+        function sendData() {
+            // Get the table instance
+            var table = $('#product_table').DataTable();
 
-                    } else {
-                        $('#send_to_branch').css('display','none');
-                        $('#product_table').find('.product_selected_send').each(function(item) {
-                            $(this).prop('checked', false)
-                        });
-                        swal("Error!", result.msg, "error");
-
+            // Initialize an empty array to store the selected data
+            var selectedData = [];
+            var total_shortage_value = document.getElementById('total_shortage_value').value;
+            // Loop through each row in the table
+            table.rows().every(function() {
+                var rowData = this.row().data();
+                var actualStock = $('input[name="actual_stock"]', this.node()).val();
+                var current_stock = $('span[name="current_stock"]', this.node()).text();
+                var shortage = $('span[name="shortage"]', this.node()).text();
+                var shortage_value = $('span[name="shortage_value"]', this.node()).text();
+                var id = $('span[name="product_id"]', this.node()).text();
+                var variation_id = $('span[name="variation_id"]', this.node()).text();
+                console.log(variation_id);
+                // Check if actualStock has a value
+                if (actualStock != '') {
+                    // Add the required data to the selectedData array
+                    var dataObj = {
+                        id: id,
+                        variation_id : variation_id,
+                        current_stock: current_stock,
+                        actual_stock: actualStock,
+                        shortage: shortage,
+                        shortage_value: shortage_value
+                    };
+                    selectedData.push(dataObj);
+                }
+                var data = this.data();
+                var purchasePrice = parseFloat($(this.node()).find('.default_purchase_price').val());
+                var sellPrice = parseFloat($(this.node()).find('.default_sell_price').val());
+                var purchasePriceHidden = parseFloat($(this.node()).find('.hidden_default_purchase_price').val());
+                var sellPriceHidden = parseFloat($(this.node()).find('.hidden_default_sell_price').val());
+                console.log("purchasePrice :" + purchasePrice)
+                console.log("purchasePriceHidden :" + purchasePriceHidden)
+                console.log("sellPrice :" + sellPrice)
+                console.log("sellPriceHidden :" + sellPriceHidden)
+                    // Check if either the purchase price or sell price has changed
+                    if (purchasePrice !== purchasePriceHidden || sellPrice !== sellPriceHidden) {
+                        // Create an object with the updated values
+                        var updatedData = {
+                            id: id,
+                            variation_id : variation_id,
+                            default_purchase_price: purchasePrice,
+                            default_sell_price: sellPrice
+                        };
+                        // Add the updated data to the selectedData array
+                        selectedData.push(updatedData);
                     }
-                },
-            });
-        })
 
+            });
+
+            // Send the data to the server
+            $.ajax({
+                type: 'POST',
+                url: '/product-in-adjustment-store',
+                data: {selected_data: selectedData,
+                    total_shortage_value: total_shortage_value},
+                success: function(response) {
+                console.log('Data sent successfully');
+                location.reload();
+                },
+                error: function(xhr, status, error) {
+                console.log('Error sending data');
+                }
+            });
+
+        }
+   
+        
+
+
+
+
+
+        
     </script>
 @endsection
