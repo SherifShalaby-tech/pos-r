@@ -12,7 +12,7 @@
         $transaction_payment=[];
         $recent_stock=[];
     }else{
-        $recent_stock = \App\Models\Transaction::orderBy('created_at', 'desc')->first();
+        $recent_stock = \App\Models\Transaction::where('type','add_stock')->orderBy('created_at', 'desc')->first();
         $transaction_payment = $recent_stock->transaction_payments->first();
     }
 @endphp
@@ -36,7 +36,7 @@
                             <div class="col-md-3">
                                 <div class="i-checks">
                                     <input id="clear_all_input_form" name="clear_all_input_form"
-                                        type="checkbox" @if ($clear_all_input_stock_form == null || $clear_all_input_stock_form == '1') checked @endif 
+                                        type="checkbox" @if (isset($clear_all_input_stock_form ) || $clear_all_input_stock_form == '1') checked @endif 
                                         class="form-control-custom">
                                     <label for="clear_all_input_form">
                                         <strong>
@@ -189,13 +189,13 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('source_type', __('lang.source_type'), []) !!} <br>
-                                        {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' => __('lang.pos'), 'store' => __('lang.store'), 'safe' => __('lang.safe')], 'user', ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' => __('lang.pos'), 'store' => __('lang.store'), 'safe' => __('lang.safe')], !empty($recent_stock)&&!empty($recent_stock->source_type)?$recent_stock->source_type: 'Please Select', ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
-                                        {!! Form::select('source_id', $users, !empty($recent_stock)&&!empty($recent_stock->source_id)?$recent_stock->source_id:null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id', 'required']) !!}
+                                        {!! Form::select('source_id', $users, null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id', 'required']) !!}
                                     </div>
                                 </div>
 
@@ -216,7 +216,7 @@
                                 <div class="col-md-3 due_fields hide">
                                     <div class="form-group">
                                         {!! Form::label('due_date', __('lang.due_date') . ':', []) !!} <br>
-                                        {!! Form::text('due_date', !empty($transaction_payment)&&!empty($transaction_payment->due_date)?$transaction_payment->due_date:(!empty($payment) ? $payment->due_date : null), ['class' => 'form-control datepicker', 'placeholder' => __('lang.due_date')]) !!}
+                                        {!! Form::text('due_date', !empty($transaction_payment)&&!empty($transaction_payment->due_date)?@format_date($transaction_payment->due_date):(!empty($payment) ? @format_date($payment->due_date) : null), ['class' => 'form-control datepicker', 'placeholder' => __('lang.due_date')]) !!}
                                     </div>
                                 </div>
 
@@ -378,6 +378,7 @@
         $(document).ready(function() {
             $('#payment_status').change();
             $('#source_type').change();
+            $("#source_id").selectpicker("refresh");
         })
         $('#source_type').change(function() {
             if ($(this).val() !== '') {
@@ -387,6 +388,7 @@
                     data: {},
                     success: function(result) {
                         $("#source_id").empty().append(result);
+                        $('#source_id').val({{$recent_stock->source_id}});
                         $("#source_id").selectpicker("refresh");
                     },
                 });

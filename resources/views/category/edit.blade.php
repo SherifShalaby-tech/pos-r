@@ -240,21 +240,21 @@
                 {!! Form::label('description', __('lang.description') . ':') !!}
                 {!! Form::text('description', $category->description, ['class' => 'form-control', 'placeholder' => __('lang.description')]) !!}
             </div>
-            @if (empty($category->parent_id))
-                <div class="form-group hide">
+            @if ($type=='category')
+                <div class="form-group">
                     {!! Form::label('product_class_id', __('lang.class') . ':') !!}
                     {!! Form::select('product_class_id', $product_classes, $category->product_class_id, ['class' => 'form-control', 'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select')]) !!}
                 </div>
             @endif
-            @if (!empty($category->parent_id))
-                <div class="form-group hide">
+            @if ($type=='sub_category' )
+                <div class="form-group ">
                     {!! Form::label('parent_id', __('lang.parent_category') . ':') !!}
                     {!! Form::select('parent_id', $categories, $category->parent_id, ['class' => 'form-control', 'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select')]) !!}
                 </div>
             @endif
             <div class="col-md-12">
                 <div class="form-group">
-                    <label for="projectinput2">{{ __('categories.image') }}</label>
+                    <label for="projectinput2">{{ __('lang.image') }}</label>
                     {{--                                                        <input type="file" id="projectinput2"  class="form-control img" name="image" accept="image/*" />--}}
                     <div class="container mt-3">
                         <div class="row mx-0"

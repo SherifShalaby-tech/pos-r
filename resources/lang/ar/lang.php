@@ -1372,6 +1372,10 @@ return [
     'watsapp_numbers'=>'رقم واتساب للتواصل',
 
     'permenant'=>'دائم',
+
+
+    'add_sub_category' => 'اضافة قسم فرعى',
+
     'actual_stock' => 'المخزون الفعلي',
     'shortage' => 'النقص',
     'value_of_shortage' => 'قيمة النقص',
@@ -1384,5 +1388,6 @@ return [
     'add_product_in_adjustment' => 'إضافة تسوية المنتج',
     'product_in_adjustment' => 'تسوية المنتج',
     'avg_purchase_price' => 'متوسط سعر الشراء',
+
 
 ];
