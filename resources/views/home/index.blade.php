@@ -6,17 +6,17 @@ $module_settings = App\Models\System::getProperty('module_settings');
 $module_settings = !empty($module_settings) ? json_decode($module_settings, true) : [];
 @endphp
 @section('content')
-    @if (!empty($module_settings['dashboard']))
+    {{-- @if (!empty($module_settings['dashboard'])) --}}
         <div class="row">
             <div class="container-fluid">
                 <div class="col-md-12">
                     <div class="brand-text float-left mt-4">
                         <h3>@lang('lang.welcome') <span>{{ Auth::user()->name }}</span> </h3>
                     </div>
-                    @if (auth()->user()->can('superadmin') ||
+                    {{-- @if (auth()->user()->can('superadmin') ||
                         auth()->user()->is_admin ||
-                        auth()->user()->can('dashboard.profit.view'))
-                        @if (strtolower(session('user.job_title')) != 'deliveryman')
+                        auth()->user()->can('dashboard.profit.view')) --}}
+                        {{-- @if (strtolower(session('user.job_title')) != 'deliveryman') --}}
                             <div class="filter-toggle btn-group">
                                 <div class="row">
                                     <div class="col-md-2">
@@ -53,15 +53,15 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     </div>
                                 </div>
                             </div>
-                        @endif
-                    @endif
+                        {{-- @endif
+                    @endif --}}
                 </div>
             </div>
         </div>
-        @if (strtolower(session('user.job_title')) != 'deliveryman')
+        {{-- @if (strtolower(session('user.job_title')) != 'deliveryman') --}}
             <div class="container-fluid">
                 <div class="row">
-                    @if(auth()->user()->can('superadmin') || auth()->user()->is_admin)
+                    {{-- @if(auth()->user()->can('superadmin') || auth()->user()->is_admin) --}}
                         <!-- Count item widget-->
                         <div class="col-sm-2">
                             <div class="wrapper count-title text-center">
@@ -166,7 +166,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                         </div>
                                 --}}
                                     </div>
-                                </div>
+                            </div>
+                            
                         </div>
                             <div class="col-sm-2 mt-2">
                                 <div class="wrapper count-title text-center">
@@ -179,7 +180,18 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     </div>
                                 </div>
                             </div>
-                        @endif
+                            <div class="col-sm-2 mt-2">
+                                <div class="wrapper count-title text-center">
+                                    <div class="icon"><i class="dripicons-trophy" style="color: #3f6dad"></i>
+                                    </div>
+                                    <div class="name"><strong
+                                            style="color: #3f6dad">@lang('lang.net_profit')</strong>
+                                    </div>
+                                    <div class="count-number net_profitt-data">{{ @num_format(0) }}
+                                    </div>
+                                </div>
+                            </div>
+                        {{-- @endif --}}
                     </div>
                 </div>
             </div>
@@ -187,8 +199,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
             <div class="container-fluid" id="chart_and_table_section">
                 {{-- @include('home.partials.chart_and_table') --}}
             </div>
-        @endif
-    @endif
+        {{-- @endif --}}
+    {{-- @endif --}}
 @endsection
 
 @section('javascript')
@@ -253,6 +265,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     let purchase_return_string = '<div>';
                     let profit_string = '<div>';
                     let expenses_string = '<div>';
+                    let net_profit_string = '<div>';
                     result.forEach(element => {
                         currenct_stock_string += `<h3 class="dashboard_currency currency_total_${element.currency.currency_id}"
                                             data-currency_id="${element.currency.currency_id}"
@@ -347,6 +360,17 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                             <span
                                                 class="total">${__currency_trans_from_en(element.data.profit, false)}</span>
                                         </h3>`;
+                        net_profit_string += `<h3 class="dashboard_currency currency_total_${element.currency.currency_id}"
+                            data-currency_id="${element.currency.currency_id}"
+                            data-is_default="${element.currency.is_default}"
+                            data-conversion_rate="${element.currency.conversion_rate}"
+                            data-base_conversion="${element.currency.conversion_rate * element.data.net_profit}"
+                            data-orig_value="${element.data.net_profit}">
+                            <span class="symbol" style="padding-right: 10px;">
+                                ${element.currency.symbol}</span>
+                            <span
+                                class="total">${__currency_trans_from_en(element.data.net_profit, false)}</span>
+                        </h3>`;
                         expenses_string += `<h3 class="dashboard_currency currency_total_${element.currency.currency_id}"
                                             data-currency_id="${element.currency.currency_id}"
                                             data-is_default="${element.currency.is_default}"
@@ -368,6 +392,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     total_tax_string += `</div>`;
                     profit_string += `</div>`;
                     expenses_string += `</div>`;
+                    net_profit_string += '</div>';
 
                     $(".revenue-data").html(revenue_string);
 
@@ -393,6 +418,10 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     $('.profit-data').hide();
                     $(".profit-data").html(profit_string);
                     $('.profit-data').show(500);
+
+                    $('.net_profitt-data').hide();
+                    $(".net_profitt-data").html(net_profit_string);
+                    $('.net_profitt-data').show(500);
 
                     $('.expenses').hide();
                     $(".expenses").html(expenses_string);
