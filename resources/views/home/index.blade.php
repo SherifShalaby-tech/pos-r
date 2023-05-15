@@ -6,17 +6,17 @@ $module_settings = App\Models\System::getProperty('module_settings');
 $module_settings = !empty($module_settings) ? json_decode($module_settings, true) : [];
 @endphp
 @section('content')
-    {{-- @if (!empty($module_settings['dashboard'])) --}}
+    @if (!empty($module_settings['dashboard']))
         <div class="row">
             <div class="container-fluid">
                 <div class="col-md-12">
                     <div class="brand-text float-left mt-4">
                         <h3>@lang('lang.welcome') <span>{{ Auth::user()->name }}</span> </h3>
                     </div>
-                    {{-- @if (auth()->user()->can('superadmin') ||
+                    @if (auth()->user()->can('superadmin') ||
                         auth()->user()->is_admin ||
-                        auth()->user()->can('dashboard.profit.view')) --}}
-                        {{-- @if (strtolower(session('user.job_title')) != 'deliveryman') --}}
+                        auth()->user()->can('dashboard.profit.view')) 
+                        @if (strtolower(session('user.job_title')) != 'deliveryman') 
                             <div class="filter-toggle btn-group">
                                 <div class="row">
                                     <div class="col-md-2">
@@ -53,15 +53,15 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     </div>
                                 </div>
                             </div>
-                        {{-- @endif
-                    @endif --}}
+                        @endif
+                    @endif
                 </div>
             </div>
         </div>
-        {{-- @if (strtolower(session('user.job_title')) != 'deliveryman') --}}
+        @if (strtolower(session('user.job_title')) != 'deliveryman')
             <div class="container-fluid">
                 <div class="row">
-                    {{-- @if(auth()->user()->can('superadmin') || auth()->user()->is_admin) --}}
+                    @if(auth()->user()->can('superadmin') || auth()->user()->is_admin)
                         <!-- Count item widget-->
                         <div class="col-sm-2">
                             <div class="wrapper count-title text-center">
@@ -191,7 +191,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     </div>
                                 </div>
                             </div>
-                        {{-- @endif --}}
+                        @endif
                     </div>
                 </div>
             </div>
@@ -199,8 +199,8 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
             <div class="container-fluid" id="chart_and_table_section">
                 {{-- @include('home.partials.chart_and_table') --}}
             </div>
-        {{-- @endif --}}
-    {{-- @endif --}}
+        @endif 
+     @endif 
 @endsection
 
 @section('javascript')
