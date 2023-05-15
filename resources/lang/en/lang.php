@@ -1394,6 +1394,8 @@ return [
     'watsapp_numbers'=>'Watsapp Numbers',
 
     'permenant'=>'Permenant',
+    'add_sub_category' =>'Add Sub Category',
+
 
     'actual_stock' => 'Actual Stock',
     'shortage' => 'Shortage',

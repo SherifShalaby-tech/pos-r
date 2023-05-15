@@ -155,8 +155,8 @@ class TransactionUtil extends Util
         foreach ($transaction_sell_lines as $line) {
             $old_quantity = 0;
 
-            if (!empty($transaction_sell_line['transaction_sell_line_id'])) {
-                $transaction_sell_line = TransactionSellLine::find($line['transaction_sell_line_id']);
+            if (!empty($transaction_sell_lines['transaction_sell_line_id'])) {
+                $transaction_sell_line = TransactionSellLine::find($transaction_sell_lines['transaction_sell_line_id']);
                 $transaction_sell_line->product_id = $line['product_id'];
                 $transaction_sell_line->variation_id = $line['variation_id'];
                 $transaction_sell_line->coupon_discount = !empty($line['coupon_discount']) ? $this->num_uf($line['coupon_discount']) : 0;
@@ -169,6 +169,7 @@ class TransactionUtil extends Util
                 $transaction_sell_line->product_discount_type = !empty($line['product_discount_type']) ? $line['product_discount_type'] : null;
                 $transaction_sell_line->product_discount_amount = !empty($line['product_discount_amount']) ? $this->num_uf($line['product_discount_amount']) : 0;
                 $old_quantity = $transaction_sell_line->quantity;
+                $transaction_sell_line->batch_number = !empty($line['batch_number']) ?$line['batch_number']: null;
                 $transaction_sell_line->quantity = $this->num_uf($line['quantity']);
                 $transaction_sell_line->sell_price = $this->num_uf($line['sell_price']);
                 $transaction_sell_line->purchase_price = $this->num_uf($line['purchase_price']);
@@ -262,6 +263,7 @@ class TransactionUtil extends Util
                 $transaction_sell_line->product_discount_type = !empty($line['product_discount_type']) ? $line['product_discount_type'] : null;
                 $transaction_sell_line->product_discount_amount = !empty($line['product_discount_amount']) ? $this->num_uf($line['product_discount_amount']) : 0;
                 $transaction_sell_line->quantity = $this->num_uf($line['quantity']);
+                $transaction_sell_line->batch_number = !empty($line['batch_number']) ? $line['batch_number'] : null;
                 $transaction_sell_line->sell_price = $this->num_uf($line['sell_price']);
                 $transaction_sell_line->purchase_price = $this->num_uf($line['purchase_price']);
                 $transaction_sell_line->sub_total = $this->num_uf($line['sub_total']);

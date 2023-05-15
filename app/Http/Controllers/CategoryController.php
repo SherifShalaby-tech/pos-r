@@ -158,8 +158,9 @@ class CategoryController extends Controller
         $category = Category::find($id);
         $categories = Category::whereNull('parent_id')->orderBy('name', 'asc')->pluck('name', 'id');
         $product_classes = ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
-
+        $type = request()->type ?? null;
         return view('category.edit')->with(compact(
+            'type',
             'category',
             'categories',
             'product_classes'
