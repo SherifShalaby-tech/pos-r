@@ -7,6 +7,13 @@
     <div class="col-md-12  no-print">
         <div class="card">
             <div class="card-header d-flex align-items-center">
+                @if($_SERVER["QUERY_STRING"]=="manufacture")
+                    <h4 class="print-title">@lang('lang.products_under_manufacturing')</h4>
+                @else
+                    <h4 class="print-title">@lang('lang.products_manufactured')</h4>
+                @endif
+            </div>
+            <div class="card-header d-flex align-items-center">
                 @can('raw_material_module.production.create_and_edit')
                 <a style="color: white" href="{{action('ManufacturingController@create')}}"
                      class="btn btn-info"><i class="dripicons-plus"></i>
