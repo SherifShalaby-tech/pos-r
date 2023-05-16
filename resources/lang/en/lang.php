@@ -1169,7 +1169,7 @@ return [
     'add_consumption_for_others' => 'Add Compensation for Others',
 
 
-    'other_expenses' => 'Other expenses',
+    'other_expenses' => 'Expenses',
     'tutorials' => 'Tutorials',
     'tutorial' => 'Tutorial',
     'add_tutorial' => 'Add Tutorial',
@@ -1411,4 +1411,5 @@ return [
     'add_product_in_adjustment' => 'Add Product In Adjustment',
     'avg_purchase_price' => 'Avg Purchase Price',
 
+    'net_profit' => 'Net Profit',
 ];
