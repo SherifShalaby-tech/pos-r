@@ -292,7 +292,13 @@
                                             <div class="col-sm-4">
                                                 <button style="background-color: #d63031" type="button"
                                                     class="btn btn-md payment-btn text-white" data-toggle="modal"
-                                                    data-target="#discount_modal">@lang('lang.random_discount')</button>
+                                                    data-target="#discount_modal"
+                                                    @if(!auth()->user()->can('sp_module.sales_promotion.view')
+                                                        || !auth()->user()->can('sp_module.sales_promotion.create_and_edit')
+                                                        || !auth()->user()->can('sp_module.sales_promotion.delete'))
+                                                            disabled 
+                                                    @endif
+                                                    >@lang('lang.random_discount')</button>
                                                 {{-- <span id="discount">0.00</span> --}}
                                             </div>
 
