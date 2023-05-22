@@ -1412,5 +1412,5 @@ return [
     'avg_purchase_price' => 'Avg Purchase Price',
 
     'net_profit' => 'Net Profit',
-    'cancel_add_stock_payment' => 'الغاء دفع المخزون',
+    'cancel_add_stock_payment' => 'Cancel Stock Payment',
 ];
