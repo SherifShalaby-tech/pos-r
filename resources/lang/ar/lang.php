@@ -1390,4 +1390,5 @@ return [
     'avg_purchase_price' => 'متوسط سعر الشراء',
 
     'net_profit' => 'صافي الربح',
+    'cancel_add_stock_payment' => 'الغاء دفع المخزون',
 ];
