@@ -3,6 +3,9 @@
 
 @section('content')
 <div class="container-fluid no-print">
+    <div class="card-header d-flex align-items-center">
+        <h3 class="print-title">@lang('lang.quotation_list')</h3>
+    </div>
     @can('sale.pos.create_and_edit')
     <a style="color: white" href="{{action('QuotationController@create')}}" class="btn btn-info"><i
             class="dripicons-plus"></i>

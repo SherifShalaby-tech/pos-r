@@ -1411,5 +1411,27 @@ return [
     'add_product_in_adjustment' => 'Add Product In Adjustment',
     'avg_purchase_price' => 'Avg Purchase Price',
 
+
+    'productions'=>'Productions',
+    'product_lists'=>'Products list',
+    'products_under_manufacturing'=>'Products under manufacturing list',
+    'products_manufactured'=>'Manufactured Products List',
+    'manufacturers_list'=>'Manufacturers list',
+    'raw_materials_list'=>'Raw materials list',
+    'view_all_remove_stock_list'=>' List of stocks removed',
+    'all_return_purchase' =>'List Of Returned Purchases',
+    'add_stock_list'=>'All Added Stocks',
+    'all_customers'=>'All Customers',
+    'product_classes'=>'Product Classes',
+    'product_categories'=>'Categories',
+    'sub_categories'=>'Sub Categories',
+    'brands'=>'Brands',
+    'colors'=>'Colors',
+    'grades'=>'Grades',
+    'units'=>'Units',
+    'taxes'=>' Public Taxes',
+    'coupons'=>'Coupons',
+    'product_taxes'=>'Product Taxes',
+
     'net_profit' => 'Net Profit',
 ];

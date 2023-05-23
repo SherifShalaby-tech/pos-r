@@ -3,6 +3,14 @@
 
 @section('content')
     <div class="container-fluid">
+       <div class="card-header d-flex align-items-center">
+            @if (request()->segment(1) == 'product')
+            <h4 class="print-title">@lang('lang.product_lists')</h4>
+            @endif
+            @if (request()->segment(1) == 'product-stocks')
+            <h4 class="print-title">@lang('lang.product_stocks')</h4>
+            @endif
+        </div>
         @if (empty($page))
             @can('product_module.product.create_and_edit')
                 <a style="color: white" href="{{ action('ProductController@create') }}" class="btn btn-info"><i

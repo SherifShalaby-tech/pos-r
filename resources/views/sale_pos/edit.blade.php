@@ -283,7 +283,12 @@
                                             <div class="col-sm-4">
                                                 <span class="totals-title">{{ __('lang.random_discount') }} <button
                                                         type="button" class="btn btn-link btn-sm" data-toggle="modal"
-                                                        data-target="#discount_modal"> <i
+                                                        data-target="#discount_modal"
+                                                        @if(!auth()->user()->can('sp_module.sales_promotion.view')
+                                                        || !auth()->user()->can('sp_module.sales_promotion.create_and_edit')
+                                                        || !auth()->user()->can('sp_module.sales_promotion.delete'))
+                                                        disabled
+                                                        @endif> <i
                                                             class="dripicons-document-edit"></i></button></span><span
                                                     id="discount">0.00</span>
                                             </div>
@@ -338,9 +343,13 @@
                                                         class="btn mr-2 payment-btn text-white" data-toggle="modal"
                                                         data-target="#add-payment"
                                                         id="cash-btn">@lang('lang.pay_and_close')</button>
+                                                        @if(auth()->user()->can('sp_module.sales_promotion.view')
+                                                        || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
+                                                        || auth()->user()->can('sp_module.sales_promotion.delete'))
                                                     <button style="background-color: #d63031" type="button"
                                                         class="btn mr-2 btn-md payment-btn text-white" data-toggle="modal"
                                                         data-target="#discount_modal">@lang('lang.random_discount')</button>
+                                                        @endif
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
