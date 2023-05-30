@@ -11,7 +11,9 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Customer;
 use App\Models\CustomerType;
+use App\Models\Employee;
 use App\Models\Grade;
+use App\Models\PrinterProduct;
 use App\Models\Product;
 use App\Models\ProductClass;
 use App\Models\ProductDiscount;
@@ -38,6 +40,8 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Http;
 use Lang;
+use PhpParser\Node\Expr\Print_;
+
 class ProductController extends Controller
 {
     /**
@@ -520,7 +524,10 @@ class ProductController extends Controller
         $suppliers = Supplier::pluck('name', 'id');
         $printers = Printer::get(['id','name']);
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-
+        $employee = Employee::where('user_id', auth()->user()->id)->first();
+        
+        $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
+        
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
@@ -541,7 +548,8 @@ class ProductController extends Controller
                 'customer_types',
                 'discount_customer_types',
                 'stores',
-                'printers'
+                'printers',
+                'employee_stores'
             ));
         }
 
@@ -563,13 +571,14 @@ class ProductController extends Controller
             'customer_types',
             'discount_customer_types',
             'stores',
-            'printers'
+            'printers',
+            'employee_stores'
         ));
     }
 
     public function store(Request $request)
     {
-
+        // return $request;
         if (!auth()->user()->can('product_module.product.create_and_edit')) {
             abort(403, 'Unauthorized action.');
         }
@@ -645,17 +654,11 @@ class ProductController extends Controller
             if($request->printers){
                 // loop printers
                 foreach ($request->printers as $printer){
-                    $data = [
+                    PrinterProduct::create([
                         'printer_id' => $printer,
                         'product_id' => $product['id'],
-                    ];
-                    $insert_data[] = $data;
-                    $insert_data = collect($insert_data);
-                    $chunks = $insert_data->chunk(100);
-                    foreach ($chunks as $chunk)
-                    {
-                        DB::table('printer_product')->insert($chunk->toArray());
-                    }
+                    ]);
+                    
                 }
             }
             $this->productUtil->createOrUpdateVariations($product, $request);
@@ -788,7 +791,11 @@ class ProductController extends Controller
         $suppliers = Supplier::pluck('name', 'id');
         $units_js=$units->pluck('base_unit_multiplier', 'id');
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-
+        $printers_p = PrinterProduct::where('product_id',$id)->get();
+        $printers = Printer::pluck('name','id');
+        $employee = Employee::where('user_id', auth()->user()->id)->first();
+        
+        $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
         return view('product.edit')->with(compact(
             'raw_materials',
             'raw_material_units',
@@ -808,7 +815,10 @@ class ProductController extends Controller
             'discount_customer_types',
             'stores',
             'suppliers',
-            'units_js'
+            'units_js',
+            'printers',
+            'printers_p',
+            'employee_stores',
         ));
     }
 
@@ -821,6 +831,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // return $request ;
         if (!auth()->user()->can('product_module.product.create_and_edit')) {
             abort(403, 'Unauthorized action.');
         }
@@ -925,6 +936,31 @@ class ProductController extends Controller
                 ProductDiscount::where('product_id',$product->id)->delete();
             }
 
+            if ($request->printers) {
+                $product->id;
+                $requestedPrinters = $request->printers;
+                $exist_printers = PrinterProduct::where('product_id', $product->id)->pluck('printer_id');
+            
+                // Add new printers
+                foreach ($requestedPrinters as $printerId) {
+                    if (!$exist_printers->contains($printerId)) {
+                        PrinterProduct::create([
+                            'printer_id' => $printerId,
+                            'product_id' => $product->id,
+                        ]);
+                    }
+                }
+            
+                // Delete printers not in the request
+                foreach ($exist_printers as $printerId) {
+                    if (!in_array($printerId, $requestedPrinters)) {
+                        PrinterProduct::where('printer_id', $printerId)
+                            ->where('product_id', $product->id)
+                            ->delete();
+                    }
+                }
+            }
+            
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {

@@ -235,5 +235,48 @@
         $('.v_unit').on('change', function() {
             alert( this.value );
         });
+
+        $(document).ready(function() {
+        // Event listener for select change
+        $('#selectStore').on('change', function() {
+            // Get the selected option value
+            var selectedOption = $(this).val();
+            
+            // Send AJAX request
+            $.ajax({
+            url: '/get-printers',
+            type: 'GET',
+            data: { printer_store_id: selectedOption },
+            success: function(response) {
+                // Handle the AJAX response
+                console.log('AJAX request successful');
+                console.log(response);
+                // Update the printers list in the container element
+                var printersContainer = $('#printersContainer');
+                printersContainer.empty(); // Clear previous printers
+
+                $.each(response, function(index, printer) {
+                    var checkbox = $('<input>')
+                    .attr('type', 'checkbox')
+                    .attr('name', 'printers[]')
+                    .val(printer.id);
+
+                    var label = $('<label>')
+                    .addClass('m-auto')
+                    .attr('for', 'printer' + printer.id)
+                    .text(printer.name);
+
+                    var div = $('<div>').addClass('row').append(checkbox, label);
+                    printersContainer.append(div);
+                });
+            },
+            error: function(xhr, status, error) {
+                // Handle AJAX errors
+                console.log('AJAX request failed');
+                console.log(xhr.responseText);
+            }
+            });
+        });
+    });
     </script>
 @endsection

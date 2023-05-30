@@ -27,6 +27,8 @@ use App\Models\TermsAndCondition;
 use App\Models\Transaction;
 use App\Models\DiningTable;
 use App\Models\MoneySafeTransaction;
+use App\Models\Printer;
+use App\Models\PrinterProduct;
 use App\Models\ProductDiscount;
 use App\Models\ServiceFee;
 use App\Models\TransactionPayment;
@@ -44,6 +46,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Print;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\Browsershot\Browsershot;
 use Str;
 
 class SellPosController extends Controller
@@ -473,11 +480,12 @@ class SellPosController extends Controller
 
 
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang);
-
+       $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 
         $output = [
             'success' => true,
             'html_content' => $html_content,
+            'partialPrint' => $partialPrint,
             'msg' => __('lang.success')
         ];
         // } catch (\Exception $e) {
@@ -1920,5 +1928,41 @@ class SellPosController extends Controller
             ];
         }
         return $output;
+    }
+
+    public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
+        // return $transaction;
+        // return $transaction->transaction_sell_lines ;
+        // // foreach ($transaction->transaction_sell_lines as $line){
+        //     return $printers = Printer::with('products')
+        //     ->get();
+            $productIds = [];
+            $data[]= null;
+            foreach ($transaction->transaction_sell_lines as $sellLine) {
+                $productIds[] = $sellLine['product_id'];
+            }
+                
+                // $printerIds = PrinterProduct::whereIn('product_id', $productIds)->pluck('id');
+            $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
+            $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
+            foreach($printers as $printer){
+                $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('prodct_id');
+                $transactionSellLines = [];
+                foreach ($transaction->transaction_sell_lines as $sellLine) {
+                    if (in_array($sellLine['product_id'], $printer_products)) {
+                        $transactionSellLines[] = $sellLine;
+                    }
+                }
+                $html_content = view('sale_pos.partials.partial_printers_invoice.blade')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'transaction_invoice_lang',
+                    'transactionSellLines',
+                ))->render();
+                $data[$printer->name]= $html_content;
+            }
+            
+        // }
+
     }
 }

@@ -497,8 +497,61 @@
                                     </table>
                                     <input type="hidden" name="raw_discount_index" id="raw_discount_index" value="1">
                                 </div>
-
-                                <div class="col-md-4">
+                                <div class="panel-group" id="accordion" style="margin-bottom: 20px">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <h4 class="panel-title">
+                                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                                    @lang('lang.printers')
+                                                </a>
+                                            </h4>
+                                        </div>
+           
+                                        <div id="collapseTwo" class="panel-collapse collapse @if(count($printers_p)> 0) show @endif">
+                                        
+                                            <div class="panel-body">
+                                                <select class="form-select" id="selectStore">
+                                                    <option selected>Select Store</option>
+                                                    @foreach ($employee_stores as $store)
+                                                    @php
+                                                        $isSelected = false;
+                                                        foreach ($printers_p as $p) {
+                                                            $printer_store = \App\Models\Printer::find($p->printer_id);
+                                                            if($printer_store){
+                                                                if ($printer_store->store_id == $store->id) {
+                                                                    $isSelected = true;
+                                                                    break;
+                                                                }
+                                                            }
+                                                            
+                                                        }
+                                                    @endphp
+                                                        <option value="{{$store->id}}" @if ($isSelected) selected @endif>{{$store->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                                <div class="col-md-12 i-checks" style="margin-left: 40px" id="printersContainer">
+                                                    {{-- @foreach ($printers as $printerId => $printerName) --}}
+                                                        {{-- @php
+                                                            $isChecked = false;
+                                                        @endphp
+                                
+                                                        @foreach ($printers_p as $print_p)
+                                                            @if ($print_p->printer_id == $printerId)
+                                                                @php
+                                                                    $isChecked = true;
+                                                                @endphp
+                                                            @endif
+                                                        @endforeach
+                                
+                                                        <input class="form-control ml-3" type="checkbox" name="printers[]" value="{{ $printerId }}" @if ($isChecked) checked @endif>
+                                                        <label for="printer{{ $printerId }}">{{ $printerName }}</label> --}}
+                                                    {{-- @endforeach --}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                     <div class="i-checks">
                                         <input id="show_to_customer" name="show_to_customer" type="checkbox"
                                             @if ($product->show_to_customer) checked @endif value="1"
@@ -646,6 +699,87 @@
             $('#different_prices_for_stores').change();
             $('#this_product_have_variant').change();
         })
+        $(document).ready(function() {
+            var storeOption =$('#selectStore').val();   
+            $.ajax({
+                    url: '/get-printers',
+                    type: 'GET',
+                    data: { printer_store_id: storeOption },
+                    success: function(response) {
+                        // Handle the AJAX response
+                        console.log('AJAX request successful');
+                        console.log(response);
+                        // Update the printers list in the container element
+                        var printersContainer = $('#printersContainer');
+                        printersContainer.empty(); // Clear previous printers
+
+                        $.each(response, function(index, printer) {
+                            var checkbox = $('<input>')
+                                .attr('type', 'checkbox')
+                                .attr('name', 'printers[]')
+                                .val(printer.id);
+                                // .prop('checked', isChecked);
+
+                            var label = $('<label>')
+                                .addClass('m-auto')
+                                .attr('for', 'printer' + printer.id)
+                                .text(printer.name);
+
+                            var div = $('<div>').addClass('row').append(checkbox, label);
+                            printersContainer.append(div);
+                            // Check if the printer ID exists in $printers_p
+                            if ($.inArray(printer.id, {!! json_encode($printers_p->pluck('printer_id')->toArray()) !!}) !== -1) {
+                                checkbox.prop('checked', true);
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle AJAX errors
+                        console.log('AJAX request failed');
+                        console.log(xhr.responseText);
+                    }
+                });         // Event listener for select change
+            $('#selectStore').on('change', function() {
+                // Get the selected option value
+                var selectedOption = $(this).val();
+                // var printers_p = {{$printers_p}};
+                // Send AJAX request
+                $.ajax({
+                    url: '/get-printers',
+                    type: 'GET',
+                    data: { printer_store_id: selectedOption },
+                    success: function(response) {
+                        // Handle the AJAX response
+                        console.log('AJAX request successful');
+                        console.log(response);
+                        // Update the printers list in the container element
+                        var printersContainer = $('#printersContainer');
+                        printersContainer.empty(); // Clear previous printers
+
+                        $.each(response, function(index, printer) {
+                            var checkbox = $('<input>')
+                                .attr('type', 'checkbox')
+                                .attr('name', 'printers[]')
+                                .val(printer.id)
+                                .prop('checked', isChecked);
+
+                            var label = $('<label>')
+                                .addClass('m-auto')
+                                .attr('for', 'printer' + printer.id)
+                                .text(printer.name);
+
+                            var div = $('<div>').addClass('row').append(checkbox, label);
+                            printersContainer.append(div);
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        // Handle AJAX errors
+                        console.log('AJAX request failed');
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
     </script>
     <script>
         $("#submit-btn").on("click", function (e) {

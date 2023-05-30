@@ -185,6 +185,23 @@ function __write_number_without_decimal_format(
 
 function __print_receipt(section_id = null) {
     setTimeout(function () {
+        // Get the list of available printers
+        // var printers = window.printer.getPrinters();
+        //     console.log(printers);
+        // Find the printer that matches the desired name
+        // var selectedPrinter = printers.find(function(printer) {
+        //     return printer.name === printerName;
+        // });
+
+        // if (!selectedPrinter) {
+        //     console.error('Printer not found');
+        //     return;
+        // }
+
+        // // Set the printer name for the print dialog
+        // window.document.title = printerName;
+
+    // Trigger the print dialog
         window.print();
         if ($("#edit_pos_form").length > 0) {
             setTimeout(() => {

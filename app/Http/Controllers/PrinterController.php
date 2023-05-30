@@ -6,9 +6,11 @@ use App\Http\Requests\Printers\Store;
 use App\Http\Requests\Printers\Update;
 use App\Models\Printer;
 use App\Models\Product;
+use COM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\DataTables;
+use Symfony\Component\Process\Process;
 
 class PrinterController extends Controller
 {
@@ -76,5 +78,24 @@ class PrinterController extends Controller
             'msg' => __('lang.printer_deleted')
         ];
         return $output;
+    }
+
+    public function getPrinters(Request $request)
+    {
+        exec('wmic printer get Name', $output);
+        $printerNames = array_filter($output, function ($value) {
+            return !empty(trim($value)) && $value !== 'Name';
+        });
+        foreach ($printerNames as $printerName) {
+            // echo $printerName . "\n";
+            $printer_create = Printer::firstOrCreate([
+                'name' => $printerName,
+                'store_id' => $request->printer_store_id
+            ]);
+            
+        }
+        $printers = Printer::where('store_id', $request->printer_store_id)->get();
+        return $printers;
+
     }
 }
