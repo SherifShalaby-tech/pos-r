@@ -3,6 +3,9 @@
 
 @section('content')
     <div class="container-fluid">
+        <div class="card-header d-flex align-items-center">
+            <h4 class="print-title">@lang('lang.raw_materials_list')</h4>
+        </div>
         @can('product_module.raw_material.create_and_edit')
             <a style="color: white" href="{{ action('RawMaterialController@create') }}" class="btn btn-info"><i
                     class="dripicons-plus"></i>

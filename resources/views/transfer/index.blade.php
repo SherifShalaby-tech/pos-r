@@ -5,6 +5,9 @@
 <div class="col-md-12 no-print">
     <div class="card">
         <div class="card-header d-flex align-items-center">
+            <h3 class="print-title">@lang('lang.all_transfers')</h3>
+        </div>
+        <div class="card-header d-flex align-items-center">
             <h4>@lang('lang.all_transfers')</h4>
         </div>
         <div class="card-body">

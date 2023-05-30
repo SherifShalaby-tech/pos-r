@@ -3,6 +3,9 @@
 
 @section('content')
 <div class="container-fluid">
+    <div class="card-header d-flex align-items-center">
+        <h4 class="print-title">@lang('lang.list_view_the_consumption_of_raw_material')</h4>
+    </div>
     @can('product_module.consumption.create_and_edit')
     <a style="color: white" href="{{action('ConsumptionController@create')}}" class="btn btn-info"><i
             class="dripicons-plus"></i>
