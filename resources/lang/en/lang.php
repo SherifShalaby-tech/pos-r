@@ -1437,4 +1437,5 @@ return [
     'Discount_from_the_cost_of_delivery' => 'Amount deducted from the cost of delivery',
     'The_actual_delivery_cost' => 'The value found for the delivery cost',
 
+    'cancel_add_stock_payment' => 'Cancel Stock Payment',
 ];
