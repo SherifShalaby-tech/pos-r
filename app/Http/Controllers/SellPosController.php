@@ -926,7 +926,7 @@ class SellPosController extends Controller
             ];
             $products=$query->leftjoin('add_stock_lines', 'variations.id','=','add_stock_lines.variation_id')
             ->select($selectRaws)->groupBy('variation_id','add_stock_lines.batch_number')->get();
-        
+
             $products_array = [];
             foreach ($products as $product) {
                 $products_array[$product->product_id]['name'] = $product->name;
@@ -971,7 +971,7 @@ class SellPosController extends Controller
                             'add_stock_lines_id'=>$variation['add_stock_lines.id'],
                             'qty_available' => $variation['qty'],
                             'is_service' => $value['is_service']
-                        ];    
+                        ];
                     }
                     $i++;
                 }
@@ -1033,11 +1033,11 @@ class SellPosController extends Controller
             $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id, $request->store_id);
             $store_pos = StorePos::where('user_id', auth()->id())->first();
             if($store_pos && $store_pos_id == null ){
-               $store_pos_id = $store_pos->id; 
+               $store_pos_id = $store_pos->id;
             }
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
-            
+
             if(!empty($extensions_quantity)){
                 $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
             }else{
@@ -1068,7 +1068,7 @@ class SellPosController extends Controller
 
                 $quantity =  $have_weight? (float)$have_weight: 1;
                 $edit_quantity = !$products->first()->have_weight ? $request->input('edit_quantity') : $quantity;
-                
+
                 if (empty($variation_id) && !empty($weighing_barcode) && $products->first()->have_weight != 1) {
                     $product_details = $this->__parseWeighingBarcode($weighing_barcode);
                     if ($product_details['success']) {
@@ -1407,7 +1407,7 @@ class SellPosController extends Controller
                 'received_currency.symbol as received_currency_symbol',
                 'received_currency_id'
             )->with([
-                'return_parent:id,final_total',
+                'return_parent:id,return_parent_id,final_total',
                 'customer:id,name,mobile_number',
                 // 'transaction_payments:id,method,ref_number',
                 'deliveryman:id,employee_name',
@@ -1418,6 +1418,7 @@ class SellPosController extends Controller
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('invoice_no', function ($row) {
                     $string = $row->invoice_no . ' ';
+
                     if (!empty($row->return_parent)) {
                         $string .= '<a
                         data-href="' . action('SellReturnController@show', $row->id) . '" data-container=".view_modal"
@@ -1538,10 +1539,16 @@ class SellPosController extends Controller
                         }
                         if (auth()->user()->can('sale.pay.create_and_edit')) {
                             if ($row->status != 'draft' && $row->payment_status != 'paid' && $row->status != 'canceled') {
-                                $html .=
-                                    '<a data-href="' . action('TransactionPaymentController@addPayment', ['id' => $row->id]) . '"
-                                title="' . __('lang.pay_now') . '" data-toggle="tooltip" data-container=".view_modal"
-                                class="btn btn-modal btn-success" style="color: white"><i class="fa fa-money"></i></a>';
+                                $final_total = $row->final_total;
+                                if (!empty($row->return_parent)) {
+                                    $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                                }
+                                if ($final_total > 0) {
+                                    $html .=
+                                        '<a data-href="' . action('TransactionPaymentController@addPayment', ['id' => $row->id]) . '"
+                                    title="' . __('lang.pay_now') . '" data-toggle="tooltip" data-container=".view_modal"
+                                    class="btn btn-modal btn-success" style="color: white"><i class="fa fa-money"></i></a>';
+                                }
                             }
                         }
                         $html .= '</div>';
@@ -1598,7 +1605,8 @@ class SellPosController extends Controller
                 'customers.name as customer_name',
                 'customers.mobile_number',
                 'users.name as created_by_name',
-            )->with(['deliveryman']);
+            )->with(['deliveryman',
+                'return_parent']);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1678,13 +1686,17 @@ class SellPosController extends Controller
                                 title="' . __('lang.delete') . '" data-toggle="tooltip"
                                 ><i class="dripicons-trash"></i></button>';
                         }
+                        $final_total = $row->final_total;
+                        if (!empty($row->return_parent)) {
+                            $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                        }
+                        if ($final_total > 0) {
 
-
-                        $html .=
-                            '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
-                            title="' . __('lang.pay_now') . '" data-toggle="tooltip"
-                            class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
-
+                            $html .=
+                                '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
+                                title="' . __('lang.pay_now') . '" data-toggle="tooltip"
+                                class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
+                        }
                         $html .= '</div>';
                         return $html;
                     }
@@ -1734,7 +1746,8 @@ class SellPosController extends Controller
                 'customer_types.name as customer_type_name',
                 'customers.name as customer_name',
                 'customers.mobile_number',
-            );
+            )->with([
+                'return_parent']);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1795,12 +1808,16 @@ class SellPosController extends Controller
                             data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
                             ><i class="dripicons-trash"></i></button>';
 
-
-                        $html .=
-                            '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
-                            title="' . __('lang.pay_now') . '" data-toggle="tooltip"
-                            class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
-
+                        $final_total = $row->final_total;
+                        if (!empty($row->return_parent)) {
+                            $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                        }
+                        if ($final_total > 0) {
+                            $html .=
+                                '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
+                                title="' . __('lang.pay_now') . '" data-toggle="tooltip"
+                                class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
+                        }
                         $html .= '</div>';
                         return $html;
                     }

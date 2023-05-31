@@ -480,12 +480,18 @@ class SellController extends Controller
                         $html .= '<li class="divider"></li>';
                         if (auth()->user()->can('sale.pay.create_and_edit')) {
                             if ($row->status != 'draft' && $row->payment_status != 'paid' && $row->status != 'canceled') {
-                                $html .=
-                                    ' <li>
+                                $final_total = $row->final_total;
+                                if (!empty($row->return_parent)) {
+                                    $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                                }
+                                if ($final_total > 0) {
+                                    $html .=
+                                        ' <li>
                                     <a data-href="' . action('TransactionPaymentController@addPayment', $row->id) . '"
                                         data-container=".view_modal" class="btn btn-modal"><i class="fa fa-plus"></i>
                                         ' . __('lang.add_payment') . '</a>
                                     </li>';
+                                }
                             }
                         }
                         $html .= '<li class="divider"></li>';
@@ -745,6 +751,23 @@ class SellController extends Controller
             DB::beginTransaction();
 
             $transaction_sell_lines = TransactionSellLine::where('transaction_id', $id)->get();
+            if ($transaction->sell_return ){
+                $transaction_return_sell_lines = TransactionSellLine::where('transaction_id',
+                    $transaction->return_parent_id)->get();
+                foreach ($transaction_return_sell_lines as  $transaction_return_sell_line){
+                    $product = Product::find($transaction_return_sell_line->product_id);
+                    if (!$product->is_service) {
+                        $this->productUtil->updateProductQuantityStore(
+                            $transaction_return_sell_line->product_id,
+                            $transaction_return_sell_line->variation_id, $transaction->store_id,
+                            -$transaction_return_sell_line['quantity_returned'], 0);
+                    }
+                    $transaction_return_sell_line->quantity_returned = 0;
+                    $transaction_return_sell_line->save();
+                }
+
+
+            }
             foreach ($transaction_sell_lines as $transaction_sell_line) {
                 if ($transaction->status == 'final') {
                     $product = Product::find($transaction_sell_line->product_id);
@@ -790,6 +813,7 @@ class SellController extends Controller
                 $transaction_sell_line->delete();
             }
 
+            $return_ids =Transaction::where('return_parent_id', $id)->pluck('id');
             Transaction::where('return_parent_id', $id)->delete();
             Transaction::where('parent_sale_id', $id)->delete();
 
@@ -797,6 +821,7 @@ class SellController extends Controller
 
             $transaction->delete();
             CashRegisterTransaction::where('transaction_id', $id)->delete();
+            CashRegisterTransaction::wherein('transaction_id', $return_ids)->delete();
 
             DiningTable::where('current_transaction_id', $id)->update(['current_transaction_id' => null, 'status' => 'available']);
 

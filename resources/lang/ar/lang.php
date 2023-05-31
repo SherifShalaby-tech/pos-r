@@ -1411,5 +1411,10 @@ return [
     'product_taxes'=>'ضريبة المنتج',
 
     'net_profit' => 'صافي الربح',
+
+
+    'Discount_from_the_cost_of_delivery'=>'المبلغ المخصوم من تكلفة الدليفري',
+    'The_actual_delivery_cost'=>'القيمة الفعلية لتكلفة الدليفري',
+
     'cancel_add_stock_payment' => 'الغاء دفع المخزون',
 ];
