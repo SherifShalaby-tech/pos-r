@@ -15,6 +15,7 @@
                     </div>
                     <div class="col-md-10" style="padding: 15px ">
                         <div class="row">
+                            {{-- <input type="text" value="" class="isPayComplete" /> --}}
                             <div id="payment_rows" class="col-md-12">
                                 <div class="payment_row row pl-3  pr-3">
                                     <div class="col-md-6 mt-1">

@@ -20,7 +20,10 @@ class Store extends Model
     {
         return $this->hasMany(StorePos::class);
     }
-
+    public function dining_rooms()
+    {
+        return $this->hasMany(DiningRoom::class);
+    }
     public static function getDropdown()
     {
         if (session('user.is_superadmin') || session('user.is_admin')) {

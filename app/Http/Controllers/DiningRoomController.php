@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\DiningRoom;
 use App\Models\DiningTable;
+use App\Models\Store;
+use App\Models\TableReservation;
 use App\Utils\Util;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -50,7 +52,8 @@ class DiningRoomController extends Controller
      */
     public function create()
     {
-        return view('dining_room.create');
+        $stores = Store::pluck('name','id');
+        return view('dining_room.create')->with(compact('stores'));
     }
 
     /**
@@ -73,7 +76,7 @@ class DiningRoomController extends Controller
             return $output;
         }
         try {
-            $data = $request->only('name');
+            $data = $request->all();
 
             $dining_room = DiningRoom::create($data);
             $output = [
@@ -115,9 +118,9 @@ class DiningRoomController extends Controller
     {
 
         $dining_room = DiningRoom::find($id);
-
+        $stores = Store::pluck('name','id');
         return view('dining_room.edit')->with(compact(
-            'dining_room'
+            'dining_room','stores'
         ));
     }
 
@@ -196,7 +199,8 @@ class DiningRoomController extends Controller
     public function getDiningContent(Request $request)
     {
         $dining_rooms = DiningRoom::all();
-
+        // $table_status=TableReservation::find($request->dining_table_id);
+        // $dining_table = DiningTable::find($request->dining_table_id);
         $active_tab_id = null;
         $dining_table_id = $request->dining_table_id;
         if (!empty($dining_table_id)) {

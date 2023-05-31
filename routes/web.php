@@ -244,9 +244,14 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('dining-table/check-dining-table-name', 'DiningTableController@checkDiningTableName');
     Route::get('dining-table/get-dining-table-content', 'DiningTableController@getDiningContent');
     Route::get('dining-table/get-dining-table-action/{id}', 'DiningTableController@getDiningAction');
+    Route::get('dining-table/edit-reservation-table-data/{id}', 'DiningTableController@editReservationTableData');
     Route::post('dining-table/update-dining-table-data/{id}', 'DiningTableController@updateDiningTableData');
     Route::get('dining-table/get-table-details/{id}', 'DiningTableController@getTableDetails');
     Route::get('dining-table/get-dropdown-by-dining-room/{id}', 'DiningTableController@getDropdownByDiningRoom');
+    Route::get('dining-table/check_time_rserve_availability/{id}', 'DiningTableController@checkTimeRserveAvailability');
+    Route::get('dining-table/merge_table/{id}', 'DiningTableController@mergeTable');
+    Route::get('/dining-table/get-table-new-additions', 'DiningTableController@getTableNewAdditions');
+    Route::get('/dining-table/read-new-tables', 'DiningTableController@readNewTables');
     Route::resource('dining-table', DiningTableController::class);
     Route::resource('extension', ExtensionController::class);
 

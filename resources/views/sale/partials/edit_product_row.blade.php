@@ -3,6 +3,11 @@ $exchange_rate = !empty($sale->exchange_rate) ? $sale->exchange_rate : 1;
 @endphp
 @forelse ($products as $product)
     <tr class="product_row">
+        <td style="width: 5%">
+            <label class="checkboxes" >
+                <input class="productcheck pcheck" id="{{$product->variation_id}}" type="checkbox" {{$product->check_pay=="1"&& isset($product->check_pay)?'checked':''}} value="{{$product->check_pay=="1"&& isset($product->check_pay)?1:0}}" name="transaction_sell_line[{{$loop->index}}][is_product_checked]" aria-label="...">
+            </label>
+        </td>
         <td style="width: 20%">
             @if ($product->variation->name != 'Default')
                 <b>{{ $product->variation->name }}</b>
@@ -70,7 +75,7 @@ $exchange_rate = !empty($sale->exchange_rate) ? $sale->exchange_rate : 1;
             <input type="hidden" class="form-control product_discount_value"
                 name="transaction_sell_line[{{ $loop->index }}][product_discount_value]"
                 value="@if (!empty($product->product_discount_value)){{ @num_format($product->product_discount_value) }}@else{{ 0 }} @endif">
-            <input type="text" class="form-control product_discount_amount"
+            <input type="text" class="form-control "
                 name="transaction_sell_line[{{ $loop->index }}][product_discount_amount]" readonly
                 value="@if (!empty($product->product_discount_amount)){{ @num_format($product->product_discount_amount) }}@else{{ 0 }} @endif">
         </td>

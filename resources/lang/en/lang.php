@@ -1434,4 +1434,9 @@ return [
     'product_taxes'=>'Product Taxes',
 
     'net_profit' => 'Net Profit',
+    'another_reservation'=>'Another Reservation',
+    'this_time_is_not_available'=>'This Time Is Not Available,Reserve On Another Time.',
+    'are_you_sure_u_want_to_delete_this_reservation'=>'Are You Sure You Want To Delete This Reservation?',
+    'select_merge_table'=>'Select Merge Table',
+    'other_reservations'=>'Other Reservations'
 ];

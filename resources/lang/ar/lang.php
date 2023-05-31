@@ -1411,4 +1411,10 @@ return [
     'product_taxes'=>'ضريبة المنتج',
 
     'net_profit' => 'صافي الربح',
+
+    'another_reservation'=>'حجز اخر',
+    'this_time_is_not_available'=>'هذا الوقت غير متاح , احجز فى وقت أخر',
+    'are_you_sure_u_want_to_delete_this_reservation'=>'هل متأكد من حذف هذا الحجز ؟',
+    'select_merge_table'=>'دمج طاولات',
+    'other_reservations'=>'حجوزات أخرى',
 ];

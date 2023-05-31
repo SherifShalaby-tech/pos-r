@@ -10,6 +10,11 @@
             overflow: initial;
             width: auto !important;
         }
+        .checkboxes input[type=checkbox] {
+            width: 140%;
+            height: 140%;
+            accent-color: #7e2dff;
+        }
     </style>
 
 @endsection
@@ -41,8 +46,8 @@
                                 value="@if (!empty($walk_in_customer)) {{ $walk_in_customer->id }} @endif">
                             <input type="hidden" name="row_count" id="row_count" value="0">
                             <input type="hidden" name="customer_size_id_hidden" id="customer_size_id_hidden" value="">
-                            <input type="hidden" name="enable_the_table_reservation" id="enable_the_table_reservation"
-                                value="{{ App\Models\System::getProperty('enable_the_table_reservation') }}">
+                            {{-- <input type="hidden" name="enable_the_table_reservation" id="enable_the_table_reservation"
+                                value="{{ App\Models\System::getProperty('enable_the_table_reservation') }}"> --}}
                             <div class="row">
                                 <div class="col-md-12 main_settings">
                                     <div class="row">
@@ -106,8 +111,9 @@
                                                 <button type="button" style="padding: 0px !important;"
                                                     data-href="{{ action('DiningRoomController@getDiningModal') }}"
                                                     data-container="#dining_model"
-                                                    class="btn btn-modal pull-right mt-4"><img
-                                                        src="{{ asset('images/black-table.jpg') }}" alt="black-table"
+                                                    class="btn btn-modal pull-right mt-4 dining-btn">
+                                                    <span class="badge badge-danger table-badge">0</span>
+                                                    <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
                                                         style="width: 40px; height: 33px; margin-top: 7px;"></button>
                                             </div>
                                         @endif
@@ -184,13 +190,30 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
+                                            <input type="hidden" id="room_id" name="dinig_room_id"/>
                                             <label for=""
                                                 style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
                                                 <span class="table_name"></span></label>
+                                                <div class="form-check tables_status">
+                                                    {{-- @if($status_array)
+                                                    @foreach($status_array as $status)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input table_status" type="radio" name="order" id="{{$status->order}}" value="{{$status->order}}" checked>
+                                                        <label class="form-check-label" for="{{$status->order}}">{{$status->order}}</label>
+                                                    </div>
+                                                    @endforeach
+                                                    @endif --}}
+                                                  
+                                                </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="input-group my-group">
                                                 {!! Form::select('service_fee_id', $service_fees, null, ['class' => 'form-control', 'placeholder' => __('lang.select_service'), 'id' => 'service_fee_id']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="input-group my-group">
+                                                {!! Form::select('merge_table_id', $tables, null, ['class' => 'form-control', 'placeholder' => __('lang.select_merge_table'), 'id' => 'table_merge_id']) !!}
                                             </div>
                                         </div>
                                         <input type="hidden" name="service_fee_id_hidden" id="service_fee_id_hidden"
@@ -223,10 +246,16 @@
                                                 <thead>
                                                     <tr>
                                                         <th
+                                                            style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
+                                                            <label class=" checkboxes">
+                                                                <input class="" type="checkbox" checked id="pay-all" value="" aria-label="...">
+                                                            </label>
+                                                        </th>
+                                                        <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 16% @else 18% @endif; font-size: 12px !important;">
                                                             @lang('lang.product')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 18% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 17% @endif; font-size: 12px !important;">
                                                             @lang('lang.quantity')</th>
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 14% @else 14% @endif; font-size: 12px !important;">
@@ -255,9 +284,12 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="row" style="display: none;">
+                                    <div class="row" style="">
                                         <div class="col-md-2">
                                             <div class="form-group">
+                                                <input type="hidden" value="0" class="SavedTransactionId" name="SavedTransactionId" />
+                                                <input type="hidden" value="complete" class="isPayComplete" name="isPayComplete" />
+                                                {{-- <input type="hidden" id="finaltotalCheckedProducts" name="finaltotalCheckedProducts" /> --}}
                                                 <input type="hidden" id="final_total" name="final_total" />
                                                 <input type="hidden" id="grand_total" name="grand_total" />
                                                 <input type="hidden" id="gift_card_id" name="gift_card_id" />
@@ -849,6 +881,7 @@
     <script src="{{ asset('js/onscan.min.js') }}"></script>
     <script src="{{ asset('js/pos.js') }}"></script>
     <script src="{{ asset('js/dining_table.js') }}"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
         $('.close_btn_product_extension').click(function () {
             $('#product_extension').removeClass('view_modal no-print show');
@@ -856,6 +889,7 @@
         });
         $(document).ready(function() {
             $('.online-order-badge').hide();
+            $('.table-badge').hide();
         })
         // Enable pusher logging - don't include this in production
         // Pusher.logToConsole = true;
@@ -876,6 +910,7 @@
                     url: '/pos/get-transaction-details/' + transaction_id,
                     data: {},
                     success: function(result) {
+                        alert(33)
                         toastr.success(LANG.new_order_placed_invoice_no + ' ' + result.invoice_no);
                         let notification_number = parseInt($('.notification-number').text());
                         console.log(notification_number, 'notification-number');
@@ -907,5 +942,21 @@
                 });
             }
         });
+
+        /////
+        // var channel = pusher.subscribe('table-channel');
+        // channel.bind('new-table', function() {
+        //         $.ajax({
+        //             method: 'get',
+        //             url: '/dining-table/get-table-new-additions' ,
+        //             data: {},
+        //             success: function(result) {
+        //                 console.log(result)
+        //                 $('.table-badge').text(result);
+        //                 $('.table-badge').show();
+        //             },
+        //         });
+        //     // }
+        // });
     </script>
 @endsection

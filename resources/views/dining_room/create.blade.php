@@ -15,7 +15,13 @@
                 {!! Form::label('name', __('lang.name') . ':*') !!}
                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'), 'required', 'id' => 'dining_room_name']) !!}
             </div>
+            <div class="form-group">
+                {!! Form::label('store_id', __( 'lang.store' ). ':') !!}
+                {!! Form::select('store_id', $stores, null, ['class' => 'form-control', 'placeholder'
+                => __('lang.please_select'), 'data-live-search' => 'true']) !!}
+            </div>
         </div>
+        
 
         <div class="modal-footer">
             <button type="button" id="add_dining_room_btn" class="btn btn-primary">@lang( 'lang.save' )</button>

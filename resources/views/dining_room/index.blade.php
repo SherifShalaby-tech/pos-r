@@ -19,6 +19,7 @@
                             <thead>
                                 <tr>
                                     <th>@lang('lang.name')</th>
+                                    <th>@lang('lang.store')</th>
                                     <th class="notexport">@lang('lang.action')</th>
                                 </tr>
                             </thead>
@@ -26,6 +27,7 @@
                                 @foreach ($dining_rooms as $dining_room)
                                     <tr>
                                         <td>{{ $dining_room->name }}</td>
+                                        <td>{{ isset($dining_room->store)?$dining_room->store->name:"" }}</td>
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default btn-sm dropdown-toggle"
