@@ -1434,4 +1434,5 @@ return [
     'product_taxes'=>'Product Taxes',
 
     'net_profit' => 'Net Profit',
+    'cancel_add_stock_payment' => 'Cancel Stock Payment',
 ];
