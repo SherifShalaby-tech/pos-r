@@ -33,7 +33,6 @@
                                         <input type="hidden" name="payments[0][change_amount]" class="change_amount"
                                             id="change_amount">
                                         <input type="hidden" name="payments[0][pending_amount]" class="pending_amount">
-                                        <input type="hidden" name="payments[0][pending_amount]" class="pending_amount"> 
                                         <div class="col-md-6">
                                             <button type="button" 
                                                 class="ml-1 btn btn-danger add_to_customer_balance hide">@lang('lang.add_to_customer_balance')</button>
