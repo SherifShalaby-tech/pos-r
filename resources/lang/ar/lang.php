@@ -1411,4 +1411,6 @@ return [
     'product_taxes'=>'ضريبة المنتج',
 
     'net_profit' => 'صافي الربح',
+    'add_to_customer_balance' => 'اضافة الى حساب العميل',
+
 ];

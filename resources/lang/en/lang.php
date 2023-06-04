@@ -1434,4 +1434,6 @@ return [
     'product_taxes'=>'Product Taxes',
 
     'net_profit' => 'Net Profit',
+    'add_to_customer_balance' => 'Add to customer balance',
+
 ];

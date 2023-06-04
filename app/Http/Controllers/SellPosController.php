@@ -325,6 +325,7 @@ class SellPosController extends Controller
             if ($request->add_to_deposit > 0) {
                 $customer->deposit_balance = $customer->deposit_balance + $request->add_to_deposit;
             }
+            $customer->added_balance = $request->add_to_customer_balance;
             $customer->save();
         }
 
@@ -350,6 +351,7 @@ class SellPosController extends Controller
                         'amount_to_be_used' => $request->amount_to_be_used,
                         'payment_note' => $request->payment_note,
                         'change_amount' => $payment['change_amount'] ?? 0,
+                        'customer_balance' => $request->add_to_customer_balance ?? 0,
                     ];
 
                     $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
