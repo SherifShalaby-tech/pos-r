@@ -35,13 +35,17 @@ $(document).on("change", "#dining_room_name", function () {
 function get_dining_content(dining_table_id = null) {
     if (dining_table_id == null) {
         dining_table_id = $("#dining_table_id").val();
+        
     }
-
+    table_no = $("#table_no").val();
+    room_no = $("#room_no").val();
     $.ajax({
         method: "GET",
         url: "/dining-room/get-dining-room-content",
         data: {
             dining_table_id: dining_table_id,
+            table_no:table_no,
+            room_no:room_no
         },
         success: function (result) {
             $("#dining_content").empty().append(result);
@@ -124,7 +128,6 @@ $(document).on("click", ".table_action_reserve", function () {
 });
 $(document).on("click", ".table_cancel_reserve_btn", function () {
     let table_id = $(this).data('table_id');
-    $("#dining_table_action_modal").modal("show");
     $.ajax({
         method: "post",
         url: "/dining-table/update-dining-table-data/" + table_id,
@@ -134,20 +137,19 @@ $(document).on("click", ".table_cancel_reserve_btn", function () {
         success: function (result) {
             if (result.success == "1") {
                 swal("Success", result.msg, "success");
-                $("#dining_table_action_modal").modal("hide");
-                // get_dining_content();
-                $("#dining_model").modal("hide");
+                get_dining_content();
             }
         },
     });
 });
 $(document).on("click", ".table_edit_reserve_btn", function () {
     let table_id = $(this).data('table_id');
+    let reserve_id = $(this).data('reserve_id');
     $("#dining_table_id").val(table_id);
     $.ajax({
         method: "GET",
         url: "/dining-table/get-dining-table-action/" + table_id,
-        data:{type:'edit_reserve'},
+        data:{type:'edit_reserve',reservation_id:reserve_id},
         success: function (result) {
             $("#dining_table_action_modal").empty().append(result);
             $("#dining_table_action_modal").modal("show");
@@ -158,6 +160,7 @@ $(document).on("click", ".table_edit_reserve_btn", function () {
 });
 $(document).on("click", "#table_edit_btn", function () {
 let table_id = $(this).data('table_id');
+let reserve_id = $(this).data('reserve_id');
 if (
     !$("#table_customer_name").val() ||
     !$("#table_customer_mobile_number").val() ||
@@ -173,7 +176,8 @@ else{
         url: "/dining-table/check_time_rserve_availability/"+ table_id,
         data: {
             date_and_time:$("#table_date_and_time").val(),
-            old_value:true
+            old_value:true,
+            reservation_id:reserve_id
         },
         dataType: "json",
         success: function (result) {
@@ -192,12 +196,13 @@ else{
                             ).val(),
                             date_and_time: $("#table_date_and_time").val(),
                             status: 'edit-reserve',
+                            reservation_id:reserve_id
                         },
                         success: function (result) {
                             if (result.success == "1") {
                                 swal("Success", result.msg, "success");
                                 $("#dining_table_action_modal").modal("hide");
-                                // get_dining_content();
+                                get_dining_content();
                                 // location.reload(true);
                             }
                         },
@@ -210,10 +215,9 @@ else{
                 console.log("a",result)
                 return false;
             }
+            // get_dining_content();
             $("#table_edit_btn").addClass("hide");
             $("#table_reserve_btn").removeClass("hide");
-            $("#dining_table_action_modal").modal("hide");
-            $("#dining_model").modal("hide");
         }
 
     });
@@ -277,7 +281,6 @@ $(document).on("click", "#table_reserve_btn", function () {
                     dataType: "json",
                     success: function (result) {
                         if(result.msg=="ok"){
-                            console.log(result.msg)
                             // toastr.error(result.msg);
                             complete=true;
                             if(complete){
@@ -294,9 +297,10 @@ $(document).on("click", "#table_reserve_btn", function () {
                                     },
                                     success: function (result) {
                                         if (result.success == "1") {
+                                            get_dining_content();
                                             swal("Success", result.msg, "success");
                                             $("#dining_table_action_modal").modal("hide");
-                                            $("#dining_model").modal("hide");
+                                            reset_pos_form();
                                         }
                                     }, error: function (response) {
                                         swal("Error", response, "error");
@@ -386,24 +390,6 @@ $(document).on("click", "#table_action_btn", function () {
             // }
         }
     } 
-    // else if (table_status == "cancel_reservation") {
-    //     $.ajax({
-    //         method: "post",
-    //         url: "/dining-table/update-dining-table-data/" + table_id,
-    //         data: {
-    //             status: table_status,
-    //         },
-    //         success: function (result) {
-    //             if (result.success == "1") {
-    //                 swal("Success", result.msg, "success");
-    //                 $("#dining_table_action_modal").modal("hide");
-    //                 // get_dining_content();
-    //                 location.reload(true);
-    //             }
-    //         },
-    //     });
-    // }
-    // }else{
         $("#dining_table_id").val(table_id);
         $(".reserve_div").addClass("hide");
         $(".table_room_hide").addClass("hide");
@@ -430,8 +416,19 @@ $(document).on("click", "#table_action_btn", function () {
                     }
                     $('.tables_status').html(statuscontent);
              }
+             $.ajax({
+                method: 'get',
+                url: '/dining-table/get-tables-for-merge/' + $('#room_id').val(),
+                dataType: 'html',
+                success: function(result) {
+                    console.log(result);
+                    $("#table_merge_id").empty().append(result);
+                    $("#table_merge_id").selectpicker("refresh");
+                },
+            });
             }
         });
+        
     // }
     // } else {
     //     $(".reserve_div").addClass("hide");
@@ -439,6 +436,9 @@ $(document).on("click", "#table_action_btn", function () {
     //     $(".table_room_hide").removeClass("hide");
     //     $(".transaction-list").css("height", "45vh");
     // }
+});
+$(document).on("click",".dining-btn",function(){
+    get_dining_content();
 });
 $(document).on("click",'.reserve input[name="table_status"]',function() {
     if($(this).is(':checked')) {
@@ -463,7 +463,6 @@ $(document).on("click",'.reserve input[name="table_status"]',function() {
  });
 $(document).on("click",'.cancel_reserve',function() {
     $id=$(this).data('index');
-    $(this).closest('li').remove();
     $.ajax({
         method: "post",
         url: "/dining-table/update-dining-table-data/" + $id,
@@ -473,6 +472,7 @@ $(document).on("click",'.cancel_reserve',function() {
         success: function (result) {
             if (result.success == "1") {
                 swal("Success", result.msg, "success");
+                get_dining_content();
             }
         },
     });
@@ -487,13 +487,3 @@ function reset_dinging_table_action_modal() {
     $("#table_status").val("");
     $("#table_status").selectpicker("refresh");
 }
-
-$(document).on("click", ".dining-btn", function () {
-    $.ajax({
-        type: "get",
-        url: "/dining-table/read-new-tables",
-        success: function (response) {
-            
-        }
-    });
-});

@@ -2,7 +2,7 @@
 <div role="document" class="modal-dialog">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">{{ $dining_table->name }}</h5>
+            <h5 class="modal-title">{{ $dining_table->dining_tables->name }}</h5>
             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
                     aria-hidden="true"><i class="dripicons-cross"></i></span></button>
         </div>
@@ -19,20 +19,20 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('table_customer_name', __('lang.customer_name') . ':*') !!}
-                        {!! Form::text('table_customer_name', $dining_table->customer_name, ['class' => 'form-control', 'placeholder' => __('lang.customer_name'), 'required']) !!}
+                        {!! Form::text('table_customer_name', !empty($status)&&$status=='edit'?$dining_table->customer_name:null, ['class' => 'form-control', 'placeholder' => __('lang.customer_name'), 'required']) !!}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('table_customer_mobile_number', __('lang.mobile_number') . ':*') !!}
-                        {!! Form::text('table_customer_mobile_number', $dining_table->customer_mobile_number, ['class' => 'form-control', 'placeholder' => __('lang.mobile_number'), 'required']) !!}
+                        {!! Form::text('table_customer_mobile_number', !empty($status)&&$status=='edit'?$dining_table->customer_mobile_number:null, ['class' => 'form-control', 'placeholder' => __('lang.mobile_number'), 'required']) !!}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('table_date_and_time', __('lang.date_and_time') . ':*') !!}
                         <input type="datetime-local" id="table_date_and_time" name="table_date_and_time"
-                            value="@if (!empty($dining_table->date_and_time)){{ Carbon\Carbon::parse($dining_table->date_and_time)->format('Y-m-d\TH:i') }}@else{{ date('Y-m-d\TH:i') }}@endif"
+                            value="{{!empty($status)&&$status=='edit'? (!empty($dining_table->date_and_time)?$dining_table->date_and_time:date('Y-m-d\TH:i')):date('Y-m-d\TH:i')}}"
                             class="form-control">
                     </div>
                 </div>
@@ -43,7 +43,7 @@
                     class="btn btn-primary hide">@lang('lang.save')</button>
 
                     <button type="button" name="discount_btn" id="table_edit_btn"
-                    class="btn btn-primary hide" data-table_id="{{$dining_table->id}}">@lang('lang.update')</button>
+                    class="btn btn-primary hide" data-table_id="{{$dining_table->dining_table_id}}" data-reserve_id="{{ $dining_table->id }}">@lang('lang.update')</button>
 
                 <button type="button" name="discount_btn" id="table_reserve_btn"
                     class="btn btn-primary">@lang('lang.save')</button>

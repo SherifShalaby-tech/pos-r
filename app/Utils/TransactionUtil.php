@@ -74,7 +74,7 @@ class TransactionUtil extends Util
         if (!empty($payment_data['transaction_payment_id'])) {
             $transaction_payment = TransactionPayment::find($payment_data['transaction_payment_id']);
             $transaction_payment->amount = $isEditPayment?$payment_data['amount']:$transaction_payment->amount+$payment_data['amount'];
-            $transaction_payment->cashes_amount =$payment_data['amount'];
+            $transaction_payment->cashes_amount = $payment_data['amount'];
             $transaction_payment->method = $payment_data['method'];
             $transaction_payment->payment_for = !empty($payment_data['payment_for']) ? $payment_data['payment_for'] : $transaction->customer_id;
             $transaction_payment->ref_number = !empty($payment_data['ref_number']) ? $payment_data['ref_number'] : null;
@@ -514,7 +514,29 @@ class TransactionUtil extends Util
             AddStockLine::whereIn('transaction_id', $keep_supplier_service)->whereNotIn('id', $keep_supplier_service_lines)->delete();
         }
     }
-
+    public function createTransactionSellLineForOrder($transaction, $order_details)
+    {
+        foreach($order_details as $order){
+            $transaction_sell=TransactionSellLine::where('transaction_id',$transaction->id)->where('product_id',$order->product_id)->where('variation_id',$order->variation_id)->first();
+            if(empty($transaction_sell)){
+            $transaction_sell_line =new TransactionSellLine();
+            $transaction_sell_line->check_pay =1;
+            $transaction_sell_line->transaction_id = $transaction->id;
+            $transaction_sell_line->product_id = $order->product_id;
+            $transaction_sell_line->variation_id = $order->variation_id;
+            $transaction_sell_line->product_discount_value = !empty($order->discount) ? $this->num_uf($order->discount) : 0;
+            $transaction_sell_line->quantity = $this->num_uf($order->quantity);
+            $transaction_sell_line->sell_price = $this->num_uf($order->price);
+            $transaction_sell_line->purchase_price = $this->num_uf($order->price);
+            $transaction_sell_line->sub_total = $this->num_uf($order->sub_total);
+            $transaction_sell_line->save();
+            }else{
+                $transaction_sell->quantity=$transaction_sell->quantity+$order->quantity;
+                $transaction_sell->save();
+            }
+        } 
+        // return true;
+    }
     /**
      * create or update transaction supplier service
      *

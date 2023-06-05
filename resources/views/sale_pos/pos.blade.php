@@ -109,8 +109,9 @@
                                         @if (session('system_mode') == 'restaurant')
                                             <div class="col-md-1">
                                                 <button type="button" style="padding: 0px !important;"
-                                                    data-href="{{ action('DiningRoomController@getDiningModal') }}"
-                                                    data-container="#dining_model"
+                                                data-toggle="modal" data-target="#dining_model"
+                                                    {{-- data-href="/dining-room/get-dining-modal/0/0/0/0"
+                                                    data-container="#dining_model" --}}
                                                     class="btn btn-modal pull-right mt-4 dining-btn">
                                                     <span class="badge badge-danger table-badge">0</span>
                                                     <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
@@ -190,7 +191,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="hidden" id="room_id" name="dinig_room_id"/>
+                                            <input type="hidden" id="room_id" name="dining_room_id"/>
                                             <label for=""
                                                 style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
                                                 <span class="table_name"></span></label>
@@ -831,9 +832,11 @@
                 </div>
                 <div id="dining_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal text-left">
+                    @include('sale_pos.partials.dining_modal')
                 </div>
                 <div id="dining_table_action_modal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal fade text-left">
+
                 </div>
             </div>
         </div>
@@ -883,6 +886,7 @@
     <script src="{{ asset('js/dining_table.js') }}"></script>
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
+        // $('.room-badge3').text("hihh")
         $('.close_btn_product_extension').click(function () {
             $('#product_extension').removeClass('view_modal no-print show');
             $('#product_extension').hide();
@@ -890,27 +894,60 @@
         $(document).ready(function() {
             $('.online-order-badge').hide();
             $('.table-badge').hide();
+            $('.selected-table-badge').hide();
+            $('.room-count-badge').hide();
         })
         // Enable pusher logging - don't include this in production
-        // Pusher.logToConsole = true;
+        Pusher.logToConsole = true;
 
         var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
             cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
         });
-
         var channel = pusher.subscribe('order-channel');
         channel.bind('new-order', function(data) {
+            if(data.table_no){
+                let room_no=data.room_no;
+                let table_id=data.table_no;
+                let table_count = parseInt($('.table-badge').text()) + 1;
+                let selected_table_no = parseInt($('.table'+table_id).text()) + 1;
+                let room_no_count = parseInt($('.room-badge'+room_no).text()) + 1;
+                console.log(data.room_no)
+                console.log(data)
+                $('.table-badge').text(table_count);
+                $('.table'+table_id).text(selected_table_no);
+                $('.room-badge'+room_no).text(room_no_count);
+                $('.table-badge').show();
+                $('.table'+table_id).show();
+                $('.table'+table_id).removeClass('hide');
+                $('.room-badge'+room_no).show();
+                $('.room-badge'+room_no).removeClass('hide');
+                // $('.dining-btn').data('href','/dining-room/get-dining-modal/'+selected_table_no+'/'+room_id+'/'+room_no_count+'/'+table_id);
+                $.ajax({
+                    type: "post",
+                    url: "/pos/add-new-orders-to-transaction-sellline",
+                    data: {
+                        order_id:data.order_id
+                    },
+                    success: function (response) {
+                        if(response==1){
+                           
+                        }
+                    }
+                });
+            }
             if (data) {
+                // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
+                
                 $('.online-order-badge').text(badge_count);
                 $('.online-order-badge').show();
+          
                 var transaction_id = data.transaction_id;
                 $.ajax({
                     method: 'get',
                     url: '/pos/get-transaction-details/' + transaction_id,
                     data: {},
                     success: function(result) {
-                        alert(33)
                         toastr.success(LANG.new_order_placed_invoice_no + ' ' + result.invoice_no);
                         let notification_number = parseInt($('.notification-number').text());
                         console.log(notification_number, 'notification-number');
@@ -942,21 +979,5 @@
                 });
             }
         });
-
-        /////
-        // var channel = pusher.subscribe('table-channel');
-        // channel.bind('new-table', function() {
-        //         $.ajax({
-        //             method: 'get',
-        //             url: '/dining-table/get-table-new-additions' ,
-        //             data: {},
-        //             success: function(result) {
-        //                 console.log(result)
-        //                 $('.table-badge').text(result);
-        //                 $('.table-badge').show();
-        //             },
-        //         });
-        //     // }
-        // });
     </script>
 @endsection

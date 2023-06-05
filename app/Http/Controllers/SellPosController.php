@@ -137,8 +137,11 @@ class SellPosController extends Controller
 
             return redirect()->to('/home')->with('status', $output);
         }
-
+        $dining_rooms = DiningRoom::all();
+        $active_tab_id = null;
         return view('sale_pos.pos')->with(compact(
+            'dining_rooms',
+            'active_tab_id',
             'categories',
             'walk_in_customer',
             'deliverymen',
@@ -202,10 +205,11 @@ class SellPosController extends Controller
 //            }
 //        }
         $new_table=[];
+        $table_reserve=[];
         if(isset($request->merge_table_id)){
-            $table_status=TableReservation::find($request->dining_table_id);
+            $table_status=TableReservation::where('dining_table_id',$request->dining_table_id)->first();
             $mergeDiningTable=DiningTable::create([
-                'dinig_room_id'=>$request->dinig_room_id,
+                'dining_room_id'=>$request->dining_room_id,
                 'name'=>DiningTable::find($table_status->dining_table_id)->name .' & '.DiningTable::find($request->merge_table_id)->name,
             ]);
             $new_table=TableReservation::create([
@@ -271,7 +275,7 @@ class SellPosController extends Controller
         ];
         $transaction_data['dining_room_id'] = null;
         if (!empty($request->dining_table_id)) {
-            $table_reserve=TableReservation::find($request->dining_table_id);
+            $table_reserve=TableReservation::where('dining_table_id',$request->dining_table_id)->first();
             $dining_table = DiningTable::find($table_reserve->dining_table_id);
             $transaction_data['dining_room_id'] = $dining_table->dining_room_id;
         }
@@ -371,6 +375,7 @@ class SellPosController extends Controller
                         'transaction_payment_id'=>!empty($IsTransactionPayment)?$IsTransactionPayment->id:null,
                         'transaction_id' => $transaction->id,
                         'amount' => $amount,
+                        'cashes_amount' => $amount,
                         'method' => $payment['method'],
                         'paid_on' => Carbon::now(),
                         'bank_deposit_date' => !empty($data['bank_deposit_date']) ? $this->commonUtil->uf_date($data['bank_deposit_date']) : null,
@@ -430,16 +435,15 @@ class SellPosController extends Controller
 
 
         $this->transactionUtil->createOrUpdateRawMaterialConsumption($transaction);
-
         if (session('system_mode') == 'restaurant') {
-            if (!empty($transaction->dining_table_id)) {
+            if (!empty($transaction->dining_table_id) ) {
                 if(!empty($new_table)){
                     $new_table->current_transaction_id = $transaction->id;
                     $new_table->save();
                 }
                 $table_reserve->current_transaction_id = $transaction->id;
                 $old_status = $table_reserve->status;
-                if ($old_status == 'available') {
+                if ($old_status == 'available' && empty($request->merge_table_id)) {
                     $table_reserve->status = 'order';
                     // $table_reserve->merge_table_id = $request->merge_table_id;
                 }
@@ -671,7 +675,7 @@ class SellPosController extends Controller
                         'transaction_payment_id' => !empty($payment['transaction_payment_id']) ? $payment['transaction_payment_id'] : null,
                         'transaction_id' => $transaction->id,
                         'amount' => $amount,
-                        'cashes_amount'=>7777,
+                        'cashes_amount'=>$amount,
                         'method' => $payment['method'],
                         'paid_on' => !empty($payment['paid_on']) ? Carbon::createFromTimestamp(strtotime($payment['paid_on']))->format('Y-m-d H:i:s') : Carbon::now(),
                         'bank_deposit_date' => !empty($data['bank_deposit_date']) ? $this->commonUtil->uf_date($data['bank_deposit_date']) : null,
@@ -1080,7 +1084,12 @@ class SellPosController extends Controller
                 $dining_table=DiningTable::find($table_id);
             }
             $edit_quantity = !empty($request->input('edit_quantity')) ? $request->input('edit_quantity') : 1;
-            $check_pay = !empty($request->input('check_pay')) ? $request->input('check_pay') : 1;
+            if($request->enable_checkbox=='enable_checkbox' && !empty($request->enable_checkbox)&& $request->input('check_pay')!=null && ($request->input('check_pay')=="1" ||$request->input('check_pay')==="0")){
+                $check_pay = $request->input('check_pay');
+            }else{
+                $check_pay = 'no val';
+            }
+            
             $added_products = json_decode($request->input('added_products'), true);
 
             $currency_id = $request->currency_id;
@@ -1932,16 +1941,14 @@ class SellPosController extends Controller
             $transaction->status = 'canceled';
             $transaction->canceled_by = Auth::user()->id;
             $transaction->save();
-            $table_status=TableReservation::find($transaction->dining_table_id)->first();
-            $dining_table = DiningTable::find($table_status->dining_table_id);
+            $table_status=TableReservation::find($transaction->dining_table_id);
+            // $dining_table = DiningTable::find($table_status->dining_table_id);
             $table_status->status = 'available';
             $table_status->customer_name = null;
             $table_status->customer_mobile_number = null;
             $table_status->date_and_time = null;
             $table_status->current_transaction_id = null;
             $table_status->save();
-
-            return $table_status;
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
@@ -1976,5 +1983,51 @@ class SellPosController extends Controller
             ];
         }
         return $output;
+    }
+
+    public function addNewOrdersToTransactionSellline(Request $request)
+    {
+        $order=DB::table('orders')->where('id',$request->order_id)->first();
+        // return $order;
+        $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
+        $table=TableReservation::where('dining_table_id',$order->table_no)->where('status','order')->orWhere('status','available')->first();
+        $transaction=Transaction::where('dining_table_id',$order->table_no)->where('status','!=','canceled')->first();
+    
+        if(empty($transaction)){
+            $transaction_data = [
+                'store_id' => !empty($order->store_id)?$order->store_id:1,
+                'type' => 'sell',
+                'final_total' => $this->commonUtil->num_uf($order->final_total),
+                // 'grand_total' => $this->commonUtil->num_uf($request->grand_total),
+                'transaction_date' => !empty($order->created_at) ? $order->created_at : Carbon::now(),
+                'payment_status' => !empty($order->status)?$order->status:'pending',
+                'invoice_no' => $this->productUtil->getNumberByType('sell'),
+                'status' => $order->status,
+                'sale_note' => $order->sales_note,
+                'deliveryman_id' => !empty($request->deliveryman_id_hidden) ? $request->deliveryman_id_hidden : null,
+                'delivery_status' => !empty($order->delivery_status)?$order->delivery_status:'pending',
+                // 'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
+                'delivery_address' => !empty($order->address)?$order->address:'',
+                'dining_table_id' =>  $order->table_no,
+                'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
+                'created_by' => Auth::user()->id,
+            ];
+            $transaction=Transaction::create($transaction_data);
+        }
+        $this->transactionUtil->createTransactionSellLineForOrder($transaction, $orderDetails);
+        if(empty($table)){
+            $table_reserve=new TableReservation();
+            $table_reserve->dining_table_id=$order->table_no;
+            $table_reserve->status="order";
+            $table_reserve->current_transaction_id=$transaction->id;
+            $table_reserve->save();
+        }
+        if(!empty($table)&& $table->status=='available'){
+            $table->status="order";
+            $table->current_transaction_id=$transaction->id;
+            $table->save();
+        }
+        
+        return 1;      
     }
 }

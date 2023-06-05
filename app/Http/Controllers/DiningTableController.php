@@ -191,7 +191,16 @@ class DiningTableController extends Controller
     {
         try {
             $dining_table=DiningTable::find($id);
-            TableReservation::where('dining_table_id',$dining_table->id)->delete();
+            $table_reserve=TableReservation::where('dining_table_id',$dining_table->id)->delete();
+            $merge_tables=TableReservation::whereNotNull('merge_table_id')->get();
+            if(!empty($merge_tables)){
+                foreach($merge_tables as $mergeTable){
+                    if(in_array($dining_table->id,$mergeTable->merge_table_id)){
+                        DiningTable::find($mergeTable->dining_table_id)->delete();
+                        $mergeTable->delete();
+                    }
+                }
+            }
             $dining_table->delete();
             $output = [
                 'success' => true,
@@ -231,19 +240,24 @@ class DiningTableController extends Controller
      */
     public function getDiningAction(Request $request,$id)
     {
-        $dining_table=TableReservation::find($id);
+        $dining_table=TableReservation::where('dining_table_id',$id)->where(function($query){;
+        if(!empty(request()->reservation_id)){
+        $query->where('id',request()->reservation_id);
+        }})->first();
+
+        $status='';
         // $dining_table = DiningTable::find($table_reserve->dining_table_id);
         $status_array = ['order' => __('lang.order'), 'reserve' => __('lang.reserve')];
         if ($dining_table->status == 'reserve') {
             $status_array = ['order' => __('lang.order'), 'cancel_reservation' => __('lang.cancel_reservation')];
         }
         if(!empty($request->type) && $request->type=='edit_reserve'){
-
+            $status='edit';
         }
         return view('sale_pos.partials.dining_table_action')->with(compact(
             'dining_table',
             'status_array',
-          
+            'status'
         ));
     }
     /**
@@ -257,7 +271,10 @@ class DiningTableController extends Controller
         $data = $request->except('_token');
 
         try {
-            $table_status=TableReservation::find($id);
+            $table_status=TableReservation::where('dining_table_id',$id)->where(function($query){;
+            if(!empty(request()->reservation_id)){
+            $query->where('id',request()->reservation_id);
+            }})->first();
             $dining_table = DiningTable::find($table_status->dining_table_id);
             if ($data['status'] == 'reserve') {
                 if($table_status->status=='reserve'){
@@ -345,7 +362,7 @@ class DiningTableController extends Controller
      */
     public function getTableDetails($id,Request $request)
     {
-        $table_status=TableReservation::find($id);
+        $table_status=TableReservation::where('dining_table_id',$id)->first();
         // return $table_status->status;
         $dining_table = DiningTable::find($table_status->dining_table_id);
         $dining_room = DiningRoom::find($dining_table->dining_room_id);
@@ -374,15 +391,15 @@ class DiningTableController extends Controller
         return $this->commonUtil->createDropdownHtml($dining_tables, __('lang.all'));
     }
     public function checkTimeRserveAvailability($id,Request $request){
-        $table_status=TableReservation::find($id);
+        // $table_status=TableReservation::where('dining_table_id',$id)->first();
         if(!empty($request->old_value)&& $request->old_value==true){
-            $all_table_reservation = TableReservation::where('dining_table_id',$table_status->dining_table_id)->where('id','!=',$table_status->id)->get();
+            $all_table_reservation = TableReservation::where('dining_table_id',$id)->where('id','!=',$request->reservation_id)->get();
         }else{
-            $all_table_reservation = TableReservation::where('dining_table_id',$table_status->dining_table_id)->get();
+            $all_table_reservation = TableReservation::where('dining_table_id',$id)->get();
         }
         $originalTime = new DateTimeImmutable(Carbon::createFromTimestamp(strtotime($request->date_and_time))->format('Y-m-d H:i:s'));
         $isMoreHour=true;
-        // return $all_table_reservation;
+        
         foreach($all_table_reservation as $table){
             if(isset($table->date_and_time)){
             $targedTime = new DateTimeImmutable($table->date_and_time);
@@ -405,7 +422,7 @@ class DiningTableController extends Controller
     {
         $table=TableReservation::where('dining_table_id',$id)->where('status','order')->first();
         if(!empty($table)){
-            $transactionForThisTable=Transaction::where('dining_table_id',$table->id)->where('status','!=','canceled')->latest()->first();
+            $transactionForThisTable=Transaction::where('dining_table_id',$table->dining_table_id)->where('status','!=','canceled')->latest()->first();
         }
         // $transactionForThisTable=Transaction::find(75);
         if(!empty($transactionForThisTable)){
@@ -430,5 +447,17 @@ class DiningTableController extends Controller
         DiningTable::where('is_new','new')->update([
             'is_new'=>'old'
         ]);
+    }
+    public function getTablesForMerge($room_id)
+    {
+        $tables=DiningTable::with('table_reservations')->whereRelation('table_reservations','merge_table_id',null)->where('dining_room_id',$room_id)->pluck('name', 'id');
+        $html = '';
+        // if (!empty($append_text)) {
+            $html = '<option value="">' . __('lang.please_select') . '</option>';
+        // }
+        foreach ($tables as $key => $value) {
+            $html .= '<option value="' . $key . '">' . $value . '</option>';
+        }
+        return $html;
     }
 }

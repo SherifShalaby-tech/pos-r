@@ -233,12 +233,13 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('pos/get-sale-promotion-details-if-valid', 'SellPosController@getSalePromotionDetailsIfValid');
     Route::get('pos/get-transaction-details/{transaction_id}', 'SellPosController@getTransactionDetails');
     Route::post('pos/update-transaction-status-cancel/{transaction_id}', 'SellPosController@updateTransactionStatusCancel');
+    Route::post('pos/add-new-orders-to-transaction-sellline', 'SellPosController@addNewOrdersToTransactionSellline');
 
     Route::resource('pos', SellPosController::class);
     Route::get('dining-room/get-dining-rooms', 'DiningRoomController@getDiningRooms');
     Route::get('dining-room/check-dining-room-name', 'DiningRoomController@checkDiningRoomName');
     Route::get('dining-room/get-dining-room-content', 'DiningRoomController@getDiningContent');
-    Route::get('dining-room/get-dining-modal', 'DiningRoomController@getDiningModal');
+    Route::get('dining-room/get-dining-modal/{room}/{room_id}/{table}/{table_id}', 'DiningRoomController@getDiningModal');
     Route::resource('dining-room', DiningRoomController::class);
 
     Route::get('dining-table/check-dining-table-name', 'DiningTableController@checkDiningTableName');
@@ -252,6 +253,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('dining-table/merge_table/{id}', 'DiningTableController@mergeTable');
     Route::get('/dining-table/get-table-new-additions', 'DiningTableController@getTableNewAdditions');
     Route::get('/dining-table/read-new-tables', 'DiningTableController@readNewTables');
+    Route::get('/dining-table/get-tables-for-merge/{room_id}', 'DiningTableController@getTablesForMerge');
     Route::resource('dining-table', DiningTableController::class);
     Route::resource('extension', ExtensionController::class);
 

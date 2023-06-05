@@ -7,10 +7,11 @@
                     @foreach ($dining_rooms as $dining_room)
                         <li role="presentation"
                             class="@if ($loop->index == 0 && empty($active_tab_id)) active @elseif($dining_room->id == $active_tab_id) active @endif">
-                            <a class="@if ($loop->index == 0 && empty($active_tab_id)) active show @elseif($dining_room->id == $active_tab_id) active @endif"
+                            <a class="@if ($loop->index == 0 && empty($active_tab_id)) active show @elseif($dining_room->id == $active_tab_id) active @endif room{{$dining_room->id}}"
                                 href="#dining_tab{{ $dining_room->id }}" aria-controls="home" role="tab"
-                                data-toggle="tab"> {{ $dining_room->name }}</a>
+                                data-toggle="tab"><span class="badge badge-danger room-count-badge room-badge{{$dining_room->id}} hide ">0</span>{{ $dining_room->name }}</a>
                         </li>
+
                     @endforeach
 
                     <li role="presentation"><a data-href="{{ action('DiningRoomController@create') }}"
@@ -30,26 +31,38 @@
                                         @foreach ($dining_table->table_reservations->unique('dining_table_id') as $reserve)
                                             {{-- @if ($reserve->dining_table_id == $dining_table->id) --}}
                                             @if ($reserve->status == 'available')
-                                                <div class="col-md-2 text-center table_action"
-                                                    data-table_id="{{ $reserve->id }}">
-                                                    <button type="button"
+                                            <div class="col-md-2 text-center">
+                                            <button type="button"
                                                         class="btn btn-sm text-danger remove-table float-left" style="border-radius: 70%;"
                                                         data-table_id="{{ $reserve->dining_table_id }}"><i
                                                             class="fa fa-times"></i></button>
+                                                <div class="table_action"
+                                                    data-table_id="{{ $reserve->dining_table_id }}">
+                                                    <span class="badge badge-danger selected-table-badge table{{$reserve->dining_table_id}} hide">0</span>
                                                     <p style="padding: 0px; margin: 0px; color:red;">
                                                         {{ $dining_table->name }} </p>
                                                     <img src="{{ asset('images/green-table.jpg') }}" alt="table"
                                                         style="height: 70px; width: 80px;">
                                                 </div>
+                                            </div>
                                             @endif
                                             @if ($reserve->status == 'reserve')
-                                                <div class="col-md-2">
+                                                <div class="col-md-2 text-center">
                                                     <button type="button"
                                                         class="btn btn-sm text-danger remove-table float-left" style="border-radius: 70%;"
                                                         data-table_id="{{ $reserve->dining_table_id }}"><i
                                                             class="fa fa-times"></i></button>
-                                                    <div class="text-center table_action_reserve"
-                                                        data-table_id="{{ $reserve->id }}">
+                                                    <span class="badge badge-danger selected-table-badge table{{$reserve->dining_table_id}} hide">0</span>
+                                                    @php
+                                                    $reserveHasOrder = App\Models\TableReservation::where('dining_table_id', $reserve->dining_table_id)
+                                                        ->where('status', 'order')
+                                                        ->first();
+                                                    @endphp
+                                                    @if(!empty($reserveHasOrder->current_transaction_id))
+                                                    <a href="{{ action('SellPosController@edit', $reserveHasOrder->current_transaction_id) }}"
+                                                        target="_blank" rel="noopener noreferrer">
+                                                    @endif
+                                                    <div class="text-center">
                                                         <p style="padding: 0px; margin: 0px; color:red;">
                                                             {{ $dining_table->name }} </p>
                                                         <img src="{{ asset('images/black-table.jpg') }}" alt="table"
@@ -69,8 +82,17 @@
                                                                 {{ @format_datetime($reserve->date_and_time) }}
                                                             </p>
                                                         @endif
+                                                        <p style="padding: 0px; margin: 0px; color:black;">
+                                                            <button type="button"
+                                                            class="btn btn-sm text-danger table_action_reserve"
+                                                            data-table_id="{{ $reserve->dining_table_id}}" style="border-radius: 70%;"
+                                                                ><i
+                                                                class="fa fa-plus"></i></button>
+                                                            </p>
                                                     </div>
-
+                                                    @if(!empty($reserveHasOrder->current_transaction_id))
+                                                    </a>
+                                                    @endif
                                                     @php
                                                         $reservations = App\Models\TableReservation::where('dining_table_id', $reserve->dining_table_id)
                                                             ->where('status', 'reserve')
@@ -86,11 +108,11 @@
                                                                 @foreach ($reservations as $table)
                                                                     <li
                                                                         class="d-flex align-items-center justify-content-between">
-                                                                        <span style="cursor:pointer;" class="table_edit_reserve_btn" data-table_id="{{ $reserve->id }}">*{{ $table->customer_name }}</span>
+                                                                        <span style="cursor:pointer;" class="table_edit_reserve_btn" data-table_id="{{ $table->dining_table_id }}" data-reserve_id="{{ $table->id }}">*{{ $table->customer_name }}</span>
 
                                                                         <button type="button"
                                                                             class="btn btn-danger btn-sm cancel_reserve"
-                                                                            data-index="{{ $table->id }}"><i
+                                                                            data-index="{{ $table->dining_table_id }}"><i
                                                                                 class="fa fa-times"></i></button>
 
                                                                     </li>
@@ -99,7 +121,7 @@
                                                         </div>
                                                     @else
                                                     <div class="text-center">
-                                                        <p data-table_id="{{ $reserve->id }}" style="padding: 0px; margin: 0px; color:red;cursor:pointer;" class="table_cancel_reserve_btn">
+                                                        <p data-table_id="{{ $reserve->dining_table_id }}" style="padding: 0px; margin: 0px; color:red;cursor:pointer;" class="table_cancel_reserve_btn">
                                                             {{__('lang.cancel_reservation')}}
                                                         </p>
                                                     </div>
@@ -108,12 +130,14 @@
                                                 </div>
                                             @endif
                                             @if ($reserve->status == 'order')
-                                                <div class="col-md-2 text-center order_table"
-                                                    data-table_id="{{ $reserve->id }}">
-                                                    <button type="button"
+                                            <div class="col-md-2 text-center">
+                                                <button type="button"
                                                         class="btn text-danger btn-sm remove-table float-left" style="border-radius: 70%;"
                                                         data-table_id="{{ $reserve->dining_table_id }}"><i
                                                             class="fa fa-times"></i></button>
+                                                <div class="order_table"
+                                                    data-table_id="{{ $reserve->id }}">
+                                                    <span class="badge badge-danger selected-table-badge table{{$reserve->dining_table_id}} hide">0</span>
                                                     <a href="{{ action('SellPosController@edit', $reserve->current_transaction_id) }}"
                                                         target="_blank" rel="noopener noreferrer">
                                                         <p style="padding: 0px; margin: 0px; color:red;">
@@ -127,6 +151,7 @@
                                                         </p>
                                                     </a>
                                                 </div>
+                                            </div>
                                             @endif
                                             {{-- @endif --}}
                                         @endforeach

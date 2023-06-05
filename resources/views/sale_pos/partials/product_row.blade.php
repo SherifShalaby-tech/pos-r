@@ -4,10 +4,11 @@
     <td class="row_number"></td>
     @endif
     <td style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
-        <label class="checkboxes" >
-            @if(isset($check_pay) && $check_pay=="0")
-            <input class="" id="{{$product->variation_id}}" type="checkbox" value="{{$check_pay}}" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
-            @else
+        <label class="checkboxes"> 
+           
+            @if($check_pay!=null && ($check_pay==="0"||$check_pay=="1"))
+            <input class="" id="{{$product->variation_id}}" type="checkbox"{{$check_pay==1?'checked':''}} value="{{$check_pay}}" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
+           @else
             <input class="productcheck pcheck" id="{{$product->variation_id}}" type="checkbox" checked value="1" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
             @endif
         </label>

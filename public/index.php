@@ -56,16 +56,16 @@ $response = tap($kernel->handle(
 $kernel->terminate($request, $response);
 
 
-$options = array(
-  'cluster' => 'mt1',
-  'useTLS' => true
-);
-$pusher = new Pusher\Pusher(
-  '5fcdaba9c0f0adcae3b0',
-  'ef7f8b56e2962704e93e',
-  '1610217',
-  $options
-);
+// $options = array(
+//   'cluster' => 'mt1',
+//   'useTLS' => true
+// );
+// $pusher = new Pusher\Pusher(
+//   '5fcdaba9c0f0adcae3b0',
+//   'ef7f8b56e2962704e93e',
+//   '1610217',
+//   $options
+// );
 
 
-$pusher->trigger('table-channel','new-table',null);
+// $pusher->trigger('table-channel','new-table',null);

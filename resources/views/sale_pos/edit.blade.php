@@ -170,7 +170,7 @@
                                                 <span class="table_name">
                                                     @if (!empty($transaction->dining_table_id))
                                                         @php
-                                                        $table=App\Models\TableReservation::find($transaction->dining_table_id);
+                                                        $table=App\Models\TableReservation::where('dining_table_id',$transaction->dining_table_id)->first();
                                                         @endphp
                                                         {{ $table->dining_tables->name }}
                                                     @endif
@@ -782,10 +782,10 @@
             @foreach ($transaction->transaction_sell_lines as $line)
             get_label_product_search_row({{ $line->product_id }}, {{ $line->variation_id }},null,
                     {{ $line->quantity }},
-                    {{ $loop->index }},null,null,{{$line->check_pay}})
+                    {{ $loop->index }},null,null,{{$line->check_pay}},'enable_checkbox')
             @endforeach
         })
-        @if (!empty($transaction->table_reservation))
+        @if (!empty($transaction->dining_table))
             $('.table_room_hide').addClass('hide');
             $('.table_room_show').removeClass('hide');
         @endif

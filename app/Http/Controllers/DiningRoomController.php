@@ -197,7 +197,7 @@ class DiningRoomController extends Controller
     }
 
     public function getDiningContent(Request $request)
-    {
+    { 
         $dining_rooms = DiningRoom::all();
         // $table_status=TableReservation::find($request->dining_table_id);
         // $dining_table = DiningTable::find($request->dining_table_id);
@@ -207,7 +207,6 @@ class DiningRoomController extends Controller
             $dining_table = DiningTable::find($dining_table_id);
             $active_tab_id = $dining_table->dining_room_id;
         }
-
         return view('sale_pos.partials.dining_content')->with(compact(
             'dining_rooms',
             'active_tab_id',
@@ -230,14 +229,22 @@ class DiningRoomController extends Controller
     }
 
 
-    public function getDiningModal()
+    public function getDiningModal(Request $request,$room_count=0,$room=0,$table=0,$table_id=0)
     {
+        // return $request->all();
         $dining_rooms = DiningRoom::all();
         $active_tab_id = null;
-
+        $room_no=$room_count;
+        $room_id=$room;
+        $table_no=$table;
+        $table_id=$table_id;
         return view('sale_pos.partials.dining_modal')->with(compact(
             'dining_rooms',
-            'active_tab_id'
+            'active_tab_id',
+            'room_no',
+            'table_no',
+            'room_id',
+            'table_id'
         ));
     }
 }

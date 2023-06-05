@@ -320,7 +320,8 @@ function get_label_product_search_row(
     edit_row_count = 0,
     weighing_scale_barcode = null,
     table_id=null,
-    check_pay=null
+    check_pay=null,
+    enable_checkbox=null
 ) {
     //Get item addition method
     var add_via_ajax = true;
@@ -401,7 +402,8 @@ function get_label_product_search_row(
                 is_direct_sale: $("#is_direct_sale").val(),
                 batch_number_id:add_stock_lines_id,
                 table_id:table_id,
-                check_pay:check_pay
+                check_pay:check_pay,
+                enable_checkbox:enable_checkbox
             },
             success: function (result) {         
                 if (!result.success) {
@@ -664,7 +666,7 @@ function check_for_sale_promotion() {
     var added_qty = [];
     //check for chosen products only
     $("#product_table > tbody  > tr ").each((ele, tr) => {
-        if($(tr).find('.productcheck').attr('checked',true)){
+        if($(tr).find('.productcheck').prop('checked')==true){
             let product_id_tr = __read_number($(tr).find(".variation_id"));
             let qty_tr = {
                 product_id: product_id_tr,
@@ -732,7 +734,7 @@ function check_for_sale_promotion() {
                         discount+=sum_discount;
                         var product_ids = data.product_ids;
                         $("#product_table > tbody > tr ").each(function (ele, tr) {
-                            if($(tr).find('.productcheck').attr('checked',true)){
+                            if($(tr).find('.productcheck').prop('checked')==true){
                                 let product_id = __read_number(
                                     $(tr).find(".product_id")
                                 );
@@ -762,7 +764,7 @@ function check_for_sale_promotion() {
                             $("#product_table tbody")
                                 .find("tr")
                                 .each(function () {
-                                    if($(this).find('.productcheck').attr('checked',true)){
+                                    if($(this).find('.productcheck').prop('checked')==true){
                                     var row_product_id = $(this)
                                         .find(".variation_id")
                                         .val()
@@ -897,17 +899,6 @@ function calculate_sub_totals() {
             .find(".sub_total_span")
             .text(__currency_trans_from_en(sub_total, false));
         total += sub_total;
-        //work
-        // if($(tr).find(".productcheck").prop('checked') == true){
-        //     // allProductstotal += sub_total;
-        //     checkboxesValues.push(true);
-        // }else{
-        //     if($(tr).find(".productcheck").prop('disabled') == false){
-        //     checkboxesValues.push(false);
-        //     }
-        // }
-        // console.log('asaas',checkboxesValues)
-        // $('.isPayComplete').val(isPayComplete);
 
         item_count++;
 
@@ -1086,22 +1077,24 @@ function apply_promotion_discounts() {
     let promo_discount = 0;
     let final_total = __read_number($("#final_total"));
     $("#product_table > tbody  > tr").each((ele, tr) => {
-        let promotion_discount_amount = __read_number(
-            $(tr).find(".promotion_discount_amount")
-        );
-        let promotion_purchase_condition = __read_number(
-            $(tr).find(".promotion_purchase_condition")
-        );
-        let promotion_purchase_condition_amount = __read_number(
-            $(tr).find(".promotion_purchase_condition_amount")
-        );
+        if($(tr).find('.productcheck').prop('checked')==true){
+            let promotion_discount_amount = __read_number(
+                $(tr).find(".promotion_discount_amount")
+            );
+            let promotion_purchase_condition = __read_number(
+                $(tr).find(".promotion_purchase_condition")
+            );
+            let promotion_purchase_condition_amount = __read_number(
+                $(tr).find(".promotion_purchase_condition_amount")
+            );
 
-        if (promotion_purchase_condition) {
-            if (final_total > promotion_purchase_condition_amount) {
+            if (promotion_purchase_condition) {
+                if (final_total > promotion_purchase_condition_amount) {
+                    promo_discount += promotion_discount_amount;
+                }
+            } else {
                 promo_discount += promotion_discount_amount;
             }
-        } else {
-            promo_discount += promotion_discount_amount;
         }
     });
     let total_package_promotion_discount = __read_number(
@@ -1224,6 +1217,9 @@ $(document).on("click", ".remove_row", function () {
     $(this).closest("tr").remove();
     calculate_sub_totals();
     reset_row_numbering();
+    if($("#product_table > tbody  > tr").length==0){
+        $('.SavedTransactionId').val(0);
+    }
 });
 $(document).on("click", ".minus", function () {
     let tr = $(this).closest("tr");
@@ -1576,19 +1572,21 @@ $(document).on("click", ".coupon-check", function () {
 function apply_coupon_to_products() {
     if (coupon_products.length) {
         $("#product_table > tbody  > tr").each((ele, tr) => {
-            let product_id = parseInt($(tr).find(".product_id").val());
-            if (amount_to_be_purchase_checkbox) {
-                let grand_total = __read_number($("#grand_total"));
-                if (grand_total >= amount_to_be_purchase) {
+            if($(tr).find('.productcheck').prop('checked')==true){
+                let product_id = parseInt($(tr).find(".product_id").val());
+                if (amount_to_be_purchase_checkbox) {
+                    let grand_total = __read_number($("#grand_total"));
+                    if (grand_total >= amount_to_be_purchase) {
+                        if (coupon_products.includes(product_id)) {
+                            $(tr).find(".coupon_discount_value").val(coupon_value);
+                            $(tr).find(".coupon_discount_type").val(coupon_type);
+                        }
+                    }
+                } else {
                     if (coupon_products.includes(product_id)) {
                         $(tr).find(".coupon_discount_value").val(coupon_value);
                         $(tr).find(".coupon_discount_type").val(coupon_type);
                     }
-                }
-            } else {
-                if (coupon_products.includes(product_id)) {
-                    $(tr).find(".coupon_discount_value").val(coupon_value);
-                    $(tr).find(".coupon_discount_type").val(coupon_type);
                 }
             }
         });
@@ -1729,6 +1727,7 @@ $(document).ready(function () {
                         var variationsChecked=$('.productcheck').filter(':checked').map((_, el) => el.id).get();
                         if($(".isPayComplete").val()=="complete"){
                             $(".SavedTransactionId").val(0);
+
                             reset_pos_form();
                             getFilterProductRightSide();
 
@@ -1888,10 +1887,12 @@ function confirmCancel() {
                     },
                 });
             }
+            confirmCancel();
         }
 
-        confirmCancel();
+        
     }
+    
     return false;
 }
 

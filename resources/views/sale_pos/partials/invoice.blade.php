@@ -409,7 +409,7 @@ $is_first_after_extra=0;
                                             @endif
                                         </td>
                                         <td style="font-size: 16px; padding: 10px; text-align: right;" colspan="2">
-                                            {{ @num_format($transaction_payments->amount + $transaction_payments->change_amount) }}
+                                            {{ @num_format((!empty($transaction_payments->cashes_amount)?$transaction_payments->cashes_amount:$transaction_payments->amount) + $transaction_payments->change_amount) }}
                                             {{ $transaction->received_currency->symbol }}</td>
                                     </tr>
                                 @endif
@@ -444,7 +444,7 @@ $is_first_after_extra=0;
                                 <tr>
                                     <td style="font-size: 16px; padding: 5px;width:30%">@lang('lang.due_sale_list', [], $invoice_lang)</td>
                                     <td colspan="2" style="font-size: 16px; padding: 5px;width:40%; text-align: right;">
-                                        {{ @num_format($transaction_sell_lines->sum('sell_price') - $transaction_payments->amount) }}
+                                        {{ @num_format($transaction_sell_lines->sum('sell_price') - (!empty($transaction_payments->cashes_amount)?$transaction_payments->cashes_amount:$transaction_payments->amount)) }}
                                         {{ $transaction->received_currency->symbol }}
                                     </td>
                                 </tr>
