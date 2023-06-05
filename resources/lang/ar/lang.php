@@ -1416,6 +1416,7 @@ return [
     'another_reservation'=>'حجز اخر',
     'this_time_is_not_available'=>'هذا الوقت غير متاح , احجز فى وقت أخر',
     'are_you_sure_u_want_to_delete_this_reservation'=>'هل متأكد من حذف هذا الحجز ؟',
+
     'select_merge_table'=>'دمج طاولات',
     'other_reservations'=>'حجوزات أخرى',
     'add_to_customer_balance' => 'اضافة الى حساب العميل',
@@ -1426,5 +1427,6 @@ return [
     'The_actual_delivery_cost'=>'القيمة الفعلية لتكلفة الدليفري',
 
     'cancel_add_stock_payment' => 'الغاء دفع المخزون',
+    'add_to_customer_balance' => 'اضافة الى حساب العميل',
 
 ];

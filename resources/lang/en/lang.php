@@ -1445,4 +1445,6 @@ return [
     'The_actual_delivery_cost' => 'The value found for the delivery cost',
 
     'cancel_add_stock_payment' => 'Cancel Stock Payment',
+    'add_to_customer_balance' => 'Add to customer balance',
+
 ];
