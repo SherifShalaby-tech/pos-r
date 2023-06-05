@@ -2064,7 +2064,6 @@ class SellPosController extends Controller
         
         return 1;      
     }
-}
     public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
         // return $transaction;
         // return $transaction->transaction_sell_lines ;
