@@ -52,6 +52,7 @@ use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Print;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Database\Eloquent\Builder;
+use Pusher\Pusher;
 use Spatie\Browsershot\Browsershot;
 use Str;
 
@@ -1988,8 +1989,22 @@ class SellPosController extends Controller
                     'printer_name' => $printer->name,
                     'html' => $html_content,
                 ]);
-                event(new PrinterEvent(1));
+               
             }
+            $options = array(
+                'cluster' =>  env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true
+            );
+    
+    
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+            $print = 1;
+            $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
             
         // }
 
