@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PrinterEvent;
 use App\Models\Brand;
 use App\Models\CashRegister;
 use App\Models\CashRegisterTransaction;
 use App\Models\Category;
+use App\Models\ConnectedPrinter;
 use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\Customer;
@@ -1948,20 +1950,28 @@ class SellPosController extends Controller
             $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
             $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
             foreach($printers as $printer){
-                $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('prodct_id');
+                // dd($printer);
+                $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
+                // dd($printer_products);
                 $transactionSellLines = [];
                 foreach ($transaction->transaction_sell_lines as $sellLine) {
+                    // dd($sellLine);
                     if (in_array($sellLine['product_id'], $printer_products)) {
                         $transactionSellLines[] = $sellLine;
                     }
                 }
-                $html_content = view('sale_pos.partials.partial_printers_invoice.blade')->with(compact(
+                $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
                     'transaction',
                     'payment_types',
                     'transaction_invoice_lang',
                     'transactionSellLines',
                 ))->render();
-                $data[$printer->name]= $html_content;
+                // $data[$printer->name]= $html_content;
+                ConnectedPrinter::create([
+                    'printer_name' => $printer->name,
+                    'html' => $html_content,
+                ]);
+                event(new PrinterEvent(1));
             }
             
         // }
