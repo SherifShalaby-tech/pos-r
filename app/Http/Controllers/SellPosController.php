@@ -1976,7 +1976,7 @@ class SellPosController extends Controller
             $transaction->status = 'canceled';
             $transaction->canceled_by = Auth::user()->id;
             $transaction->save();
-            $table_status=TableReservation::find($transaction->dining_table_id);
+            $table_status=TableReservation::where('dining_table_id',$transaction->dining_table_id)->first();
             // $dining_table = DiningTable::find($table_status->dining_table_id);
             $table_status->status = 'available';
             $table_status->customer_name = null;
