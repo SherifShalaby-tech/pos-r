@@ -438,6 +438,7 @@ class SellReturnController extends Controller
                     'grand_total' => $this->commonUtil->num_uf($request->grand_total),
                     'discount_type' => $request->discount_type,
                     'discount_value' => $this->commonUtil->num_uf($request->discount_value),
+                    'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
                     'total_tax' => $this->commonUtil->num_uf($request->total_tax),
                     'gift_card_id' => $request->gift_card_id,
                     'gift_card_amount' => $request->gift_card_amount,
@@ -456,6 +457,7 @@ class SellReturnController extends Controller
                 if (empty($sell_return)) {
                     $sell_return = Transaction::create($transaction_data);
                 } else {
+                    $sell_return->delivery_cost = $this->commonUtil->num_uf($request->delivery_cost);
                     $sell_return->final_total = $this->commonUtil->num_uf($request->final_total);
                     $sell_return->grand_total = $this->commonUtil->num_uf($request->grand_total);
                     $sell_return->status = 'final';

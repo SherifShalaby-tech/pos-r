@@ -41,7 +41,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('status', __('lang.status') . ':*', []) !!}
-                                        {!! Form::select('status', ['received' => 'Received', 'partially_received' => 'Partially Received', 'pending' => 'Pending'], $add_stock->status, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('status', ['received' =>  __('lang.received'), 'partially_received' => __('lang.partially_received')], $add_stock->status, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -240,7 +240,16 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
-                                        {!! Form::select('source_id', $users, $add_stock->source_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id', 'required']) !!}
+                                        <select name="source_id" id="source_id" class="selectpicker form-control" data-live-search ="true" style="width: 80%" required>
+                                            @foreach ($users as $key => $val)
+                                            @if ($add_stock->source_id == $key)
+                                                <option value="{{ $key }}" selected>{{ $val }}</option>
+                                            @else
+                                                <option value="{{ $key }}">{{ $val }}</option>
+                                            @endif
+                                            @endforeach
+                                        </select>
+                                        {{-- {!! Form::select('source_id', $users, $add_stock->source_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id', 'required']) !!} --}}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -253,7 +262,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('payment_status', __('lang.payment_status') . ':*', []) !!}
-                                        {!! Form::select('payment_status', $payment_status_array, $add_stock->payment_status, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('payment_status', $payment_status_array, $add_stock->payment_status, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'id' => 'payment_status','style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                     </div>
                                 </div>
 
@@ -366,8 +375,22 @@
             product_table.ajax.reload();
         })
         $(document).ready(function() {
-            $('#payment_status').change();
-            $('#source_type').change();
+            $.ajax({
+                    method: 'get',
+                    url: '/add-stock/get-source-by-type-dropdown/{{$add_stock->source_type}}' ,
+                    data: {},
+                    success: function(result) {
+                        // console.log(result);
+                        $("#source_id").empty().append(result);
+                        $("#source_id").selectpicker("refresh");
+
+                        var sourceId = {{$add_stock->source_id}};
+                        $("#source_id").val(sourceId);
+                        $("#source_id").selectpicker("refresh");
+                    },
+                });
+            // $('#payment_status').change();
+            // $('#source_type').change();
         })
         $('#po_no').change(function() {
             let po_no = $(this).val();
@@ -430,7 +453,35 @@
         });
 
         //payment related script
-
+        $(document).ready(function() {
+            var payment_status = $("#payment_status").val();
+            if (payment_status === 'paid' || payment_status === 'partial') {
+                $('.not_cash_fields').addClass('hide');
+                $('#method').change();
+                $('#method').attr('required', true);
+                $('#paid_on').attr('required', true);
+                $('.payment_fields').removeClass('hide');
+                
+            } else {
+                $('.payment_fields').addClass('hide');
+            }
+            if (payment_status === 'pending' || payment_status === 'partial') {
+                $('.due_fields').removeClass('hide');
+            } else {
+                $('.due_fields').addClass('hide');
+            }
+            if (payment_status === 'pending') {
+                $('.not_cash_fields').addClass('hide');
+                $('.not_cash').attr('required', false);
+                $('#method').attr('required', false);
+                $('#paid_on').attr('required', false);
+            } else {
+                $('#method').attr('required', true);
+            }
+            if (payment_status === 'paid') {
+                $('.due_fields').addClass('hide');
+            }
+        })
         $('#payment_status').change(function() {
             var payment_status = $(this).val();
 
