@@ -359,8 +359,34 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
         value="{{ App\Models\System::getProperty('default_purchase_price_percentage') ?? 75 }}">
     <input type="hidden" name="default_profit_percentage" id="default_profit_percentage"
         value="{{ App\Models\System::getProperty('default_profit_percentage') ?? 0 }}">
-
-    <div class="col-md-4">
+    {{-- <div class="col-md-12">
+        <strong>@lang('lang.printers')</strong>
+    </div> --}}
+    <div class="panel-group" id="accordion" style="margin-bottom: 20px">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                    @lang('lang.printers')
+                </a>
+              </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="panel-body">
+                    <select class="form-select"  id="selectStore" >
+                        <option  selected>Select Store</option>
+                        @foreach ($employee_stores as $store)
+                            <option value="{{$store->id}}">{{$store->name}}</option>
+                        @endforeach
+                    </select>
+                    <div class="col-md-12 i-checks" style="margin-left: 40px" id="printersContainer">                        
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    <div class="col-md-12">
         <div class="i-checks">
             <input id="show_to_customer" name="show_to_customer" type="checkbox" checked value="1"
                 class="form-control-custom">
@@ -442,3 +468,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
     </div>
     <input type="hidden" name="row_id" id="row_id" value="0">
 </div>
+<script>
+   
+
+</script>

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PrinterEvent;
 use App\Models\Brand;
 use App\Models\CashRegister;
 use App\Models\CashRegisterTransaction;
 use App\Models\Category;
+use App\Models\ConnectedPrinter;
 use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\Customer;
@@ -27,6 +29,8 @@ use App\Models\TermsAndCondition;
 use App\Models\Transaction;
 use App\Models\DiningTable;
 use App\Models\MoneySafeTransaction;
+use App\Models\Printer;
+use App\Models\PrinterProduct;
 use App\Models\ProductDiscount;
 use App\Models\ServiceFee;
 use App\Models\TableReservation;
@@ -45,6 +49,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Print;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Database\Eloquent\Builder;
+use Pusher\Pusher;
+use Spatie\Browsershot\Browsershot;
 use Str;
 
 class SellPosController extends Controller
@@ -362,6 +372,7 @@ class SellPosController extends Controller
             if ($request->add_to_deposit > 0) {
                 $customer->deposit_balance = $customer->deposit_balance + $request->add_to_deposit;
             }
+            $customer->added_balance = $request->add_to_customer_balance;
             $customer->save();
         }
 
@@ -390,6 +401,7 @@ class SellPosController extends Controller
                         'amount_to_be_used' => $request->amount_to_be_used,
                         'payment_note' => $request->payment_note,
                         'change_amount' => $payment['change_amount'] ?? 0,
+                        'customer_balance' => $request->add_to_customer_balance ?? 0,
                     ];
 
                     $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
@@ -521,13 +533,19 @@ class SellPosController extends Controller
         }
 
 
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+// <<<<<<< HEAD
+//         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+
+// =======
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang);
+       $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 
 
         $output = [
             'success' => true,
             'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
             'html_content' => $html_content,
+            'partialPrint' => $partialPrint,
             'msg' => __('lang.success')
         ];
         // } catch (\Exception $e) {
@@ -979,7 +997,7 @@ class SellPosController extends Controller
             ];
             $products=$query->leftjoin('add_stock_lines', 'variations.id','=','add_stock_lines.variation_id')
             ->select($selectRaws)->groupBy('variation_id','add_stock_lines.batch_number')->get();
-        
+
             $products_array = [];
             foreach ($products as $product) {
                 $products_array[$product->product_id]['name'] = $product->name;
@@ -1024,7 +1042,7 @@ class SellPosController extends Controller
                             'add_stock_lines_id'=>$variation['add_stock_lines.id'],
                             'qty_available' => $variation['qty'],
                             'is_service' => $value['is_service']
-                        ];    
+                        ];
                     }
                     $i++;
                 }
@@ -1097,11 +1115,11 @@ class SellPosController extends Controller
             $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id, $request->store_id);
             $store_pos = StorePos::where('user_id', auth()->id())->first();
             if($store_pos && $store_pos_id == null ){
-               $store_pos_id = $store_pos->id; 
+               $store_pos_id = $store_pos->id;
             }
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
-            
+
             if(!empty($extensions_quantity)){
                 $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
             }else{
@@ -1132,7 +1150,7 @@ class SellPosController extends Controller
 
                 $quantity =  $have_weight? (float)$have_weight: 1;
                 $edit_quantity = !$products->first()->have_weight ? $request->input('edit_quantity') : $quantity;
-                
+
                 if (empty($variation_id) && !empty($weighing_barcode) && $products->first()->have_weight != 1) {
                     $product_details = $this->__parseWeighingBarcode($weighing_barcode);
                     if ($product_details['success']) {
@@ -1471,7 +1489,7 @@ class SellPosController extends Controller
                 'received_currency.symbol as received_currency_symbol',
                 'received_currency_id'
             )->with([
-                'return_parent:id,final_total',
+                'return_parent:id,return_parent_id,final_total',
                 'customer:id,name,mobile_number',
                 // 'transaction_payments:id,method,ref_number',
                 'deliveryman:id,employee_name',
@@ -1482,6 +1500,7 @@ class SellPosController extends Controller
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('invoice_no', function ($row) {
                     $string = $row->invoice_no . ' ';
+
                     if (!empty($row->return_parent)) {
                         $string .= '<a
                         data-href="' . action('SellReturnController@show', $row->id) . '" data-container=".view_modal"
@@ -1602,10 +1621,16 @@ class SellPosController extends Controller
                         }
                         if (auth()->user()->can('sale.pay.create_and_edit')) {
                             if ($row->status != 'draft' && $row->payment_status != 'paid' && $row->status != 'canceled') {
-                                $html .=
-                                    '<a data-href="' . action('TransactionPaymentController@addPayment', ['id' => $row->id]) . '"
-                                title="' . __('lang.pay_now') . '" data-toggle="tooltip" data-container=".view_modal"
-                                class="btn btn-modal btn-success" style="color: white"><i class="fa fa-money"></i></a>';
+                                $final_total = $row->final_total;
+                                if (!empty($row->return_parent)) {
+                                    $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                                }
+                                if ($final_total > 0) {
+                                    $html .=
+                                        '<a data-href="' . action('TransactionPaymentController@addPayment', ['id' => $row->id]) . '"
+                                    title="' . __('lang.pay_now') . '" data-toggle="tooltip" data-container=".view_modal"
+                                    class="btn btn-modal btn-success" style="color: white"><i class="fa fa-money"></i></a>';
+                                }
                             }
                         }
                         $html .= '</div>';
@@ -1662,7 +1687,8 @@ class SellPosController extends Controller
                 'customers.name as customer_name',
                 'customers.mobile_number',
                 'users.name as created_by_name',
-            )->with(['deliveryman']);
+            )->with(['deliveryman',
+                'return_parent']);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1742,13 +1768,17 @@ class SellPosController extends Controller
                                 title="' . __('lang.delete') . '" data-toggle="tooltip"
                                 ><i class="dripicons-trash"></i></button>';
                         }
+                        $final_total = $row->final_total;
+                        if (!empty($row->return_parent)) {
+                            $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                        }
+                        if ($final_total > 0) {
 
-
-                        $html .=
-                            '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
-                            title="' . __('lang.pay_now') . '" data-toggle="tooltip"
-                            class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
-
+                            $html .=
+                                '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
+                                title="' . __('lang.pay_now') . '" data-toggle="tooltip"
+                                class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
+                        }
                         $html .= '</div>';
                         return $html;
                     }
@@ -1798,7 +1828,8 @@ class SellPosController extends Controller
                 'customer_types.name as customer_type_name',
                 'customers.name as customer_name',
                 'customers.mobile_number',
-            );
+            )->with([
+                'return_parent']);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1859,12 +1890,16 @@ class SellPosController extends Controller
                             data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
                             ><i class="dripicons-trash"></i></button>';
 
-
-                        $html .=
-                            '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
-                            title="' . __('lang.pay_now') . '" data-toggle="tooltip"
-                            class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
-
+                        $final_total = $row->final_total;
+                        if (!empty($row->return_parent)) {
+                            $final_total = $this->commonUtil->num_f($row->final_total - $row->return_parent->final_total);
+                        }
+                        if ($final_total > 0) {
+                            $html .=
+                                '<a target="_blank" href="' . action('SellPosController@edit', $row->id) . '?status=final"
+                                title="' . __('lang.pay_now') . '" data-toggle="tooltip"
+                                class="btn btn-success draft_pay"><i class="fa fa-money"></i></a>';
+                        }
                         $html .= '</div>';
                         return $html;
                     }
@@ -1984,7 +2019,6 @@ class SellPosController extends Controller
         }
         return $output;
     }
-
     public function addNewOrdersToTransactionSellline(Request $request)
     {
         $order=DB::table('orders')->where('id',$request->order_id)->first();
@@ -2031,3 +2065,62 @@ class SellPosController extends Controller
         return 1;      
     }
 }
+    public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
+        // return $transaction;
+        // return $transaction->transaction_sell_lines ;
+        // // foreach ($transaction->transaction_sell_lines as $line){
+        //     return $printers = Printer::with('products')
+        //     ->get();
+            $productIds = [];
+            $data[]= null;
+            foreach ($transaction->transaction_sell_lines as $sellLine) {
+                $productIds[] = $sellLine['product_id'];
+            }
+                
+                // $printerIds = PrinterProduct::whereIn('product_id', $productIds)->pluck('id');
+            $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
+            $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
+            foreach($printers as $printer){
+                // dd($printer);
+                $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
+                // dd($printer_products);
+                $transactionSellLines = [];
+                foreach ($transaction->transaction_sell_lines as $sellLine) {
+                    // dd($sellLine);
+                    if (in_array($sellLine['product_id'], $printer_products)) {
+                        $transactionSellLines[] = $sellLine;
+                    }
+                }
+                $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'transaction_invoice_lang',
+                    'transactionSellLines',
+                ))->render();
+                // $data[$printer->name]= $html_content;
+                ConnectedPrinter::create([
+                    'printer_name' => $printer->name,
+                    'html' => $html_content,
+                ]);
+               
+            }
+            $options = array(
+                'cluster' =>  env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true
+            );
+    
+    
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+            $print = 1;
+            $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
+            
+        // }
+
+    }
+}
+

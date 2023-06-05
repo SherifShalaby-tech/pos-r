@@ -1405,7 +1405,7 @@ return [
     'new_stock' => 'New Stock',
     'adjustment_save' =>'This will change the product stock , please enter admin password to confirm',
 
-    
+
     'product_in_adjustment' => 'Product In Adjustment',
     'view_product_in_adjustment' => 'View Product In Adjustment',
     'add_product_in_adjustment' => 'Add Product In Adjustment',
@@ -1438,5 +1438,11 @@ return [
     'this_time_is_not_available'=>'This Time Is Not Available,Reserve On Another Time.',
     'are_you_sure_u_want_to_delete_this_reservation'=>'Are You Sure You Want To Delete This Reservation?',
     'select_merge_table'=>'Select Merge Table',
-    'other_reservations'=>'Other Reservations'
+    'other_reservations'=>'Other Reservations',
+    'add_to_customer_balance' => 'Add to customer balance',
+
+    'Discount_from_the_cost_of_delivery' => 'Amount deducted from the cost of delivery',
+    'The_actual_delivery_cost' => 'The value found for the delivery cost',
+
+    'cancel_add_stock_payment' => 'Cancel Stock Payment',
 ];
