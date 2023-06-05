@@ -534,10 +534,10 @@ class SellPosController extends Controller
 
 
 // <<<<<<< HEAD
-//         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+        // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
 // =======
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang);
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
        $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 
 
