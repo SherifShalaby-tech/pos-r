@@ -168,8 +168,11 @@
                                             <label for=""
                                                 style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
                                                 <span class="table_name">
-                                                    @if (!empty($transaction->dining_table))
-                                                        {{ $transaction->dining_table->name }}
+                                                    @if (!empty($transaction->dining_table_id))
+                                                        @php
+                                                        $table=App\Models\TableReservation::where('dining_table_id',$transaction->dining_table_id)->first();
+                                                        @endphp
+                                                        {{ $table->dining_tables->name }}
                                                     @endif
                                                 </span></label>
                                         </div>
@@ -212,10 +215,16 @@
                                                 <thead>
                                                     <tr>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 16% @else 18% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
+                                                            <label class=" checkboxes">
+                                                                <input class="" type="checkbox" checked id="pay-all" value="" aria-label="...">
+                                                            </label>
+                                                        </th>
+                                                        <th
+                                                            style="width: @if (session('system_mode') != 'restaurant') 16% @else 16% @endif; font-size: 12px !important;">
                                                             @lang('lang.product')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 18% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 16% @endif; font-size: 12px !important;">
                                                             @lang('lang.quantity')</th>
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 14% @else 14% @endif; font-size: 12px !important;">
@@ -235,7 +244,7 @@
                                                                 @lang('lang.current_stock')</th>
                                                         @endif
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 9% @endif; font-size: 12px !important;">
                                                             @lang('lang.action')</th>
                                                     </tr>
                                                 </thead>
@@ -771,9 +780,9 @@
     <script>
         $(document).ready(function() {
             @foreach ($transaction->transaction_sell_lines as $line)
-                get_label_product_row({{ $line->product_id }}, {{ $line->variation_id }},null,
+            get_label_product_search_row({{ $line->product_id }}, {{ $line->variation_id }},null,
                     {{ $line->quantity }},
-                    {{ $loop->index }})
+                    {{ $loop->index }},null,null,{{$line->check_pay}},'enable_checkbox')
             @endforeach
         })
         @if (!empty($transaction->dining_table))

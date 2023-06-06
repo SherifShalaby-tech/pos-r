@@ -10,6 +10,11 @@
             overflow: initial;
             width: auto !important;
         }
+        .checkboxes input[type=checkbox] {
+            width: 140%;
+            height: 140%;
+            accent-color: #7e2dff;
+        }
     </style>
 
 @endsection
@@ -41,8 +46,8 @@
                                 value="@if (!empty($walk_in_customer)) {{ $walk_in_customer->id }} @endif">
                             <input type="hidden" name="row_count" id="row_count" value="0">
                             <input type="hidden" name="customer_size_id_hidden" id="customer_size_id_hidden" value="">
-                            <input type="hidden" name="enable_the_table_reservation" id="enable_the_table_reservation"
-                                value="{{ App\Models\System::getProperty('enable_the_table_reservation') }}">
+                            {{-- <input type="hidden" name="enable_the_table_reservation" id="enable_the_table_reservation"
+                                value="{{ App\Models\System::getProperty('enable_the_table_reservation') }}"> --}}
                             <div class="row">
                                 <div class="col-md-12 main_settings">
                                     <div class="row">
@@ -104,10 +109,12 @@
                                         @if (session('system_mode') == 'restaurant')
                                             <div class="col-md-1">
                                                 <button type="button" style="padding: 0px !important;"
-                                                    data-href="{{ action('DiningRoomController@getDiningModal') }}"
-                                                    data-container="#dining_model"
-                                                    class="btn btn-modal pull-right mt-4"><img
-                                                        src="{{ asset('images/black-table.jpg') }}" alt="black-table"
+                                                data-toggle="modal" data-target="#dining_model"
+                                                    {{-- data-href="/dining-room/get-dining-modal/0/0/0/0"
+                                                    data-container="#dining_model" --}}
+                                                    class="btn btn-modal pull-right mt-4 dining-btn">
+                                                    <span class="badge badge-danger table-badge">0</span>
+                                                    <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
                                                         style="width: 40px; height: 33px; margin-top: 7px;"></button>
                                             </div>
                                         @endif
@@ -184,13 +191,30 @@
                                             </div>
                                         </div>
                                         <div class="col-md-3">
+                                            <input type="hidden" id="room_id" name="dining_room_id"/>
                                             <label for=""
                                                 style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
                                                 <span class="table_name"></span></label>
+                                                <div class="form-check tables_status">
+                                                    {{-- @if($status_array)
+                                                    @foreach($status_array as $status)
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input table_status" type="radio" name="order" id="{{$status->order}}" value="{{$status->order}}" checked>
+                                                        <label class="form-check-label" for="{{$status->order}}">{{$status->order}}</label>
+                                                    </div>
+                                                    @endforeach
+                                                    @endif --}}
+                                                  
+                                                </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="input-group my-group">
                                                 {!! Form::select('service_fee_id', $service_fees, null, ['class' => 'form-control', 'placeholder' => __('lang.select_service'), 'id' => 'service_fee_id']) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="input-group my-group">
+                                                {!! Form::select('merge_table_id', $tables, null, ['class' => 'form-control', 'placeholder' => __('lang.select_merge_table'), 'id' => 'table_merge_id']) !!}
                                             </div>
                                         </div>
                                         <input type="hidden" name="service_fee_id_hidden" id="service_fee_id_hidden"
@@ -223,10 +247,16 @@
                                                 <thead>
                                                     <tr>
                                                         <th
+                                                            style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
+                                                            <label class=" checkboxes">
+                                                                <input class="" type="checkbox" checked id="pay-all" value="" aria-label="...">
+                                                            </label>
+                                                        </th>
+                                                        <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 16% @else 18% @endif; font-size: 12px !important;">
                                                             @lang('lang.product')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 18% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 17% @endif; font-size: 12px !important;">
                                                             @lang('lang.quantity')</th>
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 14% @else 14% @endif; font-size: 12px !important;">
@@ -246,7 +276,7 @@
                                                                 @lang('lang.current_stock')</th>
                                                         @endif
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 8% @else 8% @endif; font-size: 12px !important;">
                                                             @lang('lang.action')</th>
                                                     </tr>
                                                 </thead>
@@ -255,9 +285,12 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <div class="row" style="display: none;">
+                                    <div class="row" style="">
                                         <div class="col-md-2">
                                             <div class="form-group">
+                                                <input type="hidden" value="0" class="SavedTransactionId" name="SavedTransactionId" />
+                                                <input type="hidden" value="complete" class="isPayComplete" name="isPayComplete" />
+                                                {{-- <input type="hidden" id="finaltotalCheckedProducts" name="finaltotalCheckedProducts" /> --}}
                                                 <input type="hidden" id="final_total" name="final_total" />
                                                 <input type="hidden" id="grand_total" name="grand_total" />
                                                 <input type="hidden" id="gift_card_id" name="gift_card_id" />
@@ -799,9 +832,11 @@
                 </div>
                 <div id="dining_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal text-left">
+                    @include('sale_pos.partials.dining_modal')
                 </div>
                 <div id="dining_table_action_modal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal fade text-left">
+
                 </div>
             </div>
         </div>
@@ -849,27 +884,64 @@
     <script src="{{ asset('js/onscan.min.js') }}"></script>
     <script src="{{ asset('js/pos.js') }}"></script>
     <script src="{{ asset('js/dining_table.js') }}"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
+        // $('.room-badge3').text("hihh")
         $('.close_btn_product_extension').click(function () {
             $('#product_extension').removeClass('view_modal no-print show');
             $('#product_extension').hide();
         });
         $(document).ready(function() {
             $('.online-order-badge').hide();
+            $('.table-badge').hide();
+            $('.selected-table-badge').hide();
+            $('.room-count-badge').hide();
         })
         // Enable pusher logging - don't include this in production
-        // Pusher.logToConsole = true;
+        Pusher.logToConsole = true;
 
         var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
             cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
         });
-
         var channel = pusher.subscribe('order-channel');
         channel.bind('new-order', function(data) {
+            if(data.table_no){
+                let room_no=data.room_no;
+                let table_id=data.table_no;
+                let table_count = parseInt($('.table-badge').text()) + 1;
+                let selected_table_no = parseInt($('.table'+table_id).text()) + 1;
+                let room_no_count = parseInt($('.room-badge'+room_no).text()) + 1;
+                console.log(data.room_no)
+                console.log(data)
+                $('.table-badge').text(table_count);
+                $('.table'+table_id).text(selected_table_no);
+                $('.room-badge'+room_no).text(room_no_count);
+                $('.table-badge').show();
+                $('.table'+table_id).show();
+                $('.table'+table_id).removeClass('hide');
+                $('.room-badge'+room_no).show();
+                $('.room-badge'+room_no).removeClass('hide');
+                // $('.dining-btn').data('href','/dining-room/get-dining-modal/'+selected_table_no+'/'+room_id+'/'+room_no_count+'/'+table_id);
+                $.ajax({
+                    type: "post",
+                    url: "/pos/add-new-orders-to-transaction-sellline",
+                    data: {
+                        order_id:data.order_id
+                    },
+                    success: function (response) {
+                        if(response==1){
+                           
+                        }
+                    }
+                });
+            }
             if (data) {
+                // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
+                
                 $('.online-order-badge').text(badge_count);
                 $('.online-order-badge').show();
+          
                 var transaction_id = data.transaction_id;
                 $.ajax({
                     method: 'get',

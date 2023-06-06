@@ -4,8 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\DiningRoom;
 use App\Models\DiningTable;
+use App\Models\TableReservation;
+use App\Models\Transaction;
 use App\Utils\Util;
 use Carbon\Carbon;
+use DateTime;
+use DateTimeImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -86,7 +90,12 @@ class DiningTableController extends Controller
         try {
             $data = $request->only('name', 'dining_room_id');
             $data['status'] = 'available';
+            $data['created_by'] =auth()->user()->id;
             $dining_table = DiningTable::create($data);
+            TableReservation::create([
+                'dining_table_id'=>$dining_table->id,
+                'status'=>'available',
+            ]);
             $output = [
                 'success' => true,
                 'dining_table_id' => $dining_table->id,
@@ -181,7 +190,18 @@ class DiningTableController extends Controller
     public function destroy($id)
     {
         try {
-            DiningTable::find($id)->delete();
+            $dining_table=DiningTable::find($id);
+            $table_reserve=TableReservation::where('dining_table_id',$dining_table->id)->delete();
+            $merge_tables=TableReservation::whereNotNull('merge_table_id')->get();
+            if(!empty($merge_tables)){
+                foreach($merge_tables as $mergeTable){
+                    if(in_array($dining_table->id,$mergeTable->merge_table_id)){
+                        DiningTable::find($mergeTable->dining_table_id)->delete();
+                        $mergeTable->delete();
+                    }
+                }
+            }
+            $dining_table->delete();
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
@@ -218,17 +238,26 @@ class DiningTableController extends Controller
      * @param int $id
      * @return void
      */
-    public function getDiningAction($id)
+    public function getDiningAction(Request $request,$id)
     {
-        $dining_table = DiningTable::find($id);
+        $dining_table=TableReservation::where('dining_table_id',$id)->where(function($query){;
+        if(!empty(request()->reservation_id)){
+        $query->where('id',request()->reservation_id);
+        }})->first();
+
+        $status='';
+        // $dining_table = DiningTable::find($table_reserve->dining_table_id);
         $status_array = ['order' => __('lang.order'), 'reserve' => __('lang.reserve')];
         if ($dining_table->status == 'reserve') {
             $status_array = ['order' => __('lang.order'), 'cancel_reservation' => __('lang.cancel_reservation')];
         }
-
+        if(!empty($request->type) && $request->type=='edit_reserve'){
+            $status='edit';
+        }
         return view('sale_pos.partials.dining_table_action')->with(compact(
             'dining_table',
             'status_array',
+            'status'
         ));
     }
     /**
@@ -242,29 +271,73 @@ class DiningTableController extends Controller
         $data = $request->except('_token');
 
         try {
-            $dining_table = DiningTable::find($id);
+            $table_status=TableReservation::where('dining_table_id',$id)->where(function($query){;
+            if(!empty(request()->reservation_id)){
+            $query->where('id',request()->reservation_id);
+            }})->first();
+            $dining_table = DiningTable::find($table_status->dining_table_id);
             if ($data['status'] == 'reserve') {
+                if($table_status->status=='reserve'){
+                    $new_reserve=TableReservation::create([
+                        'dining_table_id'=>$dining_table->id,
+                        'status'=>!empty($data['status']) ?$data['status']:'',
+                        'customer_mobile_number'=>!empty($data['customer_mobile_number'])?$data['customer_mobile_number']:'',
+                        'customer_name'=>!empty($data['customer_name']) ?$data['customer_name']:"",
+                        'date_and_time'=>!empty($data['date_and_time'])?Carbon::createFromTimestamp(strtotime($data['date_and_time']))->format('Y-m-d H:i:s'):''
+                    ]);
+            }else{
+                    // return $table_status;
+                    if (!empty($data['customer_name'])) {
+                        $table_status->customer_name = $data['customer_name'];
+                    }
+                    if (!empty($data['customer_mobile_number'])) {
+                        $table_status->customer_mobile_number = $data['customer_mobile_number'];
+                    }
+                    if (!empty($data['status'])) {
+                        $table_status->status = $data['status'];
+                    }
+                    if (!empty($data['date_and_time'])) {
+                        $table_status->date_and_time = Carbon::createFromTimestamp(strtotime($data['date_and_time']))->format('Y-m-d H:i:s');
+                    }
+                    $table_status->save();
+                }
+            }
+            if ($data['status'] == 'edit-reserve') {
                 if (!empty($data['customer_name'])) {
-                    $dining_table->customer_name = $data['customer_name'];
+                    $table_status->customer_name = $data['customer_name'];
                 }
                 if (!empty($data['customer_mobile_number'])) {
-                    $dining_table->customer_mobile_number = $data['customer_mobile_number'];
-                }
-                if (!empty($data['status'])) {
-                    $dining_table->status = $data['status'];
+                    $table_status->customer_mobile_number = $data['customer_mobile_number'];
                 }
                 if (!empty($data['date_and_time'])) {
-                    $dining_table->date_and_time = Carbon::createFromTimestamp(strtotime($data['date_and_time']))->format('Y-m-d H:i:s');
+                    $table_status->date_and_time = Carbon::createFromTimestamp(strtotime($data['date_and_time']))->format('Y-m-d H:i:s');
                 }
+                $table_status->save();
             }
             if ($data['status'] == 'cancel_reservation') {
-                $dining_table->customer_name = null;
-                $dining_table->customer_mobile_number = null;
-                $dining_table->date_and_time = null;
-                $dining_table->status = 'available';
-            }
-            $dining_table->save();
+                $cancel_reserve_count=TableReservation::where('dining_table_id',$table_status->dining_table_id)->count();
+                if($cancel_reserve_count>1){
+                    $table_status->delete();
+                }else{
+                    $table_status->customer_name = null;
+                    $table_status->customer_mobile_number = null;
+                    $table_status->date_and_time = null;
+                    $table_status->status = 'available';
+                    $table_status->save();
+                }
 
+            }
+
+            if ($data['status'] == 'another_reservation') {
+                $new_reserve=TableReservation::create([
+                    'dining_table_id'=>$dining_table->id,
+                    'status'=>!empty($data['status']) ?'reserve':'',
+                    'customer_mobile_number'=>!empty($data['customer_mobile_number'])?$data['customer_mobile_number']:'',
+                    'customer_name'=>!empty($data['customer_name']) ?$data['customer_name']:"",
+                    'date_and_time'=>!empty($data['date_and_time'])?Carbon::createFromTimestamp(strtotime($data['date_and_time']))->format('Y-m-d H:i:s'):''
+                ]);
+            }
+            
 
             $output = [
                 'success' => true,
@@ -287,14 +360,21 @@ class DiningTableController extends Controller
      * @param int $id
      * @return void
      */
-    public function getTableDetails($id)
+    public function getTableDetails($id,Request $request)
     {
-        $dining_table = DiningTable::find($id);
+        $table_status=TableReservation::where('dining_table_id',$id)->first();
+        // return $table_status->status;
+        $dining_table = DiningTable::find($table_status->dining_table_id);
         $dining_room = DiningRoom::find($dining_table->dining_room_id);
-
+        $status_array = ['order' => __('lang.order'), 'reserve' => __('lang.reserve')];
+        if ($table_status->status == 'reserve' || ($table_status->status=='available'&& $request->status=='reserve')) {
+            $status_array = ['reserve' => __('lang.reserve'), 'cancel_reservation' => __('lang.cancel_reservation')];
+        }
         return [
             'dining_table' => $dining_table,
-            'dining_room' => $dining_room
+            'dining_room' => $dining_room,
+            'status_array'=> $status_array,
+            'table_status'=>$table_status
         ];
     }
 
@@ -309,5 +389,75 @@ class DiningTableController extends Controller
         $dining_tables = DiningTable::where('dining_room_id', $id)->pluck('name', 'id');
 
         return $this->commonUtil->createDropdownHtml($dining_tables, __('lang.all'));
+    }
+    public function checkTimeRserveAvailability($id,Request $request){
+        // $table_status=TableReservation::where('dining_table_id',$id)->first();
+        if(!empty($request->old_value)&& $request->old_value==true){
+            $all_table_reservation = TableReservation::where('dining_table_id',$id)->where('id','!=',$request->reservation_id)->get();
+        }else{
+            $all_table_reservation = TableReservation::where('dining_table_id',$id)->get();
+        }
+        $originalTime = new DateTimeImmutable(Carbon::createFromTimestamp(strtotime($request->date_and_time))->format('Y-m-d H:i:s'));
+        $isMoreHour=true;
+        
+        foreach($all_table_reservation as $table){
+            if(isset($table->date_and_time)){
+            $targedTime = new DateTimeImmutable($table->date_and_time);
+            $interval = $originalTime->diff($targedTime);
+            $diff= $interval->format("%H:%I:%S");
+            if($diff >= "01:00:00"){
+                $isMoreHour=true;
+            }else{
+                $isMoreHour=false;
+            }
+        }
+        }
+        if($isMoreHour){
+            return response()->json(['msg'=>'ok']);
+        }else{
+            return response()->json(['msg'=>__('lang.this_time_is_not_available')]);
+        }
+    }
+    public function mergeTable(Request $request,$id)
+    {
+        $table=TableReservation::where('dining_table_id',$id)->where('status','order')->first();
+        if(!empty($table)){
+            $transactionForThisTable=Transaction::where('dining_table_id',$table->dining_table_id)->where('status','!=','canceled')->latest()->first();
+        }
+        // $transactionForThisTable=Transaction::find(75);
+        if(!empty($transactionForThisTable)){
+            
+            return $transactionForThisTable->transaction_sell_lines;
+        }else{
+            return 'No Product Added';
+        }
+        
+    }
+    public function editReservationTableData($id)
+    {
+        $data=TableReservation::find($id);
+        return $data;
+    }
+    public function getTableNewAdditions()
+    {
+        return DiningTable::where('is_new','new')->count();
+    }
+    public function readNewTables()
+    {
+        DiningTable::where('is_new','new')->update([
+            'is_new'=>'old'
+        ]);
+    }
+    public function getTablesForMerge($room_id)
+    {
+        $tables=DiningTable::with('table_reservations')->whereRelation('table_reservations','merge_table_id',null)->where('dining_room_id',$room_id)->pluck('name', 'id');
+        $html = '';
+        // if (!empty($append_text)) {
+            $html = '<option value="">' . __('lang.please_select') . '</option>';
+        // }
+        foreach ($tables as $key => $value) {
+            $html .= '<option value="' . $key . '">' . $value . '</option>';
+        }
+        return $html;
     }
 }

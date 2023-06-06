@@ -24,4 +24,8 @@ class DiningTable extends Model
     {
         return $this->belongsTo(Transaction::class, 'current_transaction_id');
     }
+    public function table_reservations()
+    {
+        return $this->hasMany(TableReservation::class);
+    }
 }

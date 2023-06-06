@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PrinterEvent;
 use App\Models\Brand;
 use App\Models\CashRegister;
 use App\Models\CashRegisterTransaction;
 use App\Models\Category;
+use App\Models\ConnectedPrinter;
 use App\Models\Coupon;
 use App\Models\Currency;
 use App\Models\Customer;
@@ -27,8 +29,11 @@ use App\Models\TermsAndCondition;
 use App\Models\Transaction;
 use App\Models\DiningTable;
 use App\Models\MoneySafeTransaction;
+use App\Models\Printer;
+use App\Models\PrinterProduct;
 use App\Models\ProductDiscount;
 use App\Models\ServiceFee;
+use App\Models\TableReservation;
 use App\Models\TransactionPayment;
 use App\Models\TransactionSellLine;
 use App\Models\Variation;
@@ -44,6 +49,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Print;
+use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Database\Eloquent\Builder;
+use Pusher\Pusher;
+use Spatie\Browsershot\Browsershot;
 use Str;
 
 class SellPosController extends Controller
@@ -127,7 +138,7 @@ class SellPosController extends Controller
         $exchange_rate_currencies = $this->commonUtil->getCurrenciesExchangeRateArray(true);
         $employees = Employee::getCommissionEmployeeDropdown();
         $delivery_men = Employee::getDropdownByJobType('Deliveryman');
-
+        $tables=DiningTable::pluck('name', 'id');
         if (empty($store_pos)) {
             $output = [
                 'success' => false,
@@ -136,8 +147,11 @@ class SellPosController extends Controller
 
             return redirect()->to('/home')->with('status', $output);
         }
-
+        $dining_rooms = DiningRoom::all();
+        $active_tab_id = null;
         return view('sale_pos.pos')->with(compact(
+            'dining_rooms',
+            'active_tab_id',
             'categories',
             'walk_in_customer',
             'deliverymen',
@@ -161,6 +175,7 @@ class SellPosController extends Controller
             'employees',
             'delivery_men',
             'exchange_rate_currencies',
+            'tables'
         ));
     }
 
@@ -182,7 +197,9 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
+        //   return $request->dinig_room_id;
         // try {
+
         DB::beginTransaction();
 //        dd($request->ItemBorrowed);
 //        if($request->ItemBorrowed){
@@ -197,6 +214,20 @@ class SellPosController extends Controller
 //                ]);
 //            }
 //        }
+        $new_table=[];
+        $table_reserve=[];
+        if(isset($request->merge_table_id)){
+            $table_status=TableReservation::where('dining_table_id',$request->dining_table_id)->first();
+            $mergeDiningTable=DiningTable::create([
+                'dining_room_id'=>$request->dining_room_id,
+                'name'=>DiningTable::find($table_status->dining_table_id)->name .' & '.DiningTable::find($request->merge_table_id)->name,
+            ]);
+            $new_table=TableReservation::create([
+                'dining_table_id'=>$mergeDiningTable->id,
+                'status'=>'order',
+                'merge_table_id'=>[$request->merge_table_id,$table_status->dining_table_id]
+            ]);
+        }
         $transaction_data = [
             'store_id' => $request->store_id,
             'customer_id' => $request->customer_id,
@@ -243,7 +274,7 @@ class SellPosController extends Controller
             'delivery_address' => $request->delivery_address,
             'delivery_cost_paid_by_customer' => !empty($request->delivery_cost_paid_by_customer) ? 1 : 0,
             'delivery_cost_given_to_deliveryman' => !empty($request->delivery_cost_given_to_deliveryman) ? 1 : 0,
-            'dining_table_id' => !empty($request->dining_table_id) ? $request->dining_table_id : null,
+            'dining_table_id' =>  !empty($new_table)?$new_table->id:(!empty($request->dining_table_id) ? $request->dining_table_id : null),
             'dining_room_id' => !empty($request->dining_room_id) ? $request->dining_room_id : null,
             'service_fee_id' => !empty($request->service_fee_id_hidden) ? $request->service_fee_id_hidden : null,
             'service_fee_rate' => !empty($request->service_fee_rate) ? $this->commonUtil->num_uf($request->service_fee_rate) : null,
@@ -254,7 +285,8 @@ class SellPosController extends Controller
         ];
         $transaction_data['dining_room_id'] = null;
         if (!empty($request->dining_table_id)) {
-            $dining_table = DiningTable::find($request->dining_table_id);
+            $table_reserve=TableReservation::where('dining_table_id',$request->dining_table_id)->first();
+            $dining_table = DiningTable::find($table_reserve->dining_table_id);
             $transaction_data['dining_room_id'] = $dining_table->dining_room_id;
         }
         if (!empty($request->is_quotation)) {
@@ -265,28 +297,50 @@ class SellPosController extends Controller
             $transaction_data['block_for_days'] = !empty($request->block_for_days) ? $request->block_for_days : 0; //reverse the block qty handle by command using cron job
             $transaction_data['validity_days'] = !empty($request->validity_days) ? $request->validity_days : 0;
         }
-        $transaction = Transaction::create($transaction_data);
+        $transaction='';
+        if(isset($request->SavedTransactionId) && $request->SavedTransactionId=="0"){
+            $transaction = Transaction::create($transaction_data);
+        }else{
+            // return $request->SavedTransactionId;
+            $transaction = Transaction::find($request->SavedTransactionId);
+        }
 
         $this->transactionUtil->createOrUpdateTransactionSellLine($transaction, $request->transaction_sell_line);
+        $current_products=[];
         if ($transaction->status == 'final') {
             foreach ($request->transaction_sell_line as $sell_line) {
                 if (empty($sell_line['transaction_sell_line_id'])) {
                     if ($transaction->status == 'final') {
-                        $product = Product::find($sell_line['product_id']);
-                        if (!$product->is_service) {
-                            $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
-                        }
+                        // if(!isset($line['dining_table_id'] )){
+                            if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
+                                $product = Product::find($sell_line['product_id']);
+                                if (!$product->is_service) {
+                                    $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
+                                } 
+                            }
+                        // }
                     }
                 }
             }
         }
+        foreach ($request->transaction_sell_line as $sell_line) {
+            // if (empty($sell_line['transaction_sell_line_id'])) {
+                if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
+                    $current_products[]= $sell_line['variation_id'];
+                }
+            // }
+        }
         // if quotation and qty is blocked(reserved) for sale
         if ($transaction->is_quotation && $transaction->block_qty) {
             foreach ($request->transaction_sell_line as $sell_line) {
-                $product = Product::find($sell_line['product_id']);
-                if (!$product->is_service) {
-                    $this->productUtil->updateBlockQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity'], 'add');
-                }
+                // if(!isset($line['dining_table_id'] )){
+                    if(isset($line['is_product_checked'] ) && $line['is_product_checked']=="1"){
+                        $product = Product::find($sell_line['product_id']);
+                        if (!$product->is_service) {
+                            $this->productUtil->updateBlockQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity'], 'add');
+                        }
+                    }
+                // }
             }
         }
 
@@ -327,9 +381,12 @@ class SellPosController extends Controller
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                 if ($amount > 0) {
+                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->first();   
                     $payment_data = [
+                        'transaction_payment_id'=>!empty($IsTransactionPayment)?$IsTransactionPayment->id:null,
                         'transaction_id' => $transaction->id,
                         'amount' => $amount,
+                        'cashes_amount' => $amount,
                         'method' => $payment['method'],
                         'paid_on' => Carbon::now(),
                         'bank_deposit_date' => !empty($data['bank_deposit_date']) ? $this->commonUtil->uf_date($data['bank_deposit_date']) : null,
@@ -348,7 +405,7 @@ class SellPosController extends Controller
                     ];
 
                     $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
-                    $transaction = $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
+                    $transaction = $this->transactionUtil->updateTransactionPaymentStatus($transaction->id,$request->isPayComplete);
                     $this->cashRegisterUtil->addPayments($transaction, $payment_data, 'credit', null, $transaction_payment->id);
                     if ($payment_data['method'] == 'bank_transfer' || $payment_data['method'] == 'card') {
                         $this->moneysafeUtil->addPayment($transaction, $payment_data, 'credit', $transaction_payment->id);
@@ -390,34 +447,36 @@ class SellPosController extends Controller
 
 
         $this->transactionUtil->createOrUpdateRawMaterialConsumption($transaction);
-
         if (session('system_mode') == 'restaurant') {
-            if (!empty($transaction->dining_table_id)) {
-                $dining_table->current_transaction_id = $transaction->id;
-                $old_status = $dining_table->status;
-                if ($old_status == 'available') {
-                    $dining_table->status = 'order';
+            if (!empty($transaction->dining_table_id) ) {
+                if(!empty($new_table)){
+                    $new_table->current_transaction_id = $transaction->id;
+                    $new_table->save();
                 }
-                $dining_table->save();
+                $table_reserve->current_transaction_id = $transaction->id;
+                $old_status = $table_reserve->status;
+                if ($old_status == 'available' && empty($request->merge_table_id)) {
+                    $table_reserve->status = 'order';
+                    // $table_reserve->merge_table_id = $request->merge_table_id;
+                }
+                $table_reserve->save();
                 if ($old_status == 'reserve') {
-                    if (Carbon::now()->gt(Carbon::parse($dining_table->date_and_time))) {
-                        $dining_table->status = 'available';
-                        $dining_table->customer_name = null;
-                        $dining_table->customer_mobile_number = null;
-                        $dining_table->date_and_time = null;
+                    if (Carbon::now()->gt(Carbon::parse($table_reserve->date_and_time))) {
+                        $table_reserve->status = 'available';
+                        $table_reserve->customer_name = null;
+                        $table_reserve->customer_mobile_number = null;
+                        $table_reserve->date_and_time = null;
                     }
                 }
-
-
                 if ($old_status != 'reserve') {
                     if ($transaction->status == 'final' && $transaction->payment_status != 'pending') {
-                        $dining_table->status = 'available';
-                        $dining_table->customer_name = null;
-                        $dining_table->customer_mobile_number = null;
-                        $dining_table->date_and_time = null;
+                        $table_reserve->status = 'available';
+                        $table_reserve->customer_name = null;
+                        $table_reserve->customer_mobile_number = null;
+                        $table_reserve->date_and_time = null;
                     }
                 }
-                $dining_table->save();
+                $table_reserve->save();
             }
         }
 
@@ -437,7 +496,7 @@ class SellPosController extends Controller
                 $this->notificationUtil->sendSellInvoiceToCustomer($transaction->id, $request->emails);
             }
             if ($request->action == 'print') {
-                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types);
+                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products);
 
                 $output = [
                     'success' => true,
@@ -452,7 +511,7 @@ class SellPosController extends Controller
         }
 
         if (!empty($transaction->dining_table_id)) {
-            $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang);
+            $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
             $output = [
                 'success' => true,
@@ -474,12 +533,19 @@ class SellPosController extends Controller
         }
 
 
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang);
+// <<<<<<< HEAD
+        // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+
+// =======
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+       $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 
 
         $output = [
             'success' => true,
+            'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
             'html_content' => $html_content,
+            'partialPrint' => $partialPrint,
             'msg' => __('lang.success')
         ];
         // } catch (\Exception $e) {
@@ -573,7 +639,7 @@ class SellPosController extends Controller
      */
     public function update(Request $request, $id)
     {
-
+        //  return $request->transaction_sell_line;
         // try {
         DB::beginTransaction();
         $transaction = $this->transactionUtil->updateSellTransaction($request, $id);
@@ -615,7 +681,9 @@ class SellPosController extends Controller
                 TransactionPayment::where('transaction_id',$transaction->id)
                     ->whereNotIn('id',$transaction_payment_ids)->delete();
                 foreach ($request->payments as $payment) {
+                    // $amount = $this->commonUtil->num_uf($payment['amount']);
                     $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
+            
                     $old_tp = null;
                     if (!empty($payment['transaction_payment_id'])) {
                         $old_tp = TransactionPayment::find($payment['transaction_payment_id']);
@@ -625,6 +693,7 @@ class SellPosController extends Controller
                         'transaction_payment_id' => !empty($payment['transaction_payment_id']) ? $payment['transaction_payment_id'] : null,
                         'transaction_id' => $transaction->id,
                         'amount' => $amount,
+                        'cashes_amount'=>$amount,
                         'method' => $payment['method'],
                         'paid_on' => !empty($payment['paid_on']) ? Carbon::createFromTimestamp(strtotime($payment['paid_on']))->format('Y-m-d H:i:s') : Carbon::now(),
                         'bank_deposit_date' => !empty($data['bank_deposit_date']) ? $this->commonUtil->uf_date($data['bank_deposit_date']) : null,
@@ -642,7 +711,7 @@ class SellPosController extends Controller
                         'cash_register_id' => $payment['cash_register_id'] ?? null,
                     ];
                     if ($amount > 0) {
-                        $transaction_payment =  $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
+                        $transaction_payment =  $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data,$isEditPayment=true);
                     }
                     $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
 
@@ -1027,7 +1096,18 @@ class SellPosController extends Controller
             $currency_id = $request->input('currency_id');
             $dining_table_id = $request->input('dining_table_id');
             $is_direct_sale = $request->input('is_direct_sale');
+            $table_id = $request->input('table_id');
+            $dining_table=[];
+            if(isset($table_id)){
+                $dining_table=DiningTable::find($table_id);
+            }
             $edit_quantity = !empty($request->input('edit_quantity')) ? $request->input('edit_quantity') : 1;
+            if($request->enable_checkbox=='enable_checkbox' && !empty($request->enable_checkbox)&& $request->input('check_pay')!=null && ($request->input('check_pay')=="1" ||$request->input('check_pay')==="0")){
+                $check_pay = $request->input('check_pay');
+            }else{
+                $check_pay = 'no val';
+            }
+            
             $added_products = json_decode($request->input('added_products'), true);
 
             $currency_id = $request->currency_id;
@@ -1094,7 +1174,7 @@ class SellPosController extends Controller
                         "sum_extensions_sell_prices",
                         "extensions_ids","extensions_quantity",
                         "extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
-                        'exchange_rate','qty'))->render();
+                        'exchange_rate','qty','dining_table','check_pay'))->render();
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
             } else {
@@ -1896,15 +1976,14 @@ class SellPosController extends Controller
             $transaction->status = 'canceled';
             $transaction->canceled_by = Auth::user()->id;
             $transaction->save();
-            $dining_table = DiningTable::find($transaction->dining_table_id);
-            $dining_table->status = 'available';
-            $dining_table->customer_name = null;
-            $dining_table->customer_mobile_number = null;
-            $dining_table->date_and_time = null;
-            $dining_table->current_transaction_id = null;
-            $dining_table->save();
-
-
+            $table_status=TableReservation::where('dining_table_id',$transaction->dining_table_id)->first();
+            // $dining_table = DiningTable::find($table_status->dining_table_id);
+            $table_status->status = 'available';
+            $table_status->customer_name = null;
+            $table_status->customer_mobile_number = null;
+            $table_status->date_and_time = null;
+            $table_status->current_transaction_id = null;
+            $table_status->save();
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
@@ -1940,4 +2019,107 @@ class SellPosController extends Controller
         }
         return $output;
     }
+    public function addNewOrdersToTransactionSellline(Request $request)
+    {
+        $order=DB::table('orders')->where('id',$request->order_id)->first();
+        // return $order;
+        $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
+        $table=TableReservation::where('dining_table_id',$order->table_no)->where('status','order')->orWhere('status','available')->first();
+        $transaction=Transaction::where('dining_table_id',$order->table_no)->where('status','!=','canceled')->first();
+    
+        if(empty($transaction)){
+            $transaction_data = [
+                'store_id' => !empty($order->store_id)?$order->store_id:1,
+                'type' => 'sell',
+                'final_total' => $this->commonUtil->num_uf($order->final_total),
+                // 'grand_total' => $this->commonUtil->num_uf($request->grand_total),
+                'transaction_date' => !empty($order->created_at) ? $order->created_at : Carbon::now(),
+                'payment_status' => !empty($order->status)?$order->status:'pending',
+                'invoice_no' => $this->productUtil->getNumberByType('sell'),
+                'status' => $order->status,
+                'sale_note' => $order->sales_note,
+                'deliveryman_id' => !empty($request->deliveryman_id_hidden) ? $request->deliveryman_id_hidden : null,
+                'delivery_status' => !empty($order->delivery_status)?$order->delivery_status:'pending',
+                // 'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
+                'delivery_address' => !empty($order->address)?$order->address:'',
+                'dining_table_id' =>  $order->table_no,
+                'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
+                'created_by' => Auth::user()->id,
+            ];
+            $transaction=Transaction::create($transaction_data);
+        }
+        $this->transactionUtil->createTransactionSellLineForOrder($transaction, $orderDetails);
+        if(empty($table)){
+            $table_reserve=new TableReservation();
+            $table_reserve->dining_table_id=$order->table_no;
+            $table_reserve->status="order";
+            $table_reserve->current_transaction_id=$transaction->id;
+            $table_reserve->save();
+        }
+        if(!empty($table)&& $table->status=='available'){
+            $table->status="order";
+            $table->current_transaction_id=$transaction->id;
+            $table->save();
+        }
+        
+        return 1;      
+    }
+    public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
+        // return $transaction;
+        // return $transaction->transaction_sell_lines ;
+        // // foreach ($transaction->transaction_sell_lines as $line){
+        //     return $printers = Printer::with('products')
+        //     ->get();
+            $productIds = [];
+            $data[]= null;
+            foreach ($transaction->transaction_sell_lines as $sellLine) {
+                $productIds[] = $sellLine['product_id'];
+            }
+                
+                // $printerIds = PrinterProduct::whereIn('product_id', $productIds)->pluck('id');
+            $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
+            $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
+            foreach($printers as $printer){
+                // dd($printer);
+                $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
+                // dd($printer_products);
+                $transactionSellLines = [];
+                foreach ($transaction->transaction_sell_lines as $sellLine) {
+                    // dd($sellLine);
+                    if (in_array($sellLine['product_id'], $printer_products)) {
+                        $transactionSellLines[] = $sellLine;
+                    }
+                }
+                $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'transaction_invoice_lang',
+                    'transactionSellLines',
+                ))->render();
+                // $data[$printer->name]= $html_content;
+                ConnectedPrinter::create([
+                    'printer_name' => $printer->name,
+                    'html' => $html_content,
+                ]);
+               
+            }
+            $options = array(
+                'cluster' =>  env('PUSHER_APP_CLUSTER'),
+                'useTLS' => true
+            );
+    
+    
+            $pusher = new Pusher(
+                env('PUSHER_APP_KEY'),
+                env('PUSHER_APP_SECRET'),
+                env('PUSHER_APP_ID'),
+                $options
+            );
+            $print = 1;
+            $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
+            
+        // }
+
+    }
 }
+

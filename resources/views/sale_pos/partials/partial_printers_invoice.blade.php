@@ -201,7 +201,6 @@ $is_first_after_extra=0;
                     {{ $transaction->ticket_number }}</p>
             </div>
         @endif
-        {{-- {{$transaction_sell_lines}} --}}
         <div class="table_div" style=" padding: 0 7px; width:100%; height:100%;">
             <table style="margin: 0 auto; text-align: center !important">
                 <thead>
@@ -219,7 +218,7 @@ $is_first_after_extra=0;
                 </thead>
                 <tbody>
 
-                    @foreach ($transaction_sell_lines as $line)
+                    @foreach ($transactionSellLines as $line)
                         <tr  class=" @if($line->sell_line_extensions->count() > 0 )no-border @endif {{$is_first_after_extra == 1 ?'border-top':''}}">
                             @php
                                 $is_first_after_extra=0;
@@ -289,8 +288,7 @@ $is_first_after_extra=0;
                         <tr>
                             <th style="font-size: 16px;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
                             <th style="font-size: 16px; text-align:right;">
-                                {{ @num_format($transaction_sell_lines->sum('sell_price') + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
-                                {{-- {{ @num_format($transaction->grand_total + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }} --}}
+                                {{ @num_format($transaction->grand_total + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
                         </tr>
@@ -298,7 +296,7 @@ $is_first_after_extra=0;
                             <tr>
                                 <th style="font-size: 16px;" colspan="3">@lang('lang.discount', [], $invoice_lang)</th>
                                 <th style="font-size: 16px; text-align:right;">
-                                    {{ @num_format($transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
+                                    {{ @num_format($transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                                     {{ $transaction->received_currency->symbol }}
                                 </th>
                             </tr>
@@ -347,7 +345,7 @@ $is_first_after_extra=0;
                                 </th>
                             </tr>
                         @endif
-                        @if ($transaction_sell_lines->sum('coupon_discount'))
+                        @if ($transaction->transaction_sell_lines->sum('coupon_discount'))
                             <tr>
                                 <th style="font-size: 16px;" colspan="3">@lang('lang.coupon_discount', [], $invoice_lang)</th>
                                 <th style="font-size: 16px; text-align:right;">
@@ -381,9 +379,9 @@ $is_first_after_extra=0;
                             <th style="font-size: 16px;" colspan="3">@lang('lang.grand_total', [], $invoice_lang)</th>
                             <th style="font-size: 16px; text-align:right;">
                                 @if ($transaction->delivery_cost_given_to_deliveryman)
-                                    {{ @num_format($transaction_sell_lines->sum('sell_price')  + $transaction->delivery_cost) }}
+                                    {{ @num_format($transaction->final_total + $transaction->delivery_cost) }}
                                 @else
-                                    {{ @num_format($transaction_sell_lines->sum('sell_price')) }}
+                                    {{ @num_format($transaction->final_total) }}
                                 @endif
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -400,29 +398,29 @@ $is_first_after_extra=0;
                 <tbody>
                     @if (empty($print_gift_invoice))
                         @if (!$transaction->delivery_cost_given_to_deliveryman)
-                            {{-- @foreach ($transaction_payments as $k=>$transaction_payments) --}}
-                                @if (isset($transaction_payments->method) && $transaction_payments->method != 'deposit')
+                            @foreach ($transaction->transaction_payments as $payment_data)
+                                @if ($payment_data->method != 'deposit')
                                     <tr style="background-color:#ddd;">
                                         <td style="font-size: 16px; padding: 7px;">
-                                            @if (!empty($transaction_payments->method))
-                                                {{ __('lang.' . $transaction_payments->method, [], $invoice_lang) }}
+                                            @if (!empty($payment_data->method))
+                                                {{ __('lang.' . $payment_data->method, [], $invoice_lang) }}
                                             @endif
                                         </td>
                                         <td style="font-size: 16px; padding: 10px; text-align: right;" colspan="2">
-                                            {{ @num_format((!empty($transaction_payments->cashes_amount)?$transaction_payments->cashes_amount:$transaction_payments->amount) + $transaction_payments->change_amount) }}
+                                            {{ @num_format($payment_data->amount + $payment_data->change_amount) }}
                                             {{ $transaction->received_currency->symbol }}</td>
                                     </tr>
                                 @endif
-                                @if (!empty($transaction_payments->change_amount) && $transaction_payments->change_amount > 0 && $transaction_payments->method != 'deposit')
+                                @if (!empty($payment_data->change_amount) && $payment_data->change_amount > 0 && $payment_data->method != 'deposit')
                                     <tr>
                                         <td style="font-size: 16px; padding: 7px;width:30%">@lang('lang.change', [], $invoice_lang)</td>
                                         <td colspan="2"
                                             style="font-size: 16px; padding: 7px;width:40%; text-align: right;">
-                                            {{ @num_format($transaction_payments->change_amount) }}
+                                            {{ @num_format($payment_data->change_amount) }}
                                             {{ $transaction->received_currency->symbol }}</td>
                                     </tr>
                                 @endif
-                            {{-- @endforeach --}}
+                            @endforeach
                         @endif
                         @if (!empty($transaction->add_to_deposit) && $transaction->add_to_deposit > 0)
                             <tr>
@@ -440,11 +438,11 @@ $is_first_after_extra=0;
                             </tr>
                         @endif
                         @if ($transaction->is_quotation != 1)
-                            @if ($transaction->payment_status != 'paid' && isset($transaction_payments->amount) && $transaction->final_total - $transaction_payments->amount > 0)
+                            @if ($transaction->payment_status != 'paid' && $transaction->final_total - $transaction->transaction_payments->sum('amount') > 0)
                                 <tr>
                                     <td style="font-size: 16px; padding: 5px;width:30%">@lang('lang.due_sale_list', [], $invoice_lang)</td>
                                     <td colspan="2" style="font-size: 16px; padding: 5px;width:40%; text-align: right;">
-                                        {{ @num_format($transaction_sell_lines->sum('sell_price') - (!empty($transaction_payments->cashes_amount)?$transaction_payments->cashes_amount:$transaction_payments->amount)) }}
+                                        {{ @num_format($transaction->final_total - $transaction->transaction_payments->sum('amount')) }}
                                         {{ $transaction->received_currency->symbol }}
                                     </td>
                                 </tr>

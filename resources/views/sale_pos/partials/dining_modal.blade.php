@@ -116,7 +116,7 @@
     }
 
 </style>
-<div role="document" class="modal-dialog modal-lg">
+<div role="document" class="modal-dialog modal-lg asd">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span

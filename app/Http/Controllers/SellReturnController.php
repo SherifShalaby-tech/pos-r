@@ -473,6 +473,9 @@ class SellReturnController extends Controller
                     if (!empty($sell_line['transaction_sell_line_id'])) {
                         $line = TransactionSellLine::find($sell_line['transaction_sell_line_id']);
                         $old_quantity = $line->quantity_returned;
+                        if(isset($line->quantity_returned) && $line->quantity_returned!=0){
+                            $line->check_pay = 0;
+                        }
                         $line->quantity_returned = $sell_line['quantity'];
                         $line->save();
                         $sell_line_extensions=SellLineExtension::where('transaction_sell_line_id',$line->id)->get();

@@ -15,6 +15,7 @@
                     </div>
                     <div class="col-md-10" style="padding: 15px ">
                         <div class="row">
+                            {{-- <input type="text" value="" class="isPayComplete" /> --}}
                             <div id="payment_rows" class="col-md-12">
                                 <div class="payment_row row pl-3  pr-3">
                                     <div class="col-md-6 mt-1">
@@ -33,6 +34,7 @@
                                         <input type="hidden" name="payments[0][change_amount]" class="change_amount"
                                             id="change_amount">
                                         <input type="hidden" name="payments[0][pending_amount]" class="pending_amount">
+                                        <input type="hidden" name="payments[0][pending_amount]" class="pending_amount"> 
                                         <div class="col-md-6">
                                             <button type="button" 
                                                 class="ml-1 btn btn-danger add_to_customer_balance hide">@lang('lang.add_to_customer_balance')</button>

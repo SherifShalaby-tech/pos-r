@@ -318,7 +318,10 @@ function get_label_product_search_row(
     add_stock_lines_id,
     edit_quantity = 1,
     edit_row_count = 0,
-    weighing_scale_barcode = null
+    weighing_scale_barcode = null,
+    table_id=null,
+    check_pay=null,
+    enable_checkbox=null
 ) {
     //Get item addition method
     var add_via_ajax = true;
@@ -397,7 +400,10 @@ function get_label_product_search_row(
                 weighing_scale_barcode: weighing_scale_barcode,
                 dining_table_id: $("#dining_table_id").val(),
                 is_direct_sale: $("#is_direct_sale").val(),
-                batch_number_id:add_stock_lines_id
+                batch_number_id:add_stock_lines_id,
+                table_id:table_id,
+                check_pay:check_pay,
+                enable_checkbox:enable_checkbox
             },
             success: function (result) {         
                 if (!result.success) {
@@ -658,14 +664,17 @@ function check_for_sale_promotion() {
 
     var added_products = [];
     var added_qty = [];
-    $("#product_table > tbody  > tr").each((ele, tr) => {
-        let product_id_tr = __read_number($(tr).find(".variation_id"));
-        let qty_tr = {
-            product_id: product_id_tr,
-            qty: __read_number($(tr).find(".quantity")),
-        };
-        added_products.push(product_id_tr);
-        added_qty.push(qty_tr);
+    //check for chosen products only
+    $("#product_table > tbody  > tr ").each((ele, tr) => {
+        if($(tr).find('.productcheck').prop('checked')==true){
+            let product_id_tr = __read_number($(tr).find(".variation_id"));
+            let qty_tr = {
+                product_id: product_id_tr,
+                qty: __read_number($(tr).find(".quantity")),
+            };
+            added_products.push(product_id_tr);
+            added_qty.push(qty_tr);
+        }
     });
 
     $.ajax({
@@ -724,15 +733,17 @@ function check_for_sale_promotion() {
                         }
                         discount+=sum_discount;
                         var product_ids = data.product_ids;
-                        $("#product_table > tbody > tr").each(function (ele, tr) {
-                            let product_id = __read_number(
-                                $(tr).find(".product_id")
-                            );
-                            if (product_ids.includes(product_id)) {
-                                $(tr).find(".sell_price").attr("readonly", true);
-                                //neglect all other discount for this product if any
-                                $(tr).find(".promotion_discount_value").val(0);
-                                $(tr).find(".product_discount_value").val(0);
+                        $("#product_table > tbody > tr ").each(function (ele, tr) {
+                            if($(tr).find('.productcheck').prop('checked')==true){
+                                let product_id = __read_number(
+                                    $(tr).find(".product_id")
+                                );
+                                if (product_ids.includes(product_id)) {
+                                    $(tr).find(".sell_price").attr("readonly", true);
+                                    //neglect all other discount for this product if any
+                                    $(tr).find(".promotion_discount_value").val(0);
+                                    $(tr).find(".product_discount_value").val(0);
+                                }
                             }
                         });
 
@@ -753,7 +764,7 @@ function check_for_sale_promotion() {
                             $("#product_table tbody")
                                 .find("tr")
                                 .each(function () {
-                                    
+                                    if($(this).find('.productcheck').prop('checked')==true){
                                     var row_product_id = $(this)
                                         .find(".variation_id")
                                         .val()
@@ -789,7 +800,7 @@ function check_for_sale_promotion() {
                                             .find(".promotion_purchase_condition")
                                             .val(purchase_condition);
                                     }
-                                });
+                         } });
                         });
                     }
 
@@ -824,7 +835,11 @@ function calculate_sub_totals() {
     var sales_promotion_cost = __read_number($("#sales_promotion-cost"));
     let item_quantity=0;
     var exchange_rate = __read_number($("#exchange_rate"));
+    // var allProductstotal=0;
+    var isPayComplete='';
+    var checkboxesValues=[];
     $("#product_table > tbody  > tr").each((ele, tr) => {
+        if($(tr).find(".productcheck").prop('checked') == true){
         let quantity = __read_number($(tr).find(".quantity"));
         item_quantity+=quantity;
         let sell_price = __read_number($(tr).find(".sell_price"));
@@ -883,7 +898,6 @@ function calculate_sub_totals() {
         $(tr)
             .find(".sub_total_span")
             .text(__currency_trans_from_en(sub_total, false));
-
         total += sub_total;
 
         item_count++;
@@ -910,7 +924,13 @@ function calculate_sub_totals() {
                 }
             }
         }
+        }
     });
+    if($('.productcheck:not(:checked):not(:disabled)').length>=1){
+        $('.isPayComplete').val('not complete');
+    }else{
+        $('.isPayComplete').val('complete');
+    }
     $("#subtotal").text(__currency_trans_from_en(total, false));
     $(".subtotal").text(__currency_trans_from_en(total, false));
     $("#item").text(item_count);
@@ -1057,22 +1077,24 @@ function apply_promotion_discounts() {
     let promo_discount = 0;
     let final_total = __read_number($("#final_total"));
     $("#product_table > tbody  > tr").each((ele, tr) => {
-        let promotion_discount_amount = __read_number(
-            $(tr).find(".promotion_discount_amount")
-        );
-        let promotion_purchase_condition = __read_number(
-            $(tr).find(".promotion_purchase_condition")
-        );
-        let promotion_purchase_condition_amount = __read_number(
-            $(tr).find(".promotion_purchase_condition_amount")
-        );
+        if($(tr).find('.productcheck').prop('checked')==true){
+            let promotion_discount_amount = __read_number(
+                $(tr).find(".promotion_discount_amount")
+            );
+            let promotion_purchase_condition = __read_number(
+                $(tr).find(".promotion_purchase_condition")
+            );
+            let promotion_purchase_condition_amount = __read_number(
+                $(tr).find(".promotion_purchase_condition_amount")
+            );
 
-        if (promotion_purchase_condition) {
-            if (final_total > promotion_purchase_condition_amount) {
+            if (promotion_purchase_condition) {
+                if (final_total > promotion_purchase_condition_amount) {
+                    promo_discount += promotion_discount_amount;
+                }
+            } else {
                 promo_discount += promotion_discount_amount;
             }
-        } else {
-            promo_discount += promotion_discount_amount;
         }
     });
     let total_package_promotion_discount = __read_number(
@@ -1100,13 +1122,16 @@ function calculate_coupon_discount(tr) {
 
     return discount;
 }
+//work
 $(document).on("change", "#final_total", function (e) {
     let final_total = __read_number($("#final_total"));
-
+    let finaltotalCheckedProducts = __read_number($("#finaltotalCheckedProducts"));
+    // __write_number($("#all_final_total"), final_total);
     __write_number($("#final_total"), final_total);
     $(".final_total_span").text(__currency_trans_from_en(final_total, false));
 
     __write_number($("#amount"), final_total);
+
     __write_number($("#paying_amount"), final_total);
 });
 
@@ -1192,6 +1217,9 @@ $(document).on("click", ".remove_row", function () {
     $(this).closest("tr").remove();
     calculate_sub_totals();
     reset_row_numbering();
+    if($("#product_table > tbody  > tr").length==0){
+        $('.SavedTransactionId').val(0);
+    }
 });
 $(document).on("click", ".minus", function () {
     let tr = $(this).closest("tr");
@@ -1321,6 +1349,7 @@ $(document).on("click", ".payment-btn", function (e) {
         $(".btn-add-payment").removeClass("hide");
 
         let final_total = __read_number($("#final_total"));
+        //new total
         __write_number($("#amount"), final_total);
     }
     if (method === "cheque") {
@@ -1466,6 +1495,8 @@ $(document).on("click", ".close-payment-madal", function () {
     $(".add_to_customer_balance").addClass("hide");
    
 });
+
+$('#add-payment').modal({backdrop: 'static', keyboard: false});
 $(document).on("click", "#add_payment_row", function () {
     var row_count = $("#payment_rows .payment_row").length;
     let pending_amount = $("#payment_rows .payment_row")
@@ -1561,19 +1592,21 @@ $(document).on("click", ".coupon-check", function () {
 function apply_coupon_to_products() {
     if (coupon_products.length) {
         $("#product_table > tbody  > tr").each((ele, tr) => {
-            let product_id = parseInt($(tr).find(".product_id").val());
-            if (amount_to_be_purchase_checkbox) {
-                let grand_total = __read_number($("#grand_total"));
-                if (grand_total >= amount_to_be_purchase) {
+            if($(tr).find('.productcheck').prop('checked')==true){
+                let product_id = parseInt($(tr).find(".product_id").val());
+                if (amount_to_be_purchase_checkbox) {
+                    let grand_total = __read_number($("#grand_total"));
+                    if (grand_total >= amount_to_be_purchase) {
+                        if (coupon_products.includes(product_id)) {
+                            $(tr).find(".coupon_discount_value").val(coupon_value);
+                            $(tr).find(".coupon_discount_type").val(coupon_type);
+                        }
+                    }
+                } else {
                     if (coupon_products.includes(product_id)) {
                         $(tr).find(".coupon_discount_value").val(coupon_value);
                         $(tr).find(".coupon_discount_type").val(coupon_type);
                     }
-                }
-            } else {
-                if (coupon_products.includes(product_id)) {
-                    $(tr).find(".coupon_discount_value").val(coupon_value);
-                    $(tr).find(".coupon_discount_type").val(coupon_type);
                 }
             }
         });
@@ -1585,7 +1618,7 @@ $(document).on("click", "#print_and_draft", function (e) {
     $("#print_and_draft_hidden").val("print_and_draft");
     $("#sale_note_modal").modal("hide");
     //Check if product is present or not.
-    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+    if ($("table#product_table tbody").children(".product_row").find('.productcheck:checked').length <= 0) {
         toastr.warning("No Product Added");
         return false;
     }
@@ -1596,7 +1629,7 @@ $(document).on("click", "#draft-btn", function (e) {
     $("#status").val("draft");
     $("#sale_note_modal").modal("hide");
     //Check if product is present or not.
-    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+    if ($("table#product_table tbody").children(".product_row").find('.productcheck:checked').length <= 0) {
         toastr.warning("No Product Added");
         return false;
     }
@@ -1605,7 +1638,7 @@ $(document).on("click", "#draft-btn", function (e) {
 });
 $(document).on("click", "#pay-later-btn", function (e) {
     //Check if product is present or not.
-    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+    if ($("table#product_table tbody").children(".product_row").find('.productcheck:checked').length <= 0) {
         toastr.warning("No Product Added");
         return false;
     }
@@ -1615,7 +1648,7 @@ $(document).on("click", "#pay-later-btn", function (e) {
 
 $("button#submit-btn").click(function () {
     //Check if product is present or not.
-    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+    if ($("table#product_table tbody").children(".product_row").find('.productcheck:checked').length <= 0) {
         toastr.warning("No Product Added");
         return false;
     }
@@ -1631,8 +1664,9 @@ $("button#update-btn").click(function () {
     $("#is_edit").val("");
     pos_form_obj.submit();
 });
-
+//work
 $(document).ready(function () {
+    var isPayComplete=$(".isPayComplete").val();
     pos_form_validator = pos_form_obj.validate({
         submitHandler: function (form) {
             $("#pos-save").attr("disabled", "true");
@@ -1640,7 +1674,7 @@ $(document).ready(function () {
             data =
                 data +
                 "&terms_and_condition_id=" +
-                $("#terms_and_condition_id").val();
+                $("#terms_and_condition_id").val()+"&isComplete="+$(".isPayComplete").val();
             var url = $(form).attr("action");
             $.ajax({
                 method: "POST",
@@ -1708,9 +1742,22 @@ $(document).ready(function () {
                                 "success"
                             );
                         }
+                        //to get all products sold and remove checkbox
+                        $(".SavedTransactionId").val(result.saveLastTransactionId);
+                        var variationsChecked=$('.productcheck').filter(':checked').map((_, el) => el.id).get();
+                        if($(".isPayComplete").val()=="complete"){
+                            $(".SavedTransactionId").val(0);
 
-                        reset_pos_form();
-                        getFilterProductRightSide();
+                            reset_pos_form();
+                            getFilterProductRightSide();
+
+                        }else{
+                            if(location.pathname.split('/')[1]!='sale')
+                                $.each(variationsChecked, function(index, value){
+                                    $('#'+value).prop('checked',false);
+                                    $('#'+value).prop('disabled',true);
+                                });
+                        }
                         //get_recent_transactions();
                     } else {
                         toastr.error(result.msg);
@@ -1860,10 +1907,12 @@ function confirmCancel() {
                     },
                 });
             }
+            confirmCancel();
         }
 
-        reset_pos_form();
+        
     }
+    
     return false;
 }
 
@@ -3057,7 +3106,7 @@ function get_sale_promotion_products(sale_promotion_id) {
     });
 }
 $(document).on("click", "#dining_table_print, #dining_table_save", function () {
-    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+    if ($("table#product_table tbody").children(".product_row").find('.productcheck:checked').length <= 0) {
         toastr.warning("No Product Added");
         return false;
     }
@@ -3256,5 +3305,53 @@ $(document).on("change", ".discount_category", function (e) {
             check_for_sale_promotion();
             calculate_sub_totals();                  
         },
+    });
+});
+$(document).on("change", ".productcheck", function (e) {
+    if($(this).prop('checked') ==false){
+        $(this).val(0);
+        $('#pay-all').prop('checked',false);
+    }else{
+        $(this).val(1);
+    }
+    calculate_sub_totals();
+    check_for_sale_promotion(); 
+});
+$(document).on("change", "#pay-all", function (e) {
+    if($(this).prop('checked') ==false){
+        $('.productcheck').prop('checked',false);
+    }else{
+        $('.pcheck').each((ele, check) => {
+        // $('.productcheck').each(function() {
+            if($(check).prop('disabled') ==false){
+                $(check).prop('checked',true);
+            }
+        });
+    }
+    calculate_sub_totals();
+    check_for_sale_promotion(); 
+});
+$(document).on('change','#table_merge_id',function(){
+    var table_id=$(this).val();
+    $("#product_table tbody")
+        .find("tr")
+        .each(function () {
+            if($(this).find('.dining_table_id').val()){
+                $(this).closest("tr").remove();
+            }  
+        });
+    $.ajax({
+        type: "get",
+        url: "/dining-table/merge_table/"+table_id,
+        success: function (response) {
+            if(response!='No Product Added'){
+                $.each( response, function( key, value ) {
+                    get_label_product_search_row( value.product_id, value.variation_id,null,
+                        value.quantity,value.index,null,table_id)
+                });
+            }else{
+                toastr.warning(response);
+            }
+        }
     });
 });
