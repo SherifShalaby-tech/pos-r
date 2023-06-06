@@ -1417,4 +1417,6 @@ return [
     'The_actual_delivery_cost'=>'القيمة الفعلية لتكلفة الدليفري',
 
     'cancel_add_stock_payment' => 'الغاء دفع المخزون',
+    'add_to_customer_balance' => 'اضافة الى حساب العميل',
+
 ];
