@@ -276,7 +276,7 @@
                                                                 @lang('lang.current_stock')</th>
                                                         @endif
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 8% @else 8% @endif; font-size: 12px !important;">
                                                             @lang('lang.action')</th>
                                                     </tr>
                                                 </thead>

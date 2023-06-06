@@ -13,7 +13,7 @@
             @endif
         </label>
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 14%; @else 17%; @endif font-size: 13px;">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 16%; @else 18%; @endif font-size: 13px;">
         @php
          $Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
             if($Variation){
@@ -122,7 +122,7 @@
         @endisset
 
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 14% @else 15% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 17% @else 18% @endif">
         <div class="input-group"><span class="input-group-btn">
                 <button type="button" class="btn btn-danger btn-xs minus">
                     <span class="dripicons-minus"></span>
@@ -151,7 +151,7 @@
         </div>
 
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 12% @else 11% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 14% @else 15% @endif">
         <input type="text" class="form-control sell_price"
                    name="transaction_sell_line[{{$loop->index + $index}}][sell_price]" required
                    @if(!auth()->user()->can('product_module.sell_price.create_and_edit')) readonly @elseif(env('IS_SUB_BRANCH',false)) readonly @endif
@@ -173,7 +173,7 @@
                         </div>
         </div>
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 12% @else 14% @endif ">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 14% @else 15% @endif ">
         <input type="hidden" value="{{$product->product_id}}" class="p-id"/>
         @if(auth()->user()->can('sp_module.sales_promotion.view')
                 || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
@@ -198,18 +198,18 @@
             </select>
         @endif
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 10% @else 13% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 10% @else 10% @endif">
         <span class="sub_total_span" style="font-weight: bold;"></span>
         <input type="hidden" class="form-control sub_total"
             name="transaction_sell_line[{{$loop->index + $index}}][sub_total]" value="">
     </td>
     @if(session('system_mode') != 'restaurant')
-    <td style="width: @if(session('system_mode')  != 'restaurant') 10% @else 15% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 10% @else 10% @endif">
         @if($product->is_service) {{'-'}} @else
         @if(isset($product->qty_available)){{preg_match('/\.\d*[1-9]+/', (string)$product->qty_available) ? $product->qty_available : @num_format($product->qty_available)}}@else{{0}}@endif @endif
     </td>
     @endif
-    <td style="width: @if(session('system_mode')  != 'restaurant') 12%; @else 5%; @endif padding: 0px;">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 5%; @else 5%; @endif padding: 0px;">
         @if(!empty($dining_table_id))
             @if(auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
             <button type="button" class="btn btn-danger btn-xs remove_row" style="margin-top: 15px;"><i class="fa fa-times"></i></button>
