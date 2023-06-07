@@ -1905,9 +1905,10 @@ function confirmCancel() {
                     },
                 });
             }
-            confirmCancel();
+           
+            
         }
-
+        reset_pos_form();
         
     }
     
