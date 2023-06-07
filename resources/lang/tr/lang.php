@@ -1283,5 +1283,5 @@ return [
     'sale_payment_date' => 'Ödeme tarihi',
     'another_reservation'=>'Başka bir rezervasyon',
     'add_to_customer_balance' => 'Müşteri bakiyesine ekle',
-
+    'products_count' => 'Ürün Sayısı',
 ];
