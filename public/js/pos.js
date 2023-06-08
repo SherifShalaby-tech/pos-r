@@ -1495,8 +1495,6 @@ $(document).on("click", ".close-payment-madal", function () {
     $(".add_to_customer_balance").addClass("hide");
    
 });
-
-$('#add-payment').modal({backdrop: 'static', keyboard: false});
 $(document).on("click", "#add_payment_row", function () {
     var row_count = $("#payment_rows .payment_row").length;
     let pending_amount = $("#payment_rows .payment_row")
@@ -1907,9 +1905,10 @@ function confirmCancel() {
                     },
                 });
             }
-            confirmCancel();
+           
+            
         }
-
+        reset_pos_form();
         
     }
     
