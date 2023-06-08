@@ -35,6 +35,19 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
+                                            <label for="stores">{{trans('lang.stores')}}</label>
+                                            <div class="input-group my-group">
+                                                <select id="store_id"  class="selectpicker form-control" name="store_id" required>
+                                                    <option value="">please select</option>
+                                                    @foreach($stores as $store)
+                                                        <option value="{{$store->id}}">{{$store->name}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
                                             <label for="is_active">{{trans('lang.status')}}</label>
                                             <div class="input-group my-group">
                                                 <select id="is_active" class="selectpicker form-control" name="is_active">
