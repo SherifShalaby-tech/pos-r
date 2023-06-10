@@ -1428,5 +1428,6 @@ return [
 
     'cancel_add_stock_payment' => 'الغاء دفع المخزون',
     'add_to_customer_balance' => 'اضافة الى حساب العميل',
+    'products_count' => 'عدد المنتجات',
 
 ];
