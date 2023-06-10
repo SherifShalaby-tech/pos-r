@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Printers\Store;
+
 use App\Http\Requests\Printers\Update;
 use App\Models\Printer;
 use App\Models\Product;
+use App\Models\Store;
 use COM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,16 +23,18 @@ class PrinterController extends Controller
 
     public function create(){
         $products = Product::get(['id','name']);
-        return view('printers.create',compact('products'));
+        $stores = Store::get(['id','name']);
+        return view('printers.create',compact('products','stores'));
     }
 
-    public function store(Store $request){
+    public function store(Request $request){
         DB::beginTransaction();
         // create new printer
         $printer_create = Printer::create([
             'name' => $request->name,
             'is_active' => $request->is_active,
-            'is_cashier' => $request->is_cashier
+            'is_cashier' => $request->is_cashier,
+            'store_id' => $request->store_id,
         ]);
         // check products
         if($request->products){

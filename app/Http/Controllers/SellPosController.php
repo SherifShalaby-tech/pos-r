@@ -316,7 +316,7 @@ class SellPosController extends Controller
                                 $product = Product::find($sell_line['product_id']);
                                 if (!$product->is_service) {
                                     $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
-                                } 
+                                }
                             }
                         // }
                     }
@@ -381,7 +381,7 @@ class SellPosController extends Controller
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                 if ($amount > 0) {
-                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->first();   
+                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->first();
                     $payment_data = [
                         'transaction_payment_id'=>!empty($IsTransactionPayment)?$IsTransactionPayment->id:null,
                         'transaction_id' => $transaction->id,
@@ -683,7 +683,7 @@ class SellPosController extends Controller
                 foreach ($request->payments as $payment) {
                     // $amount = $this->commonUtil->num_uf($payment['amount']);
                     $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
-            
+
                     $old_tp = null;
                     if (!empty($payment['transaction_payment_id'])) {
                         $old_tp = TransactionPayment::find($payment['transaction_payment_id']);
@@ -1107,7 +1107,7 @@ class SellPosController extends Controller
             }else{
                 $check_pay = 'no val';
             }
-            
+
             $added_products = json_decode($request->input('added_products'), true);
 
             $currency_id = $request->currency_id;
@@ -1182,6 +1182,7 @@ class SellPosController extends Controller
                 $output['msg'] = __('lang.sku_no_match');
             }
             return  $output;
+            dd ($output);
         }
     }
     public function addDiscounts(Request $request){
@@ -2026,7 +2027,7 @@ class SellPosController extends Controller
         $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
         $table=TableReservation::where('dining_table_id',$order->table_no)->where('status','order')->orWhere('status','available')->first();
         $transaction=Transaction::where('dining_table_id',$order->table_no)->where('status','!=','canceled')->first();
-    
+
         if(empty($transaction)){
             $transaction_data = [
                 'store_id' => !empty($order->store_id)?$order->store_id:1,
@@ -2061,8 +2062,8 @@ class SellPosController extends Controller
             $table->current_transaction_id=$transaction->id;
             $table->save();
         }
-        
-        return 1;      
+
+        return 1;
     }
     public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
         // return $transaction;
@@ -2075,7 +2076,7 @@ class SellPosController extends Controller
             foreach ($transaction->transaction_sell_lines as $sellLine) {
                 $productIds[] = $sellLine['product_id'];
             }
-                
+
                 // $printerIds = PrinterProduct::whereIn('product_id', $productIds)->pluck('id');
             $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
             $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
@@ -2101,14 +2102,14 @@ class SellPosController extends Controller
                     'printer_name' => $printer->name,
                     'html' => $html_content,
                 ]);
-               
+
             }
             $options = array(
                 'cluster' =>  env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true
             );
-    
-    
+
+
             $pusher = new Pusher(
                 env('PUSHER_APP_KEY'),
                 env('PUSHER_APP_SECRET'),
@@ -2117,7 +2118,7 @@ class SellPosController extends Controller
             );
             $print = 1;
             $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
-            
+
         // }
 
     }

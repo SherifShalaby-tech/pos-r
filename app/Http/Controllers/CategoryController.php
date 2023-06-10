@@ -37,7 +37,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::whereNull('parent_id')->latest()->get();
+        $categories = Category::whereNull('parent_id')->withCount('products')->latest()->get();
         return view('category.index')->with(compact(
             'categories'
         ));
