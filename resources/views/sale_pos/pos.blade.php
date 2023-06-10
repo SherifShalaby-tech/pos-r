@@ -204,7 +204,7 @@
                                                     </div>
                                                     @endforeach
                                                     @endif --}}
-                                                  
+
                                                 </div>
                                         </div>
                                         <div class="col-md-2">
@@ -261,6 +261,9 @@
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 14% @else 14% @endif; font-size: 12px !important;">
                                                             @lang('lang.price')</th>
+                                                         <th
+                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 11% @endif; font-size: 12px !important;">
+                                                            @lang('lang.extension')</th>
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 11% @else 14% @endif; font-size: 12px !important;">
                                                             @lang('lang.discount')</th>
@@ -930,7 +933,7 @@
                     },
                     success: function (response) {
                         if(response==1){
-                           
+
                         }
                     }
                 });
@@ -938,10 +941,10 @@
             if (data) {
                 // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
-                
+
                 $('.online-order-badge').text(badge_count);
                 $('.online-order-badge').show();
-          
+
                 var transaction_id = data.transaction_id;
                 $.ajax({
                     method: 'get',
