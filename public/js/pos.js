@@ -1504,6 +1504,7 @@ $(document).on("click", ".close-payment-madal", function () {
     __write_number($("#add_to_customer_balance"),0);
     $(".add_to_customer_balance").attr("disabled", false);
     $(".add_to_customer_balance").addClass("hide");
+   
 
 });
 $(document).on("click", "#add_payment_row", function () {
