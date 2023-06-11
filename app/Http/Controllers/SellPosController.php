@@ -2025,6 +2025,14 @@ class SellPosController extends Controller
         $order=DB::table('orders')->where('id',$request->order_id)->first();
         // return $order;
         $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
+        $dining_table_reservation=TableReservation::where('dining_table_id',$order->table_no)->get();
+        if(empty($dining_table_reservation)){
+            
+            $dining_table_reservation=TableReservation::create([
+                'dining_table_id'=>$order->table_no,
+                'status'=>'available',
+            ]);
+        }
         $table=TableReservation::where('dining_table_id',$order->table_no)->where('status','order')->orWhere('status','available')->first();
         $transaction=Transaction::where('dining_table_id',$order->table_no)->where('status','!=','canceled')->first();
 
