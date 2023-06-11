@@ -1,6 +1,59 @@
 @extends('layouts.app')
 @section('title', __('lang.product'))
 @section('content')
+<style>
+    .preview-class-container {
+        /* display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px; */
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 170px);
+    }
+
+    .preview {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        padding: 4px;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin: 30px 0px;
+        border: 1px solid #ddd;
+    }
+    .preview img {
+        width: 100%;
+        height: 100%;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        border: 1px solid #ddd;
+        object-fit: cover;
+
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 156px;
+        right: 0px;
+        /*border: 2px solid #ddd;*/
+        border: none;
+        cursor: pointer;
+    }
+
+    .delete-btn {
+        background: transparent;
+        color: rgba(235, 32, 38, 0.97);
+    }
+
+    .crop-btn {
+        position: absolute;
+        top: 156px;
+        left: 0px;
+        /*border: 2px solid #ddd;*/
+        border: none;
+        cursor: pointer;
+        background: transparent;
+        color: #007bff;
+    }
+</style>
     <section class="forms">
         <div class="container-fluid">
             <div class="row">
@@ -107,10 +160,12 @@
             // currentFiles && (files = currentFiles)
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
-                if (file.type.match('image.*')) {
+                let fileType = file.type.slice(file.type.indexOf('/') + 1);
+                let FileAccept = ["jpg","JPG","jpeg","JPEG","png","PNG","BMP","bmp"];
+                if (FileAccept.includes(fileType))  {
                     const reader = new FileReader();
                     reader.addEventListener('load', (e) => {
-                        e.preventDefault();
+                        // e.preventDefault();
                         const preview = document.createElement('div');
                         preview.classList.add('preview');
                         const img = document.createElement('img');
@@ -121,26 +176,40 @@
                         preview.appendChild(actions);
 
                         const container = document.createElement('div');
-                        const deleteBtn = document.createElement('button');
+                        const deleteBtn = document.createElement('span');
                         deleteBtn.classList.add('delete-btn');
                         deleteBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-trash"></i>';
                         deleteBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            if (window.confirm('Are you sure you want to delete this image?')) {
-                                files.splice(file, 1)
-                                preview.remove();
-                                getImages()
-                            }
+                            Swal.fire({
+                            title: '{{ __("site.Are you sure?") }}',
+                            text: "{{ __("site.You won't be able to delete!") }}",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Yes, delete it!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    Swal.fire(
+                                        'Deleted!',
+                                        '{{ __("site.Your Image has been deleted.") }}',
+                                        'success'
+                                    )
+                                    files.splice(file, 1)
+                                    preview.remove();
+                                    getImages()
+                                }
+                            });
                         });
 
                         preview.appendChild(deleteBtn);
-                        const cropBtn = document.createElement('button');
+                        const cropBtn = document.createElement('span');
                         cropBtn.setAttribute("data-toggle", "modal")
                         cropBtn.setAttribute("data-target", "#exampleModal")
                         cropBtn.classList.add('crop-btn');
                         cropBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-crop"></i>';
                         cropBtn.addEventListener('click', (e) => {
-                            e.preventDefault();
+                            // e.preventDefault();
                             setTimeout(() => {
                                 launchCropTool(img);
                             }, 500);
@@ -195,37 +264,19 @@
 
             // When the user clicks the "Crop" button, get the cropped image and replace the original image in the preview
             croppieSubmitBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                croppie.result({
-                    type: 'canvas',
-                    size: {
-                        width: 800,
-                        height: 600
-                    },
-                    quality: 1 // Set quality to 1 for maximum quality
-                }).then((croppedImg) => {
+                // e.preventDefault();
+                croppie.result('base64').then((croppedImg) => {
                     img.src = croppedImg;
                     croppieModal.style.display = 'none';
                     $('#exampleModal').modal('hide');
                     croppie.destroy();
                     getImages()
-
-                    // blob = new Blob(croppedImg, { type: 'image/*' });
-                    let blob = new Blob([croppedImg], {
-                        type: "image/png"
-                    });
-                    // console.log(blob);
-                    // console.log(fileInput.files);
-                    // let files = Array.from(fileInput.files)
-                    // files.concat(currentFiles)
-                    // currentFiles.push(...files)
-                    // currentFiles && (files = currentFiles)
-                    // currentFiles = files
                 });
             });
         }
 
         function getImages() {
+            console.log("tees");
             setTimeout(() => {
                 const container = document.querySelectorAll('.preview-container');
                 let images = [];
@@ -237,7 +288,7 @@
                 }
                 console.log(images);
                 return images
-            }, 500);
+            }, 300);
         }
 
     </script>

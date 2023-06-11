@@ -681,7 +681,8 @@ class ProductController extends Controller
             }
 
             if ($request->has("cropImages") && count($request->cropImages) > 0) {
-                foreach ($request->cropImages as $imageData) {
+                foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
+                    $product->clearMediaCollection('product');
                     $extention = explode(";",explode("/",$imageData)[1])[0];
                     $image = rand(1,1500)."_image.".$extention;
                     $filePath = public_path('uploads/' . $image);
