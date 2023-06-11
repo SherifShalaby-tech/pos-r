@@ -274,7 +274,7 @@ class SellPosController extends Controller
             'delivery_address' => $request->delivery_address,
             'delivery_cost_paid_by_customer' => !empty($request->delivery_cost_paid_by_customer) ? 1 : 0,
             'delivery_cost_given_to_deliveryman' => !empty($request->delivery_cost_given_to_deliveryman) ? 1 : 0,
-            'dining_table_id' =>  !empty($new_table)?$new_table->id:(!empty($request->dining_table_id) ? $request->dining_table_id : null),
+            'dining_table_id' =>  !empty($new_table)?$new_table->dining_table_id:(!empty($request->dining_table_id) ? $request->dining_table_id : null),
             'dining_room_id' => !empty($request->dining_room_id) ? $request->dining_room_id : null,
             'service_fee_id' => !empty($request->service_fee_id_hidden) ? $request->service_fee_id_hidden : null,
             'service_fee_rate' => !empty($request->service_fee_rate) ? $this->commonUtil->num_uf($request->service_fee_rate) : null,
