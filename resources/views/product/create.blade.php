@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('title', __('lang.product'))
-
 @section('content')
     <section class="forms">
         <div class="container-fluid">
@@ -22,6 +21,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="cropped_images"></div>
                             {!! Form::close() !!}
                         </div>
                     </div>
@@ -29,30 +29,6 @@
             </div>
         </div>
     </section>
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="croppie-modal" style="display:none">
-                        <div id="croppie-container"></div>
-                        <button data-dismiss="modal" id="croppie-cancel-btn" type="button" class="btn btn-secondary"><i
-                                class="fas fa-times"></i></button>
-                        <button id="croppie-submit-btn" type="button" class="btn btn-primary"><i
-                                class="fas fa-crop"></i></button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
 
     <div class="modal fade" id="product_cropper_modal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -83,26 +59,58 @@
         </div>
     </div>
 
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="croppie-modal" style="display:none">
+                        <div id="croppie-container"></div>
+                        <button data-dismiss="modal" id="croppie-cancel-btn" type="button" class="btn btn-secondary"><i
+                                class="fas fa-times"></i></button>
+                        <button id="croppie-submit-btn" type="button" class="btn btn-primary"><i
+                                class="fas fa-crop"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
-@push('javascripts')
+@section('javascript')
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
     <script>
-        var fileInput = document.querySelector('#file-input');
-        var previewContainer = document.querySelector('.preview-container');
-        var croppieModal = document.querySelector('#croppie-modal');
-        var croppieContainer = document.querySelector('#croppie-container');
-        var croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
-        var croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
+        const fileInput = document.querySelector('#file-input');
+        const previewContainer = document.querySelector('.preview-container');
+        const croppieModal = document.querySelector('#croppie-modal');
+        const croppieContainer = document.querySelector('#croppie-container');
+        const croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
+        const croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
 
+        // let currentFiles = [];
         fileInput.addEventListener('change', () => {
+            // let files = fileInput.files;
             previewContainer.innerHTML = '';
             let files = Array.from(fileInput.files)
+            // files.concat(currentFiles)
+            // currentFiles.push(...files)
+            // currentFiles && (files = currentFiles)
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file.type.match('image.*')) {
                     const reader = new FileReader();
-                    reader.addEventListener('load', () => {
+                    reader.addEventListener('load', (e) => {
+                        e.preventDefault();
                         const preview = document.createElement('div');
                         preview.classList.add('preview');
                         const img = document.createElement('img');
@@ -116,21 +124,13 @@
                         const deleteBtn = document.createElement('button');
                         deleteBtn.classList.add('delete-btn');
                         deleteBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-trash"></i>';
-                        deleteBtn.addEventListener('click', () => {
-                            swal({
-                                title: "Delete",
-                                text: "Are you sure you want to delete this image ?",
-                                icon: "warning",
-                                buttons: true,
-                                dangerMode: true,
-                                buttons: ["Cancel", "Delete"],
-                            }).then((addPO) => {
-                                if (addPO) {
-                                    files.splice(file, 1)
-                                    preview.remove();
-                                    getImages()
-                                }
-                            });
+                        deleteBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            if (window.confirm('Are you sure you want to delete this image?')) {
+                                files.splice(file, 1)
+                                preview.remove();
+                                getImages()
+                            }
                         });
 
                         preview.appendChild(deleteBtn);
@@ -139,7 +139,8 @@
                         cropBtn.setAttribute("data-target", "#exampleModal")
                         cropBtn.classList.add('crop-btn');
                         cropBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-crop"></i>';
-                        cropBtn.addEventListener('click', () => {
+                        cropBtn.addEventListener('click', (e) => {
+                            e.preventDefault();
                             setTimeout(() => {
                                 launchCropTool(img);
                             }, 500);
@@ -148,6 +149,12 @@
                         previewContainer.appendChild(preview);
                     });
                     reader.readAsDataURL(file);
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: '{{ __("site.Oops...") }}',
+                        text: '{{ __("site.Sorry , You Should Upload Valid Image") }}',
+                    })
                 }
             }
 
@@ -179,29 +186,62 @@
             croppieModal.style.display = 'block';
 
             // When the user clicks the "Cancel" button, hide the modal
-            croppieCancelBtn.addEventListener('click', () => {
+            croppieCancelBtn.addEventListener('click', (e) => {
+                e.preventDefault();
                 croppieModal.style.display = 'none';
                 $('#exampleModal').modal('hide');
                 croppie.destroy();
             });
 
             // When the user clicks the "Crop" button, get the cropped image and replace the original image in the preview
-            croppieSubmitBtn.addEventListener('click', () => {
-                croppie.result('base64').then((croppedImg) => {
+            croppieSubmitBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                croppie.result({
+                    type: 'canvas',
+                    size: {
+                        width: 800,
+                        height: 600
+                    },
+                    quality: 1 // Set quality to 1 for maximum quality
+                }).then((croppedImg) => {
                     img.src = croppedImg;
                     croppieModal.style.display = 'none';
                     $('#exampleModal').modal('hide');
                     croppie.destroy();
                     getImages()
+
+                    // blob = new Blob(croppedImg, { type: 'image/*' });
+                    let blob = new Blob([croppedImg], {
+                        type: "image/png"
+                    });
+                    // console.log(blob);
+                    // console.log(fileInput.files);
+                    // let files = Array.from(fileInput.files)
+                    // files.concat(currentFiles)
+                    // currentFiles.push(...files)
+                    // currentFiles && (files = currentFiles)
+                    // currentFiles = files
                 });
             });
         }
 
-
+        function getImages() {
+            setTimeout(() => {
+                const container = document.querySelectorAll('.preview-container');
+                let images = [];
+                $("#cropped_images").empty();
+                for (let i = 0; i < container[0].children.length; i++) {
+                    images.push(container[0].children[i].children[0].src)
+                    var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
+                    $("#cropped_images").append(newInput);
+                }
+                console.log(images);
+                return images
+            }, 500);
+        }
 
     </script>
-@endpush
-@section('javascript')
+
     <script>
         function get_unit(units,row_id) {
             $v=document.getElementById('select_unit_id_'+row_id).value;

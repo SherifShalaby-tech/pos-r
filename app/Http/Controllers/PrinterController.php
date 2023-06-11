@@ -85,18 +85,18 @@ class PrinterController extends Controller
 
     public function getPrinters(Request $request)
     {
-        exec('wmic printer get Name', $output);
-        $printerNames = array_filter($output, function ($value) {
-            return !empty(trim($value)) && $value !== 'Name';
-        });
-        foreach ($printerNames as $printerName) {
-            // echo $printerName . "\n";
-            $printer_create = Printer::firstOrCreate([
-                'name' => $printerName,
-                'store_id' => $request->printer_store_id
-            ]);
+        // exec('wmic printer get Name', $output);
+        // $printerNames = array_filter($output, function ($value) {
+        //     return !empty(trim($value)) && $value !== 'Name';
+        // });
+        // foreach ($printerNames as $printerName) {
+        //     // echo $printerName . "\n";
+        //     $printer_create = Printer::firstOrCreate([
+        //         'name' => $printerName,
+        //         'store_id' => $request->printer_store_id
+        //     ]);
             
-        }
+        // }
         $printers = Printer::where('store_id', $request->printer_store_id)->get();
         return $printers;
 
