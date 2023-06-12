@@ -140,12 +140,12 @@ $("#submit-btn").on("click", function (e) {
             success: function (response) {
                 myFunction();
                 if (response.success) {
-                    swal("Success", response.msg, "success");
+                    Swal.fire("Success", response.msg, "success");
                     $("#sku").val("").change();
                     $("#name").val("").change();
                     $(".translations").val("").change();
                 } else {
-                    swal("Error", response.msg, "error");
+                    Swal.fire("Error", response.msg, "error");
                 }
             },
             error: function (response) {
