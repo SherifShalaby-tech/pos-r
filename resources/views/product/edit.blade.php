@@ -1016,8 +1016,8 @@
         {{--});--}}
         document.getElementById("deleteBtn{{ $product->id }}").addEventListener('click', () => {
             Swal.fire({
-                title: '{{ __("site.Are you sure?") }}',
-                text: "{{ __("site.You won't be able to delete!") }}",
+                title: '{{ __("Are you sure?") }}',
+                text: "{{ __("You will not be able to delete!") }}",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -1027,7 +1027,7 @@
                 if (result.isConfirmed) {
                     Swal.fire(
                         'Deleted!',
-                        '{{ __("site.Your Image has been deleted.") }}',
+                        '{{ __("Your Image has been deleted.") }}',
                         'success'
                     )
                     $("#preview{{ $product->id }}").remove();
