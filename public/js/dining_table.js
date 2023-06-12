@@ -33,6 +33,7 @@ $(document).on("change", "#dining_room_name", function () {
 });
 
 function get_dining_content(dining_table_id = null) {
+    // $('.tables').load(document.URL +  ' .tables');
     if (dining_table_id == null) {
         dining_table_id = $("#dining_table_id").val();
         

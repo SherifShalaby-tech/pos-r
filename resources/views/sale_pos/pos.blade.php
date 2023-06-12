@@ -909,6 +909,7 @@
         var channel = pusher.subscribe('order-channel');
         channel.bind('new-order', function(data) {
             if(data.table_no){
+                // get_dining_content();
                 let room_no=data.room_no;
                 let table_id=data.table_no;
                 let table_count = parseInt($('.table-badge').text()) + 1;
@@ -933,7 +934,7 @@
                     },
                     success: function (response) {
                         if(response==1){
-
+                            // get_dining_content();
                         }
                     }
                 });

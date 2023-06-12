@@ -25,6 +25,7 @@ $(document).ready(function () {
         language: __language,
         format: "yyyy-mm-dd",
         todayHighlight: true,
+        
     });
     $("input[name='end_date']").datepicker({
         language: __language,
