@@ -7,7 +7,8 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {{-- <script src="https://fastly.jsdelivr.net/npm/sweetalert2@11"></script> --}}
     <title>@yield('title') - {{ config('app.name', 'POS') }}</title>
 
     <!-- Fonts -->
@@ -337,7 +338,7 @@
 
     <script type="text/javascript">
         @if (session('status'))
-            Swal.fire(
+            swal(
                 @if (session('status.success') == '1')
                     "Success"
                 @else
@@ -456,7 +457,7 @@
 
         $(document).on('click', '.delete_item', function(e) {
             e.preventDefault();
-            Swal.fire({
+            swal({
                 title: 'Are you sure?',
                 text: "Are you sure You Wanna Delete it?",
                 icon: 'warning',
@@ -466,7 +467,7 @@
                     var href = $(this).data('href');
                     var data = $(this).serialize();
 
-                    Swal.fire({
+                    swal({
                         title: 'Please Enter Your Password',
                         content: {
                             element: "input",
@@ -494,7 +495,7 @@
                                 success: (data) => {
 
                                     if (data.success == true) {
-                                        Swal.fire(
+                                        swal(
                                             'Success',
                                             'Correct Password!',
                                             'success'
@@ -508,7 +509,7 @@
                                             success: function(result) {
                                                 if (result.success ==
                                                     true) {
-                                                    Swal.fire(
+                                                    swal(
                                                         'Success',
                                                         result.msg,
                                                         'success'
@@ -519,7 +520,7 @@
                                                     }, 1500);
                                                     location.reload();
                                                 } else {
-                                                    Swal.fire(
+                                                    swal(
                                                         'Error',
                                                         result.msg,
                                                         'error'
@@ -529,7 +530,7 @@
                                         });
 
                                     } else {
-                                        Swal.fire(
+                                        swal(
                                             'Failed!',
                                             'Wrong Password!',
                                             'error'
