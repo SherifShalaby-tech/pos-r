@@ -71,6 +71,7 @@ class CustomerBalanceAdjustmentController extends Controller
      */
     public function store(Request $request)
     {
+        // return $request->all();
         try {
             $data = $request->except('_token');
             $data['current_balance'] = $this->commonUtil->num_uf($data['current_balance']);
@@ -78,8 +79,15 @@ class CustomerBalanceAdjustmentController extends Controller
             $data['new_balance'] = $this->commonUtil->num_uf($data['new_balance']);
             $data['date_and_time'] = Carbon::now();
             $data['created_by'] = $request->user_id;
-
-            CustomerBalanceAdjustment::create($data);
+            $customer_balance_adjustment = CustomerBalanceAdjustment::where('customer_id',$request->customer_id)->first();
+            if(empty($customer_balance_adjustment)){
+                CustomerBalanceAdjustment::create($data);
+            }else{
+            // $customer_balance_adjustment->update($data);
+            $customer_balance_adjustment->current_balance = $this->commonUtil->num_uf($data['current_balance']);
+            $customer_balance_adjustment->new_balance = $this->commonUtil->num_uf($data['new_balance']);
+            $customer_balance_adjustment->save();
+            }
             //TODO::total_rp need to update or not based on client response
             $output = [
                 'success' => true,
