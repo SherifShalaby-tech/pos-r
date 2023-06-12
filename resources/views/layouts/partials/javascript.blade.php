@@ -10,7 +10,7 @@ $moment_time_format = App\Models\System::getProperty('time_format') == '12' ? 'h
 <script type="text/javascript" src="{{asset('vendor/jquery/jquery.timepicker.min.js') }}"></script>
 <script type="text/javascript" src="{{asset('vendor/popper.js/umd/popper.min.js') }}">
 </script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script src="https://fastly.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 <script type="text/javascript" src="{{asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{asset('vendor/daterange/js/moment.min.js') }}"></script>
 
