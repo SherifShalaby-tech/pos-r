@@ -142,6 +142,8 @@
 @section('javascript')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    <script  src="{{ asset('js/sweet.js') }}"></script>
+
     <script>
         const fileInput = document.querySelector('#file-input');
         const previewContainer = document.querySelector('.preview-container');
@@ -181,8 +183,8 @@
                         deleteBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-trash"></i>';
                         deleteBtn.addEventListener('click', (e) => {
                             Swal.fire({
-                            title: '{{ __("site.Are you sure?") }}',
-                            text: "{{ __("site.You won't be able to delete!") }}",
+                            title: '{{ __("Are you sure?") }}',
+                            text: "{{ __("You will not be able to delete!") }}",
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',
