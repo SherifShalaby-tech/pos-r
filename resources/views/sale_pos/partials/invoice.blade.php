@@ -382,9 +382,17 @@ $is_first_after_extra=0;
                             <th style="font-size: 16px;" colspan="3">@lang('lang.grand_total', [], $invoice_lang)</th>
                             <th style="font-size: 16px; text-align:right;">
                                 @if ($transaction->delivery_cost_given_to_deliveryman)
-                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost) }}
+                                    @if($transaction->discount_amount!=0)
+                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount) }}
+                                    @else
+                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost)}}
+                                    @endif
                                 @else
-                                    {{ @num_format($transaction_sell_lines->sum('sub_total')) }}
+                                @if($transaction->discount_amount!=0)
+                                {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount) }}
+                                @else
+                                {{ @num_format($transaction_sell_lines->sum('sub_total'))}}
+                                @endif
                                 @endif
                                 {{ $transaction->received_currency->symbol }}
                             </th>
