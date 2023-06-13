@@ -474,7 +474,7 @@ class NotificationUtil extends Util
                         $notification_data = [
                             'user_id' => $user->id,
                             'product_id' => $item->product_id,
-                            'qty_available' => $item->qty,
+                            'qty_available' => $item->remaining_qty,
                             'days' => $days,
                             'type' => 'expiry_alert',
                             'status' => 'unread',
@@ -488,7 +488,7 @@ class NotificationUtil extends Util
                         $notification_data = [
                             'user_id' => $user->id,
                             'product_id' => $item->product_id,
-                            'qty_available' => $item->qty,
+                            'qty_available' => $item->remaining_qty,
                             'days' => $days,
                             'type' => 'expired',
                             'status' => 'unread',
@@ -500,7 +500,7 @@ class NotificationUtil extends Util
             }
 
             //change status to expired qunatity
-            if (!empty($item->expiry_date) && !empty($item->convert_status_expire)) {
+            if (!empty($item->expiry_date) && !isset($item->convert_status_expire)) {
                 $expired_date = Carbon::parse($item->expiry_date)->subDays($item->convert_status_expire)->format('Y-m-d');
                 if (Carbon::now()->format('Y-m-d') == $expired_date) {
                     $ps = ProductStore::where('product_stores.product_id', $item->product_id)
