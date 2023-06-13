@@ -139,7 +139,11 @@ class AddStockController extends Controller
                     $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
                     return '<span data-currency_id="' . $paying_currency_id . '">' . $this->commonUtil->num_f($final_total) . '</span>';
                 })
-           
+                ->addColumn('paid_amount', function ($row) use ($default_currency_id) {
+                    $amount_paid =  $row->transaction_payments->sum('amount');
+                    $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
+                    return '<span data-currency_id="' . $paying_currency_id . '">' . $this->commonUtil->num_f($amount_paid) . '</span>';
+                })
                 ->addColumn('due', function ($row) use ($default_currency_id) {
                     $due =  $row->final_total - $row->transaction_payments->sum('amount');
                     $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
