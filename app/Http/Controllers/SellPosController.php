@@ -56,6 +56,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Pusher\Pusher;
 use Spatie\Browsershot\Browsershot;
 use Str;
+use Illuminate\Support\Facades\Cache;
 
 class SellPosController extends Controller
 {
@@ -110,6 +111,20 @@ class SellPosController extends Controller
      */
     public function create()
     {
+         // Get the current date
+         $currentDate = Carbon::today();
+
+         // Retrieve the last execution date from the cache or database
+         $lastExecutionDate = Cache::get('last_execution_date');
+ 
+         // Check if the last execution date is not today
+         if (!$lastExecutionDate || $lastExecutionDate < $currentDate) {
+             // Call the function or perform the desired task
+             $this->notificationUtil->checkExpiary();
+ 
+             // Store the current date as the last execution date
+             Cache::put('last_execution_date', $currentDate, 1440); // 1440 minutes = 1 day
+         }
         //Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
             return redirect()->to('/cash-register/create?is_pos=1');

@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
+use App\Utils\NotificationUtil;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -30,15 +33,17 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = RouteServiceProvider::HOME;
+    protected $notificationUtil;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(NotificationUtil $notificationUtil)
     {
         $this->middleware('guest')->except('logout');
+        $this->notificationUtil = $notificationUtil;
     }
 
     /**
@@ -61,5 +66,21 @@ class LoginController extends Controller
             $this->username() => 'required|string',
             'password' => 'required|string',
         ]);
+
+        // Get the current date
+        $currentDate = Carbon::today();
+
+        // Retrieve the last execution date from the cache or database
+        $lastExecutionDate = Cache::get('last_execution_date');
+
+        // Check if the last execution date is not today
+        if (!$lastExecutionDate || $lastExecutionDate < $currentDate) {
+            // Call the function or perform the desired task
+            $this->notificationUtil->checkExpiary();
+
+            // Store the current date as the last execution date
+            Cache::put('last_execution_date', $currentDate, 1440); // 1440 minutes = 1 day
+        }
+
     }
 }
