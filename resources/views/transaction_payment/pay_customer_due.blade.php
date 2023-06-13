@@ -47,7 +47,7 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('paid_on', __('lang.payment_date'). ':', []) !!} <br>
-                            {!! Form::text('paid_on', null, ['class' => 'form-control datepicker', 'readonly',
+                            {!! Form::text('paid_on', null, ['class' => 'form-control datepicker', 'readonly','required',
                             'placeholder' => __('lang.payment_date')]) !!}
                         </div>
                     </div>

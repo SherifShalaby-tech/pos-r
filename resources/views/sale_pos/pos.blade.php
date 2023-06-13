@@ -934,7 +934,7 @@
                     },
                     success: function (response) {
                         if(response==1){
-                            // get_dining_content();
+                            //  get_dining_content();
                         }
                     }
                 });
