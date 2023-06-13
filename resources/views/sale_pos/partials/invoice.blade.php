@@ -383,15 +383,15 @@ $is_first_after_extra=0;
                             <th style="font-size: 16px; text-align:right;">
                                 @if ($transaction->delivery_cost_given_to_deliveryman)
                                     @if($transaction->discount_amount!=0)
-                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount) }}
+                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')) }}
                                     @else
-                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost)}}
+                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))}}
                                     @endif
                                 @else
                                 @if($transaction->discount_amount!=0)
-                                {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount) }}
+                                {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')) }}
                                 @else
-                                {{ @num_format($transaction_sell_lines->sum('sub_total'))}}
+                                {{ @num_format($transaction_sell_lines->sum('sub_total')-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))}}
                                 @endif
                                 @endif
                                 {{ $transaction->received_currency->symbol }}

@@ -159,7 +159,7 @@
                    @if(!auth()->user()->can('product_module.sell_price.create_and_edit')) readonly @elseif(env('IS_SUB_BRANCH',false)) readonly @endif
                    value="@if(isset($default_sell_price)){{@num_format(($default_sell_price) / $exchange_rate)}}@else{{0}}@endif">
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 5% @else 5% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 2% @else 2% @endif">
         @if($product_extensions > 0)
             <span class="input-group-btn">
                 <button type="button" class="btn btn-success btn-xs plus add-extension" id="add_extension">
