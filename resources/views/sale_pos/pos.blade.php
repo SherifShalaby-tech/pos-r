@@ -253,13 +253,13 @@
                                                             </label>
                                                         </th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 16% @else 18% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 18% @endif; font-size: 12px !important;">
                                                             @lang('lang.product')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 17% @else 17% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
                                                             @lang('lang.quantity')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 14% @else 14% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 14% @endif; font-size: 12px !important;">
                                                             @lang('lang.price')</th>
                                                          <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 9% @else 11% @endif; font-size: 12px !important;">
