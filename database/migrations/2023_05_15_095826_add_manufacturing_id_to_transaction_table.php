@@ -13,7 +13,7 @@ class AddManufacturingIdToTransactionTable extends Migration
      */
     public function up()
     {
-        if (Schema::hasColumn('transactions', 'manufacturing_id'))
+        if (! Schema::hasColumn('transactions', 'manufacturing_id'))
         {
             Schema::table('transactions', function (Blueprint $table)
             {
