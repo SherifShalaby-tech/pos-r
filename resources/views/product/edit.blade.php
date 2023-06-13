@@ -1,6 +1,203 @@
 @extends('layouts.app')
 @section('title', __('lang.product'))
+@section("styles")
+<style>
+    .preview-edit-product-container {
+        /* display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px; */
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 170px);
+    }
+    .preview {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        padding: 4px;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin: 30px 0px;
+        border: 1px solid #ddd;
+    }
 
+    .preview img {
+        width: 100%;
+        height: 100%;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        border: 1px solid #ddd;
+        object-fit: cover;
+
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 156px;
+        right: 0px;
+        /*border: 2px solid #ddd;*/
+        border: none;
+        cursor: pointer;
+    }
+
+    .delete-btn {
+        background: transparent;
+        color: rgba(235, 32, 38, 0.97);
+    }
+
+    .crop-btn {
+        position: absolute;
+        top: 156px;
+        left: 0px;
+        /*border: 2px solid #ddd;*/
+        border: none;
+        cursor: pointer;
+        background: transparent;
+        color: #007bff;
+    }
+</style>
+<style>
+    .variants {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .variants>div {
+        margin-right: 5px;
+    }
+
+    .variants>div:last-of-type {
+        margin-right: 0;
+    }
+
+    .file {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .file>input[type='file'] {
+        display: none
+    }
+
+    .file>label {
+        font-size: 1rem;
+        font-weight: 300;
+        cursor: pointer;
+        outline: 0;
+        user-select: none;
+        border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
+        border-style: solid;
+        border-radius: 4px;
+        border-width: 1px;
+        background-color: hsl(0, 0%, 100%);
+        color: hsl(0, 0%, 29%);
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .file>label:hover {
+        border-color: hsl(0, 0%, 21%);
+    }
+
+    .file>label:active {
+        background-color: hsl(0, 0%, 96%);
+    }
+
+    .file>label>i {
+        padding-right: 5px;
+    }
+
+    .file--upload>label {
+        color: hsl(204, 86%, 53%);
+        border-color: hsl(204, 86%, 53%);
+    }
+
+    .file--upload>label:hover {
+        border-color: hsl(204, 86%, 53%);
+        background-color: hsl(204, 86%, 96%);
+    }
+
+    .file--upload>label:active {
+        background-color: hsl(204, 86%, 91%);
+    }
+
+    .file--uploading>label {
+        color: hsl(48, 100%, 67%);
+        border-color: hsl(48, 100%, 67%);
+    }
+
+    .file--uploading>label>i {
+        animation: pulse 5s infinite;
+    }
+
+    .file--uploading>label:hover {
+        border-color: hsl(48, 100%, 67%);
+        background-color: hsl(48, 100%, 96%);
+    }
+
+    .file--uploading>label:active {
+        background-color: hsl(48, 100%, 91%);
+    }
+
+    .file--success>label {
+        color: hsl(141, 71%, 48%);
+        border-color: hsl(141, 71%, 48%);
+    }
+
+    .file--success>label:hover {
+        border-color: hsl(141, 71%, 48%);
+        background-color: hsl(141, 71%, 96%);
+    }
+
+    .file--success>label:active {
+        background-color: hsl(141, 71%, 91%);
+    }
+
+    .file--danger>label {
+        color: hsl(348, 100%, 61%);
+        border-color: hsl(348, 100%, 61%);
+    }
+
+    .file--danger>label:hover {
+        border-color: hsl(348, 100%, 61%);
+        background-color: hsl(348, 100%, 96%);
+    }
+
+    .file--danger>label:active {
+        background-color: hsl(348, 100%, 91%);
+    }
+
+    .file--disabled {
+        cursor: not-allowed;
+    }
+
+    .file--disabled>label {
+        border-color: #e6e7ef;
+        color: #e6e7ef;
+        pointer-events: none;
+    }
+
+    @keyframes pulse {
+        0% {
+            color: hsl(48, 100%, 67%);
+        }
+
+        50% {
+            color: hsl(48, 100%, 38%);
+        }
+
+        100% {
+            color: hsl(48, 100%, 67%);
+        }
+    }
+</style>
+@endsection
 @section('content')
     <section class="forms">
         <div class="container-fluid">
@@ -73,7 +270,7 @@
                                         {!! Form::label('product_class_id', __('lang.class') . ' *', []) !!}
                                     @endif
                                     <div class="input-group my-group">
-                                        {!! Form::select('product_class_id', $product_classes, $product->product_class_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('product_class_id', $product_classes, $product->product_class_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'required']) !!}
                                         <span class="input-group-btn">
                                             @can('product_module.product_class.create_and_edit')
                                                 <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
@@ -119,7 +316,7 @@
                                     <div class="col-md-4">
                                         {!! Form::label('brand_id', __('lang.brand') . ' *', []) !!}
                                         <div class="input-group my-group">
-                                            {!! Form::select('brand_id', $brands, $product->brand_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                            {!! Form::select('brand_id', $brands, $product->brand_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'required']) !!}
                                             <span class="input-group-btn">
                                                 @can('product_module.brand.create_and_edit')
                                                     <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
@@ -227,11 +424,11 @@
                                                         <div class="col-10 offset-1">
                                                             <div class="variants">
                                                                 <div class='file file-upload w-100'>
-                                                                    <label for='file-input-edit-product' class="w-100">
+                                                                    <label for='file-product-edit-product' class="w-100">
                                                                         <i class="fas fa-cloud-upload-alt"></i>Upload
                                                                     </label>
                                                                     <!-- <input  id="file-input" multiple type='file' /> -->
-                                                                    <input type="file" id="file-input-edit-product">
+                                                                    <input type="file" id="file-product-edit-product">
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -241,18 +438,20 @@
                                             <div class="col-10 offset-1">
                                                 <div class="preview-edit-product-container">
                                                     @if(!empty($product->getFirstMediaUrl('product')))
-                                                            <div id="preview{{ $product->id }}" class="preview">
-                                                                <img
-                                                                    src="{{  $product->getFirstMediaUrl('product')  }}"
-                                                                    id="img{{  $product->id }}" alt="">
-                                                                <div class="action_div"></div>
-                                                                <button type="button"
-                                                                        class="delete-btn"><i
-                                                                        style="font-size: 20px;"
-                                                                        id="deleteBtn{{ $product->id }}"
-                                                                        class="fas fa-trash"></i>
-                                                                </button>
-                                                            </div>
+                                                        <div id="preview{{ $product->id }}" class="preview">
+                                                            <img
+                                                                src="{{  $product->getFirstMediaUrl('product')  }}"
+                                                                id="img{{  $product->id }}" alt="">
+                                                            <div class="action_div"></div>
+                                                            <button type="button"
+                                                                    class="delete-btn"><i
+                                                                    style="font-size: 20px;"
+                                                                    data-href="{{ action('ProductController@deleteProductImage', $product->id) }}"
+                                                                    id="deleteBtn{{ $product->id }}"
+                                                                    class="fas fa-trash"></i>
+                                                            </button>
+
+                                                        </div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -783,8 +982,8 @@
     </script>
     <script>
         $("#submit-btn").on("click", function (e) {
+            getEditProductImages()
             e.preventDefault();
-            getEditProductImages();
             setTimeout(() => {
                 if ($("#product-edit-form").valid()) {
                     tinyMCE.triggerSave();
@@ -807,7 +1006,7 @@
                         },
                     });
                 }
-            }, 500);
+            });
         });
         @if($product)
         {{--document.getElementById("cropBtn{{ $product->id }}").addEventListener('click', () => {--}}
@@ -817,8 +1016,8 @@
         {{--});--}}
         document.getElementById("deleteBtn{{ $product->id }}").addEventListener('click', () => {
             Swal.fire({
-                title: '{{ __("site.Are you sure?") }}',
-                text: "{{ __("site.You won't be able to delete!") }}",
+                title: '{{ __("Are you sure?") }}',
+                text: "{{ __("You will not be able to delete!") }}",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -828,7 +1027,7 @@
                 if (result.isConfirmed) {
                     Swal.fire(
                         'Deleted!',
-                        '{{ __("site.Your Image has been deleted.") }}',
+                        '{{ __("Your Image has been deleted.") }}',
                         'success'
                     )
                     $("#preview{{ $product->id }}").remove();
@@ -840,12 +1039,12 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
     <script>
-        const fileEditProductInput = document.querySelector('#file-input-edit-product');
-        const previewEditProductContainer = document.querySelector('.preview-edit-product-container');
-        const croppieEditProductModal = document.querySelector('#croppie-edit-product-modal');
-        const croppieEditProductContainer = document.querySelector('#croppie-edit-product-container');
-        const croppieEditProductCancelBtn = document.querySelector('#croppie-edit-product-cancel-btn');
-        const croppieEditProductSubmitBtn = document.querySelector('#croppie-edit-product-submit-btn');
+        var fileEditProductInput = document.querySelector('#file-product-edit-product');
+        var previewEditProductContainer = document.querySelector('.preview-edit-product-container');
+        var croppieEditProductModal = document.querySelector('#croppie-edit-product-modal');
+        var croppieEditProductContainer = document.querySelector('#croppie-edit-product-container');
+        var croppieEditProductCancelBtn = document.querySelector('#croppie-edit-product-cancel-btn');
+        var croppieEditProductSubmitBtn = document.querySelector('#croppie-edit-product-submit-btn');
 
         // let currentFiles = [];
         fileEditProductInput.addEventListener('change', () => {
@@ -901,13 +1100,19 @@
                         previewEditProductContainer.appendChild(preview);
                     });
                     reader.readAsDataURL(file);
+                }else{
+                    Swal.fire({
+                        icon: 'error',
+                        title: '{{ __("site.Oops...") }}',
+                        text: '{{ __("site.Sorry , You Should Upload Valid Image") }}',
+                    })
                 }
             }
 
             getEditProductImages()
         });
         function launchEditProductCropTool(img) {
-            getEditProductImages()
+            getEditProductImages();
             // Set up Croppie options
             const croppieOptions = {
                 viewport: {
@@ -941,7 +1146,14 @@
 
             // When the user clicks the "Crop" button, get the cropped image and replace the original image in the preview
             croppieEditProductSubmitBtn.addEventListener('click', () => {
-                croppie.result('base64').then((croppedImg) => {
+                croppie.result({
+                    type: 'canvas',
+                    size: {
+                        width: 800,
+                        height: 600
+                    },
+                    quality: 1 // Set quality to 1 for maximum quality
+                }).then((croppedImg) => {
                     img.src = croppedImg;
                     croppieEditProductModal.style.display = 'none';
                     $('#editProductModal').modal('hide');

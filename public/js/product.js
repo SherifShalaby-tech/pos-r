@@ -113,19 +113,19 @@ $(document).on("click", ".variant_different_prices_for_stores", function () {
         $(".variant_store_prices_" + row_id).slideUp();
     }
 });
-function getImages() {
-    setTimeout(() => {
-        $("#cropped_images").empty();
-        const container = document.querySelectorAll('.preview-container');
-        let images = [];
-        for (let i = 0; i < container[0].children.length; i++) {
-            var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
-            $("#cropped_images").append(newInput);
-            images.push(container[0].children[i].children[0].src)
-        }
-        return images
-    }, 1);
-}
+// function getImages() {
+//     setTimeout(() => {
+//         $("#cropped_images").empty();
+//         const container = document.querySelectorAll('.preview-container');
+//         let images = [];
+//         for (let i = 0; i < container[0].children.length; i++) {
+//             var newInput = $("<input>").attr("type", "hidden").attr("name", "cropImages[]").val(container[0].children[i].children[0].src);
+//             $("#cropped_images").append(newInput);
+//             images.push(container[0].children[i].children[0].src)
+//         }
+//         return images
+//     }, 1);
+// }
 
 $("#submit-btn").on("click", function (e) {
     e.preventDefault();
@@ -140,12 +140,12 @@ $("#submit-btn").on("click", function (e) {
             success: function (response) {
                 myFunction();
                 if (response.success) {
-                    swal("Success", response.msg, "success");
+                    Swal.fire("Success", response.msg, "success");
                     $("#sku").val("").change();
                     $("#name").val("").change();
                     $(".translations").val("").change();
                 } else {
-                    swal("Error", response.msg, "error");
+                    Swal.fire("Error", response.msg, "error");
                 }
             },
             error: function (response) {

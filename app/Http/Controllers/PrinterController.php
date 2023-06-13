@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Printers\Update;
 use App\Models\Printer;
+use App\Models\PrinterProduct;
 use App\Models\Product;
 use App\Models\Store;
 use COM;
@@ -60,12 +61,33 @@ class PrinterController extends Controller
     public function edit($id){
         $printer = Printer::where('id',$id)->first();
         $products = Product::get(['id','name']);
-        return view('printers.edit',compact('printer','products'));
+        $stores = Store::get(['id','name']);
+        $products_printers = PrinterProduct ::where('printer_id',$id)->get();
+        return view('printers.edit',compact('printer','products','stores','products_printers'));
     }
 
     public function update(Update $request){
-        $data = $request->except('_token', '_method');
+        // return $request;
+        $data = $request->except('_token', '_method','products');
         $printer = Printer::where('id', $request->id)->update($data);
+        if ($request->products) {
+            $existingProducts = PrinterProduct::where('printer_id', $request->id)->pluck('product_id')->toArray();
+            $requestedProducts = $request->products;
+        
+            // Add new products
+            $newProducts = array_diff($requestedProducts, $existingProducts);
+            foreach ($newProducts as $newProduct) {
+                $data = [
+                    'printer_id' => $request->id,
+                    'product_id' => $newProduct
+                ];
+                PrinterProduct::create($data);
+            }
+        
+            // Delete products that are not in the request
+            $productsToDelete = array_diff($existingProducts, $requestedProducts);
+            PrinterProduct::where('printer_id', $request->id)->whereIn('product_id', $productsToDelete)->delete();
+        }
         $output = [
             'success' => true,
             'msg' => __('lang.printer_updated')
@@ -85,18 +107,18 @@ class PrinterController extends Controller
 
     public function getPrinters(Request $request)
     {
-        exec('wmic printer get Name', $output);
-        $printerNames = array_filter($output, function ($value) {
-            return !empty(trim($value)) && $value !== 'Name';
-        });
-        foreach ($printerNames as $printerName) {
-            // echo $printerName . "\n";
-            $printer_create = Printer::firstOrCreate([
-                'name' => $printerName,
-                'store_id' => $request->printer_store_id
-            ]);
+        // exec('wmic printer get Name', $output);
+        // $printerNames = array_filter($output, function ($value) {
+        //     return !empty(trim($value)) && $value !== 'Name';
+        // });
+        // foreach ($printerNames as $printerName) {
+        //     // echo $printerName . "\n";
+        //     $printer_create = Printer::firstOrCreate([
+        //         'name' => $printerName,
+        //         'store_id' => $request->printer_store_id
+        //     ]);
             
-        }
+        // }
         $printers = Printer::where('store_id', $request->printer_store_id)->get();
         return $printers;
 

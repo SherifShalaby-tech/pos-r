@@ -118,9 +118,9 @@ class AddStockController extends Controller
             if (!empty(request()->end_time)) {
                 $query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
             }
-            if (strtolower($request->session()->get('user.job_title')) == 'cashier') {
-                $query->where('transactions.created_by', $request->session()->get('user.id'));
-            }
+            // if (strtolower($request->session()->get('user.job_title')) == 'cashier') {
+            //     $query->where('transactions.created_by', $request->session()->get('user.id'));
+            // }
 
             $add_stocks = $query->select(
                 'transactions.*',
@@ -139,7 +139,11 @@ class AddStockController extends Controller
                     $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
                     return '<span data-currency_id="' . $paying_currency_id . '">' . $this->commonUtil->num_f($final_total) . '</span>';
                 })
-           
+                ->addColumn('paid_amount', function ($row) use ($default_currency_id) {
+                    $amount_paid =  $row->transaction_payments->sum('amount');
+                    $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
+                    return '<span data-currency_id="' . $paying_currency_id . '">' . $this->commonUtil->num_f($amount_paid) . '</span>';
+                })
                 ->addColumn('due', function ($row) use ($default_currency_id) {
                     $due =  $row->final_total - $row->transaction_payments->sum('amount');
                     $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
@@ -988,5 +992,9 @@ class AddStockController extends Controller
         }
 
         return $this->commonUtil->createDropdownHtml($array, __('lang.please_select'));
+    }
+
+    public function checkExpiary(){
+
     }
 }

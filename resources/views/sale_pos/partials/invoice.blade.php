@@ -289,7 +289,8 @@ $is_first_after_extra=0;
                         <tr>
                             <th style="font-size: 16px;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
                             <th style="font-size: 16px; text-align:right;">
-                                {{ @num_format($transaction_sell_lines->sum('sell_price') + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
+
+                                {{ @num_format($transaction_sell_lines->sum('sub_total') + $transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                                 {{-- {{ @num_format($transaction->grand_total + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }} --}}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -381,9 +382,9 @@ $is_first_after_extra=0;
                             <th style="font-size: 16px;" colspan="3">@lang('lang.grand_total', [], $invoice_lang)</th>
                             <th style="font-size: 16px; text-align:right;">
                                 @if ($transaction->delivery_cost_given_to_deliveryman)
-                                    {{ @num_format($transaction_sell_lines->sum('sell_price')  + $transaction->delivery_cost) }}
+                                    {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost) }}
                                 @else
-                                    {{ @num_format($transaction_sell_lines->sum('sell_price')) }}
+                                    {{ @num_format($transaction_sell_lines->sum('sub_total')) }}
                                 @endif
                                 {{ $transaction->received_currency->symbol }}
                             </th>

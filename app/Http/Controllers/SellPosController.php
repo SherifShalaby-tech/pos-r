@@ -56,6 +56,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Pusher\Pusher;
 use Spatie\Browsershot\Browsershot;
 use Str;
+use Illuminate\Support\Facades\Cache;
 
 class SellPosController extends Controller
 {
@@ -110,6 +111,20 @@ class SellPosController extends Controller
      */
     public function create()
     {
+         // Get the current date
+         $currentDate = Carbon::today();
+
+         // Retrieve the last execution date from the cache or database
+         $lastExecutionDate = Cache::get('last_execution_date');
+ 
+         // Check if the last execution date is not today
+         if (!$lastExecutionDate || $lastExecutionDate < $currentDate) {
+             // Call the function or perform the desired task
+             $this->notificationUtil->checkExpiary();
+ 
+             // Store the current date as the last execution date
+             Cache::put('last_execution_date', $currentDate, 1440); // 1440 minutes = 1 day
+         }
         //Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
             return redirect()->to('/cash-register/create?is_pos=1');
@@ -274,7 +289,7 @@ class SellPosController extends Controller
             'delivery_address' => $request->delivery_address,
             'delivery_cost_paid_by_customer' => !empty($request->delivery_cost_paid_by_customer) ? 1 : 0,
             'delivery_cost_given_to_deliveryman' => !empty($request->delivery_cost_given_to_deliveryman) ? 1 : 0,
-            'dining_table_id' =>  !empty($new_table)?$new_table->id:(!empty($request->dining_table_id) ? $request->dining_table_id : null),
+            'dining_table_id' =>  !empty($new_table)?$new_table->dining_table_id:(!empty($request->dining_table_id) ? $request->dining_table_id : null),
             'dining_room_id' => !empty($request->dining_room_id) ? $request->dining_room_id : null,
             'service_fee_id' => !empty($request->service_fee_id_hidden) ? $request->service_fee_id_hidden : null,
             'service_fee_rate' => !empty($request->service_fee_rate) ? $this->commonUtil->num_uf($request->service_fee_rate) : null,
@@ -2025,6 +2040,14 @@ class SellPosController extends Controller
         $order=DB::table('orders')->where('id',$request->order_id)->first();
         // return $order;
         $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
+        $dining_table_reservation=TableReservation::where('dining_table_id',$order->table_no)->get();
+        if(empty($dining_table_reservation)){
+            
+            $dining_table_reservation=TableReservation::create([
+                'dining_table_id'=>$order->table_no,
+                'status'=>'available',
+            ]);
+        }
         $table=TableReservation::where('dining_table_id',$order->table_no)->where('status','order')->orWhere('status','available')->first();
         $transaction=Transaction::where('dining_table_id',$order->table_no)->where('status','!=','canceled')->first();
 
