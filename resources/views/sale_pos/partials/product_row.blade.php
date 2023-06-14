@@ -7,7 +7,7 @@
         <label class="checkboxes">
 
             @if($check_pay!=null && ($check_pay==="0"||$check_pay=="1"))
-            <input class="" id="{{$product->variation_id}}" type="checkbox"{{$check_pay==1?'checked':''}} value="{{$check_pay}}" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
+            <input class="productcheck" id="{{$product->variation_id}}" type="checkbox"{{$check_pay==1?'checked':''}} value="{{$check_pay}}" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
            @else
             <input class="productcheck pcheck" id="{{$product->variation_id}}" type="checkbox" checked value="1" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
             @endif
