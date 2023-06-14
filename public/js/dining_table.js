@@ -50,10 +50,76 @@ function get_dining_content(dining_table_id = null) {
         },
         success: function (result) {
             $("#dining_content").empty().append(result);
+            var storedTableArray = sessionStorage.getItem("notificationContents");
+            var storedTableArray = JSON.parse(storedTableArray);
+            console.log(storedTableArray);
+            if (!$.isEmptyObject(storedTableArray)){
+                for (i = 0; i < storedTableArray.length; i++) {
+                    $('.table'+storedTableArray[i].table_no).text(storedTableArray[i].table_count);
+                    $('.table'+storedTableArray[i].table_no).show();
+                    $('.table'+storedTableArray[i].table_no).removeClass('hide');
+                }
+            }
+            var storedRoomArray = sessionStorage.getItem("notificationRoomContents");
+            var storedRoomArray = JSON.parse(storedRoomArray);
+            console.log(storedRoomArray);
+            if (!$.isEmptyObject(storedRoomArray)){
+                for (i = 0; i < storedRoomArray.length; i++) {
+                    $('.room-badge'+storedRoomArray[i].room_no).text(storedRoomArray[i].room_count);
+                    $('.room-badge'+storedRoomArray[i].room_no).show();
+                    $('.room-badge'+storedRoomArray[i].room_no).removeClass('hide');
+                }
+            }
         },
     });
 }
+$(document).on("click", ".table-link", function (e) {
+    e.preventDefault();
+    var table_id=$(this).data('table_no');
+    var room_id=$(this).data('room');
+    var table_count=0;
+    var storedTableArray = sessionStorage.getItem("notificationContents");
+    var storedTableArray = JSON.parse(storedTableArray);
+    if (!$.isEmptyObject(storedTableArray)){
+        var data = $.grep(storedTableArray, function(e){ 
+            table_count=e.table_count;
+            return e.table_no != table_id; 
+        });
+        console.log(data)
+        sessionStorage.setItem("notificationContents", (JSON.stringify(data)));
+    }
 
+    //
+    var storedRoomArray = sessionStorage.getItem("notificationRoomContents");
+    var storedRoomArray = JSON.parse(storedRoomArray);
+    var deleteRoomId=false;
+    if (!$.isEmptyObject(storedRoomArray)){
+        storedRoomArray.forEach((element, index) => {
+            if(element.room_no === room_id) {
+                if(element.room_count>1){
+                    element.room_count =element.room_count-table_count;
+                }else{
+                    deleteRoomId=true;
+                }
+              
+                return;
+            }
+        });
+        if(deleteRoomId){
+            var storedRoomArray = $.grep(storedRoomArray, function(e){ 
+                return e.room_no != room_id; 
+            });
+            console.log(storedRoomArray)
+        }
+        console.log(storedRoomArray)
+        sessionStorage.setItem("notificationRoomContents", (JSON.stringify(storedRoomArray)));
+    }
+    get_dining_content();
+    Object.assign(document.createElement("a"), {
+        target: "_blank",
+        href: "/pos/"+$(this).data('transaction_id')+"/edit"
+        }).click();
+});
 $(document).on("click", "#add_dining_table_btn", function () {
     var form = $("#dining_table_form");
     var data = form.serialize();
@@ -237,7 +303,7 @@ else{
 });
 $(document).on("click", ".remove-table", function () {
     let table_id = $(this).data("table_id");
-    Swal.fire({
+    swal({
         title: 'Are you sure?',
         icon: 'warning',
         showCancelButton: true,
@@ -246,7 +312,7 @@ $(document).on("click", ".remove-table", function () {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire(
+            swal(
                 'Deleted!',
                 'Your table has been deleted.',
                 'success'

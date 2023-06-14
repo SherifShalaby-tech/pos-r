@@ -875,10 +875,8 @@ function calculate_sub_totals() {
         } else {
             sub_total = price_hidden * quantity;
         }
-
         __write_number($(tr).find(".sub_total"), sub_total);
         let product_discount = calculate_product_discount(tr);
-
         product_discount_total += product_discount;
         sub_total -= product_discount;
         grand_total += sub_total;
@@ -1891,7 +1889,6 @@ function confirmCancel() {
                 $("#dining_table_id").val() != ""
             ) {
                 let transaction_id = $("#transaction_id").val();
-
                 $.ajax({
                     method: "POST",
                     url:
@@ -1899,12 +1896,15 @@ function confirmCancel() {
                         transaction_id,
                     data: {},
                     success: function (result) {
+
                         setTimeout(() => {
                             window.close();
                         }, 2000);
                     },
                 });
             }
+           
+        }else{
             confirmCancel();
         }
 
