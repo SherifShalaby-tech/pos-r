@@ -2387,6 +2387,8 @@ $(document).on("change", "#customer_id", function () {
             );
         },
     });
+    getCustomerBalance();
+    getCustomerPointDetails();
 });
 
 $(document).on("change", "#customer_size_id", function () {

@@ -134,9 +134,16 @@ class CustomerController extends Controller
                                 $balances=  $this->transactionUtil->getCustomerBalance($row->id)['balance'];
                                 if ($balances < 0){
                                     $html .= '<li >
-                                                    <a data-href = "'. action('TransactionPaymentController@getCustomerDue', $row->id).'"
+                                                    <a data-href = "'. action('TransactionPaymentController@getCustomerDue',  ['customer_id'=>$row->id,'extract_due'=>'false']).'"
                                                         class="btn-modal" data-container = ".view_modal" ><i
                                                             class="fa fa-money btn" ></i >'. __('lang.pay_customer_due').'</a >
+                                                </li ><li class="divider"></li>';
+                                }
+                                if ($balances > 0){
+                                    $html .= '<li >
+                                                    <a data-href = "'. action('TransactionPaymentController@getCustomerDue', ['customer_id'=>$row->id,'extract_due'=>'true']).'"
+                                                        class="btn-modal" data-container = ".view_modal" ><i
+                                                            class="fa fa-money btn" ></i >'. __('lang.extract_customer_due').'</a >
                                                 </li ><li class="divider"></li>';
                                 }
                             }

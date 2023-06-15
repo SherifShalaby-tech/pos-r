@@ -212,7 +212,7 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-        //   return $request->dinig_room_id;
+          // return $request->all();
         // try {
 
         DB::beginTransaction();
