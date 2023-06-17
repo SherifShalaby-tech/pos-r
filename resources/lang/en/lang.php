@@ -1447,5 +1447,7 @@ return [
     'cancel_add_stock_payment' => 'Cancel Stock Payment',
     'add_to_customer_balance' => 'Add to customer balance',
     'products_count' => 'Products Count',
+    'extract_customer_due'=>'Extract customer due',
+    'amount_greater_than_balance'=>'Amount greater than balance',
 
 ];
