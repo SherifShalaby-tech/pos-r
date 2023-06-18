@@ -206,14 +206,14 @@ $is_first_after_extra=0;
                 <thead>
                     <tr>
                         <th style="width: 30%; padding: 0 50px !important;">@lang('lang.item', [], $invoice_lang) </th>
-                        @if (empty($print_gift_invoice))
+                        {{-- @if (empty($print_gift_invoice))
                             <th style="width: 20%; text-align:center !important;"> @lang('lang.price', [], $invoice_lang)
                             </th>
-                        @endif
+                        @endif --}}
                         <th style="width: 20%; text-algin: center;">@lang('lang.qty', [], $invoice_lang) </th>
-                        @if (empty($print_gift_invoice))
+                        {{-- @if (empty($print_gift_invoice))
                             <th style="width: 30%; text-algin: center;">@lang('lang.amount', [], $invoice_lang) </th>
-                        @endif
+                        @endif --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -233,13 +233,13 @@ $is_first_after_extra=0;
                                 @endif
 
                             </td>
-                            @if (empty($print_gift_invoice))
+                            {{-- @if (empty($print_gift_invoice))
                                 <td style="text-align:center !important;vertical-align:bottom; width: 20%;">
                                     {{ @num_format($line->sell_price) }}</td>
-                            @endif
+                            @endif --}}
                             <td style="text-align:center;vertical-align:bottom; width: 20%;">
                                 {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
-                            @if (empty($print_gift_invoice))
+                            {{-- @if (empty($print_gift_invoice))
                                 <td style="text-align:center;vertical-align:bottom; width: 30%;">
                                     @if ($line->product_discount_type != 'surplus')
                                         {{ @num_format($line->sub_total + $line->product_discount_amount) }}
@@ -247,7 +247,7 @@ $is_first_after_extra=0;
                                         {{ @num_format($line->sub_total) }}
                                     @endif
                                 </td>
-                            @endif
+                            @endif --}}
                         </tr>
                         @if($line->sell_line_extensions)
                             @foreach( $line->sell_line_extensions as $k => $line_extension)
@@ -283,7 +283,7 @@ $is_first_after_extra=0;
                         @endif
                     @endforeach
                 </tbody>
-                @if (empty($print_gift_invoice))
+                {{-- @if (empty($print_gift_invoice))
                     <tfoot>
                         <tr>
                             <th style="font-size: 16px;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
@@ -390,13 +390,13 @@ $is_first_after_extra=0;
 
                         </tr>
                     </tfoot>
-                @endif
+                @endif --}}
             </table>
         </div>
         <div style="">
             <table style="margin: 0 auto; ">
                 <tbody>
-                    @if (empty($print_gift_invoice))
+                    {{-- @if (empty($print_gift_invoice))
                         @if (!$transaction->delivery_cost_given_to_deliveryman)
                             @foreach ($transaction->transaction_payments as $payment_data)
                                 @if ($payment_data->method != 'deposit')
@@ -448,8 +448,8 @@ $is_first_after_extra=0;
                                 </tr>
                             @endif
                         @endif
-                    @endif <!-- end of print gift invoice -->
-                    <tr>
+                    @endif <!-- end of print gift invoice --> --}}
+                    {{-- <tr>
                         <td class="centered" colspan="3">
                             @if (session('system_mode') == 'restaurant')
                                 @lang('lang.enjoy_your_meal_please_come_again', [], $invoice_lang)
@@ -457,7 +457,7 @@ $is_first_after_extra=0;
                                 @lang('lang.thank_you_and_come_again', [], $invoice_lang)
                             @endif
                         </td>
-                    </tr>
+                    </tr> --}}
                     @if (!empty($transaction->terms_and_conditions))
                         <tr>
                             <td>{!! $transaction->terms_and_conditions->description !!}</td>
