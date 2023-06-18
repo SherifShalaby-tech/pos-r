@@ -126,7 +126,7 @@ $is_first_after_extra=0;
 <div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
 
     <div id="receipt-data">
-        <div class="centered">
+        {{-- <div class="centered">
             @include('layouts.partials.print_header')
 
             <p>{{ $transaction->store->name }}
@@ -139,43 +139,19 @@ $is_first_after_extra=0;
             @endif
             <p>{{ $transaction->store->phone_number }} </p>
 
-        </div>
+        </div> --}}
         <div style="width: 70%; float:left;">
             <p>@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
                 @lang('lang.reference', [], $invoice_lang): {{ $transaction->invoice_no }}<br>
-                @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
+                {{-- @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
                     {{ $transaction->customer->name }} <br>
                     {{ $transaction->customer->address }} <br>
                     {{ $transaction->customer->mobile_number }} <br>
-                @endif
+                @endif --}}
                 @if (!empty($transaction->sale_note))
                     @lang('lang.sale_note', [], $invoice_lang): {{ $transaction->sale_note }} <br>
                 @endif
             </p>
-            @if (session('system_mode') == 'garments')
-                <p>
-                    @if (!empty($transaction->customer_size))
-                        @lang('lang.customer_size'):
-                        {{ $transaction->customer_size->name }} <br>
-                    @endif
-                    @if (!empty($transaction->fabric_name))
-                        @lang('lang.fabric_name'): {{ $transaction->fabric_name }} <br>
-                    @endif
-                    @if (!empty($transaction->fabric_squatch))
-                        @lang('lang.fabric_squatch'): {{ $transaction->fabric_squatch }}
-                        <br>
-                    @endif
-                    @if (!empty($transaction->prova_datetime))
-                        @lang('lang.prova'):
-                        {{ @format_datetime($transaction->prova_datetime) }} <br>
-                    @endif
-                    @if (!empty($transaction->delivery_datetime))
-                        @lang('lang.delivery'):
-                        {{ @format_datetime($transaction->delivery_datetime) }} <br>
-                    @endif
-
-                </p>
-            @endif
             @if (session('system_mode') == 'restaurant')
                 @if (!empty($transaction->dining_room))
                     @lang('lang.dining_room'):
@@ -393,10 +369,10 @@ $is_first_after_extra=0;
                 @endif --}}
             </table>
         </div>
-        <div style="">
+        {{-- <div style="">
             <table style="margin: 0 auto; ">
                 <tbody>
-                    {{-- @if (empty($print_gift_invoice))
+                    @if (empty($print_gift_invoice))
                         @if (!$transaction->delivery_cost_given_to_deliveryman)
                             @foreach ($transaction->transaction_payments as $payment_data)
                                 @if ($payment_data->method != 'deposit')
@@ -448,8 +424,8 @@ $is_first_after_extra=0;
                                 </tr>
                             @endif
                         @endif
-                    @endif <!-- end of print gift invoice --> --}}
-                    {{-- <tr>
+                    @endif <!-- end of print gift invoice --> 
+                    <tr>
                         <td class="centered" colspan="3">
                             @if (session('system_mode') == 'restaurant')
                                 @lang('lang.enjoy_your_meal_please_come_again', [], $invoice_lang)
@@ -457,7 +433,7 @@ $is_first_after_extra=0;
                                 @lang('lang.thank_you_and_come_again', [], $invoice_lang)
                             @endif
                         </td>
-                    </tr> --}}
+                    </tr>
                     @if (!empty($transaction->terms_and_conditions))
                         <tr>
                             <td>{!! $transaction->terms_and_conditions->description !!}</td>
@@ -477,6 +453,6 @@ $is_first_after_extra=0;
         <div style="width: 100%; text-align: center;">
             <p><span class="">Proudly Developed at <a style="text-decoration: none;" target="_blank"
                         href="http://sherifshalaby.tech">sherifshalaby.tech</a></span></p>
-        </div>
+        </div> --}}
     </div>
 </div>
