@@ -1547,7 +1547,10 @@ class TransactionUtil extends Util
                 $invoice_lang = request()->session()->get('language');
             }
         }
-        $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)->whereIn('variation_id',$current_products)->get();
+        $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
+            ->when( count($current_products) > 0 , function ($q) use($current_products) {
+                    $q->whereIn('variation_id',$current_products);
+        })->get();
         $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
         if ($invoice_lang == 'ar_and_en') {
             $html_content = view('sale_pos.partials.invoice_ar_and_end')->with(compact(

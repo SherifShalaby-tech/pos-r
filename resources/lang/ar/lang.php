@@ -1429,5 +1429,7 @@ return [
     'cancel_add_stock_payment' => 'الغاء دفع المخزون',
     'add_to_customer_balance' => 'اضافة الى حساب العميل',
     'products_count' => 'عدد المنتجات',
-
+    
+    'extract_customer_due'=>'استخراج رصيد المستحق',
+    'amount_greater_than_balance'=>'المبلغ اكبر من الرصيد الحالى',
 ];
