@@ -162,13 +162,13 @@ $is_first_after_extra=0;
                     {{ $transaction->dining_table->name }} <br>
                 @endif
             @endif
-            @if (!empty($transaction->deliveryman))
+            {{-- @if (!empty($transaction->deliveryman))
                 <p>{{ $transaction->deliveryman->employee_name }}</p>
-            @endif
-            @if (!empty($transaction->delivery_address))
+            @endif --}}
+            {{-- @if (!empty($transaction->delivery_address))
                 @lang('lang.delivery_address'):
                 {{ $transaction->delivery_address }} <br>
-            @endif
+            @endif --}}
         </div>
         @if (session('system_mode') == 'restaurant')
             <div style="width: 30%; float:right; text-align:center;">
