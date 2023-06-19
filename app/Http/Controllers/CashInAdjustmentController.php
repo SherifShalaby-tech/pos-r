@@ -196,7 +196,7 @@ class CashInAdjustmentController extends Controller
             DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND type = 'credit', amount, 0)) as total_cash_sales"),
         )->first();
 
-        $total_cash = $cash_register->total_cash_sales;
+        $total_cash = 77777777;
 
         $store_pos = StorePos::where('user_id', $user_id)->first();
         $store_id = null;
