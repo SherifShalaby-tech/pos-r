@@ -680,9 +680,9 @@ class ProductController extends Controller
 
             }
 
+
             if ($request->has("cropImages") && count($request->cropImages) > 0) {
-                foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
-                    $product->clearMediaCollection('product');
+                foreach ($request->cropImages as $imageData) {
                     $extention = explode(";",explode("/",$imageData)[1])[0];
                     $image = rand(1,1500)."_image.".$extention;
                     $filePath = public_path('uploads/' . $image);
@@ -690,6 +690,16 @@ class ProductController extends Controller
                     $product->addMedia($filePath)->toMediaCollection('product');
                 }
             }
+            // if ($request->has("cropImages") && count($request->cropImages) > 0) {
+            //     foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
+            //         $product->clearMediaCollection('product');
+            //         $extention = explode(";",explode("/",$imageData)[1])[0];
+            //         $image = rand(1,1500)."_image.".$extention;
+            //         $filePath = public_path('uploads/' . $image);
+            //         $fp = file_put_contents($filePath,base64_decode(explode(",",$imageData)[1]));
+            //         $product->addMedia($filePath)->toMediaCollection('product');
+            //     }
+            // }
             if (!empty($request->supplier_id)) {
                 SupplierProduct::updateOrCreate(
                     ['product_id' => $product->id, 'supplier_id' => $request->supplier_id]

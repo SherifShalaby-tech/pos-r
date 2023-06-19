@@ -289,7 +289,6 @@ $is_first_after_extra=0;
                         <tr>
                             <th style="font-size: 16px;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
                             <th style="font-size: 16px; text-align:right;">
-
                                 {{ @num_format($transaction_sell_lines->sum('sub_total') + $transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                                 {{-- {{ @num_format($transaction->grand_total + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }} --}}
                                 {{ $transaction->received_currency->symbol }}
@@ -407,31 +406,31 @@ $is_first_after_extra=0;
         <div style="">
             <table style="margin: 0 auto; ">
                 <tbody>
-                    @if (empty($print_gift_invoice))
+                     @if (empty($print_gift_invoice))
                         @if (!$transaction->delivery_cost_given_to_deliveryman)
-                            {{-- @foreach ($transaction_payments as $k=>$transaction_payments) --}}
-                                @if (isset($transaction_payments->method) && $transaction_payments->method != 'deposit')
+                            @foreach ($transaction->transaction_payments as $payment_data)
+                                @if ($payment_data->method != 'deposit')
                                     <tr style="background-color:#ddd;">
                                         <td style="font-size: 16px; padding: 7px;">
-                                            @if (!empty($transaction_payments->method))
-                                                {{ __('lang.' . $transaction_payments->method, [], $invoice_lang) }}
+                                            @if (!empty($payment_data->method))
+                                                {{ __('lang.' . $payment_data->method, [], $invoice_lang) }}
                                             @endif
                                         </td>
                                         <td style="font-size: 16px; padding: 10px; text-align: right;" colspan="2">
-                                            {{ @num_format((!empty($transaction_payments->cashes_amount)?$transaction_payments->cashes_amount:$transaction_payments->amount) + $transaction_payments->change_amount) }}
+                                            {{ @num_format($payment_data->cashes_amount + $payment_data->change_amount) }}
                                             {{ $transaction->received_currency->symbol }}</td>
                                     </tr>
                                 @endif
-                                @if (!empty($transaction_payments->change_amount) && $transaction_payments->change_amount > 0 && $transaction_payments->method != 'deposit')
+                                @if (!empty($payment_data->change_amount) && $payment_data->change_amount > 0 && $payment_data->method != 'deposit')
                                     <tr>
                                         <td style="font-size: 16px; padding: 7px;width:30%">@lang('lang.change', [], $invoice_lang)</td>
                                         <td colspan="2"
                                             style="font-size: 16px; padding: 7px;width:40%; text-align: right;">
-                                            {{ @num_format($transaction_payments->change_amount) }}
+                                            {{ @num_format($payment_data->change_amount) }}
                                             {{ $transaction->received_currency->symbol }}</td>
                                     </tr>
                                 @endif
-                            {{-- @endforeach --}}
+                            @endforeach
                         @endif
                         @if (!empty($transaction->add_to_deposit) && $transaction->add_to_deposit > 0)
                             <tr>
@@ -449,15 +448,26 @@ $is_first_after_extra=0;
                             </tr>
                         @endif
                         @if ($transaction->is_quotation != 1)
-                            @if ($transaction->payment_status != 'paid' && isset($transaction_payments->amount) && $transaction->final_total - $transaction_payments->amount > 0)
+                            @if ($transaction->payment_status != 'paid' && $transaction->final_total - $transaction->transaction_payments->sum('amount') > 0)
                                 <tr>
                                     <td style="font-size: 16px; padding: 5px;width:30%">@lang('lang.due_sale_list', [], $invoice_lang)</td>
                                     <td colspan="2" style="font-size: 16px; padding: 5px;width:40%; text-align: right;">
-                                        {{ @num_format($transaction_sell_lines->sum('sell_price') - (!empty($transaction_payments->cashes_amount)?$transaction_payments->cashes_amount:$transaction_payments->amount)) }}
+                                        {{ @num_format($transaction->final_total - $transaction->transaction_payments->sum('amount')) }}
                                         {{ $transaction->received_currency->symbol }}
                                     </td>
                                 </tr>
                             @endif
+                        @endif
+
+                        @if(env('SHOW_DUE',false) && $transaction->customer_id !=  env('DEFAULT_CUSTMER',1) && $total_due < 0)
+                            <tr>
+                                <td style="font-size: 16px; padding: 5px;width:30%">@lang('lang.total_due', [], $invoice_lang)</td>
+                                <td colspan="2" style="font-size: 16px; padding: 5px;width:40%; text-align: right;">
+                                    {{ @num_format($total_due*-1) }}
+                                    {{ $transaction->received_currency->symbol }}
+                                </td>
+                            </tr>
+
                         @endif
                     @endif <!-- end of print gift invoice -->
                     <tr>
