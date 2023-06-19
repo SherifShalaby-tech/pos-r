@@ -28,6 +28,14 @@
             $product_extensions=\App\Models\ProductExtension::with('extension:id,name,translations')
                     ->where('variation_id',$product->variation_id)->count();
 
+            $product_unit = \App\Models\Product::where('id',$product->product_id)->first();
+            if($product_unit){
+                foreach ($product_unit->multiple_units as $unit) {
+                    
+                    $check_unit = \App\Models\Unit::where('id',$unit)->first();
+                }
+            }
+
         @endphp
         {{-- {{$stockLines}} --}}
         @if($product->variation_name != "Default")
@@ -135,7 +143,7 @@
 
             <input type="number" class="form-control quantity  qty numkey input-number" step="any"
 
-                autocomplete="off" style="width: 50px;"
+                autocomplete="off" style="width: 50px;" @if($check_unit->name == "قطعه" || $check_unit->name == "Piece") oninput="this.value = Math.round(this.value);" @endif
                 @if(!$product->is_service)max="{{preg_match('/\.\d*[1-9]+/', (string)$product->qty_available) ? $product->qty_available : @num_format($product->qty_available)}}"@endif
             name="transaction_sell_line[{{$loop->index + $index}}][quantity]"
             required
