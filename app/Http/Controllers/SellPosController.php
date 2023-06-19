@@ -396,7 +396,8 @@ class SellPosController extends Controller
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                 if ($amount > 0) {
-                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->first();
+                    // return $payment['method'];
+                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
                     $payment_data = [
                         'transaction_payment_id'=>!empty($IsTransactionPayment)?$IsTransactionPayment->id:null,
                         'transaction_id' => $transaction->id,
