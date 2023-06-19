@@ -1010,6 +1010,7 @@ return [
     'start_time' => 'Başlangıç ​​saati',
     'end_time' => 'Bitiş zamanı',
     'edited_by' => 'Tarafından düzenlendi',
+    'edited_at' => 'Düzenlenmiş',
     'out_of_stock' => 'Stoklar tükendi',
 
     'new_price' => 'Yeni fiyat',
