@@ -36,6 +36,9 @@ class CashRegister extends Model implements HasMedia
         if ($this->source_type == 'safe') {
             return $this->belongsTo(MoneySafe::class, 'cash_given_to')->withDefault(['name' => '']);
         }
+        if ($this->source_type == 'pos') {
+            return $this->belongsTo(StorePos::class, 'cash_given_to')->withDefault(['name' => '']);
+        }
         return $this->belongsTo(User::class, 'cash_given_to')->withDefault(['name' => '']);
     }
 }

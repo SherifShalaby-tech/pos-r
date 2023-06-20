@@ -1432,4 +1432,5 @@ return [
     
     'extract_customer_due'=>'استخراج رصيد المستحق',
     'amount_greater_than_balance'=>'المبلغ اكبر من الرصيد الحالى',
+    'not_allowed'=>'غير مسموح',
 ];
