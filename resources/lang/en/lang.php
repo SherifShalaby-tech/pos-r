@@ -1449,5 +1449,5 @@ return [
     'products_count' => 'Products Count',
     'extract_customer_due'=>'Extract customer due',
     'amount_greater_than_balance'=>'Amount greater than balance',
-
+    'not_allowed'=>'Not Allowed',
 ];
