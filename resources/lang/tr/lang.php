@@ -1284,4 +1284,6 @@ return [
     'another_reservation'=>'Başka bir rezervasyon',
     'add_to_customer_balance' => 'Müşteri bakiyesine ekle',
     'products_count' => 'Ürün Sayısı',
+    'quick_pay' => 'hızlı ödeme',
+
 ];

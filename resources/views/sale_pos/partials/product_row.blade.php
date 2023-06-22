@@ -29,7 +29,7 @@
                     ->where('variation_id',$product->variation_id)->count();
 
             $product_unit = \App\Models\Product::where('id',$product->product_id)->first();
-            if($product_unit){
+            if($product_unit && isset($product_unit->multiple_units)){
                 foreach ($product_unit->multiple_units as $unit) {
                     
                     $check_unit = \App\Models\Unit::where('id',$unit)->first();
@@ -143,7 +143,7 @@
 
             <input type="number" class="form-control quantity  qty numkey input-number" step="any"
 
-                autocomplete="off" style="width: 50px;" @if($check_unit->name == "قطعه" || $check_unit->name == "Piece") oninput="this.value = Math.round(this.value);" @endif
+                autocomplete="off" style="width: 50px;" @isset($check_unit) @if($check_unit->name == "قطعه" || $check_unit->name == "Piece") oninput="this.value = Math.round(this.value);" @endif @endisset
                 @if(!$product->is_service)max="{{preg_match('/\.\d*[1-9]+/', (string)$product->qty_available) ? $product->qty_available : @num_format($product->qty_available)}}"@endif
             name="transaction_sell_line[{{$loop->index + $index}}][quantity]"
             required

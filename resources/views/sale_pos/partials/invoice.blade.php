@@ -355,7 +355,7 @@ $is_first_after_extra=0;
                                 </th>
                             </tr>
                         @endif
-                        @if (!empty($transaction->delivery_cost) && $transaction->delivery_cost != 0)
+                        @if (!empty($transaction->deliveryman))
                             <tr>
                                 <th style="font-size: 16px;" colspan="3">@lang('lang.delivery_cost', [], $invoice_lang)
                                     @if (!empty($transaction->deliveryman->employee_name))
