@@ -440,7 +440,7 @@ class CashController extends Controller
             $cash_given_to=User::find($request->cash_given_to)->name;
             if($request->source_type == 'user' && $cash_given_to=='Admin' && request()->user()->name=="Admin"){
                 $output = [
-                    'success' => true,
+                    'success' => false,
                     'msg' => __('lang.not_allowed')
                 ];
             }else{

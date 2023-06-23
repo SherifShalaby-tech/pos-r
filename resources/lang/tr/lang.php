@@ -1286,4 +1286,6 @@ return [
     'products_count' => 'Ürün Sayısı',
     'quick_pay' => 'hızlı ödeme',
 
+    'not_allowed'=>"Elindeki parayı kendine nasıl vereceksin?🤪
+    lütfen başka bir kişi seçin😎",
 ];
