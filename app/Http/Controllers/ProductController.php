@@ -256,14 +256,14 @@ class ProductController extends Controller
                     $price= AddStockLine::where('variation_id',$row->variation_id)
                     ->latest()->first();
                     $price= $price? ($price->sell_price > 0 ? $price->sell_price : $row->default_sell_price):$row->default_sell_price;
-                    return $this->productUtil->num_f($price);
+                    return number_format($price,2);
                 })//, '{{@num_format($default_sell_price)}}')
                 ->editColumn('default_purchase_price', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
                         ->latest()->first();
                     $price= $price? ($price->purchase_price > 0 ? $price->purchase_price : $row->default_purchase_price):$row->default_purchase_price;
 
-                    return $this->productUtil->num_f($price);
+                    return number_format($price,2);
                 })//, '{{@num_format($default_purchase_price)}}')
                 ->addColumn('tax', '{{$tax}}')
                 ->editColumn('brand', '{{$brand}}')
@@ -299,7 +299,7 @@ class ProductController extends Controller
                     return $size;
                 })
                 ->editColumn('grade', '{{$grade}}')
-                ->editColumn('current_stock', '@if($is_service){{@num_format(0)}} @else{{@num_format($current_stock)}}@endif')
+                ->editColumn('current_stock', '@if($is_service){{number_format(0,App\Models\System::getProperty("numbers_length_after_dot")}} @else{{number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot"}}@endif')
                 ->addColumn('current_stock_value', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
                         ->whereColumn('quantity',">",'quantity_sold')->first();
@@ -331,6 +331,8 @@ class ProductController extends Controller
                     }
                 })
                 ->editColumn('created_by', '{{$created_by_name}}')
+                ->editColumn('created_at', '{{@format_datetime($created_at)}}')
+                ->editColumn('updated_at', '{{@format_datetime($updated_at)}}')
                 ->addColumn('supplier', function ($row) {
                     $query = Transaction::leftjoin('add_stock_lines', 'transactions.id', '=', 'add_stock_lines.transaction_id')
                         ->leftjoin('suppliers', 'transactions.supplier_id', '=', 'suppliers.id')
@@ -525,9 +527,9 @@ class ProductController extends Controller
         $printers = Printer::get(['id','name']);
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
         $employee = Employee::where('user_id', auth()->user()->id)->first();
-        
+
         $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
-        
+
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
@@ -658,7 +660,7 @@ class ProductController extends Controller
                         'printer_id' => $printer,
                         'product_id' => $product['id'],
                     ]);
-                    
+
                 }
             }
             $this->productUtil->createOrUpdateVariations($product, $request);
@@ -804,7 +806,7 @@ class ProductController extends Controller
         $printers_p = PrinterProduct::where('product_id',$id)->get();
         $printers = Printer::pluck('name','id');
         $employee = Employee::where('user_id', auth()->user()->id)->first();
-        
+
         $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
         return view('product.edit')->with(compact(
             'raw_materials',
@@ -950,7 +952,7 @@ class ProductController extends Controller
                 $product->id;
                 $requestedPrinters = $request->printers;
                 $exist_printers = PrinterProduct::where('product_id', $product->id)->pluck('printer_id');
-            
+
                 // Add new printers
                 foreach ($requestedPrinters as $printerId) {
                     if (!$exist_printers->contains($printerId)) {
@@ -960,7 +962,7 @@ class ProductController extends Controller
                         ]);
                     }
                 }
-            
+
                 // Delete printers not in the request
                 foreach ($exist_printers as $printerId) {
                     if (!in_array($printerId, $requestedPrinters)) {
@@ -970,7 +972,7 @@ class ProductController extends Controller
                     }
                 }
             }
-            
+
             if (!empty($request->consumption_details)) {
                 $variations = $product->variations()->get();
                 foreach ($variations as $variation) {

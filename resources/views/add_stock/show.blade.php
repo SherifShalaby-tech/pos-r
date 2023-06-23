@@ -78,7 +78,7 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                @if(isset($line->quantity)){{@num_format($line->quantity)}}@else{{1}}@endif
+                                                @if(isset($line->quantity)){{number_format($line->quantity,App\Models\System::getProperty('numbers_length_after_dot'))}}@else{{1}}@endif
                                             </td>
                                             <td>
                                                 @if(isset($line->purchase_price)){{@num_format($line->purchase_price)}}@else{{0}}@endif

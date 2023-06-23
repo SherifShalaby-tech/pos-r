@@ -142,7 +142,7 @@ class RawMaterialController extends Controller
                 // })
                 ->editColumn('batch_number', '{{$batch_number}}')
                 ->editColumn('brand', '{{$brand}}')
-                ->editColumn('current_stock', '@if($is_service)-@else{{@num_format($current_stock)}}@endif')
+                ->editColumn('current_stock', '@if($is_service)-@else{{number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot"))}}@endif')
                 ->editColumn('exp_date', '@if(!empty($exp_date)){{@format_date($exp_date)}}@endif')
                 ->addColumn('manufacturing_date', '@if(!empty($manufacturing_date)){{@format_date($manufacturing_date)}}@endif')
                 ->editColumn('default_purchase_price', function ($row) {
