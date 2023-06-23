@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('product/delete-product-image/{id}', 'ProductController@deleteProductImage');
     Route::resource('product', ProductController::class);
     Route::post('product/multiDeleteRow', 'ProductController@multiDeleteRow');
+    Route::post('/update-column-visibility', 'ProductController@updateColumnVisibility');
+
     //item borrowed controller
     Route::resource('item-borrowed',ItemBorrowedController::class);
     Route::post('item-borrowed/give','ItemBorrowedController@give')->name('item-borrowed.give');

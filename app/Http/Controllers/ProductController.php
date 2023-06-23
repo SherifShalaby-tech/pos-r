@@ -41,7 +41,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Http;
 use Lang;
 use PhpParser\Node\Expr\Print_;
-
+use Illuminate\Support\Facades\Cache;
 class ProductController extends Controller
 {
     /**
@@ -1582,5 +1582,12 @@ class ProductController extends Controller
             }
         }
         return $dataNewImages;
+    }
+
+    public function updateColumnVisibility(Request $request)
+    {
+        $columnVisibility = $request->input('columnVisibility');
+        Cache::put('key_' . auth()->id(), $columnVisibility, 60); // Adjust the cache expiration time as needed
+        return response()->json(['success' => true]);
     }
 }
