@@ -299,7 +299,12 @@ class ProductController extends Controller
                     return $size;
                 })
                 ->editColumn('grade', '{{$grade}}')
-                ->editColumn('current_stock', '@if($is_service){{number_format(0,App\Models\System::getProperty("numbers_length_after_dot")}} @else{{number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot"}}@endif')
+                ->editColumn('current_stock', function ($row) {
+                    if(!$row->is_service)
+                        return $this->productUtil->num_f($row->current_stock ,false,null,true);
+                    return 0;
+                })
+                // ->editColumn('current_stock', '@if($is_service) number_format(0,App\Models\System::getProperty("numbers_length_after_dot") @else number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot")@endif')
                 ->addColumn('current_stock_value', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
                         ->whereColumn('quantity',">",'quantity_sold')->first();

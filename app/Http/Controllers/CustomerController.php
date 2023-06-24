@@ -322,7 +322,12 @@ class CustomerController extends Controller
 
             $query->where('customer_id', $id);
 
-
+            if (!empty(request()->start_date)) {
+                $query->where('transaction_date', '>=', request()->start_date);
+            }
+            if (!empty(request()->end_date)) {
+                $query->where('transaction_date', '<=', request()->end_date);
+            }
             $sales = $query->select(
                 'transactions.final_total',
                 'transactions.payment_status',
