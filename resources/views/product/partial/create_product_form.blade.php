@@ -61,7 +61,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
         </div>
     </div>
     <div class="col-md-4">
-            {!! Form::label('product_class_id', __('lang.category') . ' *', []) !!}
+        {!! Form::label('product_class_id', __('lang.category') . ' *', []) !!}
 
         <div class="input-group my-group">
             {!! Form::select('product_class_id', $product_classes, !empty($recent_product) ? $recent_product->product_class_id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'required']) !!}

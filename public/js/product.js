@@ -339,7 +339,7 @@ $(document).on("change", "#product_class_id", function () {
             $("#category_id").empty().append(result).change();
             $("#category_id").selectpicker("refresh");
 
-            if (category_id) {
+            if (result.category_id) {
                 $("#category_id").selectpicker("val", category_id);
             }
         },
