@@ -587,3 +587,45 @@ $(document).on("click", "#clear_all_input_form", function () {
         },
     });
 });
+$(document).on('submit','#add_stock_form',function(e){
+    if($('.quantity').val()==0){
+        e.preventDefault();
+        $('.quantity').css('border', '2px solid red');
+        swal("Error", "Quantity Must Be Greater Than 0 .", "error");
+    }
+    // let willDelete=0;
+    // if($('.selling_price').val()==0 || $('.purchase_price').val()==0){
+    //     if($('.purchase_price').data('allowedpurchasePrice')==="0"){
+    //         alert(3)
+    //     e.preventDefault();
+    //     $('.selling_price').css('border', '2px solid green');
+    //     $('.purchase_price').css('border', '2px solid green');
+    //     willDelete=1;
+    //     }
+    // }
+    // if (willDelete) {
+    //     swal(
+    //         {
+    //         title: "Attention!",
+    //         text: "Are you sure you want to make this",
+    //         type: "warning",
+    //         allowEscapeKey: false,
+    //         allowOutsideClick: false,
+    //         showCancelButton: true,
+    //         confirmButtonColor: "#DD6B55",
+    //         confirmButtonText: "Yes",
+    //         cancelButtonText: "No",
+    //         showLoaderOnConfirm: true,
+    //         closeOnConfirm: false
+    //     })
+    //     .then((isConfirm) => {
+    //         if (isConfirm) {
+    //             console.log("YES");
+    //             $('.purchase_price').data('allowedpurchasePrice','1')
+    //             $('form').submit();
+    //             willDelete=0;
+    //         }
+    //         return false;
+    //     });
+    // }
+});

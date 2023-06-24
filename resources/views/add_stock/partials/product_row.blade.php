@@ -44,7 +44,7 @@ if($stock){
     </td>
     <td>
         <span class="text-secondary font-weight-bold">*</span>
-        <input type="text" class="form-control purchase_price purchase_price_{{$i}}" name="add_stock_lines[{{$i}}][purchase_price]" required
+        <input type="text" class="form-control purchase_price purchase_price_{{$i}}" data-allowedpurchasePrice="0" name="add_stock_lines[{{$i}}][purchase_price]" required
             value="@if(isset($purchase_price)){{$purchase_price}}@else @if($product->purchase_price_depends == null) {{@num_format($product->default_purchase_price / $exchange_rate)}} @else {{@num_format($product->purchase_price_depends / $exchange_rate)}} @endif @endif" index_id="{{$i}}">
             <input class="final_cost" type="hidden" name="add_stock_lines[{{$i}}][final_cost]" value="@if(isset($product->default_purchase_price)){{@num_format($product->default_purchase_price / $exchange_rate)}}@else{{0}}@endif"  >
     </td>

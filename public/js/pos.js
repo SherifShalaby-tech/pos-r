@@ -459,27 +459,28 @@ function get_label_product_row(
                             add_via_ajax = false;
                             is_added = true;
                             count=result.output.count;
-                            $(this).closest("tr").remove();
+                            // $(this).closest("tr").remove();
                             // __write_number(qty_element, qty + 1);
                             // qty_element.change;
                             check_for_sale_promotion();
                             calculate_sub_totals();
                             // $("input#search_product").val("");
                             // $("input#search_product").focus();
-                            // $(this).insertBefore($("#product_table  tbody tr:first"));
+                            $(this).insertBefore($("#product_table  tbody tr:first"));
 
                         }
                     },
                 });
                 if(count===0){
-                    $(this).closest("tr").remove();
+                    // $(this).closest("tr").remove();
+                    $(this).insertBefore($("#product_table  tbody tr:first"));
                 }
                 
 
             }
         });
 
-    // if (add_via_ajax) {
+    if (add_via_ajax) {
         var store_id = $("#store_id").val();
         var store_pos_id = $("#store_pos_id").val();
         var customer_id = $("#customer_id").val();
@@ -527,7 +528,7 @@ function get_label_product_row(
                 }
             },
         });
-    //    }
+       }
 }
 $('#save_btn_product_extension').click(function () {
     // var extensions_ids = $('input[name^=extensions_checkboxs]').map(function(idx, elem) {
@@ -1696,16 +1697,6 @@ $(document).ready(function () {
                             }
                             return false;
                         }
-                        $("#add-payment").modal("hide");
-                        toastr.success(result.msg);
-
-                        if ($("#status").val() == "draft") {
-                            if ($("#edit_pos_form").length > 0) {
-                                setTimeout(() => {
-                                    window.close();
-                                }, 3000);
-                            }
-                        }
                         if (
                             $("#print_the_transaction").prop("checked") == false
                         ) {
@@ -1722,6 +1713,18 @@ $(document).ready(function () {
                         ) {
                             pos_print(result.html_content);
                         }
+                        $("#add-payment").modal("hide");
+                        toastr.success(result.msg);
+
+                        if ($("#status").val() == "draft") {
+                            if ($("#edit_pos_form").length > 0) {
+                                setTimeout(() => {
+                                    window.close();
+                                }, 3000);
+                            }
+                        }
+                        
+                      
                         if ($("#is_edit").val() == "1") {
                             pos_print(result.html_content);
                         }
