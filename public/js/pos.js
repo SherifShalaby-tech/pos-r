@@ -459,9 +459,7 @@ function get_label_product_row(
                             add_via_ajax = false;
                             is_added = true;
                             count=result.output.count;
-                            // $(this).closest("tr").remove();
-                            // __write_number(qty_element, qty + 1);
-                            // qty_element.change;
+                         
                             check_for_sale_promotion();
                             calculate_sub_totals();
                             // $("input#search_product").val("");
@@ -472,6 +470,10 @@ function get_label_product_row(
                     },
                 });
                 if(count===0){
+                       qty_element = $(this).find(".quantity");
+                            var qty = __read_number(qty_element);
+                            __write_number(qty_element, qty + 1);
+                            qty_element.change;
                     // $(this).closest("tr").remove();
                     $(this).insertBefore($("#product_table  tbody tr:first"));
                 }
@@ -1888,7 +1890,6 @@ function set_default_customer() {
 
     $("select#customer_id").val(default_customer_id).trigger("change");
 }
-
 function confirmCancel() {
     var audio = $("#mysoundclip2")[0];
     audio.play();
@@ -1900,6 +1901,7 @@ function confirmCancel() {
                 $("#dining_table_id").val() != ""
             ) {
                 let transaction_id = $("#transaction_id").val();
+
                 $.ajax({
                     method: "POST",
                     url:
@@ -1907,23 +1909,53 @@ function confirmCancel() {
                         transaction_id,
                     data: {},
                     success: function (result) {
-
                         setTimeout(() => {
                             window.close();
                         }, 2000);
                     },
                 });
             }
-           
-        }else{
-            confirmCancel();
         }
 
-        
+        reset_pos_form();
     }
-    
     return false;
 }
+// function confirmCancel() {
+//     var audio = $("#mysoundclip2")[0];
+//     audio.play();
+//     if (confirm("Are you sure want to reset?")) {
+//         if ($("form#edit_pos_form").length > 0) {
+//             if (
+//                 $("#dining_table_id").val() != null &&
+//                 $("#dining_table_id").val() != undefined &&
+//                 $("#dining_table_id").val() != ""
+//             ) {
+//                 let transaction_id = $("#transaction_id").val();
+//                 $.ajax({
+//                     method: "POST",
+//                     url:
+//                         "/pos/update-transaction-status-cancel/" +
+//                         transaction_id,
+//                     data: {},
+//                     success: function (result) {
+
+//                         setTimeout(() => {
+//                             window.close();
+//                         }, 2000);
+//                     },
+//                 });
+//             }
+           
+//         }else{
+//             confirmCancel();
+//         }
+
+        
+//     }
+    
+//     return false;
+// }
 
 $(document).on("click", "td.filter_product_add", function () {
     let qty_available = parseFloat($(this).data("qty_available"));
