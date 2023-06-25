@@ -2598,7 +2598,9 @@ function change_tax_id() {
 $(document).on("change", "#deliveryman_id", function () {
     $("#deliveryman_id_hidden").val($(this).val());
 });
-
+$(document).on("click", "#delivery_cost_btn", function () {
+    $("#deliveryman_id_hidden").val($("#deliveryman_id").val());
+});
 $(document).on("submit", "form#add_payment_form", function (e) {
     e.preventDefault();
     let data = $(this).serialize();
