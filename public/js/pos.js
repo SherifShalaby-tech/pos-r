@@ -469,11 +469,13 @@ function get_label_product_row(
                         }
                     },
                 });
+                qty_element = $(this).find(".quantity");
+                var qty = __read_number(qty_element);
                 if(count===0){
-                       qty_element = $(this).find(".quantity");
-                            var qty = __read_number(qty_element);
-                            __write_number(qty_element, qty + 1);
-                            qty_element.change;
+                    if(parseInt($(this).find('.quantity').attr('max'))>qty || $(this).find('.quantity').attr('max')==null){
+                        __write_number(qty_element, qty + 1);
+                        qty_element.change;
+                    }       
                     // $(this).closest("tr").remove();
                     $(this).insertBefore($("#product_table  tbody tr:first"));
                 }
