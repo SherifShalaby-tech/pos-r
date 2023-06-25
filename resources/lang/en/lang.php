@@ -1453,4 +1453,5 @@ return [
     'not_allowed'=>'Not Allowed',
     'quick_pay' => 'Quick pay',
     'not_allowed'=>"How could you give the money in your hand to yourself 🤪 please focus and select someone else😎",
+    
 ];

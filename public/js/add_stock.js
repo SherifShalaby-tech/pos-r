@@ -587,3 +587,71 @@ $(document).on("click", "#clear_all_input_form", function () {
         },
     });
 });
+$(document).on('submit','#add_stock_form',function(e){
+    // e.preventDefault();
+    let willDelete=0;
+    let namePurchacePrice='';
+    let nameSellingPrice='';
+    $("#product_table tbody")
+    .find(".product_row")
+    .each(function () {
+        if($(this).find('.quantity').val()==0){
+            e.preventDefault();
+            $(this).find('.quantity').css('border', '2px solid red');
+            swal("Error",LANG.qty_msg, "error");
+        }
+        ///
+        if($(this).find('.purchase_price').val()==0){
+            if($(this).find('.purchase_price_submit').val()=="0"){
+                e.preventDefault();
+                $(this).find('.purchase_price_submit').val('1')
+                $(this).find('.purchase_price').css('border', '2px solid #6f42c1');
+                willDelete=1;
+                namePurchacePrice='purchace_price';
+            }
+        }
+        ////
+        if($(this).find('.selling_price').val()==0){
+            if($(this).find('.selling_price_submit').val()=="0"){
+                e.preventDefault();
+                $(this).find('.selling_price_submit').val('1')
+                $(this).find('.selling_price').css('border', '2px solid #6f42c1');
+                willDelete=1;
+                nameSellingPrice='selling_price';
+            }
+        }
+    });
+    if (willDelete) {
+        let title='';
+        if(namePurchacePrice!='' && nameSellingPrice!=''){
+            title=LANG.purchase_price_and_sell_price_equal_to_zero;
+        }else if(namePurchacePrice=='' && nameSellingPrice!=''){
+            title=LANG.sell_price_equal_to_zero;
+        }else if(namePurchacePrice!='' && nameSellingPrice==''){
+            title=LANG.purchase_price_equal_to_zero;
+        }
+        swal(
+            {
+                title: title,
+                text: LANG.continue,
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+        })
+        .then((isConfirm) => {
+            if (isConfirm) {
+                $('form').submit();
+            }else{
+                $(this).find('.purchase_price_submit').val('0');
+                $(this).find('.selling_price_submit').val('0')
+            }
+            namePurchacePrice='';
+            nameSellingPrice='';
+        });
+    }
+});
+$(document).on('change','.quantity,.purchase_price,.selling_price',function(){
+    $(this).css('border','1px solid grey');
+});
