@@ -140,6 +140,7 @@
             </span>
 
             @if(isset($qty))
+
             <input type="number" class="form-control quantity  qty numkey input-number" step="any"
 
                 autocomplete="off" style="width: 50px;" @isset($check_unit) @if($check_unit->name == "قطعه" || $check_unit->name == "Piece") oninput="this.value = Math.round(this.value);" @endif @endisset

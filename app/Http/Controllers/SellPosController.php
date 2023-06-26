@@ -325,13 +325,13 @@ class SellPosController extends Controller
                 }
             }
         }
-        // foreach ($request->transaction_sell_line as $sell_line) {
-        //     // if (empty($sell_line['transaction_sell_line_id'])) {
-        //         if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
-        //             $current_products[]= $sell_line['variation_id'];
-        //         }
-        //     // }
-        // }
+        foreach ($request->transaction_sell_line as $sell_line) {
+            // if (empty($sell_line['transaction_sell_line_id'])) {
+                if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
+                    $current_products[]= $sell_line['variation_id'];
+                }
+            // }
+        }
         // if quotation and qty is blocked(reserved) for sale
         if ($transaction->is_quotation && $transaction->block_qty) {
             foreach ($request->transaction_sell_line as $sell_line) {
@@ -1185,7 +1185,7 @@ class SellPosController extends Controller
                 $output['msg'] = __('lang.sku_no_match');
             }
             return  $output;
-            dd ($output);
+            // dd ($output);
         }
     }
     public function addDiscounts(Request $request){

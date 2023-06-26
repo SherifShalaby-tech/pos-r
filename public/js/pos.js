@@ -101,7 +101,7 @@ $(document).on("click", ".filter-by", function () {
 
 //on change event jquery
 $(document).on("change", "#store_id", function () {
-    getFilterProductRightSide();
+    // getFilterProductRightSide();
     if ($("form#edit_pos_form").length == 0) {
         getCurrencyDropDown();
     }
@@ -186,7 +186,7 @@ $(document).on("change", "input[name=restaurant_filter]", function () {
 $(document).ready(function () {
     $("#store_id").change();
 });
-getFilterProductRightSide();
+// getFilterProductRightSide();
 function getFilterProductRightSide(
     category_id = null,
     sub_category_id = null,
@@ -496,7 +496,7 @@ function get_label_product_row(
             var row_count = parseInt($("#row_count").val());
             $("#row_count").val(row_count + 1);
         }
-        var extensions =null;
+        // var extensions =null;
         $.ajax({
             method: "GET",
             url: "/pos/get-product-row-extension",
@@ -522,18 +522,17 @@ function get_label_product_row(
                     return;
                 }
                 if(result.success&&(result.html_content==0||result.html_content == '')){
-                    get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id
-                        ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
-                        extensions_sell_prices=null,qty)
                 }else{
                     $('#product_extension_tbody').html(result.html_content);
-                    get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id
-                        ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
-                        extensions_sell_prices=null,qty)
-
+//                     get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id
+//                         ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
+//                         extensions_sell_prices=null,qty);
                 }
             },
         });
+        get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id
+            ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
+            extensions_sell_prices=null,qty)
        }
 }
 $(document).on('click','#add_extension',function () {
@@ -1926,7 +1925,6 @@ function confirmCancel() {
             }
         }
 
-        reset_pos_form();
     }
     return false;
 }
