@@ -93,7 +93,7 @@ class ProductInAdjustmentsController extends Controller
                 ->leftjoin('users as edited', 'products.edited_by', 'users.id')
                 ->leftjoin('taxes', 'products.tax_id', 'taxes.id')
                 ->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id');
-            
+
             $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
 
             $store_query = '';
@@ -189,8 +189,8 @@ class ProductInAdjustmentsController extends Controller
                 DB::raw('(SELECT AVG(add_stock_lines.purchase_price) FROM add_stock_lines JOIN variations as v ON add_stock_lines.variation_id=v.id WHERE v.id=variations.id ' . $store_query . ') as avg_purchase_price'),
             )->with(['supplier'])
                 ->groupBy('variations.id');
-            
-            
+
+
             // return $products;
             return DataTables::of($products)
                 ->addColumn('image', function ($row) {
@@ -275,7 +275,7 @@ class ProductInAdjustmentsController extends Controller
                     }else{
                         return $this->productUtil->num_f($row->current_stock);
                     }
-                    
+
                 })
                 ->addColumn('current_stock_value', function ($row) {
                     return $this->productUtil->num_f($row->current_stock * $row->default_purchase_price);
@@ -479,8 +479,8 @@ class ProductInAdjustmentsController extends Controller
         // }
         $user_id =Auth::user()->id;
         $store_pos = StorePos::where('user_id', $user_id)->first();
-       
-        
+
+
             if($request->total_shortage_value ){
                 $ProductInAdjustment = ProductInAdjustment::create([
                     'total_shortage_value'=>$request->total_shortage_value,
@@ -502,7 +502,7 @@ class ProductInAdjustmentsController extends Controller
                         'created_by' => 1,
                     ]);
                 }
-          
+
                 Transaction::create([
                     'grand_total' => $this->commonUtil->num_uf($request->total_shortage_value),
                     'final_total' => $this->commonUtil->num_uf($request->total_shortage_value),
@@ -517,7 +517,7 @@ class ProductInAdjustmentsController extends Controller
                     'source_type' => 'store',
                     'created_by' => $user_id,
                 ]);
-    
+
             }
                 foreach ($request->selected_data as $data){
                     if($request->total_shortage_value ){
@@ -532,12 +532,12 @@ class ProductInAdjustmentsController extends Controller
                                 'variation_id'=>$data['variation_id'],
                                 'product_adjustments_id'=>$ProductInAdjustment->id,
                                 'old_stock'=>$data['current_stock'],
-                                'new_stock'=>$data['actual_stock'],
+                                'new_stock'=>$this->productUtil->num_f($data['actual_stock']),
                                 'shortage'=>$data['shortage'],
                                 'shortage_value'=>$data['shortage_value'],
                             ]);
                         }
-                    }      
+                    }
                     if(isset($data['default_purchase_price']) || isset($data['default_sell_price'])){
                         $stocks = AddStockLine::where('product_id', $data['id'])->where('variation_id',$data['variation_id'])->get();
                          foreach($stocks as $stock){
@@ -550,15 +550,15 @@ class ProductInAdjustmentsController extends Controller
                                  $stock->update([
                                      'sell_price' => $data['default_sell_price'],
                                  ]);
-                             }     
+                             }
                         }
                     }
                 }
 
-            
-          
 
-       
+
+
+
     }
     public function getDetails($id){
          $adjustment_details = ProductInAdjustmentDetails::where('product_adjustments_id',$id)->with('product')->get();
