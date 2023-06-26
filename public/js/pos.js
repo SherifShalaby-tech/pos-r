@@ -101,7 +101,7 @@ $(document).on("click", ".filter-by", function () {
 
 //on change event jquery
 $(document).on("change", "#store_id", function () {
-    getFilterProductRightSide();
+    // getFilterProductRightSide();
     if ($("form#edit_pos_form").length == 0) {
         getCurrencyDropDown();
     }
@@ -186,7 +186,7 @@ $(document).on("change", "input[name=restaurant_filter]", function () {
 $(document).ready(function () {
     $("#store_id").change();
 });
-getFilterProductRightSide();
+// getFilterProductRightSide();
 function getFilterProductRightSide(
     category_id = null,
     sub_category_id = null,
