@@ -41,7 +41,7 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Http;
 use Lang;
 use PhpParser\Node\Expr\Print_;
-
+use Illuminate\Support\Facades\Cache;
 class ProductController extends Controller
 {
     /**
@@ -299,7 +299,12 @@ class ProductController extends Controller
                     return $size;
                 })
                 ->editColumn('grade', '{{$grade}}')
-                ->editColumn('current_stock', '@if($is_service){{number_format(0,App\Models\System::getProperty("numbers_length_after_dot")}} @else{{number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot"}}@endif')
+                ->editColumn('current_stock', function ($row) {
+                    if(!$row->is_service)
+                        return $this->productUtil->num_f($row->current_stock ,false,null,true);
+                    return 0;
+                })
+                // ->editColumn('current_stock', '@if($is_service) number_format(0,App\Models\System::getProperty("numbers_length_after_dot") @else number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot")@endif')
                 ->addColumn('current_stock_value', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
                         ->whereColumn('quantity',">",'quantity_sold')->first();
@@ -682,9 +687,9 @@ class ProductController extends Controller
 
             }
 
+
             if ($request->has("cropImages") && count($request->cropImages) > 0) {
-                foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
-                    $product->clearMediaCollection('product');
+                foreach ($request->cropImages as $imageData) {
                     $extention = explode(";",explode("/",$imageData)[1])[0];
                     $image = rand(1,1500)."_image.".$extention;
                     $filePath = public_path('uploads/' . $image);
@@ -692,6 +697,16 @@ class ProductController extends Controller
                     $product->addMedia($filePath)->toMediaCollection('product');
                 }
             }
+            // if ($request->has("cropImages") && count($request->cropImages) > 0) {
+            //     foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
+            //         $product->clearMediaCollection('product');
+            //         $extention = explode(";",explode("/",$imageData)[1])[0];
+            //         $image = rand(1,1500)."_image.".$extention;
+            //         $filePath = public_path('uploads/' . $image);
+            //         $fp = file_put_contents($filePath,base64_decode(explode(",",$imageData)[1]));
+            //         $product->addMedia($filePath)->toMediaCollection('product');
+            //     }
+            // }
             if (!empty($request->supplier_id)) {
                 SupplierProduct::updateOrCreate(
                     ['product_id' => $product->id, 'supplier_id' => $request->supplier_id]
@@ -1574,5 +1589,12 @@ class ProductController extends Controller
             }
         }
         return $dataNewImages;
+    }
+
+    public function updateColumnVisibility(Request $request)
+    {
+        $columnVisibility = $request->input('columnVisibility');
+        Cache::forever('key_' . auth()->id(), $columnVisibility);
+        return response()->json(['success' => true]);
     }
 }

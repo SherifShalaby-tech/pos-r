@@ -2,6 +2,17 @@
 $exchange_rate = !empty($sale->exchange_rate) ? $sale->exchange_rate : 1;
 @endphp
 @forelse ($products as $product)
+@php
+$Variation=\App\Models\Variation::where('id',$product->variation_id)->first();
+    if($Variation){
+        $stockLines=\App\Models\AddStockLine::where('sell_price','>',0)->where('variation_id',$Variation->id)
+        ->latest()->first();
+        $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
+        $default_purchase_price=$stockLines?$stockLines->purchase_price : $Variation->default_purchase_price;
+        $cost_ratio_per_one = $stockLines ? $stockLines->cost_ratio_per_one : 0;
+
+    }
+@endphp
     <tr class="product_row">
         <td style="width: 5%">
             <label class="checkboxes" >
@@ -26,8 +37,8 @@ $exchange_rate = !empty($sale->exchange_rate) ? $sale->exchange_rate : 1;
                 value="{{ $product->variation_id }}">
             <input type="hidden" name="transaction_sell_line[{{ $loop->index }}][purchase_price]" class="purchase_price"
                 value="@if (isset($product->purchase_price)) {{ @num_format($product->purchase_price) }}@else{{ 0 }} @endif">
-            <input type="hidden" name="transaction_sell_line[{{ $loop->index }}][price_hidden]" class="price_hidden"
-                value="@if (isset($product->variation->default_sell_price)) {{ @num_format($product->variation->default_sell_price / $exchange_rate) }}@else{{ 0 }} @endif">
+                <input type="hidden" name="transaction_sell_line[{{$loop->index}}][price_hidden]" class="price_hidden"
+                value="@if(isset($default_sell_price)){{@num_format(($default_sell_price) / $exchange_rate)}}@else{{0}}@endif">
             <input type="hidden" name="transaction_sell_line[{{ $loop->index }}][tax_id]" class="tax_id"
                 value="{{ $product->tax_id }}">
             <input type="hidden" name="transaction_sell_line[{{ $loop->index }}][tax_method]" class="tax_method"
@@ -75,7 +86,7 @@ $exchange_rate = !empty($sale->exchange_rate) ? $sale->exchange_rate : 1;
             <input type="hidden" class="form-control product_discount_value"
                 name="transaction_sell_line[{{ $loop->index }}][product_discount_value]"
                 value="@if (!empty($product->product_discount_value)){{ @num_format($product->product_discount_value) }}@else{{ 0 }} @endif">
-            <input type="text" class="form-control "
+            <input type="text" class="form-control product_discount_amount"
                 name="transaction_sell_line[{{ $loop->index }}][product_discount_amount]" readonly
                 value="@if (!empty($product->product_discount_amount)){{ @num_format($product->product_discount_amount) }}@else{{ 0 }} @endif">
         </td>

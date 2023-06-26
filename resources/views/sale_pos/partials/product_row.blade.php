@@ -7,7 +7,7 @@
         <label class="checkboxes">
 
             @if($check_pay!=null && ($check_pay==="0"||$check_pay=="1"))
-            <input class="" id="{{$product->variation_id}}" type="checkbox"{{$check_pay==1?'checked':''}} value="{{$check_pay}}" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
+            <input class="productcheck" id="{{$product->variation_id}}" type="checkbox"{{$check_pay==1?'checked':''}} value="{{$check_pay}}" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
            @else
             <input class="productcheck pcheck" id="{{$product->variation_id}}" type="checkbox" checked value="1" name="transaction_sell_line[{{$loop->index + $index}}][is_product_checked]" aria-label="...">
             @endif
@@ -27,6 +27,14 @@
             }
             $product_extensions=\App\Models\ProductExtension::with('extension:id,name,translations')
                     ->where('variation_id',$product->variation_id)->count();
+
+            $product_unit = \App\Models\Product::where('id',$product->product_id)->first();
+            if($product_unit && isset($product_unit->multiple_units)){
+                foreach ($product_unit->multiple_units as $unit) {
+                    
+                    $check_unit = \App\Models\Unit::where('id',$unit)->first();
+                }
+            }
 
         @endphp
         {{-- {{$stockLines}} --}}
@@ -132,10 +140,9 @@
             </span>
 
             @if(isset($qty))
-
             <input type="number" class="form-control quantity  qty numkey input-number" step="any"
 
-                autocomplete="off" style="width: 50px;"
+                autocomplete="off" style="width: 50px;" @isset($check_unit) @if($check_unit->name == "قطعه" || $check_unit->name == "Piece") oninput="this.value = Math.round(this.value);" @endif @endisset
                 @if(!$product->is_service)max="{{preg_match('/\.\d*[1-9]+/', (string)$product->qty_available) ? $product->qty_available : @num_format($product->qty_available)}}"@endif
             name="transaction_sell_line[{{$loop->index + $index}}][quantity]"
             required
@@ -159,7 +166,7 @@
                    @if(!auth()->user()->can('product_module.sell_price.create_and_edit')) readonly @elseif(env('IS_SUB_BRANCH',false)) readonly @endif
                    value="@if(isset($default_sell_price)){{@num_format(($default_sell_price) / $exchange_rate)}}@else{{0}}@endif">
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 5% @else 5% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 2% @else 2% @endif">
         @if($product_extensions > 0)
             <span class="input-group-btn">
                 <button type="button" class="btn btn-success btn-xs plus add-extension" id="add_extension">

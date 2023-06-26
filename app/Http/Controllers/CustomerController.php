@@ -134,9 +134,16 @@ class CustomerController extends Controller
                                 $balances=  $this->transactionUtil->getCustomerBalance($row->id)['balance'];
                                 if ($balances < 0){
                                     $html .= '<li >
-                                                    <a data-href = "'. action('TransactionPaymentController@getCustomerDue', $row->id).'"
+                                                    <a data-href = "'. action('TransactionPaymentController@getCustomerDue',  ['customer_id'=>$row->id,'extract_due'=>'false']).'"
                                                         class="btn-modal" data-container = ".view_modal" ><i
                                                             class="fa fa-money btn" ></i >'. __('lang.pay_customer_due').'</a >
+                                                </li ><li class="divider"></li>';
+                                }
+                                if ($balances > 0){
+                                    $html .= '<li >
+                                                    <a data-href = "'. action('TransactionPaymentController@getCustomerDue', ['customer_id'=>$row->id,'extract_due'=>'true']).'"
+                                                        class="btn-modal" data-container = ".view_modal" ><i
+                                                            class="fa fa-money btn" ></i >'. __('lang.extract_customer_due').'</a >
                                                 </li ><li class="divider"></li>';
                                 }
                             }
@@ -315,7 +322,12 @@ class CustomerController extends Controller
 
             $query->where('customer_id', $id);
 
-
+            if (!empty(request()->start_date)) {
+                $query->where('transaction_date', '>=', request()->start_date);
+            }
+            if (!empty(request()->end_date)) {
+                $query->where('transaction_date', '<=', request()->end_date);
+            }
             $sales = $query->select(
                 'transactions.final_total',
                 'transactions.payment_status',
@@ -584,24 +596,6 @@ class CustomerController extends Controller
                 ])
                 ->make(true);
         }
-
-        $sale_query = Transaction::whereIn('transactions.type', ['sell'])
-            ->whereIn('transactions.status', ['final']);
-        // ->whereNull('parent_return_id');
-
-        if (!empty(request()->start_date)) {
-            $sale_query->where('transaction_date', '>=', request()->start_date);
-        }
-        if (!empty(request()->end_date)) {
-            $sale_query->where('transaction_date', '<=', request()->end_date);
-        }
-        if (!empty($customer_id)) {
-            $sale_query->where('transactions.customer_id', $customer_id);
-        }
-        $sales = $sale_query->select(
-            'transactions.*'
-        )->groupBy('transactions.id')->orderBy('transactions.id', 'desc')->get();
-
         $sale_return_query = Transaction::whereIn('transactions.type', ['sell_return'])
             ->whereIn('transactions.status', ['final']);
         // ->whereNull('parent_return_id');
@@ -675,7 +669,6 @@ class CustomerController extends Controller
         $payments=TransactionPayment::wherein('transaction_id',$transactions_ids)->get();
 
         return view('customer.show')->with(compact(
-            'sales',
             'sale_returns',
             'points',
             'discounts',

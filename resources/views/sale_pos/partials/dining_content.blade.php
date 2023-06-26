@@ -59,8 +59,8 @@
                                                         ->first();
                                                     @endphp
                                                     @if(!empty($reserveHasOrder->current_transaction_id))
-                                                    <a href="{{ action('SellPosController@edit', $reserveHasOrder->current_transaction_id) }}"
-                                                        target="_blank" rel="noopener noreferrer">
+                                                    <a href="{{ action('SellPosController@edit', $reserveHasOrder->current_transaction_id) }}" data-transaction_id="{{$reserveHasOrder->current_transaction_id}}"
+                                                        target="_blank" rel="noopener noreferrer" class="table-link" data-room="{{$dining_table->dining_room_id}}" data-table_no="{{$reserve->dining_table_id}}">
                                                     @endif
                                                     <div class="text-center">
                                                         <p style="padding: 0px; margin: 0px; color:red;">
@@ -138,8 +138,8 @@
                                                 <div class="order_table"
                                                     data-table_id="{{ $reserve->id }}">
                                                     <span class="badge badge-danger selected-table-badge table{{$reserve->dining_table_id}} hide">0</span>
-                                                    <a href="{{ action('SellPosController@edit', $reserve->current_transaction_id) }}"
-                                                        target="_blank" rel="noopener noreferrer">
+                                                    <a href="{{ action('SellPosController@edit', $reserve->current_transaction_id) }}" data-transaction_id="{{$reserve->current_transaction_id}}"
+                                                        target="_blank" rel="noopener noreferrer" class="table-link" data-room="{{$dining_table->dining_room_id}}" data-table_no="{{$reserve->dining_table_id}}">
                                                         <p style="padding: 0px; margin: 0px; color:red;">
                                                             {{ $dining_table->name }} </p>
                                                         <img src="{{ asset('images/red-table.jpg') }}" alt="table"

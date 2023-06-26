@@ -437,7 +437,14 @@ class CashController extends Controller
     public function saveAddClosingCash(Request $request)
     {
         try {
-
+            $cash_given_to=User::find($request->cash_given_to)->name;
+            if($request->source_type == 'user' && $cash_given_to=='Admin' && request()->user()->name=="Admin"){
+                $output = [
+                    'success' => false,
+                    'msg' => __('lang.not_allowed')
+                ];
+            }else{
+                
             DB::beginTransaction();
             $data = $request->except('_token');
 
@@ -450,7 +457,6 @@ class CashController extends Controller
             $register->status = 'close';
             $register->notes = $request->notes;
             $register->save();
-
             if ($request->submit == 'adjustment') {
                 $data['store_id'] = $register->store_id;
                 $data['user_id'] = $register->user_id;
@@ -491,15 +497,22 @@ class CashController extends Controller
                     $money_safe_data['comments'] = __('lang.closing_cash');
                     MoneySafeTransaction::create($money_safe_data);
                 }
+                if ($request->source_type == 'pos') {
+                    // $user_id = StorePos::where('id', $request->cash_given_to)->first()->user_id;
+                    // $register = $this->cashRegisterUtil->getCurrentCashRegisterOrCreate($request->cash_given_to);
+                    $cash_register_transaction_in = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'closing_cash', 'credit', $user_id, $request->notes, $cash_register_transaction->id);
+                    $cash_register_transaction->referenced_id = $cash_register_transaction_in->id;
+                    $cash_register_transaction->save();
+                }
             }
-
-
 
             DB::commit();
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
             ];
+        }
+            
         } catch (\Exception $e) {
             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
             $output = [

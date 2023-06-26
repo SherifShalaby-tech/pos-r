@@ -784,6 +784,7 @@
                     {{ $line->quantity }},
                     {{ $loop->index }},null,null,{{$line->check_pay}},'enable_checkbox')
             @endforeach
+            calculate_sub_totals()
         })
         @if (!empty($transaction->dining_table))
             $('.table_room_hide').addClass('hide');

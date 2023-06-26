@@ -1,10 +1,10 @@
-we<?php
+<?php
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddDiscountCategoryToProductDiscountsTable extends Migration
+class AlterTableTransactions extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddDiscountCategoryToProductDiscountsTable extends Migration
      */
     public function up()
     {
-        Schema::table('product_discounts', function (Blueprint $table) {
-            $table->text('discount_category')->nullable();
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
@@ -25,8 +25,8 @@ class AddDiscountCategoryToProductDiscountsTable extends Migration
      */
     public function down()
     {
-        Schema::table('product_discounts', function (Blueprint $table) {
-            $table->dropColumn('discount_category');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropSoftDeletes();
         });
     }
 }

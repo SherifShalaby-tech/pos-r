@@ -126,7 +126,7 @@ $is_first_after_extra=0;
 <div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
 
     <div id="receipt-data">
-        <div class="centered">
+        {{-- <div class="centered">
             @include('layouts.partials.print_header')
 
             <p>{{ $transaction->store->name }}
@@ -139,43 +139,19 @@ $is_first_after_extra=0;
             @endif
             <p>{{ $transaction->store->phone_number }} </p>
 
-        </div>
+        </div> --}}
         <div style="width: 70%; float:left;">
             <p>@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
                 @lang('lang.reference', [], $invoice_lang): {{ $transaction->invoice_no }}<br>
-                @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
+                {{-- @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
                     {{ $transaction->customer->name }} <br>
                     {{ $transaction->customer->address }} <br>
                     {{ $transaction->customer->mobile_number }} <br>
-                @endif
+                @endif --}}
                 @if (!empty($transaction->sale_note))
                     @lang('lang.sale_note', [], $invoice_lang): {{ $transaction->sale_note }} <br>
                 @endif
             </p>
-            @if (session('system_mode') == 'garments')
-                <p>
-                    @if (!empty($transaction->customer_size))
-                        @lang('lang.customer_size'):
-                        {{ $transaction->customer_size->name }} <br>
-                    @endif
-                    @if (!empty($transaction->fabric_name))
-                        @lang('lang.fabric_name'): {{ $transaction->fabric_name }} <br>
-                    @endif
-                    @if (!empty($transaction->fabric_squatch))
-                        @lang('lang.fabric_squatch'): {{ $transaction->fabric_squatch }}
-                        <br>
-                    @endif
-                    @if (!empty($transaction->prova_datetime))
-                        @lang('lang.prova'):
-                        {{ @format_datetime($transaction->prova_datetime) }} <br>
-                    @endif
-                    @if (!empty($transaction->delivery_datetime))
-                        @lang('lang.delivery'):
-                        {{ @format_datetime($transaction->delivery_datetime) }} <br>
-                    @endif
-
-                </p>
-            @endif
             @if (session('system_mode') == 'restaurant')
                 @if (!empty($transaction->dining_room))
                     @lang('lang.dining_room'):
@@ -186,13 +162,13 @@ $is_first_after_extra=0;
                     {{ $transaction->dining_table->name }} <br>
                 @endif
             @endif
-            @if (!empty($transaction->deliveryman))
+            {{-- @if (!empty($transaction->deliveryman))
                 <p>{{ $transaction->deliveryman->employee_name }}</p>
-            @endif
-            @if (!empty($transaction->delivery_address))
+            @endif --}}
+            {{-- @if (!empty($transaction->delivery_address))
                 @lang('lang.delivery_address'):
                 {{ $transaction->delivery_address }} <br>
-            @endif
+            @endif --}}
         </div>
         @if (session('system_mode') == 'restaurant')
             <div style="width: 30%; float:right; text-align:center;">
@@ -206,14 +182,14 @@ $is_first_after_extra=0;
                 <thead>
                     <tr>
                         <th style="width: 30%; padding: 0 50px !important;">@lang('lang.item', [], $invoice_lang) </th>
-                        @if (empty($print_gift_invoice))
+                        {{-- @if (empty($print_gift_invoice))
                             <th style="width: 20%; text-align:center !important;"> @lang('lang.price', [], $invoice_lang)
                             </th>
-                        @endif
+                        @endif --}}
                         <th style="width: 20%; text-algin: center;">@lang('lang.qty', [], $invoice_lang) </th>
-                        @if (empty($print_gift_invoice))
+                        {{-- @if (empty($print_gift_invoice))
                             <th style="width: 30%; text-algin: center;">@lang('lang.amount', [], $invoice_lang) </th>
-                        @endif
+                        @endif --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -233,13 +209,13 @@ $is_first_after_extra=0;
                                 @endif
 
                             </td>
-                            @if (empty($print_gift_invoice))
+                            {{-- @if (empty($print_gift_invoice))
                                 <td style="text-align:center !important;vertical-align:bottom; width: 20%;">
                                     {{ @num_format($line->sell_price) }}</td>
-                            @endif
+                            @endif --}}
                             <td style="text-align:center;vertical-align:bottom; width: 20%;">
                                 {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
-                            @if (empty($print_gift_invoice))
+                            {{-- @if (empty($print_gift_invoice))
                                 <td style="text-align:center;vertical-align:bottom; width: 30%;">
                                     @if ($line->product_discount_type != 'surplus')
                                         {{ @num_format($line->sub_total + $line->product_discount_amount) }}
@@ -247,7 +223,7 @@ $is_first_after_extra=0;
                                         {{ @num_format($line->sub_total) }}
                                     @endif
                                 </td>
-                            @endif
+                            @endif --}}
                         </tr>
                         @if($line->sell_line_extensions)
                             @foreach( $line->sell_line_extensions as $k => $line_extension)
@@ -283,7 +259,7 @@ $is_first_after_extra=0;
                         @endif
                     @endforeach
                 </tbody>
-                @if (empty($print_gift_invoice))
+                {{-- @if (empty($print_gift_invoice))
                     <tfoot>
                         <tr>
                             <th style="font-size: 16px;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
@@ -390,10 +366,10 @@ $is_first_after_extra=0;
 
                         </tr>
                     </tfoot>
-                @endif
+                @endif --}}
             </table>
         </div>
-        <div style="">
+        {{-- <div style="">
             <table style="margin: 0 auto; ">
                 <tbody>
                     @if (empty($print_gift_invoice))
@@ -448,7 +424,7 @@ $is_first_after_extra=0;
                                 </tr>
                             @endif
                         @endif
-                    @endif <!-- end of print gift invoice -->
+                    @endif <!-- end of print gift invoice --> 
                     <tr>
                         <td class="centered" colspan="3">
                             @if (session('system_mode') == 'restaurant')
@@ -477,6 +453,6 @@ $is_first_after_extra=0;
         <div style="width: 100%; text-align: center;">
             <p><span class="">Proudly Developed at <a style="text-decoration: none;" target="_blank"
                         href="http://sherifshalaby.tech">sherifshalaby.tech</a></span></p>
-        </div>
+        </div> --}}
     </div>
 </div>

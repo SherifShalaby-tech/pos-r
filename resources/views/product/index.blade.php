@@ -1,6 +1,8 @@
 @extends('layouts.app')
 @section('title', __('lang.product'))
-
+@php
+    use Illuminate\Support\Facades\Cache;
+@endphp
 @section('content')
     <div class="container-fluid">
        <div class="card-header d-flex align-items-center">
@@ -185,9 +187,9 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <button type="button" value="0"
+                <button type="button" value="1"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.image')</button>
-                <button type="button" value="3" class="badge badge-pill badge-primary column-toggle">
+                <button type="button" value="4" class="badge badge-pill badge-primary column-toggle">
                     @if (session('system_mode') == 'restaurant')
                         @lang('lang.category')
                     @else
@@ -195,56 +197,56 @@
                     @endif
                 </button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="4"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
                     <button type="button" value="5"
+                        class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
+                    <button type="button" value="6"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
                 @endif
-                <button type="button" value="6"
+                <button type="button" value="5"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_history')</button>
-                <button type="button" value="7"
+                <button type="button" value="6"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.batch_number')</button>
-                <button type="button" value="8"
+                <button type="button" value="7"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.selling_price')</button>
-                <button type="button" value="9"
+                <button type="button" value="8"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.tax')</button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="10"
+                    <button type="button" value="9"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
                 @endif
-                <button type="button" value="11"
+                <button type="button" value="9"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
 
-                <button type="button" value="13"
+                <button type="button" value="10"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
 
                 @if (empty($page))
-                    <button type="button" value="15"
+                    <button type="button" value="11"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
                 @endif
                 @if (!empty($page))
-                    <button type="button" value="16"
+                    <button type="button" value="12"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
                 @endif
-                <button type="button" value="17"
+                <button type="button" value="13"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
-                <button type="button" value="18"
+                <button type="button" value="14"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.expiry_date')</button>
-                <button type="button" value="19"
+                <button type="button" value="15"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.manufacturing_date')</button>
-                <button type="button" value="20"
+                <button type="button" value="16"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.discount')</button>
                 @can('product_module.purchase_price.view')
-                    <button type="button" value="21"
+                    <button type="button" value="17"
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
                 @endcan
-                <button type="button" value="21"
+                <button type="button" value="18"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.supplier')</button>
-                <button type="button" value="21"
+                <button type="button" value="19"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.active')</button>
-                <button type="button" value="22"
+                <button type="button" value="20"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.created_by')</button>
-                <button type="button" value="23"
+                <button type="button" value="21"    
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
             </div>
         </div>
@@ -268,7 +270,7 @@
                     @if(env('ENABLE_POS_Branch',false))
                         <th>@lang('lang.select')</th>
                     @endif
-                        <th>@lang('lang.select_to_delete')</th>
+                    <th>@lang('lang.select_to_delete')</th>
                     <th>@lang('lang.image')</th>
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.product_code')</th>
@@ -449,33 +451,33 @@
     <script>
         var product_selected_send = [];
         $(document).ready(function() {
-            $('.column-toggle').each(function(i, obj) {
-                if (i > 0) {
-                    i = i + 2;
-                }
-                @if (session('system_mode') != 'restaurant')
-                    @if (empty($page))
-                        if (i > 15) {
-                            i = i + 1;
-                        }
-                    @else
-                        if (i > 14) {
-                            i = i + 1;
-                        }
-                    @endif
-                @else
-                    @if (empty($page))
-                        if (i > 12) {
-                            i = i + 1;
-                        }
-                    @else
-                        if (i > 11) {
-                            i = i + 1;
-                        }
-                    @endif
-                @endif
-                $(obj).val(i)
-            });
+            // $('.column-toggle').each(function(i, obj) {
+            //     if (i > 0) {
+            //         i = i + 2;
+            //     }
+            //     @if (session('system_mode') != 'restaurant')
+            //         @if (empty($page))
+            //             if (i > 15) {
+            //                 i = i + 1;
+            //             }
+            //         @else
+            //             if (i > 14) {
+            //                 i = i + 1;
+            //             }
+            //         @endif
+            //     @else
+            //         @if (empty($page))
+            //             if (i > 12) {
+            //                 i = i + 1;
+            //             }
+            //         @else
+            //             if (i > 11) {
+            //                 i = i + 1;
+            //             }
+            //         @endif
+            //     @endif
+            //     $(obj).val(i)
+            // });
             product_table = $('#product_table').DataTable({
                 lengthChange: true,
                 paging: true,
@@ -687,9 +689,9 @@
 
         });
 
-
-        var hiddenColumnArray = localStorage.getItem('columnVisibility') ? JSON.parse(localStorage.getItem('columnVisibility')) : [];
         $(document).ready(function() {
+            var hiddenColumnArray = JSON.parse('{!! addslashes(json_encode(Cache::get("key_" . auth()->id(), []))) !!}');
+
             $.each(hiddenColumnArray, function(index, value) {
                 $('.column-toggle').each(function() {
                 if ($(this).val() == value) {
@@ -697,35 +699,80 @@
                 }
                 });
             });
-        });
 
-        $(document).on('click', '.column-toggle', function() {
-            var column_index = parseInt($(this).val());
-            toggleColumnVisibility(column_index, $(this));
-            if (hiddenColumnArray.includes(column_index)) {
+            $(document).on('click', '.column-toggle', function() {
+                var column_index = parseInt($(this).val());
+                toggleColumnVisibility(column_index, $(this));
+
+                if (hiddenColumnArray.includes(column_index)) {
                 hiddenColumnArray.splice(hiddenColumnArray.indexOf(column_index), 1);
-            } else {
+                } else {
                 hiddenColumnArray.push(column_index);
-            }
+                }
 
-            // Remove duplicates from the hiddenColumnArray
-            hiddenColumnArray = hiddenColumnArray.filter(function(value, index, self) {
-                return self.indexOf(value) === index;
+                hiddenColumnArray = [...new Set(hiddenColumnArray)]; // Remove duplicates
+
+                // Update the columnVisibility cache data
+                $.ajax({
+                url: '/update-column-visibility', // Replace with your route or endpoint for updating cache data
+                method: 'POST',
+                data: { columnVisibility: hiddenColumnArray },
+                    success: function() {
+                        console.log('Column visibility updated successfully.');
+                    }
+                });
             });
 
-            localStorage.setItem('columnVisibility', JSON.stringify(hiddenColumnArray));
+            function toggleColumnVisibility(column_index, this_btn) {
+                var column = product_table.column(column_index);
+                column.visible(!column.visible());
+
+                if (column.visible()) {
+                $(this_btn).addClass('badge-primary').removeClass('badge-warning');
+                } else {
+                $(this_btn).removeClass('badge-primary').addClass('badge-warning');
+                }
+            }
         });
 
-        function toggleColumnVisibility(column_index, this_btn) {
-            var column = product_table.column(column_index);
-            column.visible(!column.visible());
+        // var hiddenColumnArray = localStorage.getItem('columnVisibility') ? JSON.parse(localStorage.getItem('columnVisibility')) : [];
+        // $(document).ready(function() {
+        //     $.each(hiddenColumnArray, function(index, value) {
+        //         $('.column-toggle').each(function() {
+        //         if ($(this).val() == value) {
+        //             toggleColumnVisibility(value, $(this));
+        //         }
+        //         });
+        //     });
+        // });
 
-            if (column.visible()) {
-                $(this_btn).addClass('badge-primary').removeClass('badge-warning');
-            } else {
-                $(this_btn).removeClass('badge-primary').addClass('badge-warning');
-            }
-        }
+        // $(document).on('click', '.column-toggle', function() {
+        //     var column_index = parseInt($(this).val());
+        //     toggleColumnVisibility(column_index, $(this));
+        //     if (hiddenColumnArray.includes(column_index)) {
+        //         hiddenColumnArray.splice(hiddenColumnArray.indexOf(column_index), 1);
+        //     } else {
+        //         hiddenColumnArray.push(column_index);
+        //     }
+
+        //     // Remove duplicates from the hiddenColumnArray
+        //     hiddenColumnArray = hiddenColumnArray.filter(function(value, index, self) {
+        //         return self.indexOf(value) === index;
+        //     });
+
+        //     localStorage.setItem('columnVisibility', JSON.stringify(hiddenColumnArray));
+        // });
+
+        // function toggleColumnVisibility(column_index, this_btn) {
+        //     var column = product_table.column(column_index);
+        //     column.visible(!column.visible());
+
+        //     if (column.visible()) {
+        //         $(this_btn).addClass('badge-primary').removeClass('badge-warning');
+        //     } else {
+        //         $(this_btn).removeClass('badge-primary').addClass('badge-warning');
+        //     }
+        // }
         $(document).on('change', '.filter_product', function() {
             product_table.ajax.reload();
         })

@@ -142,7 +142,7 @@
 @section('javascript')
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-    <script  src="{{ asset('js/sweetalert2.min.js') }}"></script>
+    {{-- <script  src="{{ asset('js/sweetalert2.min.js') }}"></script> --}}
 
     <script>
         const fileInput = document.querySelector('#file-input');
@@ -182,17 +182,17 @@
                         deleteBtn.classList.add('delete-btn');
                         deleteBtn.innerHTML = '<i style="font-size: 20px;" class="fas fa-trash"></i>';
                         deleteBtn.addEventListener('click', (e) => {
-                            Swal.fire({
+                            swal({
                             title: '{{ __("Are you sure?") }}',
                             text: "{{ __("You will not be able to delete!") }}",
                             icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Yes, delete it!'
+                            buttons: true,
+                            dangerMode: true,
+                            buttons: ["Cancel", "Yes, delete it!"],
                             }).then((result) => {
-                                if (result.isConfirmed) {
-                                    Swal.fire(
+                                console.log(result);
+                                if (result) {
+                                    swal(
                                         'Deleted!',
                                         '{{ __("site.Your Image has been deleted.") }}',
                                         'success'
@@ -221,7 +221,7 @@
                     });
                     reader.readAsDataURL(file);
                 }else{
-                    Swal.fire({
+                    swal({
                         icon: 'error',
                         title: '{{ __("site.Oops...") }}',
                         text: '{{ __("site.Sorry , You Should Upload Valid Image") }}',

@@ -253,22 +253,22 @@
                                                             </label>
                                                         </th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 18% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
                                                             @lang('lang.product')</th>
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
                                                             @lang('lang.quantity')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 14% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 12% @else 12% @endif; font-size: 12px !important;">
                                                             @lang('lang.price')</th>
                                                          <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 11% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 9% @else 8% @endif; font-size: 12px !important;">
                                                             @lang('lang.extension')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 11% @else 14% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 11% @else 12% @endif; font-size: 12px !important;">
                                                             @lang('lang.discount')</th>
                                                         <th
-                                                            style="width: @if (session('system_mode') != 'restaurant') 11% @else 14% @endif; font-size: 12px !important;">
+                                                            style="width: @if (session('system_mode') != 'restaurant') 11% @else 13% @endif; font-size: 12px !important;">
                                                             @lang('lang.category_discount')</th>
                                                         <th
                                                             style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
@@ -467,6 +467,12 @@
                                     class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment"  data-backdrop="static" data-keyboard="false"
                                     id="cash-btn"><i class="fa fa-money"></i>
                                     @lang('lang.pay')</button>
+                            </div>
+                            <div class="column-5">
+                                <button data-method="cash" style="background: #478299" type="button"
+                                    class="btn btn-custom" 
+                                    id="quick-pay-btn" ><i class="fa fa-money"></i>
+                                    @lang('lang.quick_pay')</button>
                             </div>
                             <div class="column-5">
                                 <button data-method="coupon" style="background: #00cec9" type="button"
@@ -884,6 +890,7 @@
 @endsection
 
 @section('javascript')
+
     <script src="{{ asset('js/onscan.min.js') }}"></script>
     <script src="{{ asset('js/pos.js') }}"></script>
     <script src="{{ asset('js/dining_table.js') }}"></script>
@@ -899,33 +906,63 @@
             $('.table-badge').hide();
             $('.selected-table-badge').hide();
             $('.room-count-badge').hide();
+            
         })
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
-
+        var obj = new Object();
+        var objRoom = new Object();
+        var notificationContents = [];
+        var notificationRoomContents = [];
         var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
             cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
         });
         var channel = pusher.subscribe('order-channel');
         channel.bind('new-order', function(data) {
             if(data.table_no){
-                // get_dining_content();
-                let room_no=data.room_no;
-                let table_id=data.table_no;
+                var notificationContents = sessionStorage.getItem('notificationContents');
+                var notificationRoomContents = sessionStorage.getItem('notificationRoomContents');
+                obj.table_no = data.table_no;
+                obj.table_count = 1;
+                objRoom.room_no = data.room_no;
+                objRoom.room_count =1;
+                var isTableExist=0;
+                var isRoomExist=0;
+                if (!notificationContents) { // check if an item is already registered
+                    notificationContents = []; // if not, we initiate an empty array
+                } else {
+                    notificationContents = JSON.parse(notificationContents); // else parse whatever is in
+                    notificationContents.forEach((element, index) => {
+                        if(element.table_no === data.table_no) {
+                            element.table_count =element.table_count+1;
+                            isTableExist=1;
+                            return;
+                        }
+                    });
+                }
+                if (!notificationRoomContents) { // check if an item is already registered
+                    notificationRoomContents = []; // if not, we initiate an empty array
+                } else {
+                    notificationRoomContents = JSON.parse(notificationRoomContents); // else parse whatever is in
+                    notificationRoomContents.forEach((element, index) => {
+                        if( element.room_no === data.room_no) {
+                            element.room_count =element.room_count+1;
+                            isRoomExist=1;
+                            return;
+                        }
+                    });
+                }
+                if(!isTableExist){
+                    notificationContents.push(obj);
+                }
+                if(!isRoomExist){
+                    notificationRoomContents.push(objRoom);
+                }
+                sessionStorage.setItem("notificationContents", (JSON.stringify(notificationContents)));
+                sessionStorage.setItem("notificationRoomContents", (JSON.stringify(notificationRoomContents)));
                 let table_count = parseInt($('.table-badge').text()) + 1;
-                let selected_table_no = parseInt($('.table'+table_id).text()) + 1;
-                let room_no_count = parseInt($('.room-badge'+room_no).text()) + 1;
-                console.log(data.room_no)
-                console.log(data)
                 $('.table-badge').text(table_count);
-                $('.table'+table_id).text(selected_table_no);
-                $('.room-badge'+room_no).text(room_no_count);
                 $('.table-badge').show();
-                $('.table'+table_id).show();
-                $('.table'+table_id).removeClass('hide');
-                $('.room-badge'+room_no).show();
-                $('.room-badge'+room_no).removeClass('hide');
-                // $('.dining-btn').data('href','/dining-room/get-dining-modal/'+selected_table_no+'/'+room_id+'/'+room_no_count+'/'+table_id);
                 $.ajax({
                     type: "post",
                     url: "/pos/add-new-orders-to-transaction-sellline",
@@ -934,7 +971,7 @@
                     },
                     success: function (response) {
                         if(response==1){
-                            //  get_dining_content();
+                             get_dining_content();
                         }
                     }
                 });

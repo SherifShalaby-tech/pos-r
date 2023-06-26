@@ -212,23 +212,10 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-        //   return $request->dinig_room_id;
+          // return $request->all();
         // try {
 
         DB::beginTransaction();
-//        dd($request->ItemBorrowed);
-//        if($request->ItemBorrowed){
-//            foreach($request->ItemBorrowed as $deposite){
-//                DB::table('item_borroweds')->insert([
-//                    'name' => $deposite['name'],
-//                    'customer_id' => $deposite['customer_id'],
-//                    'admin_id' => Auth::user()->id,
-//                    'status' => $deposite['status'],
-//                    'deposit_amount' => $deposite['insurance_amount'],
-//                    'return_date' => $deposite['return_date']
-//                ]);
-//            }
-//        }
         $new_table=[];
         $table_reserve=[];
         if(isset($request->merge_table_id)){
@@ -338,13 +325,13 @@ class SellPosController extends Controller
                 }
             }
         }
-        foreach ($request->transaction_sell_line as $sell_line) {
-            // if (empty($sell_line['transaction_sell_line_id'])) {
-                if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
-                    $current_products[]= $sell_line['variation_id'];
-                }
-            // }
-        }
+        // foreach ($request->transaction_sell_line as $sell_line) {
+        //     // if (empty($sell_line['transaction_sell_line_id'])) {
+        //         if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
+        //             $current_products[]= $sell_line['variation_id'];
+        //         }
+        //     // }
+        // }
         // if quotation and qty is blocked(reserved) for sale
         if ($transaction->is_quotation && $transaction->block_qty) {
             foreach ($request->transaction_sell_line as $sell_line) {
@@ -396,7 +383,8 @@ class SellPosController extends Controller
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
                 if ($amount > 0) {
-                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->first();
+                    // return $payment['method'];
+                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
                     $payment_data = [
                         'transaction_payment_id'=>!empty($IsTransactionPayment)?$IsTransactionPayment->id:null,
                         'transaction_id' => $transaction->id,
