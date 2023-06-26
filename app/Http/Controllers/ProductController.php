@@ -1594,7 +1594,7 @@ class ProductController extends Controller
     public function updateColumnVisibility(Request $request)
     {
         $columnVisibility = $request->input('columnVisibility');
-        Cache::put('key_' . auth()->id(), $columnVisibility, 60); // Adjust the cache expiration time as needed
+        Cache::forever('key_' . auth()->id(), $columnVisibility);
         return response()->json(['success' => true]);
     }
 }

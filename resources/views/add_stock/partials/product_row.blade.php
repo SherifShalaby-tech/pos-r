@@ -7,8 +7,8 @@ $i=$i+1;
 $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->first();
 $stock = \App\Models\AddStockLine::where('product_id', $product->id)->where('variation_id', $product->variation_id)->latest()->first();
 if($stock){
-    $purchase_price = $stock->purchase_price;
-    $sell_price = $stock->sell_price;
+    $purchase_price = number_format($stock->purchase_price,2);
+    $sell_price = number_format($stock->sell_price,2);
 }
 @endphp
 <tr class="product_row">
@@ -44,16 +44,19 @@ if($stock){
     </td>
     <td>
         <span class="text-secondary font-weight-bold">*</span>
+
         <input type="hidden" class="purchase_price_submit" value="0"/>
         <input type="text" class="form-control purchase_price purchase_price_{{$i}}" data-allowsubmit="0" name="add_stock_lines[{{$i}}][purchase_price]" required
-            value="@if(isset($purchase_price)){{$purchase_price}}@else @if($product->purchase_price_depends == null) {{@num_format($product->default_purchase_price / $exchange_rate)}} @else {{@num_format($product->purchase_price_depends / $exchange_rate)}} @endif @endif" index_id="{{$i}}">
+            value="@if(isset($purchase_price)){{@num_format($purchase_price)}}@else @if($product->purchase_price_depends == null) {{@num_format($product->default_purchase_price / $exchange_rate)}} @else {{@num_format($product->purchase_price_depends / $exchange_rate)}} @endif @endif" index_id="{{$i}}">
+
             <input class="final_cost" type="hidden" name="add_stock_lines[{{$i}}][final_cost]" value="@if(isset($product->default_purchase_price)){{@num_format($product->default_purchase_price / $exchange_rate)}}@else{{0}}@endif"  >
     </td>
     <td>
         <span class="text-secondary font-weight-bold">*</span>
+
         <input type="hidden" class="selling_price_submit" value="0"/>
         <input type="text" class="form-control selling_price selling_price_{{$i}}" data-allowsellingpricesubmit="0" name="add_stock_lines[{{$i}}][selling_price]" required index_id="{{$i}}"
-               value="@if(isset($sell_price)){{$sell_price}}@else @if($product->selling_price_depends == null) {{@num_format($product->sell_price)}} @else {{@num_format($product->selling_price_depends)}} @endif @endif"  >
+               value="@if(isset($sell_price)){{@num_format($sell_price)}}@else @if($product->selling_price_depends == null) {{@num_format($product->sell_price)}} @else {{@num_format($product->selling_price_depends)}} @endif @endif"  >
 {{--        <input class="final_cost" type="hidden" name="add_stock_lines[{{$i}}][final_cost]" value="@if(isset($product->default_purchase_price)){{@num_format($product->default_purchase_price / $exchange_rate)}}@else{{0}}@endif">--}}
     </td>
     <td>
@@ -79,7 +82,7 @@ if($stock){
         Form::text('add_stock_lines['.$i.'][batch_number]', null, ['class' => 'form-control batchNumber']) !!}
        <button type="button" class="btn btn-success add_new_batch mt-2" id="addBatch" data-index="{{$i}}" data-product="{{$product}}" index_id="{{$i}}">
             <i class="fa fa-plus"></i>
-        </button> 
+        </button>
         {{__('lang.add_a_new_batch')}}
         {{-- @include(
             'quotation.partial.new_batch_modal'

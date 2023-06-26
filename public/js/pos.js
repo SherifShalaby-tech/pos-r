@@ -524,6 +524,9 @@ function get_label_product_row(
                 if(result.success&&(result.html_content==0||result.html_content == '')){
                 }else{
                     $('#product_extension_tbody').html(result.html_content);
+//                     get_ajax_add_row_product(product_id,row_count,variation_id,store_id,store_pos_id
+//                         ,customer_id,currency_id,edit_quantity,weighing_scale_barcode,extensions_ids=null,extensions_quantity=null,
+//                         extensions_sell_prices=null,qty);
                 }
             },
         });
@@ -2637,7 +2640,9 @@ function change_tax_id() {
 $(document).on("change", "#deliveryman_id", function () {
     $("#deliveryman_id_hidden").val($(this).val());
 });
-
+$(document).on("click", "#delivery_cost_btn", function () {
+    $("#deliveryman_id_hidden").val($("#deliveryman_id").val());
+});
 $(document).on("submit", "form#add_payment_form", function (e) {
     e.preventDefault();
     let data = $(this).serialize();
