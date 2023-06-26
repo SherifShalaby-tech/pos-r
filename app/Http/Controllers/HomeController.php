@@ -787,20 +787,20 @@ class HomeController extends Controller
             $current_stock_value_product = $this->productUtil->getCurrentStockProductValueByStore($store_id);
             $current_stock_value_material = $this->productUtil->getCurrentStockPrimaryMaterialValueByStore($store_id);
         }
-        $data['revenue'] = $revenue;
-        $data['sell_return'] = $sell_return;
-        $data['profit'] = $profit;
-        $data['net_profit'] = $net_profit;  
-        $data['purchase'] = $purchase;
-        $data['total_tax'] = $total_tax;
-        $data['expenses'] = $expenses;
-        $data['expense'] = $expense;
-        $data['purchase_return'] = $purchase_return;
-        $data['payment_received'] = $payment_received_total;
-        $data['payment_sent'] = $payment_sent;
-        $data['current_stock_value'] = $current_stock_value_product+$current_stock_value_material;
-        $data['current_stock_value_material'] = $current_stock_value_material;
-        $data['current_stock_value_product'] = $current_stock_value_product;
+        $data['revenue'] = number_format($revenue,2);
+        $data['sell_return'] = number_format($sell_return,2);
+        $data['profit'] = number_format($profit,2);
+        $data['net_profit'] = number_format($net_profit,2);
+        $data['purchase'] = number_format($purchase,2);
+        $data['total_tax'] = number_format($total_tax,2);
+        $data['expenses'] = number_format($expenses,2);
+        $data['expense'] = number_format($expense,2);
+        $data['purchase_return'] = number_format($purchase_return,2);
+        $data['payment_received'] = number_format($payment_received_total,2);
+        $data['payment_sent'] = number_format($payment_sent,2);
+        $data['current_stock_value'] = number_format($current_stock_value_product+$current_stock_value_material,2);
+        $data['current_stock_value_material'] = number_format($current_stock_value_material,2);
+        $data['current_stock_value_product'] = number_format($current_stock_value_product,2);
 
         return $data;
     }
