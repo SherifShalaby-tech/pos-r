@@ -1925,6 +1925,7 @@ function confirmCancel() {
             }
         }
 
+        reset_pos_form();
     }
     return false;
 }
