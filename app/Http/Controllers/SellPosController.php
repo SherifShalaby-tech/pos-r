@@ -50,7 +50,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Facades\Print;
 use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Database\Eloquent\Builder;
 use Pusher\Pusher;
