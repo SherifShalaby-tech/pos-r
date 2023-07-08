@@ -368,7 +368,7 @@ class DiningTableController extends Controller
         $dining_room = DiningRoom::find($dining_table->dining_room_id);
         $status_array = ['order' => __('lang.order'), 'reserve' => __('lang.reserve')];
         if ($table_status->status == 'reserve' || ($table_status->status=='available'&& $request->status=='reserve')) {
-            $status_array = ['reserve' => __('lang.reserve'), 'cancel_reservation' => __('lang.cancel_reservation')];
+            $status_array = ['order' => __('lang.order'),'reserve' => __('lang.reserve')];
         }
         return [
             'dining_table' => $dining_table,

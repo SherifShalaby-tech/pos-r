@@ -212,7 +212,7 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-          // return $request->all();
+        //   return TableReservation::all();
         // try {
 
         DB::beginTransaction();
@@ -456,19 +456,22 @@ class SellPosController extends Controller
                     $new_table->current_transaction_id = $transaction->id;
                     $new_table->save();
                 }
-                $table_reserve->current_transaction_id = $transaction->id;
+                
                 $old_status = $table_reserve->status;
                 if ($old_status == 'available' && empty($request->merge_table_id)) {
+                    $table_reserve->current_transaction_id = $transaction->id;
                     $table_reserve->status = 'order';
                     // $table_reserve->merge_table_id = $request->merge_table_id;
                 }
                 $table_reserve->save();
                 if ($old_status == 'reserve') {
                     if (Carbon::now()->gt(Carbon::parse($table_reserve->date_and_time))) {
-                        $table_reserve->status = 'available';
-                        $table_reserve->customer_name = null;
-                        $table_reserve->customer_mobile_number = null;
-                        $table_reserve->date_and_time = null;
+                        $new_table_order=TableReservation::create([
+                            'dining_table_id' => $table_reserve->dining_table_id,
+                            'status' => 'order',
+                        ]);
+                        $new_table_order->current_transaction_id=$transaction->id;
+                        $new_table_order->save();
                     }
                 }
                 if ($old_status != 'reserve') {
@@ -482,8 +485,6 @@ class SellPosController extends Controller
                 $table_reserve->save();
             }
         }
-
-
         DB::commit();
 
         $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
@@ -1980,14 +1981,19 @@ class SellPosController extends Controller
             $transaction->status = 'canceled';
             $transaction->canceled_by = Auth::user()->id;
             $transaction->save();
-            $table_status=TableReservation::where('dining_table_id',$transaction->dining_table_id)->first();
+            $table_status=TableReservation::where('dining_table_id',$transaction->dining_table_id)->where('status','order')->first();
+            $table_status_reserve=TableReservation::where('dining_table_id',$transaction->dining_table_id)->where('status','reserve')->first();
             // $dining_table = DiningTable::find($table_status->dining_table_id);
-            $table_status->status = 'available';
-            $table_status->customer_name = null;
-            $table_status->customer_mobile_number = null;
-            $table_status->date_and_time = null;
-            $table_status->current_transaction_id = null;
-            $table_status->save();
+            if(!empty($table_status_reserve)){
+                $table_status->delete();
+            }else{
+                $table_status->status = 'available';
+                $table_status->customer_name = null;
+                $table_status->customer_mobile_number = null;
+                $table_status->date_and_time = null;
+                $table_status->current_transaction_id = null;
+                $table_status->save();
+            } 
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')

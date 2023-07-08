@@ -1071,7 +1071,8 @@ class ProductController extends Controller
             $variation = Variation::find($id);
             $variation_count = Variation::where('product_id', $variation->product_id)->count();
             if ($variation_count > 1) {
-
+                $variation->deleted_by= request()->user()->id;
+                $variation->save();
                 $variation->delete();
                 ProductStore::where('variation_id', $id)->delete();
                 $output = [
@@ -1081,8 +1082,12 @@ class ProductController extends Controller
             } else {
                 ProductStore::where('product_id', $variation->product_id)->delete();
                 $product = Product::where('id', $variation->product_id)->first();
+                $product->deleted_by= request()->user()->id;
+                $product->save();
                 $product->clearMediaCollection('product');
                 $product->delete();
+                $variation->deleted_by= request()->user()->id;
+                $variation->save();
                 $variation->delete();
             }
             $ENABLE_POS_Branch = env('ENABLE_POS_Branch', false);
