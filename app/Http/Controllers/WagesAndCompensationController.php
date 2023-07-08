@@ -141,6 +141,13 @@ class WagesAndCompensationController extends Controller
 
             $data['date_of_creation'] = Carbon::now();
             $data['created_by'] = Auth::user()->id;
+            $net_amount=0;
+            if(!empty($data['net_amount']) && strpos($data['net_amount'],',')!==false){
+                $net_amount=str_replace(',','',$data['net_amount']);
+            }else{
+                $net_amount=$data['net_amount'];
+            }
+            $data['net_amount'] = (float)($net_amount);
             $data['other_payment'] = !empty($data['other_payment']) ? $data['other_payment'] : 0;
             $data['status'] = $request->submit == 'Paid' ? 'paid' : 'pending';
             $data['deductibles'] = !empty($data['deductibles']) ? $this->commonUtil->num_uf($data['deductibles']) : 0;
@@ -285,6 +292,13 @@ class WagesAndCompensationController extends Controller
                 $file->move(public_path() . '/uploads/', $upload_files);
                 $data['upload_files'] = $upload_files;
             }
+            $net_amount=0;
+            if(!empty($data['net_amount']) && strpos($data['net_amount'],',')!==false){
+                $net_amount=str_replace(',','',$data['net_amount']);
+            }else{
+                $net_amount=$data['net_amount'];
+            }
+            $data['net_amount'] = (float)($net_amount);
             $data['created_by'] = Auth::user()->id;
             $data['other_payment'] = !empty($data['other_payment']) ? $data['other_payment'] : 0;
             $data['deductibles'] = !empty($data['deductibles']) ? $this->commonUtil->num_uf($data['deductibles']) : 0;

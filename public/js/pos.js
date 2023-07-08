@@ -186,7 +186,7 @@ $(document).on("change", "input[name=restaurant_filter]", function () {
 $(document).ready(function () {
     $("#store_id").change();
 });
-// getFilterProductRightSide();
+getFilterProductRightSide();
 function getFilterProductRightSide(
     category_id = null,
     sub_category_id = null,
