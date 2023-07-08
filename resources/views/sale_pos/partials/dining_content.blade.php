@@ -94,7 +94,7 @@
                                                                 target="_blank" rel="noopener noreferrer" class="table-link" data-room="{{$dining_table->dining_room_id}}" data-table_no="{{$reserve->dining_table_id}}">
                                                                 <p style="padding-top: 4px; margin: 0px; color:black;">
                                                                     <button type="button"
-                                                                    class="btn btn-sm btn-danger text-white table_action"
+                                                                    class="btn btn-sm btn-danger text-white"
                                                                     data-table_id="{{ $reserve->dining_table_id }}"
                                                                     data-table_id="{{ $reserve->dining_table_id}}" style="border-radius: 70%;"
                                                                         >@lang('lang.order')</button>
@@ -103,7 +103,7 @@
                                                             @else
                                                                 <p style="padding-top: 4px; margin: 0px; color:black;">
                                                                     <button type="button"
-                                                                    class="btn btn-sm text-danger"
+                                                                    class="btn btn-sm text-danger table_action"
                                                                     data-table_id="{{ $reserve->dining_table_id }}"
                                                                     data-table_id="{{ $reserve->dining_table_id}}" style="border-radius: 70%;"
                                                                         ><i

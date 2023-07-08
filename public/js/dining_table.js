@@ -301,32 +301,32 @@ else{
 // });
 }
 });
-$(document).on("click", ".remove-table", function () {
-    let table_id = $(this).data("table_id");
-    swal({
-        title: 'Are you sure?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            swal(
-                'Deleted!',
-                'Your table has been deleted.',
-                'success'
-            )
-            $.ajax({
-                type: "delete",
-                url: "/dining-table/"+table_id,
-                success: function (response) {
-                    get_dining_content();
-                }
-            });
-        }
-    });
-});
+// $(document).on("click", ".remove-table", function () {
+//     let table_id = $(this).data("table_id");
+//     swal({
+//         title: 'Are you sure?',
+//         icon: 'warning',
+//         showCancelButton: true,
+//         confirmButtonColor: '#3085d6',
+//         cancelButtonColor: '#d33',
+//         confirmButtonText: 'Yes, delete it!'
+//     }).then((result) => {
+//         if (result.isConfirmed) {
+//             swal(
+//                 'Deleted!',
+//                 'Your table has been deleted.',
+//                 'success'
+//             )
+//             $.ajax({
+//                 type: "delete",
+//                 url: "/dining-table/"+table_id,
+//                 success: function (response) {
+//                     get_dining_content();
+//                 }
+//             });
+//         }
+//     });
+// });
 $(document).on("click", "#table_reserve_btn", function () {
     let table_id = $("#dining_table_id").val();
         if (
