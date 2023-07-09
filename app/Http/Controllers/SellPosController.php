@@ -214,7 +214,6 @@ class SellPosController extends Controller
     {
         //   return TableReservation::all();
         // try {
-
         DB::beginTransaction();
         $new_table=[];
         $table_reserve=[];
@@ -774,7 +773,8 @@ class SellPosController extends Controller
 
 
         if (!empty($request->dining_table_id)) {
-            $dining_table = DiningTable::find($request->dining_table_id);
+            $old_dining_table = DiningTable::find($request->dining_table_id);
+            $dining_table = TableReservation::where('dining_table_id',$request->dining_table_id)->where('status','order')->first();
             $transaction_data['dining_room_id'] = $dining_table->dining_room_id;
         }
 
@@ -783,9 +783,11 @@ class SellPosController extends Controller
             if (!empty($transaction->dining_table_id)) {
                 $dining_table->current_transaction_id = $transaction->id;
                 $old_status = $dining_table->status;
-                if ($old_status == 'available') {
-                    $dining_table->status = 'order';
-                }
+                // return $old_status ;
+                // if ($old_status == 'available') {
+                //     return 1;
+                //     $dining_table->status = 'order';
+                // }
                 $dining_table->save();
                 if ($old_status == 'reserve') {
                     if (Carbon::now()->gt(Carbon::parse($dining_table->date_and_time))) {
@@ -794,6 +796,8 @@ class SellPosController extends Controller
                         $dining_table->customer_name = null;
                         $dining_table->customer_mobile_number = null;
                         $dining_table->date_and_time = null;
+                        $dining_table->current_transaction_id =null;
+                        $dining_table->save();
                     }
                 }
 
@@ -805,9 +809,10 @@ class SellPosController extends Controller
                         $dining_table->customer_name = null;
                         $dining_table->customer_mobile_number = null;
                         $dining_table->date_and_time = null;
+                        $dining_table->save();
                     }
                 }
-                $dining_table->save();
+                
             }
         }
 
