@@ -246,7 +246,7 @@
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.active')</button>
                 <button type="button" value="20"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.created_by')</button>
-                <button type="button" value="21"    
+                <button type="button" value="22"    
                         class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
             </div>
         </div>
