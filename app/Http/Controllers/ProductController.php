@@ -254,12 +254,18 @@ class ProductController extends Controller
                 ->editColumn('batch_number', '{{$batch_number}}')
                 ->editColumn('default_sell_price', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
+                    ->whereHas('transaction', function ($query) {
+                        $query->where('type', '!=', 'supplier_service');
+                    })
                     ->latest()->first();
                     $price= $price? ($price->sell_price > 0 ? $price->sell_price : $row->default_sell_price):$row->default_sell_price;
                     return number_format($price,2);
                 })//, '{{@num_format($default_sell_price)}}')
                 ->editColumn('default_purchase_price', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
+                    ->whereHas('transaction', function ($query) {
+                        $query->where('type', '!=', 'supplier_service');
+                    })
                         ->latest()->first();
                     $price= $price? ($price->purchase_price > 0 ? $price->purchase_price : $row->default_purchase_price):$row->default_purchase_price;
 
@@ -307,7 +313,7 @@ class ProductController extends Controller
                 // ->editColumn('current_stock', '@if($is_service) number_format(0,App\Models\System::getProperty("numbers_length_after_dot") @else number_format($current_stock,App\Models\System::getProperty("numbers_length_after_dot")@endif')
                 ->addColumn('current_stock_value', function ($row) {
                     $price= AddStockLine::where('variation_id',$row->variation_id)
-                        ->whereColumn('quantity',">",'quantity_sold')->first();
+                    ->latest()->first();
                     $price= $price? ($price->purchase_price > 0 ? $price->purchase_price : $row->default_purchase_price):$row->default_purchase_price;
                     return $this->productUtil->num_f($row->current_stock * $price);
                 })
