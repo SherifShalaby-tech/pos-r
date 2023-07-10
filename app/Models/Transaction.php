@@ -229,7 +229,7 @@ class Transaction extends Model  implements HasMedia
     }
     public function table_reservation()
     {
-        return $this->belongsTo(TableReservation::class,'dining_table_id');
+        return $this->hasOne(TableReservation::class);
     }
     public function dining_room()
     {

@@ -9,7 +9,7 @@ class TableReservation extends Model
 {
     use HasFactory;
     protected $table="table_reservations";
-    protected $fillable=['dining_table_id','status','customer_mobile_number','customer_name','date_and_time','merge_table_id'];
+    protected $fillable=['dining_table_id','current_transaction_id','status','customer_mobile_number','customer_name','date_and_time','merge_table_id'];
     protected $casts = [
         'merge_table_id' => 'array'
     ];
@@ -19,6 +19,6 @@ class TableReservation extends Model
     }
     public function transaction()
     {
-        return $this->hasOne(Transaction::class);
+        return $this->belongsTo(Transaction::class, 'current_transaction_id');
     }
 }

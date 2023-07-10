@@ -411,7 +411,7 @@ class AddStockController extends Controller
         }
         DB::commit();
 
-        if ($data['submit'] == 'print') {
+        if (isset($data['submit']) && $data['submit'] == 'print') {
             $print = 'print';
             $url = action('AddStockController@show', $transaction->id) . '?print=' . $print;
 
