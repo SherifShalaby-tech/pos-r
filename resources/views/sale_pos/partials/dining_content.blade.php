@@ -164,8 +164,8 @@
                                                         <img src="{{ asset('images/red-table.jpg') }}" alt="table"
                                                             style="height: 70px; width: 80px;">
                                                         <p style="padding: 0px; margin: 0px; color:red;">
-                                                            @if (!empty($dining_table->transaction))
-                                                                {{ @num_format($dining_table->transaction->final_total) }}
+                                                            @if (!empty($reserve->transaction))
+                                                                {{ $reserve->transaction->grand_total }}
                                                             @endif
                                                         </p>
                                                     </a>
