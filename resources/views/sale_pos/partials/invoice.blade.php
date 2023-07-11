@@ -388,9 +388,9 @@ $is_first_after_extra=0;
                                     @endif
                                 @else
                                 @if($transaction->discount_amount!=0)
-                                {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')) }}
+                                {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))+@num_format($transaction->delivery_cost) }}
                                 @else
-                                {{ @num_format($transaction_sell_lines->sum('sub_total')-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))}}
+                                {{ @num_format($transaction_sell_lines->sum('sub_total')-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))+@num_format($transaction->delivery_cost)}}
                                 @endif
                                 @endif
                                 {{ $transaction->received_currency->symbol }}
