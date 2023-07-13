@@ -540,8 +540,7 @@ class SellPosController extends Controller
 
 // =======
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
-       $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
-       $allPrint = $this->allPrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+        $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 
 
         $output = [
@@ -549,7 +548,6 @@ class SellPosController extends Controller
             'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
             'html_content' => $html_content,
             'partialPrint' => $partialPrint,
-            'allPrint' => $allPrint,
             'msg' => __('lang.success')
         ];
         // } catch (\Exception $e) {
@@ -2104,23 +2102,29 @@ class SellPosController extends Controller
             $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
             $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
             foreach($printers as $printer){
-                // dd($printer);
-                $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
-                // dd($printer_products);
-                $transactionSellLines = [];
-                foreach ($transaction->transaction_sell_lines as $sellLine) {
-                    // dd($sellLine);
-                    if (in_array($sellLine['product_id'], $printer_products)) {
-                        $transactionSellLines[] = $sellLine;
+                if ($printer->name != "Cahsier"){
+                    // dd($printer);
+                    $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
+                    // dd($printer_products);
+                    $transactionSellLines = [];
+                    foreach ($transaction->transaction_sell_lines as $sellLine) {
+                        // dd($sellLine);
+                        if (in_array($sellLine['product_id'], $printer_products)) {
+                            $transactionSellLines[] = $sellLine;
+                        }
                     }
+                    $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
+                        'transaction',
+                        'payment_types',
+                        'transaction_invoice_lang',
+                        'transactionSellLines',
+                    ))->render();
+                    // $data[$printer->name]= $html_content;
                 }
-                $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
-                    'transaction',
-                    'payment_types',
-                    'transaction_invoice_lang',
-                    'transactionSellLines',
-                ))->render();
-                // $data[$printer->name]= $html_content;
+                else{
+                    $html_content =  $this->transactionUtil->getInvoicePrint($transaction, $payment_types,$transaction_invoice_lang,$productIds);
+                }
+
                 ConnectedPrinter::create([
                     'printer_name' => $printer->name,
                     'html' => $html_content,
@@ -2144,81 +2148,6 @@ class SellPosController extends Controller
 
         // }
 
-    }
-
-    public function allPrint($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[]){
-        $print_gift_invoice = request()->print_gift_invoice;
-
-        if (!empty($transaction_invoice_lang)) {
-            $invoice_lang = $transaction_invoice_lang;
-        } else {
-            $invoice_lang = System::getProperty('invoice_lang');
-            if (empty($invoice_lang)) {
-                $invoice_lang = request()->session()->get('language');
-            }
-        }
-        $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
-            ->when( count($current_products) > 0 , function ($q) use($current_products) {
-                $q->whereIn('variation_id',$current_products);
-            })->get();
-        $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
-        if ($invoice_lang == 'ar_and_en') {
-            $html_content = view('sale_pos.partials.all_printers_invoice_ar_and_end')->with(compact(
-                'transaction',
-                'payment_types',
-                'print_gift_invoice',
-            ))->render();
-        } else {
-            $html_content = view('sale_pos.partials.all_printers_invoice')->with(compact(
-                'transaction',
-                'payment_types',
-                'invoice_lang',
-                'print_gift_invoice',
-                'transaction_sell_lines',
-                'current_products',
-                'transaction_payments'
-            ))->render();
-        }
-
-        if ($transaction->is_direct_sale == 1) {
-            $sale = $transaction;
-            $payment_type_array = $payment_types;
-            $html_content = view('sale_pos.partials.all_printers_commercial_invoice')->with(compact(
-                'sale',
-                'payment_type_array',
-                'invoice_lang',
-                'print_gift_invoice',
-            ))->render();
-        }
-
-        if ($transaction->is_quotation == 1 && $transaction->status == 'draft') {
-            $sale = $transaction;
-            $payment_type_array = $payment_types;
-            $html_content = view('sale_pos.partials.commercial_invoice')->with(compact(
-                'sale',
-                'payment_type_array',
-                'invoice_lang'
-            ))->render();
-        }
-            ConnectedPrinter::create([
-                'printer_name' => 'full_invoice',
-                'html' => $html_content,
-            ]);
-
-        $options = array(
-            'cluster' =>  env('PUSHER_APP_CLUSTER'),
-            'useTLS' => true
-        );
-
-
-        $pusher = new Pusher(
-            env('PUSHER_APP_KEY'),
-            env('PUSHER_APP_SECRET'),
-            env('PUSHER_APP_ID'),
-            $options
-        );
-        $print = 1;
-        $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
     }
 }
 
