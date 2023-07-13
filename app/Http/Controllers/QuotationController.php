@@ -390,7 +390,8 @@ class QuotationController extends Controller
                     'transaction',
                     'payment_types'
                 ))->render();
-            } else {
+            }
+            else {
                 $html_content = view('sale_pos.partials.invoice')->with(compact(
                     'transaction',
                     'payment_types',

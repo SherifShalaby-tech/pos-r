@@ -123,7 +123,7 @@ if (empty($invoice_lang)) {
 $is_first_after_extra=0;
 
 @endphp
-<div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
+<div style="max-width:100%;margin:0 auto; padding: 0px 15px; color: black !important;">
 
     <div id="receipt-data">
         {{-- <div class="centered">
@@ -424,7 +424,7 @@ $is_first_after_extra=0;
                                 </tr>
                             @endif
                         @endif
-                    @endif <!-- end of print gift invoice --> 
+                    @endif <!-- end of print gift invoice -->
                     <tr>
                         <td class="centered" colspan="3">
                             @if (session('system_mode') == 'restaurant')

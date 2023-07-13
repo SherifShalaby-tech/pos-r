@@ -115,12 +115,12 @@ class SellPosController extends Controller
 
          // Retrieve the last execution date from the cache or database
          $lastExecutionDate = Cache::get('last_execution_date');
- 
+
          // Check if the last execution date is not today
          if (!$lastExecutionDate || $lastExecutionDate < $currentDate) {
              // Call the function or perform the desired task
              $this->notificationUtil->checkExpiary();
- 
+
              // Store the current date as the last execution date
              Cache::put('last_execution_date', $currentDate, 1440); // 1440 minutes = 1 day
          }
@@ -454,7 +454,7 @@ class SellPosController extends Controller
                     $new_table->current_transaction_id = $transaction->id;
                     $new_table->save();
                 }
-                
+
                 $old_status = $table_reserve->status;
                 if ($old_status == 'available' && empty($request->merge_table_id)) {
                     $table_reserve->current_transaction_id = $transaction->id;
@@ -541,6 +541,7 @@ class SellPosController extends Controller
 // =======
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
        $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
+       $allPrint = $this->allPrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
 
         $output = [
@@ -548,6 +549,7 @@ class SellPosController extends Controller
             'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
             'html_content' => $html_content,
             'partialPrint' => $partialPrint,
+            'allPrint' => $allPrint,
             'msg' => __('lang.success')
         ];
         // } catch (\Exception $e) {
@@ -811,7 +813,7 @@ class SellPosController extends Controller
                         $dining_table->save();
                     }
                 }
-                
+
             }
         }
 
@@ -1997,7 +1999,7 @@ class SellPosController extends Controller
                 $table_status->date_and_time = null;
                 $table_status->current_transaction_id = null;
                 $table_status->save();
-            } 
+            }
             $output = [
                 'success' => true,
                 'msg' => __('lang.success')
@@ -2040,7 +2042,7 @@ class SellPosController extends Controller
         $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
         $dining_table_reservation=TableReservation::where('dining_table_id',$order->table_no)->get();
         if(empty($dining_table_reservation)){
-            
+
             $dining_table_reservation=TableReservation::create([
                 'dining_table_id'=>$order->table_no,
                 'status'=>'available',
@@ -2142,6 +2144,81 @@ class SellPosController extends Controller
 
         // }
 
+    }
+
+    public function allPrint($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[]){
+        $print_gift_invoice = request()->print_gift_invoice;
+
+        if (!empty($transaction_invoice_lang)) {
+            $invoice_lang = $transaction_invoice_lang;
+        } else {
+            $invoice_lang = System::getProperty('invoice_lang');
+            if (empty($invoice_lang)) {
+                $invoice_lang = request()->session()->get('language');
+            }
+        }
+        $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
+            ->when( count($current_products) > 0 , function ($q) use($current_products) {
+                $q->whereIn('variation_id',$current_products);
+            })->get();
+        $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
+        if ($invoice_lang == 'ar_and_en') {
+            $html_content = view('sale_pos.partials.all_printers_invoice_ar_and_end')->with(compact(
+                'transaction',
+                'payment_types',
+                'print_gift_invoice',
+            ))->render();
+        } else {
+            $html_content = view('sale_pos.partials.all_printers_invoice')->with(compact(
+                'transaction',
+                'payment_types',
+                'invoice_lang',
+                'print_gift_invoice',
+                'transaction_sell_lines',
+                'current_products',
+                'transaction_payments'
+            ))->render();
+        }
+
+        if ($transaction->is_direct_sale == 1) {
+            $sale = $transaction;
+            $payment_type_array = $payment_types;
+            $html_content = view('sale_pos.partials.all_printers_commercial_invoice')->with(compact(
+                'sale',
+                'payment_type_array',
+                'invoice_lang',
+                'print_gift_invoice',
+            ))->render();
+        }
+
+        if ($transaction->is_quotation == 1 && $transaction->status == 'draft') {
+            $sale = $transaction;
+            $payment_type_array = $payment_types;
+            $html_content = view('sale_pos.partials.commercial_invoice')->with(compact(
+                'sale',
+                'payment_type_array',
+                'invoice_lang'
+            ))->render();
+        }
+            ConnectedPrinter::create([
+                'printer_name' => 'full_invoice',
+                'html' => $html_content,
+            ]);
+
+        $options = array(
+            'cluster' =>  env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true
+        );
+
+
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+        );
+        $print = 1;
+        $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
     }
 }
 
