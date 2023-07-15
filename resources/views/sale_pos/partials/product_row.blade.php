@@ -216,6 +216,7 @@
                 @endif
             </select>
         @endif
+        <input type="hidden" name="transaction_sell_line[{{$loop->index + $index}}][discount_category]" class="discount_category_name{{$product->product_id}}" />
     </td>
     <td style="width: @if(session('system_mode')  != 'restaurant') 10% @else 10% @endif">
         <span class="sub_total_span" style="font-weight: bold;"></span>
