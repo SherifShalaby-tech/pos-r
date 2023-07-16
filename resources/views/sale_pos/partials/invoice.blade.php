@@ -202,7 +202,7 @@ $is_first_after_extra=0;
             </div>
         @endif
         {{-- {{$transaction_sell_lines}} --}}
-        <div class="table_div" style=" padding: 0 7px; width:100%; height:fit-content;">
+        <div class="table_div" style=" padding: 0 7px; width:100%; height:100%;">
             <table style="margin: 0 auto; text-align: center !important">
                 <thead>
                     <tr>
