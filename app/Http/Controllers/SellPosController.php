@@ -2122,7 +2122,7 @@ class SellPosController extends Controller
                     // $data[$printer->name]= $html_content;
                 }
                 else{
-                    $html_content =  $this->transactionUtil->getInvoicePrint($transaction, $payment_types,$transaction_invoice_lang,$productIds);
+                    $html_content =  $this->transactionUtil->getInvoicePrintForPrinters($transaction, $payment_types,$transaction_invoice_lang,$productIds);
                 }
 
                 ConnectedPrinter::create([
