@@ -885,8 +885,8 @@ $(document).on("change", "select.extension_id", function () {
     });
 });
 $(document).on("change","#is_discount_permenant",function () {
-    $(".discount_start_date").prop('disabled', (i, v) => !v);
-    $(".discount_start_date").val(null);
-    $(".discount_end_date").prop('disabled', (i, v) => !v);
-    $(".discount_end_date").val(null);
+    $(this).closest("td").find(".discount_start_date").prop('disabled', (i, v) => !v);
+    $(this).closest("td").find(".discount_start_date").val(null);
+    $(this).closest("td").find(".discount_end_date").prop('disabled', (i, v) => !v);
+    $(this).closest("td").find(".discount_end_date").val(null);
 });

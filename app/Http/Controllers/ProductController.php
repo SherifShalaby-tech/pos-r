@@ -917,7 +917,8 @@ class ProductController extends Controller
             $product->update($product_data);
 
             $this->productUtil->createOrUpdateVariations($product, $request);
-
+            $index_discounts=[];
+            $index_discounts_olds=[];
             if($request->discount_type){
                 if(count($request->discount_type)>0){
                     $index_discounts=array_keys($request->discount_type);
