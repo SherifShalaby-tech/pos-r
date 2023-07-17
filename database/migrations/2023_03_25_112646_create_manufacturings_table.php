@@ -13,6 +13,7 @@ class CreateManufacturingsTable extends Migration
      */
     public function up()
     {
+        if(!Schema::hasTable('users')){
         Schema::create('manufacturings', function (Blueprint $table) {
             $table->id();
             $table->integer("store_id");
@@ -21,6 +22,7 @@ class CreateManufacturingsTable extends Migration
             $table->integer("manufacturer_id");
             $table->timestamps();
         });
+        }
     }
 
     /**

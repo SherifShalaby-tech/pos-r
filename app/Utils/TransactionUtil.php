@@ -176,6 +176,7 @@ class TransactionUtil extends Util
                     $transaction_sell_line->product_discount_value = !empty($line['product_discount_value']) ? $this->num_uf($line['product_discount_value']) : 0;
                     $transaction_sell_line->product_discount_type = !empty($line['product_discount_type']) ? $line['product_discount_type'] : null;
                     $transaction_sell_line->product_discount_amount = !empty($line['product_discount_amount']) ? $this->num_uf($line['product_discount_amount']) : 0;
+                    $transaction_sell_line->discount_category = !empty($line['discount_category']) ? $line['discount_category'] : '';
                     $old_quantity = $transaction_sell_line->quantity;
                     $transaction_sell_line->batch_number = !empty($line['batch_number']) ?$line['batch_number']: null;
                     $transaction_sell_line->quantity = $this->num_uf($line['quantity']);
@@ -288,6 +289,7 @@ class TransactionUtil extends Util
                     $transaction_sell_line->product_discount_value = !empty($line['product_discount_value']) ? $this->num_uf($line['product_discount_value']) : 0;
                     $transaction_sell_line->product_discount_type = !empty($line['product_discount_type']) ? $line['product_discount_type'] : null;
                     $transaction_sell_line->product_discount_amount = !empty($line['product_discount_amount']) ? $this->num_uf($line['product_discount_amount']) : 0;
+                    $transaction_sell_line->discount_category = !empty($line['discount_category']) ? $line['discount_category'] : '';
                     $transaction_sell_line->quantity = $this->num_uf($line['quantity']);
                     $transaction_sell_line->batch_number = !empty($line['batch_number']) ? $line['batch_number'] : null;
                     $transaction_sell_line->sell_price = $this->num_uf($line['sell_price']);
