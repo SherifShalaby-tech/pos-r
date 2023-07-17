@@ -123,7 +123,7 @@
     $is_first_after_extra=0;
 
 @endphp
-<div style="max-width:250px;margin:0 auto; padding: 0px 15px; color: black !important;">
+<div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
 
     <div id="receipt-data">
         <div class="centered">
@@ -491,7 +491,7 @@
                     <td class="centered" colspan="3">
                         <img style="margin-top:10px;"
                              src="data:image/png;base64,{{ DNS1D::getBarcodePNG($transaction->invoice_no, 'C128') }}"
-                             width="250" alt="barcode" />
+                             width="350" alt="barcode" />
                     </td>
                 </tr>
                 </tbody>
