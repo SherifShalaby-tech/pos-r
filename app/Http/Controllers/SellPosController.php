@@ -541,8 +541,7 @@ class SellPosController extends Controller
 // =======
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
-
-
+//return $partialPrint;
         $output = [
             'success' => true,
             'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
@@ -2092,6 +2091,7 @@ class SellPosController extends Controller
         // // foreach ($transaction->transaction_sell_lines as $line){
         //     return $printers = Printer::with('products')
         //     ->get();
+
             $productIds = [];
             $data[]= null;
             foreach ($transaction->transaction_sell_lines as $sellLine) {
@@ -2102,7 +2102,6 @@ class SellPosController extends Controller
             $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
             $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
             foreach($printers as $printer){
-                if ($printer->name != "Cahsier"){
                     // dd($printer);
                     $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
                     // dd($printer_products);
@@ -2120,18 +2119,47 @@ class SellPosController extends Controller
                         'transactionSellLines',
                     ))->render();
                     // $data[$printer->name]= $html_content;
-                }
-                else{
-                    $html_content =  $this->transactionUtil->getInvoicePrint($transaction, $payment_types,$transaction_invoice_lang,$productIds);
-                }
-
                 ConnectedPrinter::create([
                     'printer_name' => $printer->name,
                     'html' => $html_content,
                 ]);
-
             }
-            $options = array(
+
+            //  Add cashier printer
+
+        $cashier_printer = Printer::where('is_cashier','=',1)->get()->first();
+
+        $print_gift_invoice = request()->print_gift_invoice;
+        if (!empty($transaction_invoice_lang)) {
+            $invoice_lang = $transaction_invoice_lang;
+        } else {
+            $invoice_lang = System::getProperty('invoice_lang');
+            if (empty($invoice_lang)) {
+                $invoice_lang = request()->session()->get('language');
+            }
+        }
+        $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
+            ->when( count($productIds) > 0 , function ($q) use($productIds) {
+                $q->whereIn('variation_id',$productIds);
+            })->get();
+        $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
+
+        $html_content = view('sale_pos.partials.printers_invoice')->with(compact(
+            'transaction',
+            'payment_types',
+            'invoice_lang',
+            'print_gift_invoice',
+            'transaction_sell_lines',
+            'productIds',
+            'transaction_payments'
+        ))->render();
+
+        ConnectedPrinter::create([
+            'printer_name' => $cashier_printer->name,
+            'html' => $html_content,
+        ]);
+
+        $options = array(
                 'cluster' =>  env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true
             );

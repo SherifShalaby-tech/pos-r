@@ -140,7 +140,7 @@ class TransactionUtil extends Util
         }else{
             $payment_status = 'partial';
         }
-        
+
         $transaction->payment_status = $payment_status;
         $transaction->save();
 
@@ -263,16 +263,16 @@ class TransactionUtil extends Util
                     $IsExisttransaction_sell_line=TransactionSellLine::where('transaction_id', $transaction->id)->where('product_id',$line['product_id'])->where('variation_id',$line['variation_id'])->first();
                     if(!empty($IsExisttransaction_sell_line) && $IsExisttransaction_sell_line->check_pay=="0"){
                         $transaction_sell_line=$IsExisttransaction_sell_line;
-                        
+
                     // $transaction_sell_line->check_pay = isset($line['is_product_checked']) && $line['is_product_checked']=="1"?1:0;
                     // $transaction_sell_line->save();
                     }else if(!empty($IsExisttransaction_sell_line) && $IsExisttransaction_sell_line->check_pay=="1"){
                         $keep_sell_lines[] = $IsExisttransaction_sell_line->id;
-                        
+
                     }
                     else{
                         $transaction_sell_line = new TransactionSellLine();
-                      
+
                     }
                     if(!empty($transaction_sell_line)){
                         // return $line['product_id'];
@@ -334,7 +334,7 @@ class TransactionUtil extends Util
                         $line['quantity'],
                         $old_quantity);
                 }
-                    
+
             // }else{
                 // $last_sell_line=TransactionSellLine::where('transaction_id', $transaction->id)->where('product_id',$line['product_id'])->where('variation_id',$line['variation_id'])->first();
                 // if(!empty($last_sell_line)){
@@ -536,7 +536,7 @@ class TransactionUtil extends Util
                 $transaction_sell->quantity=$transaction_sell->quantity+$order->quantity;
                 $transaction_sell->save();
             }
-        } 
+        }
         // return true;
     }
     /**
@@ -1587,6 +1587,67 @@ class TransactionUtil extends Util
             $sale = $transaction;
             $payment_type_array = $payment_types;
             $html_content = view('sale_pos.partials.commercial_invoice')->with(compact(
+                'sale',
+                'payment_type_array',
+                'invoice_lang'
+            ))->render();
+        }
+
+        return $html_content;
+    }
+
+
+//   invoice for printers
+    public function getInvoicePrintForPrinters($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[])
+    {
+        $print_gift_invoice = request()->print_gift_invoice;
+
+        if (!empty($transaction_invoice_lang)) {
+            $invoice_lang = $transaction_invoice_lang;
+        } else {
+            $invoice_lang = System::getProperty('invoice_lang');
+            if (empty($invoice_lang)) {
+                $invoice_lang = request()->session()->get('language');
+            }
+        }
+        $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
+            ->when( count($current_products) > 0 , function ($q) use($current_products) {
+                    $q->whereIn('variation_id',$current_products);
+        })->get();
+        $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
+        if ($invoice_lang == 'ar_and_en') {
+            $html_content = view('sale_pos.partials.printers_invoice_ar_and_end')->with(compact(
+                'transaction',
+                'payment_types',
+                'print_gift_invoice',
+            ))->render();
+        } else {
+            $html_content = view('sale_pos.partials.printers_invoice')->with(compact(
+                'transaction',
+                'payment_types',
+                'invoice_lang',
+                'print_gift_invoice',
+                'transaction_sell_lines',
+                'current_products',
+                'transaction_payments'
+            ))->render();
+        }
+
+        if ($transaction->is_direct_sale == 1) {
+            $sale = $transaction;
+            $payment_type_array = $payment_types;
+            $html_content = view('sale_pos.partials.printers_commercial_invoice')->with(compact(
+                'sale',
+                'payment_type_array',
+                'invoice_lang',
+                'print_gift_invoice',
+            ))->render();
+        }
+
+        if ($transaction->is_quotation == 1 && $transaction->status == 'draft') {
+            $sale = $transaction;
+            $payment_type_array = $payment_types;
+            $html_content = view('sale_pos.partials.printers_commercial_invoice')->with(compact(
                 'sale',
                 'payment_type_array',
                 'invoice_lang'

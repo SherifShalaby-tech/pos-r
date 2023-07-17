@@ -11,6 +11,7 @@ use App\Models\Store;
 use COM;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\DataTables;
 use Symfony\Component\Process\Process;
 
@@ -67,13 +68,12 @@ class PrinterController extends Controller
     }
 
     public function update(Update $request){
-        // return $request;
         $data = $request->except('_token', '_method','products');
         $printer = Printer::where('id', $request->id)->update($data);
         if ($request->products) {
             $existingProducts = PrinterProduct::where('printer_id', $request->id)->pluck('product_id')->toArray();
             $requestedProducts = $request->products;
-        
+
             // Add new products
             $newProducts = array_diff($requestedProducts, $existingProducts);
             foreach ($newProducts as $newProduct) {
@@ -83,10 +83,13 @@ class PrinterController extends Controller
                 ];
                 PrinterProduct::create($data);
             }
-        
             // Delete products that are not in the request
             $productsToDelete = array_diff($existingProducts, $requestedProducts);
             PrinterProduct::where('printer_id', $request->id)->whereIn('product_id', $productsToDelete)->delete();
+        }
+        else{
+            $printer = Printer::find($request->id);
+             $printer->products()->delete();
         }
         $output = [
             'success' => true,
@@ -117,10 +120,31 @@ class PrinterController extends Controller
         //         'name' => $printerName,
         //         'store_id' => $request->printer_store_id
         //     ]);
-            
+
         // }
         $printers = Printer::where('store_id', $request->printer_store_id)->get();
         return $printers;
 
+    }
+    public function addToCashier($id){
+        try {
+            $printer = Printer::find($id);
+            $status = $printer->is_cashier == 0 ? 1 : 0;
+            $printer->update(['is_cashier' => $status]);
+
+            $output = [
+                'success' => true,
+                'msg' => __('lang.printer_updated')
+            ];
+
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('messages.something_went_wrong')
+            ];
+
+        }
+        return redirect()->route('printers.index')->with('status',$output);
     }
 }

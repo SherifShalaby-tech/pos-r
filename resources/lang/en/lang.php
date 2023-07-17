@@ -1455,4 +1455,6 @@ return [
     'not_allowed'=>"How could you give the money in your hand to yourself 🤪 please focus and select someone else😎",
     'new_reserve'=>'New Reserve',
     'new_order'=>'New Order',
+    'available' => 'Available',
+    'not_available' => 'Not Available',
 ];

@@ -171,9 +171,9 @@ $is_first_after_extra=0;
             @endif --}}
         </div>
         @if (session('system_mode') == 'restaurant')
-            <div style="width: 30%; float:right; text-align:center;">
+            <div style="width: 20%; float:right; text-align:center;">
                 <p
-                    style="width: 75px; height:75px; border: 4px solid #111; border-radius: 50%; padding: 20px; font-size: 23px; font-weight: bold;">
+                    style="width: 30px; height:30px; border: 4px solid #111; border-radius: 50%; padding: 20px; font-size: 23px; font-weight: bold;">
                     {{ $transaction->ticket_number }}</p>
             </div>
         @endif
