@@ -17,6 +17,7 @@
                 <tr>
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.status')</th>
+                    <th>@lang('lang.is_cashier')</th>
                     <th>@lang('lang.createdBy')</th>
                     <th class="notexport">@lang('lang.action')</th>
                 </tr>
@@ -32,6 +33,13 @@
                             {{$printer->Active()}}
                         </td>
                         <td>
+                            @if($printer->is_cashier == 1)
+                                @lang('lang.available')
+                            @else
+                                @lang('lang.not_available')
+                            @endif
+                        </td>
+                        <td>
                             {{auth()->user()->name}}
                         </td>
                         <td>
@@ -39,6 +47,9 @@
                                data-container=".view_modal"
                                class="btn btn-primary btn-modal text-white edit_job"><i
                                     class="fa fa-pencil-square-o"></i></a>
+                            <a data-href="{{route('printers.addToCashier', $printer->id)}}"
+                               class="btn btn-info btn-modal text-white is_cashier"><i
+                                    class="fa fa-cash-register"></i></a>
                             <a data-href="{{route('printers.destroy', $printer->id)}}"
                                data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"
                                class="btn btn-danger text-white delete_item"><i
@@ -54,7 +65,9 @@
 @stop
 @section('javascript')
 <script>
-
+    $(document).on('click','.is_cashier',function () {
+        location.reload();
+    });
 </script>
 
 
