@@ -32,6 +32,7 @@
                                     <option value="{{$product->id}}" {{$selected}}>{{$product->name}}</option>
                                 @endforeach
                             </select>
+
                         </div>
                     </div>
                 </div>
@@ -51,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="is_active">{{trans('lang.status')}}</label>
