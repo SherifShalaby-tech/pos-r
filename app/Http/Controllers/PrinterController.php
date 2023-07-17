@@ -68,7 +68,6 @@ class PrinterController extends Controller
     }
 
     public function update(Update $request){
-        // return $request;
         $data = $request->except('_token', '_method','products');
         $printer = Printer::where('id', $request->id)->update($data);
         if ($request->products) {
@@ -84,10 +83,13 @@ class PrinterController extends Controller
                 ];
                 PrinterProduct::create($data);
             }
-
             // Delete products that are not in the request
             $productsToDelete = array_diff($existingProducts, $requestedProducts);
             PrinterProduct::where('printer_id', $request->id)->whereIn('product_id', $productsToDelete)->delete();
+        }
+        else{
+            $printer = Printer::find($request->id);
+             $printer->products()->delete();
         }
         $output = [
             'success' => true,

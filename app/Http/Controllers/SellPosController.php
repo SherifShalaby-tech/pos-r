@@ -542,7 +542,6 @@ class SellPosController extends Controller
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 
-
         $output = [
             'success' => true,
             'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
@@ -2102,7 +2101,6 @@ class SellPosController extends Controller
             $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
             $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
             foreach($printers as $printer){
-                if (!$printer->is_cashier){
                     // dd($printer);
                     $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
                     // dd($printer_products);
@@ -2120,18 +2118,23 @@ class SellPosController extends Controller
                         'transactionSellLines',
                     ))->render();
                     // $data[$printer->name]= $html_content;
-                }
-                else{
-                    $html_content =  $this->transactionUtil->getInvoicePrintForPrinters($transaction, $payment_types,$transaction_invoice_lang,$productIds);
-                }
-
                 ConnectedPrinter::create([
                     'printer_name' => $printer->name,
                     'html' => $html_content,
                 ]);
 
             }
-            $options = array(
+
+            //  Add cashier printer
+
+        $cashier_printer = Printer::where('is_cashier','=',1)->get()->first();
+        $html_content =  $this->transactionUtil->getInvoicePrintForPrinters($transaction, $payment_types,$transaction_invoice_lang,$productIds);
+        ConnectedPrinter::create([
+            'printer_name' => $cashier_printer->name,
+            'html' => $html_content,
+        ]);
+
+        $options = array(
                 'cluster' =>  env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true
             );
