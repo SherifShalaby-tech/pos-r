@@ -2102,7 +2102,7 @@ class SellPosController extends Controller
             $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
             $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
             foreach($printers as $printer){
-                if ($printer->name != "Cahsier"){
+                if (!$printer->is_cashier){
                     // dd($printer);
                     $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
                     // dd($printer_products);

@@ -82,6 +82,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::resource('printers',PrinterController::class);
     Route::get('/get-printers', 'PrinterController@getPrinters');
     Route::get('/print-partials', 'SellPosController@partialPrint');
+    Route::get('add-to-cashier/{id}', 'PrinterController@addToCashier')->name('printers.addToCashier');
 
     Route::get('consumption/get-sufficient-suggestions/{raw_material_id}', 'ConsumptionController@getSufficientSuggestions');
     Route::get('consumption/get-raw-material-details', 'ConsumptionController@getConsumptionDetailRow');
