@@ -129,20 +129,20 @@
         <div class="centered">
             @include('layouts.partials.print_header')
 
-            <p>{{ $transaction->store->name }}
+            <p style="font-size: 20px; font-weight:900!important;">{{ $transaction->store->name }}
                 {{ $transaction->store->location }}</p>
             @if($transaction->status=="draft")
-                <p
+                <p  style="font-size: 20px; font-weight:900!important;"
                     data-href="#"
                     class="btn btn-modal" style="position: absolute; top: 1px;">{{ __('lang.draft', [], $invoice_lang)}}
                 </p>
             @endif
-            <p>{{ $transaction->store->phone_number }} </p>
+            <p style="font-size: 20px; font-weight:900!important;">{{ $transaction->store->phone_number }} </p>
 
         </div>
         <div style="display: flex;justify-content: space-evenly; align-items: baseline;">
             <div style="width: 70%; float:left;">
-                <p>@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
+                <p style="font-size: 20px; font-weight:900!important;">@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
                     @lang('lang.reference', [], $invoice_lang): {{ $transaction->invoice_no }}<br>
                     @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
                         {{ $transaction->customer->name }} <br>
@@ -154,7 +154,7 @@
                     @endif
                 </p>
                 @if (session('system_mode') == 'garments')
-                    <p>
+                    <p style="font-size: 20px; font-weight:900!important;">
                         @if (!empty($transaction->customer_size))
                             @lang('lang.customer_size'):
                             {{ $transaction->customer_size->name }} <br>
@@ -188,7 +188,7 @@
                     @endif
                 @endif
                 @if (!empty($transaction->deliveryman))
-                    <p>{{ $transaction->deliveryman->employee_name }}</p>
+                    <p style="font-size: 20px; font-weight:900!important;">{{ $transaction->deliveryman->employee_name }}</p>
                 @endif
                 @if (!empty($transaction->delivery_address))
                     @lang('lang.delivery_address'):
@@ -209,14 +209,14 @@
             <table style="margin: 0 auto; text-align: center !important">
                 <thead>
                 <tr>
-                    <th style="width: 20%; padding: 0 25px !important;">@lang('lang.item', [], $invoice_lang) </th>
+                    <th style="width: 20%; padding: 0 25px !important; font-size: 30px; font-weight:900!important;">@lang('lang.item', [], $invoice_lang) </th>
                     @if (empty($print_gift_invoice))
-                        <th style="width: 20%; text-align:center !important;"> @lang('lang.price', [], $invoice_lang)
+                        <th style="width: 20%; text-align:center !important; font-size: 30px; font-weight:900!important;"> @lang('lang.price', [], $invoice_lang)
                         </th>
                     @endif
-                    <th style="width: 20%; text-algin: center;">@lang('lang.qty', [], $invoice_lang) </th>
+                    <th style=" width: 20%; text-algin: center; font-size: 30px; font-weight:900!important;">@lang('lang.qty', [], $invoice_lang) </th>
                     @if (empty($print_gift_invoice))
-                        <th style="width: 20%; text-algin: center;">@lang('lang.amount', [], $invoice_lang) </th>
+                        <th style="width: 20%; text-algin: center; font-size: 30px; font-weight:900!important;">@lang('lang.amount', [], $invoice_lang) </th>
                     @endif
                 </tr>
                 </thead>
@@ -227,7 +227,7 @@
                         @php
                             $is_first_after_extra=0;
                         @endphp
-                        <td style="width: 20%; text-algin: right !important;">
+                        <td style="width: 20%; text-algin: right !important;font-size: 20px; font-weight:900!important;">
                             @if (!empty($line->variation))
                                 @if ($line->variation->name != 'Default')
                                     {{ $line->variation->name }}
@@ -238,13 +238,13 @@
 
                         </td>
                         @if (empty($print_gift_invoice))
-                            <td style="text-align:center !important;vertical-align:bottom; width: 20%;">
+                            <td style="text-align:center !important;vertical-align:bottom; width: 20%;font-size: 20px; font-weight:900!important;">
                                 {{ @num_format($line->sell_price) }}</td>
                         @endif
-                        <td style="text-align:center;vertical-align:bottom; width: 20%;">
+                        <td style="text-align:center;vertical-align:bottom; width: 20%; font-size: 20px; font-weight: bold">
                             {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
                         @if (empty($print_gift_invoice))
-                            <td style="text-align:center;vertical-align:bottom; width: 20%;">
+                            <td style="text-align:center;vertical-align:bottom; width: 20%;font-size: 20px; font-weight:900!important;">
                                 @if ($line->product_discount_type != 'surplus')
                                     {{ @num_format($line->sub_total + $line->product_discount_amount) }}
                                 @else
@@ -270,16 +270,16 @@
                             @if($qur_index == 1 || $k = 0 )
                                 <tr class="tr-extension">
                                     @endif
-                                    <td>{{(int)$line_extension->quantity.' -'.$name}}</td>
+                                    <td style="font-size: 20px; font-weight:900!important;">{{(int)$line_extension->quantity.' -'.$name}}</td>
                                     @if( $qur_index == 0 )
                                 </tr>
                             @elseif($loop->last )
                                 @if($loop->last && $qur_index == 1 )
-                                    <td></td>
-                                    <td></td>
+                                    <td style="font-size: 20px; font-weight:900!important;"></td>
+                                    <td style="font-size: 20px; font-weight:900!important;"></td>
                                     </tr>
                                 @else
-                                    <td></td>
+                                    <td style="font-size: 20px; font-weight:900!important;"></td>
                                     </tr>
                                 @endif
                             @endif
@@ -290,8 +290,8 @@
                 @if (empty($print_gift_invoice))
                     <tfoot>
                     <tr>
-                        <th style="font-size: 16px;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
-                        <th style="font-size: 16px; text-align:right;">
+                        <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
+                        <th style="font-size: 20px; text-align:right;  font-weight: 900!important;">
                             {{ @num_format($transaction_sell_lines->sum('sub_total') + $transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                             {{-- {{ @num_format($transaction->grand_total + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }} --}}
                             {{ $transaction->received_currency->symbol }}
@@ -299,8 +299,8 @@
                     </tr>
                     @if ($transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount') > 0)
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.discount', [], $invoice_lang)</th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.discount', [], $invoice_lang)</th>
+                            <th style="font-size: 20px; text-align:right;  font-weight: 900!important;">
                                 {{ @num_format($transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -308,8 +308,8 @@
                     @endif
                     @if ($transaction->total_item_tax != 0)
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.tax', [], $invoice_lang)</th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.tax', [], $invoice_lang)</th>
+                            <th style="font-size: 20px; text-align:right;  font-weight: 900!important;">
                                 {{ @num_format($transaction->total_item_tax) }}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -317,25 +317,25 @@
                     @endif
                     @if ($transaction->total_tax != 0)
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">{{ $transaction->tax->name ?? '' }}</th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">{{ $transaction->tax->name ?? '' }}</th>
+                            <th style="font-size: 30px; text-align:right; font-weight: 900!important;">
                                 {{ @num_format($transaction->total_tax) }}
                                 {{ $transaction->received_currency->symbol }}</th>
                         </tr>
                     @endif
                     @if ($transaction->service_fee_value > 0)
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.service')</th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.service')</th>
+                            <th style="font-size: 30px; font-weight: 900!important; text-align:right;">
                                 {{ @num_format($transaction->service_fee_value) }}
                                 {{ $transaction->received_currency->symbol }}</th>
                         </tr>
                     @endif
                     @if ($transaction->discount_amount != 0)
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.order_discount', [], $invoice_lang)
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.order_discount', [], $invoice_lang)
                             </th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important; text-align:right;">
                                 {{ @num_format($transaction->discount_amount) }}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -343,8 +343,8 @@
                     @endif
                     @if ($transaction->total_sp_discount != 0)
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.sales_promotion', [], $invoice_lang)</th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.sales_promotion', [], $invoice_lang)</th>
+                            <th style="font-size: 30px; font-weight: 900!important; text-align:right;">
                                 {{ @num_format($transaction->total_sp_discount) }}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -352,20 +352,20 @@
                     @endif
                     @if ($transaction_sell_lines->sum('coupon_discount'))
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.coupon_discount', [], $invoice_lang)</th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.coupon_discount', [], $invoice_lang)</th>
+                            <th style="font-size: 30px; text-align:right; font-weight: 900!important;">
                                 {{ @num_format($transaction->transaction_sell_lines->sum('coupon_discount')) }}
                             </th>
                         </tr>
                     @endif
                     @if (!empty($transaction->deliveryman_id))
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.delivery_cost', [], $invoice_lang)
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.delivery_cost', [], $invoice_lang)
                                 @if (!empty($transaction->deliveryman->employee_name))
                                     ({{ $transaction->deliveryman->employee_name }})
                                 @endif
                             </th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important; text-align:right;">
                                 {{ @num_format($transaction->delivery_cost) }}
                                 {{ $transaction->received_currency->symbol }}
                             </th>
@@ -373,16 +373,16 @@
                     @endif
                     @if (!empty($transaction->rp_redeemed_value))
                         <tr>
-                            <th style="font-size: 16px;" colspan="3">@lang('lang.redeemed_point_value', [], $invoice_lang)
+                            <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.redeemed_point_value', [], $invoice_lang)
                             </th>
-                            <th style="font-size: 16px; text-align:right;">
+                            <th style="font-size: 30px; font-weight: 900!important; text-align:right;">
                                 {{ @num_format($transaction->rp_redeemed_value) }}
                             </th>
                         </tr>
                     @endif
                     <tr>
-                        <th style="font-size: 16px;" colspan="3">@lang('lang.grand_total', [], $invoice_lang)</th>
-                        <th style="font-size: 16px; text-align:right;">
+                        <th style="font-size: 30px; font-weight: 900!important;" colspan="3">@lang('lang.grand_total', [], $invoice_lang)</th>
+                        <th style="font-size: 30px; font-weight: 900!important; text-align:right;">
                             @if ($transaction->delivery_cost_given_to_deliveryman)
                                 @if($transaction->discount_amount!=0)
                                     {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')) }}
@@ -414,21 +414,21 @@
                         @foreach ($transaction->transaction_payments as $payment_data)
                             @if ($payment_data->method != 'deposit')
                                 <tr style="background-color:#ddd;">
-                                    <td style="font-size: 16px; padding: 7px;">
+                                    <td style="font-size: 30px; padding: 7px; font-weight: bold">
                                         @if (!empty($payment_data->method))
                                             {{ __('lang.' . $payment_data->method, [], $invoice_lang) }}
                                         @endif
                                     </td>
-                                    <td style="font-size: 16px; padding: 10px; text-align: right;" colspan="2">
+                                    <td style="font-size: 20px; padding: 10px; text-align: right; font-weight: bold" colspan="2">
                                         {{ @num_format($payment_data->cashes_amount + $payment_data->change_amount) }}
                                         {{ $transaction->received_currency->symbol }}</td>
                                 </tr>
                             @endif
                             @if (!empty($payment_data->change_amount) && $payment_data->change_amount > 0 && $payment_data->method != 'deposit')
                                 <tr>
-                                    <td style="font-size: 16px; padding: 7px;width:30%">@lang('lang.change', [], $invoice_lang)</td>
+                                    <td style="font-size: 30px; padding: 7px;width:30%; font-weight: bold">@lang('lang.change', [], $invoice_lang)</td>
                                     <td colspan="2"
-                                        style="font-size: 16px; padding: 7px;width:40%; text-align: right;">
+                                        style="font-size: 20px; padding: 7px;width:40%; text-align: right; font-weight: bold">
                                         {{ @num_format($payment_data->change_amount) }}
                                         {{ $transaction->received_currency->symbol }}</td>
                                 </tr>
@@ -437,24 +437,24 @@
                     @endif
                     @if (!empty($transaction->add_to_deposit) && $transaction->add_to_deposit > 0)
                         <tr>
-                            <td style="font-size: 16px; padding: 7px;width:30%">@lang('lang.deposit', [], $invoice_lang)
+                            <td style="font-size: 30px; padding: 7px;width:30%; font-weight: bold">@lang('lang.deposit', [], $invoice_lang)
                             </td>
-                            <td colspan="2" style="font-size: 16px; padding: 7px;width:40%; text-align: right;">
+                            <td colspan="2" style="font-size: 20px; padding: 7px;width:40%; text-align: right;font-weight: bold">
                                 {{ @num_format($transaction->add_to_deposit) }}</td>
                         </tr>
                     @endif
                     @if (!empty($transaction->used_deposit_balance) && $transaction->used_deposit_balance > 0)
                         <tr>
-                            <td style="font-size: 16px; padding: 7px;width:30%">@lang('lang.used_deposit_balance', [], $invoice_lang)</td>
-                            <td colspan="2" style="font-size: 16px; padding: 7px;width:40%; text-align: right;">
+                            <td style="font-size: 30px; padding: 7px;width:30%; font-weight: bold">@lang('lang.used_deposit_balance', [], $invoice_lang)</td>
+                            <td style="font-size: 20px; font-weight:900!important;" colspan="2" style="font-size: 20px; padding: 7px;width:40%; text-align: right; font-weight: bold">
                                 {{ @num_format($transaction->used_deposit_balance) }}</td>
                         </tr>
                     @endif
                     @if ($transaction->is_quotation != 1)
                         @if ($transaction->payment_status != 'paid' && $transaction->final_total - $transaction->transaction_payments->sum('amount') > 0)
                             <tr>
-                                <td style="font-size: 16px; padding: 5px;width:30%">@lang('lang.due_sale_list', [], $invoice_lang)</td>
-                                <td colspan="2" style="font-size: 16px; padding: 5px;width:40%; text-align: right;">
+                                <td style="font-size: 30px; padding: 5px;width:30%; font-weight: bold">@lang('lang.due_sale_list', [], $invoice_lang)</td>
+                                <td colspan="2" style="font-size: 20px; padding: 5px;width:40%; text-align: right;font-weight: bold">
                                     {{ @num_format($transaction->final_total - $transaction->transaction_payments->sum('amount')) }}
                                     {{ $transaction->received_currency->symbol }}
                                 </td>
@@ -464,8 +464,8 @@
 
                     @if(env('SHOW_DUE',false) && $transaction->customer_id !=  env('DEFAULT_CUSTMER',1) && $total_due < 0)
                         <tr>
-                            <td style="font-size: 16px; padding: 5px;width:30%">@lang('lang.total_due', [], $invoice_lang)</td>
-                            <td colspan="2" style="font-size: 16px; padding: 5px;width:40%; text-align: right;">
+                            <td style="font-size: 30px; padding: 5px;width:30%; font-weight: bold">@lang('lang.total_due', [], $invoice_lang)</td>
+                            <td colspan="2" style="font-size: 20px; padding: 5px;width:40%; text-align: right; font-weight: bold">
                                 {{ @num_format($total_due*-1) }}
                                 {{ $transaction->received_currency->symbol }}
                             </td>
@@ -474,7 +474,7 @@
                     @endif
                 @endif <!-- end of print gift invoice -->
                 <tr>
-                    <td class="centered" colspan="3">
+                    <td style="font-size: 20px; font-weight:bold!important;" class="centered" colspan="3">
                         @if (session('system_mode') == 'restaurant')
                             @lang('lang.enjoy_your_meal_please_come_again', [], $invoice_lang)
                         @else
@@ -484,11 +484,11 @@
                 </tr>
                 @if (!empty($transaction->terms_and_conditions))
                     <tr>
-                        <td>{!! $transaction->terms_and_conditions->description !!}</td>
+                        <td >{!! $transaction->terms_and_conditions->description !!}</td>
                     </tr>
                 @endif
                 <tr>
-                    <td class="centered" colspan="3">
+                    <td  class="centered" colspan="3">
                         <img style="margin-top:10px;"
                              src="data:image/png;base64,{{ DNS1D::getBarcodePNG($transaction->invoice_no, 'C128') }}"
                              width="350" alt="barcode" />
@@ -499,7 +499,7 @@
         </div>
         @include('layouts.partials.print_footer')
         <div style="width: 100%; text-align: center;">
-            <p><span class="">Proudly Developed at <a style="text-decoration: none;" target="_blank"
+            <p style="font-size: 20px; font-weight:900!important;"><span class="">Proudly Developed at <a style="text-decoration: none;" target="_blank"
                                                       href="http://sherifshalaby.tech">sherifshalaby.tech</a></span></p>
         </div>
     </div>
