@@ -350,7 +350,7 @@ class ReportController extends Controller
 
                 $cash_register = $cr_query->select(
                     'cash_registers.*',
-                    DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit' AND dining_table_id IS NOT NULL, amount, 0)) as total_dining_in"),
+                    DB::raw("SUM(IF(transaction_type = 'sell' AND cash_register_transactions.type = 'credit' AND dining_table_id IS NOT NULL, amount, 0)) as total_dining_in"),
                     DB::raw("SUM(IF(transaction_type = 'sell', amount, 0)) as total_sale"),
                     DB::raw("SUM(IF(transaction_type = 'refund', amount, 0)) as total_refund"),
                     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit', amount, 0)) as total_cash_sales"),
