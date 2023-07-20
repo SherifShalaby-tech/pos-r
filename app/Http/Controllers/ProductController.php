@@ -962,30 +962,27 @@ class ProductController extends Controller
 
             $index_discounts=[];
             ProductDiscount::where('product_id',$product->id)->delete();
-            $index_discounts=[];
             if($request->has('discount_type')){
                 if(count($request->discount_type)>0){
                     $index_discounts=array_keys($request->discount_type);
                 }
             }
+            foreach ($index_discounts as $index_discount){
+                $discount_customers = $this->getDiscountCustomerFromType($request->get('discount_customer_types_'.$index_discount));
+                $data_des=[
+                    'product_id' => $product->id,
+                    'discount_type' => $request->discount_type[$index_discount],
+                    'discount_category' => $request->discount_category[$index_discount],
+                    'is_discount_permenant'=>!empty($request->is_discount_permenant[$index_discount])? 1 : 0,
+                    'discount_customer_types' => $request->get('discount_customer_types_'.$index_discount),
+                    'discount_customers' => $discount_customers,
+                    'discount' => $this->commonUtil->num_uf($request->discount[$index_discount]),
+                    'discount_start_date' => !empty($request->discount_start_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_start_date[$index_discount]) : null,
+                    'discount_end_date' => !empty($request->discount_end_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_end_date[$index_discount]) : null
+                ];
 
-
-                foreach ($index_discounts as $index_discount){
-                    $discount_customers = $this->getDiscountCustomerFromType($request->get('discount_customer_types_'.$index_discount));
-                    $data_des=[
-                        'product_id' => $product->id,
-                        'discount_type' => $request->discount_type[$index_discount],
-                        'discount_category' => $request->discount_category[$index_discount],
-                        'is_discount_permenant'=>!empty($request->is_discount_permenant[$index_discount])? 1 : 0,
-                        'discount_customer_types' => $request->get('discount_customer_types_'.$index_discount),
-                        'discount_customers' => $discount_customers,
-                        'discount' => $this->commonUtil->num_uf($request->discount[$index_discount]),
-                        'discount_start_date' => !empty($request->discount_start_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_start_date[$index_discount]) : null,
-                        'discount_end_date' => !empty($request->discount_end_date[$index_discount]) ? $this->commonUtil->uf_date($request->discount_end_date[$index_discount]) : null
-                    ];
-
-                    ProductDiscount::create($data_des);
-                }
+                ProductDiscount::create($data_des);
+            }
 
             if ($request->printers) {
                 $product->id;
