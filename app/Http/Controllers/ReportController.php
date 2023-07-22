@@ -1569,7 +1569,7 @@ class ReportController extends Controller
         }
         $transactions = $query->select(
             DB::raw("SUM(IF(transactions.type='sell', (tsl.quantity - tsl.quantity_returned )* tsl.sell_price, 0)) as sold_amount"),
-            DB::raw("SUM(IF(transactions.type='sell', (tsl.quantity- tsl.quantity_returned) * p.purchase_price, 0)) as purchased_amount"),
+            DB::raw("SUM(IF(transactions.type='add_stock', (pl.quantity- pl.quantity_returned) * pl.purchase_price, 0)) as purchased_amount"),
             DB::raw("SUM(IF(transactions.type='sell', tsl.quantity- tsl.quantity_returned, 0)) as sold_qty"),
             DB::raw("SUM(IF(transactions.type='add_stock', pl.quantity, 0)) as purchased_qty"),
             DB::raw('(SELECT SUM(product_stores.qty_available) FROM product_stores JOIN products ON product_stores.product_id=products.id WHERE products.id=p.id ' . $store_query . ') as in_stock'),
@@ -1760,41 +1760,57 @@ class ReportController extends Controller
             if (!empty($store_id)) {
                 $total_discount_query->where('store_id', $store_id);
             }
-            if (!empty($request->start_date)) {
-                $total_discount_query->whereDate('transaction_date', '>=', $request->start_date);
-            }
-            if (!empty($request->end_date)) {
-                $total_discount_query->whereDate('transaction_date', '<=', $request->end_date);
-            }
-            if (!empty(request()->start_time)) {
-                $total_discount_query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
-            }
-            if (!empty(request()->end_time)) {
-                $total_discount_query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
-            }
             $total_discount[] = $total_discount_query->sum('discount_amount');
+            //
+            $total_discount_query_purchase = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
+            if (!empty($store_id)) {
+                $total_discount_query_purchase->where('store_id', $store_id);
+            }
+            $total_discount_purchase[] = $total_discount_query_purchase->sum('discount_amount');
+            //
 
             $total_tax_query = Transaction::where('type', 'sell')->where('status', 'final')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
             if (!empty($store_id)) {
                 $total_tax_query->where('store_id', $store_id);
             }
             $total_tax[] = $total_tax_query->sum('total_tax');
+            ///
+            $total_tax_query_purchase = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
+            if (!empty($store_id)) {
+                $total_tax_query_purchase->where('store_id', $store_id);
+            }
+            $total_tax_purchase[] = $total_tax_query_purchase->sum('total_tax');
+            //
 
             $shipping_cost_query = Transaction::where('type', 'sell')->where('status', 'final')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
             if (!empty($store_id)) {
                 $shipping_cost_query->where('store_id', $store_id);
             }
             $shipping_cost[] = $shipping_cost_query->sum('delivery_cost');
-
+            //
+            $shipping_cost_query_purchase = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
+            if (!empty($store_id)) {
+                $shipping_cost_query_purchase->where('store_id', $store_id);
+            }
+            $shipping_cost_purchase[] = $shipping_cost_query_purchase->sum('delivery_cost');
+            ///
             $total_query = Transaction::where('type', 'sell')->where('status', 'final')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
             if (!empty($store_id)) {
                 $total_query->where('store_id', $store_id);
             }
             $total[] = $total_query->sum('final_total');
-
+            //
+            $total_query_purchase = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
+            if (!empty($store_id)) {
+                $total_query_purchase->where('store_id', $store_id);
+            }
+            $total_purchase[] = $total_query_purchase->sum('final_total');
+            ///
+            $total_net_profit[]=$total_query->sum('final_total')-$total_query_purchase->sum('final_total');
             $start = strtotime("+1 month", $start);
         }
         $stores = Store::getDropdown();
+        ///////
 
         return view('reports.monthly_sale_report', compact(
             'year',
@@ -1802,7 +1818,12 @@ class ReportController extends Controller
             'total_tax',
             'shipping_cost',
             'total',
-            'stores'
+            'stores',
+            'total_discount_purchase',
+            'total_tax_purchase',
+            'shipping_cost_purchase',
+            'total_purchase',
+            'total_net_profit'
         ));
     }
     /**

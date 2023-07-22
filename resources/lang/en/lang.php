@@ -1457,4 +1457,5 @@ return [
     'new_order'=>'New Order',
     'available' => 'Available',
     'not_available' => 'Not Available',
+    'monthly_sale_and_purchase_report' => 'Monthly Sale And Purchase Report',
 ];
