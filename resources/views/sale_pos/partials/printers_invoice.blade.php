@@ -123,7 +123,7 @@
     $is_first_after_extra=0;
 
 @endphp
-<div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
+<div style="max-width:270px;margin:0 auto; padding: 0px 15px; color: black !important;">
 
     <div id="receipt-data">
         <div class="centered">
