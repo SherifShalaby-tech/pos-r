@@ -5,7 +5,8 @@ $i = $index;
 @php
 $i=$i+1;
 $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->first();
-$stock = \App\Models\AddStockLine::where('product_id', $product->id)->where('variation_id', $product->variation_id)->latest()->first();
+$stock = \App\Models\AddStockLine::where('product_id', $product->id)
+->where('variation_id', $product->variation_id)->latest()->first();
 if($stock){
     $purchase_price = $stock->purchase_price;
     $sell_price = $stock->sell_price;
@@ -79,7 +80,7 @@ if($stock){
         Form::text('add_stock_lines['.$i.'][batch_number]', null, ['class' => 'form-control batchNumber']) !!}
        <button type="button" class="btn btn-success add_new_batch mt-2" id="addBatch" data-index="{{$i}}" data-product="{{$product}}" index_id="{{$i}}">
             <i class="fa fa-plus"></i>
-        </button> 
+        </button>
         {{__('lang.add_a_new_batch')}}
         {{-- @include(
             'quotation.partial.new_batch_modal'

@@ -1122,11 +1122,11 @@ class ReportController extends Controller
         $pos_id = $this->transactionUtil->getFilterOptionValues($request)['pos_id'];
 
         $add_stock_query = Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
-            ->leftjoin('add_stock_lines', 'transactions.id', 'add_stock_lines.transaction_id')
+//            ->leftjoin('add_stock_lines', 'transactions.id', 'add_stock_lines.transaction_id')
             ->leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
             ->leftjoin('suppliers', 'transactions.supplier_id', 'suppliers.id')
-            ->where('transactions.type', 'add_stock')
-            ->where('transactions.payment_status', 'paid');
+            ->where('transactions.type', 'add_stock');
+//            ->where('transactions.payment_status', 'paid');
 
         if (!empty($request->start_date)) {
             $add_stock_query->whereDate('transaction_date', '>=', $request->start_date);
@@ -1161,11 +1161,11 @@ class ReportController extends Controller
         )->first();
 
         $sale_query = Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
-            ->leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
+//            ->leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
             ->leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
-            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
+//            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
             ->where('transactions.type', 'sell')
-            ->where('transactions.payment_status', 'paid')
+//            ->where('transactions.payment_status', 'paid')
             ->where('transactions.status', 'final');
 
         if (!empty($request->start_date)) {
@@ -1204,11 +1204,11 @@ class ReportController extends Controller
         )->first();
 
         $sale_return_query = Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
-            ->leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
+//            ->leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
             ->leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
-            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
+//            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
             ->where('transactions.type', 'sell_return')
-            ->where('transactions.payment_status', 'paid')
+//            ->where('transactions.payment_status', 'paid')
             ->where('transactions.status', 'final');
 
         if (!empty($request->start_date)) {
@@ -1247,11 +1247,11 @@ class ReportController extends Controller
         )->first();
 
         $purchase_return_query = Transaction::leftjoin('stores', 'transactions.store_id', 'stores.id')
-            ->leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
+//            ->leftjoin('transaction_sell_lines', 'transactions.id', 'transaction_sell_lines.transaction_id')
             ->leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
-            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
+//            ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
             ->where('transactions.type', 'purchase_return')
-            ->where('transactions.payment_status', 'paid')
+//            ->where('transactions.payment_status', 'paid')
             ->where('transactions.status', 'final');
 
         if (!empty($request->start_date)) {
