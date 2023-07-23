@@ -205,7 +205,7 @@
         </div>
 
         {{-- {{$transaction_sell_lines}} --}}
-        <div class="table_div" style=" padding: 0 7px; width:100%; height:fit-content;">
+        <div class="table_div" style=" padding: 0 7px; width:92%; height:fit-content;">
             <table style="margin: 0 auto; text-align: center !important">
                 <thead>
                 <tr>
@@ -491,7 +491,7 @@
                     <td  class="centered" colspan="3">
                         <img style="margin-top:10px;"
                              src="data:image/png;base64,{{ DNS1D::getBarcodePNG($transaction->invoice_no, 'C128') }}"
-                             width="350" alt="barcode" />
+                             width="320" alt="barcode" />
                     </td>
                 </tr>
                 </tbody>
