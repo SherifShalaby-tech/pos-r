@@ -5,7 +5,8 @@ $i = $index;
 @php
 $i=$i+1;
 $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->first();
-$stock = \App\Models\AddStockLine::where('product_id', $product->id)->where('variation_id', $product->variation_id)->latest()->first();
+$stock = \App\Models\AddStockLine::where('product_id', $product->id)
+->where('variation_id', $product->variation_id)->latest()->first();
 if($stock){
     $purchase_price = number_format($stock->purchase_price,2);
     $sell_price = number_format($stock->sell_price,2);

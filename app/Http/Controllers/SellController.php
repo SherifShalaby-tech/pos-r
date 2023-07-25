@@ -755,7 +755,7 @@ class SellController extends Controller
             DB::beginTransaction();
 
             $transaction_sell_lines = TransactionSellLine::where('transaction_id', $id)->get();
-            if ($transaction->sell_return ){
+            if (isset($transaction->sell_return)){
                 $transaction_return_sell_lines = TransactionSellLine::where('transaction_id',
                     $transaction->return_parent_id)->get();
                 foreach ($transaction_return_sell_lines as  $transaction_return_sell_line){

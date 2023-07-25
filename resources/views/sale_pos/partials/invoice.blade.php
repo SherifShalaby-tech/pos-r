@@ -302,6 +302,23 @@ $is_first_after_extra=0;
                                     {{ $transaction->received_currency->symbol }}
                                 </th>
                             </tr>
+                            @if ($transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->whereNotNull('discount_category')->sum('product_discount_amount') > 0)
+                            <tr>
+                                <th style="font-size: 16px;" colspan="3">@lang('lang.category_discount')</th>
+                            </tr>
+                            @foreach ($transaction->transaction_sell_lines as $line)
+                                @if(!empty($line->discount_category))
+                                <tr>
+                                    <th style="font-size: 16px;" colspan="3">{{$line->discount_category}}</th>
+                                    <th style="font-size: 16px; text-align:right;">
+                                        {{@num_format($line->product_discount_amount)}}
+                                        {{-- {{ @num_format($transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->where('discount_category',$line->discount_category)->sum('product_discount_amount')) }} --}}
+                                        {{ $transaction->received_currency->symbol }}
+                                    </th>
+                                </tr>
+                                @endif
+                            @endforeach
+                            @endif
                         @endif
                         @if ($transaction->total_item_tax != 0)
                             <tr>
@@ -387,11 +404,11 @@ $is_first_after_extra=0;
                                     {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))}}
                                     @endif
                                 @else
-                                @if($transaction->discount_amount!=0)
-                                {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))+@num_format($transaction->delivery_cost) }}
-                                @else
-                                {{ @num_format($transaction_sell_lines->sum('sub_total')-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount'))+@num_format($transaction->delivery_cost)}}
-                                @endif
+                                    @if($transaction->discount_amount!=0)
+                                        {{ @num_format($transaction_sell_lines->sum('sub_total') - $transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')+$transaction->delivery_cost) }}
+                                    @else
+                                        {{ @num_format($transaction_sell_lines->sum('sub_total')-(float)$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')+$transaction->delivery_cost)}}
+                                    @endif
                                 @endif
                                 {{ $transaction->received_currency->symbol }}
                             </th>

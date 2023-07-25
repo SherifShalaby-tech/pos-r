@@ -23,6 +23,10 @@
             margin: 0.5cm;
             margin-bottom: 1.6cm;
         }
+        p{
+            font-weight: bold;
+            font-size: 20px;
+        }
 
         .page {
             position: absolute;
@@ -79,6 +83,7 @@
     #receipt_section th {
         padding: 7px 0;
         width: 50%;
+        font-size : 20px;
     }
 
     #receipt_section table {
@@ -141,7 +146,7 @@ $is_first_after_extra=0;
 
         </div> --}}
         <div style="width: 70%; float:left;">
-            <p>@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
+            <p style="font-size: 20px; font-weight: bold;">@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
                 @lang('lang.reference', [], $invoice_lang): {{ $transaction->invoice_no }}<br>
                 {{-- @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
                     {{ $transaction->customer->name }} <br>
@@ -171,9 +176,9 @@ $is_first_after_extra=0;
             @endif --}}
         </div>
         @if (session('system_mode') == 'restaurant')
-            <div style="width: 30%; float:right; text-align:center;">
+            <div style="width: 20%; float:right; text-align:center;">
                 <p
-                    style="width: 75px; height:75px; border: 4px solid #111; border-radius: 50%; padding: 20px; font-size: 23px; font-weight: bold;">
+                    style="width: 30px; height:30px; border: 4px solid #111; border-radius: 50%; padding: 20px; font-size: 23px; font-weight: bold;">
                     {{ $transaction->ticket_number }}</p>
             </div>
         @endif
@@ -181,12 +186,12 @@ $is_first_after_extra=0;
             <table style="margin: 0 auto; text-align: center !important">
                 <thead>
                     <tr>
-                        <th style="width: 30%; padding: 0 50px !important;">@lang('lang.item', [], $invoice_lang) </th>
+                        <th style="width: 30%; padding: 0 50px !important; font-size: 30px; font-weight:900!important; ">@lang('lang.item', [], $invoice_lang) </th>
                         {{-- @if (empty($print_gift_invoice))
                             <th style="width: 20%; text-align:center !important;"> @lang('lang.price', [], $invoice_lang)
                             </th>
                         @endif --}}
-                        <th style="width: 20%; text-algin: center;">@lang('lang.qty', [], $invoice_lang) </th>
+                        <th style="width: 20%; text-algin: center; font-size: 30px; font-weight:900!important;">@lang('lang.qty', [], $invoice_lang) </th>
                         {{-- @if (empty($print_gift_invoice))
                             <th style="width: 30%; text-algin: center;">@lang('lang.amount', [], $invoice_lang) </th>
                         @endif --}}
@@ -199,7 +204,7 @@ $is_first_after_extra=0;
                             @php
                                 $is_first_after_extra=0;
                             @endphp
-                            <td style="width: 30%; text-algin: right !important;">
+                            <td style="width: 30%; text-algin: right !important; font-size: 20px; font-weight: bold;">
                                 @if (!empty($line->variation))
                                     @if ($line->variation->name != 'Default')
                                         {{ $line->variation->name }}
@@ -213,7 +218,7 @@ $is_first_after_extra=0;
                                 <td style="text-align:center !important;vertical-align:bottom; width: 20%;">
                                     {{ @num_format($line->sell_price) }}</td>
                             @endif --}}
-                            <td style="text-align:center;vertical-align:bottom; width: 20%;">
+                            <td style="text-align:center;vertical-align:bottom; width: 20%; font-size: 20px;font-weight: bold;">
                                 {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
                             {{-- @if (empty($print_gift_invoice))
                                 <td style="text-align:center;vertical-align:bottom; width: 30%;">
@@ -424,7 +429,7 @@ $is_first_after_extra=0;
                                 </tr>
                             @endif
                         @endif
-                    @endif <!-- end of print gift invoice --> 
+                    @endif <!-- end of print gift invoice -->
                     <tr>
                         <td class="centered" colspan="3">
                             @if (session('system_mode') == 'restaurant')
