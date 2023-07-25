@@ -8,10 +8,12 @@ $current_stock = \App\Models\ProductStore::where('product_id', $product->id)->fi
 $stock = \App\Models\AddStockLine::where('product_id', $product->id)
 ->where('variation_id', $product->variation_id)->latest()->first();
 if($stock){
-    $purchase_price_formatted  = floatval($stock->purchase_price);
-    $sell_price_formatted  = floatval($stock->sell_price);
-    $purchase_price = number_format($purchase_price_formatted,2);
-    $sell_price = number_format($sell_price_formatted,2);
+
+    $purchase_price = str_replace(',', '', $stock->purchase_price);
+    $sell_price = str_replace(',', '', $stock->sell_price);
+
+    // $purchase_price = number_format($stock->purchase_price,2);
+    // $sell_price = number_format($stock->sell_price,2);
 }
 @endphp
 <tr class="product_row">
