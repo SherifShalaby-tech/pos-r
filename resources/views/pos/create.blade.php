@@ -34,7 +34,7 @@
                     </source>
                 </audio>
                 <!-- product list -->
-                <livewire:mypos :payment_types="$payment_types" :delivery_men="$delivery_men" :exchange_rate_currencies="$exchange_rate_currencies" :customers="$customers" />
+                <livewire:mypos :payment_types="$payment_types" :delivery_men="$delivery_men" :exchange_rate_currencies="$exchange_rate_currencies" :customers="$customers" :stores="$stores" />
 
                 <!-- recent transaction modal -->
                 <div id="recentTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"

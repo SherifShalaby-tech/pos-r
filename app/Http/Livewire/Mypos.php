@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Utils\Util;
 class Mypos extends Component
 {
-    public $payment_types,$exchange_rate_currencies,$customers;
+    public $payment_types,$exchange_rate_currencies,$customers,$stores;
     public $department_id = 0 , $products = [],$items = [],$price, $tax, $total = 0, $discount,$qty,$itemcount ;
     public function mount()
     {
@@ -113,6 +113,7 @@ class Mypos extends Component
 
         $store_pos = StorePos::where('user_id', Auth::user()->id)->first();
         // $stores = Store::getDropdown();
+        $store_poses = [];
         // $products = Product::get(['id','name']);
         $taxes = Tax::getDropdown();
         $tac = TermsAndCondition::getDropdownInvoice();
@@ -138,7 +139,7 @@ class Mypos extends Component
         return view('livewire.mypos',compact([
             // 'categories','sub_categories','brands',
             'product_classes','clients','delivery_zones','deliverymen'
-            ,'store_pos','languages','taxes','service_fees','tables','tac','employees','watsapp_numbers'
+            ,'store_pos','languages','taxes','service_fees','tables','tac','employees','watsapp_numbers','store_poses'
 
             // 'dining_rooms','active_tab_id','walk_in_customer','deliverymen',
             // 'tac','store_pos','clients','products','stores',

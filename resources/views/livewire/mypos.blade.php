@@ -19,20 +19,20 @@
                     <div class="row">
                         <div class="col-md-12 main_settings">
                             <div class="row">
-                                {{-- <div class="col-md-2">
+                                <div class="col-md-2" wire:ignore>
                                     <div class="form-group">
                                         {!! Form::label('store_id', __('lang.store') . ':*', []) !!}
                                         {!! Form::select('store_id', $stores, $store_pos->store_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="form-group">
+                                    <div class="form-group" wire:ignore>
                                         {!! Form::label('store_pos_id', __('lang.pos') . ':*', []) !!}
                                         {!! Form::select('store_pos_id', $store_poses, $store_pos->id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                     </div>
-                                </div> --}}
+                                </div>
                                 <div class="col-md-2">
-                                    <div class="form-group">
+                                    <div class="form-group" wire:ignore>
                                         <input type="hidden" name="setting_invoice_lang" id="setting_invoice_lang"
                                             value="{{ !empty(App\Models\System::getProperty('invoice_lang')) ? App\Models\System::getProperty('invoice_lang') : 'en' }}">
                                         {!! Form::label('invoice_lang', __('lang.invoice_lang') . ':', []) !!}
@@ -45,7 +45,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-2">
-                                    <div class="form-group">
+                                    <div class="form-group" wire:ignore>
                                         <input type="hidden" name="exchange_rate" id="exchange_rate" value="1">
                                         <input type="hidden" name="default_currency_id" id="default_currency_id"
                                             value="{{ !empty(App\Models\System::getProperty('currency')) ? App\Models\System::getProperty('currency') : '' }}">
@@ -60,7 +60,7 @@
                                 </div>
 
                                 <div class="col-md-1" style="padding: 0 !important;">
-                                    <div class="form-group" style="margin-top: 31px;">
+                                    <div class="form-group" style="margin-top: 31px;" wire:ignore>
                                         <select class="form-control" name="tax_id" id="tax_id">
                                             @if (env('ISNoTax', true))
                                                 <option value="">No Tax</option>
@@ -80,14 +80,14 @@
                                         <input type="hidden" name="tax_type" id="tax_type" value="">
                                     </div>
                                 </div>
-                                <div class="col-md-1">
+                                <div class="col-md-1" wire:ignore>
                                     <button type="button" class="btn btn-link btn-sm"
                                         style="margin-top: 30px; padding: 0px !important;" data-toggle="modal"
                                         data-target="#delivery-cost-modal"><img src="{{ asset('images/delivery.jpg') }}"
                                             alt="delivery" style="height: 35px; width: 40px;"></button>
                                 </div>
                                 @if (session('system_mode') == 'restaurant')
-                                    <div class="col-md-1">
+                                    <div class="col-md-1" wire:ignore>
                                         <button type="button" style="padding: 0px !important;" data-toggle="modal"
                                             data-target="#dining_model"
                                             class="btn btn-modal pull-right mt-4 dining-btn">

@@ -100,7 +100,9 @@ class MyposController extends Controller
         $deliverymen = Employee::getDropdownByJobType('Deliveryman');
         $delivery_men = Employee::getDropdownByJobType('Deliveryman');
         $exchange_rate_currencies = $this->commonUtil->getCurrenciesExchangeRateArray(true);
-       return view('pos.create',compact(['customers','payment_types','cashiers',
+        $stores = Store::getDropdown();
+        $store_poses = [];
+       return view('pos.create',compact(['customers','payment_types','cashiers','stores','store_poses',
        'deliverymen','delivery_men','exchange_rate_currencies']));
     }
 
