@@ -323,12 +323,19 @@
                                 style="border-top: 2px solid #e4e6fc; padding-top: 10px;">
                                 <div class="row">
                                     <div class="col-sm-4">
-                                        <span class="totals-title">{{ __('lang.items') }}</span><span
-                                            id="item">0</span>
+                                        {{-- <span class="totals-title">{{ __('lang.items') }}</span><span
+                                            id="item">{{ $itemcount  }}
+                                        </span>
+                                        <br> --}}
+                                        <span class="totals-title  text-dark"
+                                            style="font-weight:1000">{{ __('lang.items') }}</span><span
+                                            id="item">{{ $itemcount }}
+                                        </span>
                                         <br>
                                         <span class="totals-title  text-dark"
                                             style="font-weight:1000">{{ __('lang.quantity') }}</span><span
-                                            id="item-quantity">0</span>
+                                            id="item-quantity">{{ $qty }}
+                                        </span>
                                     </div>
                                     <div class="col-sm-4">
                                         <span class="totals-title">{{ __('lang.total') }}</span><span
@@ -693,7 +700,7 @@
                                 @if (session('system_mode') == 'restaurant')
                                     <div class="col-md-12 filter-btn-div">
                                         <div class="btn-group btn-group-toggle ml-2 btn-group-custom" data-toggle="buttons">
-                                            <label class="btn btn-primary active filter-btn" wire:click='$set("department_id"," ")'>
+                                            <label class="btn btn-primary  filter-btn" wire:click='$set("department_id"," ")'>
                                                 <input type="radio" checked autocomplete="off" name="restaurant_filter">
                                                 @lang('lang.all')
                                             </label>
@@ -713,11 +720,9 @@
                                                     wire:click='$set("department_id",{{ $product_class->id }})'>{{ ucfirst($product_class->name) }}
                                                 </button>
                                             @endforeach
-
                                         </div>
                                     </div>
                                 @endif
-
                             </div>
                         </div>
                     </div>

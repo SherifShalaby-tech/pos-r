@@ -30,7 +30,11 @@ use App\Utils\Util;
 class Mypos extends Component
 {
     public $payment_types,$exchange_rate_currencies,$customers;
-    public $department_id = 0 , $products = [],$items = [],$price, $tax, $total = 0, $discount;
+    public $department_id = 0 , $products = [],$items = [],$price, $tax, $total = 0, $discount,$qty,$itemcount ;
+    public function mount()
+    {
+        $this->department_id = 0;
+    }
     public function updatedDepartmentId($department_id)
     {
         $this->products = $department_id > 0? Product::where('product_class_id', $department_id)->get() : Product::get();
@@ -44,10 +48,11 @@ class Mypos extends Component
             ++$this->items[$key]['quantity'];
         }else{
             $this->items[] = [
+                'itemno' => 1,
                 'product_id' => $product->id,
                 'name' => $product->name,
                 'quantity' => 1,
-                'price' => 10,
+                'price' => $product->sell_price,
             ];
         }
         $this->computeForAll();
@@ -76,32 +81,20 @@ class Mypos extends Component
     }
     public function computeForAll()
     {
+        $this->itemcount  = array_reduce($this->items, function ($qu, $item) {
+            $qu +=$item['itemno'];
+            return $qu;
+        });
+        $this->qty  = array_reduce($this->items, function ($q, $item) {
+            $q +=$item['quantity'];
+            return $q;
+        });
+
         $this->price = array_reduce($this->items, function ($carry, $item) {
             $carry += $item['price'] * $item['quantity'];
             return $carry;
         });
-
-        // $this->tax = array_reduce($this->items, function ($carry, $item) {
-        //     $carry += $item['tax'];
-        //     return number_format($carry, 2);
-        // });
-
-        /* $this->offers_discount = array_reduce($this->items, function ($carry, $item) {
-            $carry += $item['discount'];
-            return $carry;
-        }); */
-
-        // $discount = $this->discount ? $this->discount : 0;
-
-        // $this->total = $this->price + $this->tax - $discount - $this->offers_discount;
         $this->total = $this->price ;
-
-        // $this->amount_after_offers_discount = $this->price - $this->offers_discount;
-
-        // $this->card = $this->total;
-        // $this->rest = 0;
-
-        //$this->card = ($this->total * setting('tax')) / 100 + $this->total - $discount;
     }
     public function render()
     {

@@ -101,7 +101,7 @@
                     </div><!-- /.modal-dialog -->
                 </div>
                 <!-- draft transaction modal -->
-                {{-- <div id="draftTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+                <div id="draftTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal text-left">
 
                     <div class="modal-dialog" role="document" style="width: 65%">
@@ -145,9 +145,9 @@
                             </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
-                </div> --}}
+                </div>
                 <!-- onlineOrder transaction modal -->
-                {{-- <div id="onlineOrderTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
+                <div id="onlineOrderTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal text-left">
 
                     <div class="modal-dialog" role="document" style="width: 65%">
@@ -185,7 +185,7 @@
                             </div>
                         </div><!-- /.modal-content -->
                     </div><!-- /.modal-dialog -->
-                </div> --}}
+                </div>
                 {{-- <div id="dining_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                     class="modal text-left">
                     @include('sale_pos.partials.dining_modal')
