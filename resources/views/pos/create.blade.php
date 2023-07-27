@@ -202,8 +202,8 @@
 
     <script src="{{ asset('js/onscan.min.js') }}"></script>
     {{-- <script src="{{ asset('js/pos.js') }}"></script> --}}
-    {{-- <script src="{{ asset('js/dining_table.js') }}"></script> --}}
-    {{-- <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="{{ asset('js/dining_table.js') }}"></script>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
         // $('.room-badge3').text("hihh")
         $('.close_btn_product_extension').click(function () {
@@ -329,5 +329,5 @@
                 });
             }
         });
-    </script> --}}
+    </script>
 @endsection

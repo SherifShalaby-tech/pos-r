@@ -694,8 +694,7 @@
                                     <div class="col-md-12 filter-btn-div">
                                         <div class="btn-group btn-group-toggle ml-2 btn-group-custom" data-toggle="buttons">
                                             <label class="btn btn-primary active filter-btn" wire:click='$set("department_id"," ")'>
-                                                <input type="radio" checked autocomplete="off" name="restaurant_filter"
-                                                >
+                                                <input type="radio" checked autocomplete="off" name="restaurant_filter">
                                                 @lang('lang.all')
                                             </label>
                                             {{-- <label class="btn btn-primary filter-btn">
