@@ -38,6 +38,7 @@
                     <source src="{{ asset('audio/beep-long.mp3') }}">
                     </source>
                 </audio>
+                 <!-- pos list -->
                 <div class="@if (session('system_mode') == 'pos') col-md-7 @else col-md-6 @endif">
                     {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class' => 'pos-form', 'id' => 'add_pos_form']) !!}
                     <div class="card">
@@ -470,7 +471,7 @@
                             </div>
                             <div class="column-5">
                                 <button data-method="cash" style="background: #478299" type="button"
-                                    class="btn btn-custom" 
+                                    class="btn btn-custom"
                                     id="quick-pay-btn" ><i class="fa fa-money"></i>
                                     @lang('lang.quick_pay')</button>
                             </div>
@@ -684,6 +685,7 @@
                                         </ul>
                                     </div>
                                 </div>
+                            </div>
                         </nav>
                     </header>
                     @include('sale_pos.partials.right_side')
@@ -889,7 +891,7 @@
     <section class="invoice print_section print-only" id="receipt_section"> </section>
 @endsection
 
-@section('javascript')
+@push('javascripts')
 
     <script src="{{ asset('js/onscan.min.js') }}"></script>
     <script src="{{ asset('js/pos.js') }}"></script>
@@ -906,7 +908,7 @@
             $('.table-badge').hide();
             $('.selected-table-badge').hide();
             $('.room-count-badge').hide();
-            
+
         })
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
@@ -1021,4 +1023,4 @@
             }
         });
     </script>
-@endsection
+@endpush

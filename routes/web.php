@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ManufacturerController;
+use App\Http\Controllers\MyposController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
@@ -31,6 +32,9 @@ Route::get('tutorials/get-tutorials-data-array', 'TutorialController@getTutorial
 
 Route::get('general/switch-language/{lang}', 'GeneralController@switchLanguage');
 Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']], function () {
+
+    // Route::view('dpos/create', 'pos.create')->name('mypos.create');
+    Route::get('/mypos/create', [MyposController::class, 'index'])->name('mypos.create');
 
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::get('get-dashboard-data/{start_date}/{end_date}', 'HomeController@getDashboardData');

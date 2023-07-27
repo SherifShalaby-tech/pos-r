@@ -132,9 +132,9 @@
         </div>
     </div>
 </div>
-<script>
+{{-- <script>
     $(".nav-tabs li a").click(function() {
         $(".nav-tabs li").removeClass("active");
         $(this).parent().addClass("active");
     });
-</script>
+</script> --}}

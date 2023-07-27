@@ -19,6 +19,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                              class="btn no-print"><img src="{{asset('images/396 Commercial Invoice Icon.png')}}" alt="" style="height: 40px; width: 35px;">
                         </a>
                     </li>
+
                     <li class="nav-item">
                         {{-- <a target="_blank" href="{{action('ContactUsController@getUserContactUs')}}" id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
                             style="background-image: url('{{asset('images/handshake.jpg')}}');" class="btn no-print">
@@ -34,6 +35,19 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                             href="{{action('SellPosController@create')}}"><i class="dripicons-shopping-bag"></i><span>
                                 @lang('lang.pos')</span></a></li>
                     @endcan
+
+
+                    {{-- test --}}
+                        <li class="nav-item">
+                            <a class="dropdown-item btn-pos btn-sm"
+                                href="{{route('mypos.create')}}">
+                            <i class="dripicons-shopping-bag"></i><span>
+                                @lang('mytestrrrrrrr')</span>
+                            </a>
+                        </li>
+                    {{-- endtest --}}
+
+
                     <li class="nav-item"><a id="btnFullscreen"><i class="dripicons-expand"></i></a></li>
                     @include('layouts.partials.notification_list')
                     @php
