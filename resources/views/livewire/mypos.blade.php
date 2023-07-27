@@ -58,7 +58,6 @@
                                         ) !!}
                                     </div>
                                 </div>
-
                                 <div class="col-md-1" style="padding: 0 !important;">
                                     <div class="form-group" style="margin-top: 31px;" wire:ignore>
                                         <select class="form-control" name="tax_id" id="tax_id">
@@ -98,19 +97,25 @@
                                 @endif
                             </div>
                         </div>
-
                         <div class="col-md-12 main_settings">
                             <div class="row table_room_hide">
-                                {{-- <div class="col-md-3">
+                                <div class="col-md-3" wire:ignore>
                                     {!! Form::label('customer_id', __('lang.customer'), []) !!}
-                                    <div class="input-group my-group">
-                                        {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ? $walk_in_customer->id : null, [
+                                    <div class="input-group my-group" >
+                                        <select name="" id="customer_id" wire:model="customer_id" style="width: 80%;" class="selectpicker form-control">
+                                            <option  value="0 " readonly selected >اختر </option>
+                                            @foreach ($clients as $customer)
+                                                <option value="{{ $customer->id }}">{{ $customer->name }}</option>
+                                            @endforeach
+                                        </select>
+                                        @error('customer_id')<span class="text-danger">{{ $message }}</span>@enderror
+                                        {{-- {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ? $walk_in_customer->id : null, [
                                             'class' => 'selectpicker form-control',
                                             'data-live-search' => 'true',
                                             'style' => 'width: 80%',
                                             'id' => 'customer_id',
                                             'required',
-                                        ]) !!}
+                                        ]) !!} --}}
                                         <span class="input-group-btn">
                                             @can('customer_module.customer.create_and_edit')
                                                 <a class="btn-modal btn btn-default bg-white btn-flat"
@@ -126,7 +131,6 @@
                                         data-toggle="modal"
                                         data-target="#contact_details_modal">@lang('lang.details')</button>
                                 </div>
-
                                 <div class="col-md-2">
                                     <label for="customer_type_name" style="margin-top: 40px;">@lang('lang.customer_type'):
                                         <span class="customer_type_name"></span></label>
@@ -158,10 +162,10 @@
                                             class="dripicons-print"></i></button>
                                     <input type="hidden" id="print_and_draft_hidden" name="print_and_draft_hidden"
                                         value="">
-                                </div> --}}
-                                {{-- <div class="col-md-2">
+                                </div>
+                                <div class="col-md-2">
 
-                                </div> --}}
+                                </div>
 
                             </div>
                             {{-- <div class="row table_room_show hide">

@@ -30,7 +30,7 @@ use App\Utils\Util;
 class Mypos extends Component
 {
     public $payment_types,$exchange_rate_currencies,$customers,$stores;
-    public $department_id = 0 , $products = [],$items = [],$price, $tax, $total = 0, $discount,$qty,$itemcount ;
+    public $department_id = 0 , $products = [],$items = [],$price, $tax, $total = 0, $discount,$qty,$itemcount ,$customer_id;
     public function mount()
     {
         $this->department_id = 0;
