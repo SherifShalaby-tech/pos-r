@@ -534,14 +534,9 @@ class SellPosController extends Controller
             $this->notificationUtil->sendQuotationToCustomer($transaction->id, $request->emails);
         }
 
-
-// <<<<<<< HEAD
-        // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
-
-// =======
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
-//return $partialPrint;
+        //return $partialPrint;
         $output = [
             'success' => true,
             'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,

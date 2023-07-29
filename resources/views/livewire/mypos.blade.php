@@ -278,9 +278,9 @@
                                                         </div>
                                                     </div>
                                                 </td>
+                                                <td>{{ number_format($item['price'],2) }}</td>
                                                 <td>{{ $item['price'] }}</td>
-                                                <td>{{ $item['price'] }}</td>
-                                                <td>{{ $item['quantity'] * $item['price'] }} </td>
+                                                <td>{{ number_format($item['quantity'] * $item['price'],2) }} </td>
                                                 <td class="text-center">
                                                     <div class="btn btn-sm btn-danger py-0 px-1"
                                                         wire:click="delete_item({{ $key }})">
@@ -557,6 +557,13 @@
             @include('sale_pos.partials.non_identifiable_item_modal')
             @include('sale_pos.partials.customer_sizes_modal')
             @include('sale_pos.partials.sale_note')
+
+
+
+
+
+
+
 
             {!! Form::close() !!}
         </div>
