@@ -1679,7 +1679,7 @@ class ProductUtil extends Util
                 ->where('add_stock_lines.purchase_price','>',0)
                 ;
                 $query->groupBy('variations.id')->select(
-                    DB::raw('(product_stores.qty_available ) * add_stock_lines.purchase_price as current_stock_value'),
+                    DB::raw('SUM((add_stock_lines.quantity - add_stock_lines.quantity_sold ) * add_stock_lines.purchase_price) as current_stock_value'),
                 );
 
                 $current_stock_value_product += $query->get()->sum('current_stock_value');
@@ -1697,7 +1697,7 @@ class ProductUtil extends Util
             ;
         
         $query->groupBy('variations.id')->select(
-            DB::raw('(product_stores.qty_available ) * add_stock_lines.purchase_price as current_stock_value'),
+            DB::raw('SUM((add_stock_lines.quantity - add_stock_lines.quantity_sold ) * add_stock_lines.purchase_price) as current_stock_value'),
         );
 
         $current_stock_value_product = $query->get()->sum('current_stock_value');
@@ -1725,7 +1725,7 @@ class ProductUtil extends Util
                 ->where('add_stock_lines.purchase_price','>',0)
                 ;
                 $query->groupBy('variations.id')->select(
-                    DB::raw('(product_stores.qty_available ) * add_stock_lines.purchase_price as current_stock_value'),
+                    DB::raw('SUM((add_stock_lines.quantity - add_stock_lines.quantity_sold ) * add_stock_lines.purchase_price) as current_stock_value'),
                 );
 
                 $current_stock_value_material += $query->get()->sum('current_stock_value');
@@ -1743,7 +1743,7 @@ class ProductUtil extends Util
             ;
         
         $query->groupBy('variations.id')->select(
-            DB::raw('(product_stores.qty_available ) * add_stock_lines.purchase_price as current_stock_value'),
+            DB::raw('SUM((add_stock_lines.quantity - add_stock_lines.quantity_sold ) * add_stock_lines.purchase_price) as current_stock_value'),
         );
 
         $current_stock_value_material = $query->get()->sum('current_stock_value');
