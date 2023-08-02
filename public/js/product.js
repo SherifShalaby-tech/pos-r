@@ -326,7 +326,7 @@ $(document).on("submit", "form#quick_add_category_form", function (e) {
                 $.ajax({
                     method: "get",
                     url:
-                        "/category/get-dropdown?product_class_id=" +
+                        "/category/get-dropdown?type=category&product_class_id=" +
                         $("#product_class_id").val(),
                     data: {},
                     contactType: "html",
