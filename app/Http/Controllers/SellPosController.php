@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\PrinterEvent;
+use App\Models\AddStockLine;
 use App\Models\Brand;
 use App\Models\CashRegister;
 use App\Models\CashRegisterTransaction;
@@ -2180,5 +2181,35 @@ class SellPosController extends Controller
         // }
 
     }
+
+    public function changeSellingPrice($variation_id){
+        try {
+            $stockLines=AddStockLine::where('sell_price','>',0)->where('variation_id',$variation_id)
+            ->get();
+            
+            if(!empty($stockLines)){
+                foreach($stockLines as $stockLine){
+                    $stockLine->sell_price =request()->sell_price;
+                    $stockLine->save();
+                }
+                
+            }else{
+                $variation=Variation::find($variation_id);
+                $variation->default_sell_price=request()->sell_price;
+                $variation->save();
+            }
+            $output = [
+                'success' => true,
+                'msg' => __('lang.selling_price_for_this_product_is_changed')
+            ];
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
+        return $output;
+    } 
 }
 
