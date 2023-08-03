@@ -13,4 +13,6 @@ LANG = {
     purchase_price_equal_to_zero:'سعر الشراء يساوى صفر ',
     continue:'استمرار',
     qty_msg:'الكمية يجب ان تكون اكبر من الصفر',
+    change_price_permenatly:'هل تريد تغيير السعر بصورة دائمة؟',
+    price_changed_only_for_this_transaction:'تم تغيير سعر البيع لهذه العملية فقط',
 };

@@ -326,7 +326,7 @@ $(document).on("submit", "form#quick_add_category_form", function (e) {
                 $.ajax({
                     method: "get",
                     url:
-                        "/category/get-dropdown?product_class_id=" +
+                        "/category/get-dropdown?type=category&product_class_id=" +
                         $("#product_class_id").val(),
                     data: {},
                     contactType: "html",
@@ -933,7 +933,7 @@ $(document).on("change", "select.extension_id", function () {
 
 
 $(document).on("change","#is_discount_permenant",function () {
-    $(this).closest("td").find(".discount_start_date").prop('disabled', (i, v) => !v);
+    $(this).closest("tr").find(".discount_start_date").prop('disabled', (i, v) => !v);
     $(this).closest("tr").find(".discount_start_date").val(null);
     $(this).closest("tr").find(".discount_end_date").prop('disabled', (i, v) => !v);
     $(this).closest("tr").find(".discount_end_date").val(null);

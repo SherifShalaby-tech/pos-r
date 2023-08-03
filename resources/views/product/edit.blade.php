@@ -694,7 +694,7 @@
                                         @endforeach
                                         </tbody>
                                     </table>
-                                    <input type="hidden" name="raw_discount_index" id="raw_discount_index" value="1">
+                                    <input type="hidden" name="raw_discount_index" id="raw_discount_index" value="{{count($discounts)}}">
                                 </div>
                                 <div class="panel-group" id="accordion" style="margin-bottom: 20px">
                                     <div class="panel panel-default">
@@ -853,7 +853,7 @@
                             <div class="row">
                                 <div class="col-md-4 mt-5">
                                     <div class="form-group">
-                                        <input type="button" id="submit-btn" value="@lang('lang.submit')"
+                                        <input type="button" id="submit-btn" value="{{ trans('lang.save') }}"
                                             class="btn btn-primary">
                                     </div>
                                 </div>
@@ -995,7 +995,7 @@
                             if (response.success) {
                                 swal("Success", response.msg, "success");
                                 setTimeout(() => {
-                                    window.reload();
+                                    window.close();
                                 }, 1000);
                             }
                         },
