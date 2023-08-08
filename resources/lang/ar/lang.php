@@ -1066,6 +1066,7 @@ return [
     'default_purchase_price_percentage_info' => 'أضف النسبة المئوية لسعر شراء صفحة المنتج لسعر البيع ، افتراضيًا 75',
     'source_of_payment' => ' اسم الموظف',
     'source_type' => 'مصدر الأموال',
+    'given_to' => 'ستُعطى إلى :',
     'other_payments' => 'خصومات أخرى',
     'start_time' => 'وقت البدء',
     'end_time' => 'وقت النهاية',
@@ -1443,4 +1444,5 @@ return [
     'not_available' => 'غير متاحة',
     'monthly_sale_and_purchase_report' => 'تقرير البيع والشراء الشهري',
     'selling_price_for_this_product_is_changed'=>'تم تغيير سعر البيع لهذا المنتج',
+    
 ];

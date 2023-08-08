@@ -18,4 +18,5 @@ LANG = {
     qty_msg:'Quantity Must Be Greater Than 0 .',
     change_price_permenatly:'Do You Wanna Change Price Permenatly ?',
     price_changed_only_for_this_transaction:'Price Changed Only For This Transaction',
+    
 };
