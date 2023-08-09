@@ -241,6 +241,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('pos/update-transaction-status-cancel/{transaction_id}', 'SellPosController@updateTransactionStatusCancel');
     Route::post('pos/add-new-orders-to-transaction-sellline', 'SellPosController@addNewOrdersToTransactionSellline');
     Route::post('pos/change-selling-price/{variation_id}', 'SellPosController@changeSellingPrice');
+
     
     Route::resource('pos', SellPosController::class);
     Route::get('dining-room/get-dining-rooms', 'DiningRoomController@getDiningRooms');
