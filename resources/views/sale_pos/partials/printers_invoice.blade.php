@@ -123,7 +123,7 @@
     $is_first_after_extra=0;
 
 @endphp
-<div style="max-width:350px;margin:0 auto; padding: 0px 15px; color: black !important;">
+<div style="max-width:270px;margin:0 auto; padding: 0px 15px; color: black !important;">
 
     <div id="receipt-data">
         <div class="centered">
@@ -205,7 +205,7 @@
         </div>
 
         {{-- {{$transaction_sell_lines}} --}}
-        <div class="table_div" style=" padding: 0 7px; width:100%; height:fit-content;">
+        <div class="table_div" style=" padding: 0 7px; width:89%; height:fit-content; display: flex;justify-content: flex-end">
             <table style="margin: 0 auto; text-align: center !important">
                 <thead>
                 <tr>
@@ -491,7 +491,7 @@
                     <td  class="centered" colspan="3">
                         <img style="margin-top:10px;"
                              src="data:image/png;base64,{{ DNS1D::getBarcodePNG($transaction->invoice_no, 'C128') }}"
-                             width="350" alt="barcode" />
+                             width="250" alt="barcode" />
                     </td>
                 </tr>
                 </tbody>
