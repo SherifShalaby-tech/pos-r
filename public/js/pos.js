@@ -2687,7 +2687,7 @@ $(document).on("submit", "form#add_payment_form", function (e) {
                 swal("Error", result.msg, "error");
             }
             $(".view_modal").modal("hide");
-            // get_recent_transactions();
+            get_recent_transactions();
         },
     });
 });
