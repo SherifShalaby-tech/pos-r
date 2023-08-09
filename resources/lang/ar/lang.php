@@ -18,7 +18,7 @@ return [
     'payment_type' => 'طريقة الدفع',
     'wages_and_compensations' => 'الأجور ',
     'commission_%' => 'عمولة٪',
-    'commission' => 'عمولة',
+    'commission' => 'العمولة',
     'annual_bonus' => 'مكافأة سنوية',
     'annual_incentive' => 'حوافز سنوية',
     'recognition' => 'مكافأة تقديرية',

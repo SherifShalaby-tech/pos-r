@@ -1461,4 +1461,5 @@ return [
     'monthly_sale_and_purchase_report' => 'Monthly Sale And Purchase Report',
     'selling_price_for_this_product_is_changed'=>'Selling Price For This Product Is Changed',
     'total_rows'=>'Total Employees Number',
+    'wins'=>'profits',
 ];
