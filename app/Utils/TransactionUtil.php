@@ -1376,7 +1376,7 @@ class TransactionUtil extends Util
             'block_qty' => 0,
             'block_for_days' => 0,
             'tax_id' => $request->tax_id_hidden ?? null,
-            'tax_method' => $request->tax_method ?? null,
+            // 'tax_method' => $request->tax_method ?? null,
             'tax_rate' => $request->tax_rate ?? 0,
             'total_tax' => $this->num_uf($request->total_tax),
             'total_item_tax' => $this->num_uf($request->total_item_tax),
