@@ -209,6 +209,7 @@ class SellController extends Controller
                 'transactions.payment_status',
                 'transactions.status',
                 'transactions.id',
+                'transactions.sale_note',
                 'transactions.transaction_date',
                 'transactions.service_fee_value',
                 'transactions.invoice_no',
@@ -282,6 +283,9 @@ class SellController extends Controller
 
 
 
+                })
+                ->editColumn('sale_note', function($row) {
+                    return $row->sale_note;
                 })
                 ->addColumn('paid', function ($row) use ($request, $default_currency_id,$product_ids) {
                     if($product_ids == 'all'){
