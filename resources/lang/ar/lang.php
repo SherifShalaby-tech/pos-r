@@ -18,7 +18,7 @@ return [
     'payment_type' => 'طريقة الدفع',
     'wages_and_compensations' => 'الأجور ',
     'commission_%' => 'عمولة٪',
-    'commission' => 'عمولة',
+    'commission' => 'العمولة',
     'annual_bonus' => 'مكافأة سنوية',
     'annual_incentive' => 'حوافز سنوية',
     'recognition' => 'مكافأة تقديرية',
@@ -1444,5 +1444,5 @@ return [
     'not_available' => 'غير متاحة',
     'monthly_sale_and_purchase_report' => 'تقرير البيع والشراء الشهري',
     'selling_price_for_this_product_is_changed'=>'تم تغيير سعر البيع لهذا المنتج',
-    
+    'total_rows'=>'عدد الموظفين',
 ];
