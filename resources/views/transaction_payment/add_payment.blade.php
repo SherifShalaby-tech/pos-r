@@ -1,4 +1,4 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog" id="payment_modal" role="document">
     <div class="modal-content">
 
         {!! Form::open(['url' => action('TransactionPaymentController@store'), 'method' => 'post', 'id' => 'add_payment_form', 'enctype' => 'multipart/form-data']) !!}
@@ -91,8 +91,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="submit_form_button">@lang('lang.save')</button>
-            <button type="button" class="btn btn-default" id="close_modal_button" data-dismiss="modal">@lang('lang.close')</button>
+            <button type="button" id="submit_form_button" class="btn btn-primary">@lang('lang.save')</button>
+            <button type="button"id="close_modal_button"  class="btn btn-default" data-dismiss="modal">@lang('lang.close')</button>
         </div>
 
         {!! Form::close() !!}
@@ -101,7 +101,8 @@
 </div><!-- /.modal-dialog -->
 
 <script>
-        $(document).ready(function() {
+    $(document).ready(function() {
+        
         var pageTitle = window.location.pathname;
         console.log(pageTitle);
         $('#submit_form_button').click(function() {
