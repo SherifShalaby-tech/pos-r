@@ -41,7 +41,7 @@ if($stock){
     </td>
     <td>
 
-        <input type="text" class="form-control quantity quantity_{{$i}}" data-val="0"  name="add_stock_lines[{{$i}}][quantity]" required min="1" value="0"/>
+        <input type="text" class="form-control quantity quantity_{{$i}}" data-val="0"  name="add_stock_lines[{{$i}}][quantity]" required min="0.1" value="0"/>
 
     </td>
     <td>
