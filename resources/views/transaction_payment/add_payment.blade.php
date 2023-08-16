@@ -17,10 +17,10 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('amount', __('lang.amount') . ':*', []) !!} <br>
-                        @if($balance > ($transaction->final_total - $transaction->transaction_payments->sum('amount')))
-                        {!! Form::text('amount', @num_format($transaction->final_total - $transaction->transaction_payments->sum('amount')), ['class' => 'form-control', 'placeholder' => __('lang.amount')]) !!}
-                         @else 
+                        @if($balance >0 && $balance<$transaction->final_total - $transaction->transaction_payments->sum('amount'))
                         {!! Form::text('amount', @num_format($transaction->final_total - $transaction->transaction_payments->sum('amount')-$balance), ['class' => 'form-control', 'placeholder' => __('lang.amount')]) !!}
+                         @else 
+                        {!! Form::text('amount', @num_format($transaction->final_total - $transaction->transaction_payments->sum('amount')), ['class' => 'form-control', 'placeholder' => __('lang.amount')]) !!}
                         @endif
                     </div>
                 </div>
