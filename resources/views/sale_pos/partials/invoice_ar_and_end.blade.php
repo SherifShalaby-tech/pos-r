@@ -133,7 +133,7 @@
                 <p>{{ $transaction->store->phone_number }} </p>
 
         </div>
-        <div style="width: 70%; float:left;">
+        <div style="width: 70%; float:left; font-weight: bold;">
             <p style="padding: 0 7px;">@lang('lang.date', [], 'en'): {{ $transaction->transaction_date }}
                 {{ __('lang.date', [], 'ar') }}<br>
                 @lang('lang.reference', [], 'en'): {{ $transaction->invoice_no }}
