@@ -140,7 +140,7 @@ $is_first_after_extra=0;
             <p>{{ $transaction->store->phone_number }} </p>
 
         </div>
-        <div style="width: 70%; float:left;">
+        <div style="width: 70%; float:left; font-weight: bold;">
             <p>@lang('lang.date', [], $invoice_lang): {{ $transaction->transaction_date }}<br>
                 @lang('lang.reference', [], $invoice_lang): {{ $transaction->invoice_no }}<br>
                 @if (!empty($transaction->customer) && $transaction->customer->is_default == 0)
