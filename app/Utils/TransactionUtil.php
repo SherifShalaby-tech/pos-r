@@ -1554,6 +1554,25 @@ class TransactionUtil extends Util
                     $q->whereIn('variation_id',$current_products);
         })->get();
         $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
+        $font='16px';
+       $line_height1='10px';
+       $line_height2='24';
+       $font_size_at_invoice=System::getProperty('font_size_at_invoice');
+        if (!empty($font_size_at_invoice)){
+            if($font_size_at_invoice == 'max'){
+                $font='16px';
+                $line_height1='20px';
+                $line_height2='24px';
+            }else if($font_size_at_invoice == 'min'){
+                $font='9px';
+                $line_height1='10px';
+                $line_height2='17px';
+            }else if($font_size_at_invoice == 'avg'){
+                $font='12px';
+                $line_height1='15px';
+                $line_height2='21px';
+            }
+        }
         if ($invoice_lang == 'ar_and_en') {
             $html_content = view('sale_pos.partials.invoice_ar_and_end')->with(compact(
                 'transaction',
@@ -1568,7 +1587,8 @@ class TransactionUtil extends Util
                 'print_gift_invoice',
                 'transaction_sell_lines',
                 'current_products',
-                'transaction_payments'
+                'transaction_payments',
+                'font','line_height1','line_height2'
             ))->render();
         }
 
