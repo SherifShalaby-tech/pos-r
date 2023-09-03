@@ -1088,6 +1088,7 @@ class SellPosController extends Controller
      */
     public function addProductRow(Request $request)
     {
+//        dd($request);
         if ($request->ajax()) {
             $weighing_scale_barcode = $request->input('weighing_scale_barcode');
             $batch_number_id = $request->input('batch_number_id');
@@ -1128,6 +1129,20 @@ class SellPosController extends Controller
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
 
+            if (empty($variation_id) && !empty($weighing_barcode)) {
+                $product_details = $this->__parseWeighingBarcode($weighing_barcode);
+                if ($product_details['success']) {
+                    $product_id = $product_details['product_id'];
+                    $variation_id = $product_details['variation_id'];
+                    $quantity = $product_details['qty'];
+                    $edit_quantity = $quantity;
+                } else {
+                    $output['success'] = false;
+                    $output['msg'] = $product_details['msg'];
+                    return $output;
+                }
+            }
+
             if(!empty($extensions_quantity)){
                 $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
             }else{
@@ -1141,6 +1156,7 @@ class SellPosController extends Controller
                     $extensions[$key]['extensions_id']=$extensions_ids[$key];
                 }
             }
+
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id, $batch_number_id);
@@ -1155,23 +1171,12 @@ class SellPosController extends Controller
                 }
 
                 $have_weight = System::getProperty('weight_product'.$store_pos_id);
-
-                $quantity =  $have_weight? (float)$have_weight: 1;
-                $edit_quantity = !$products->first()->have_weight ? $request->input('edit_quantity') : $quantity;
-
-                if (empty($variation_id) && !empty($weighing_barcode) && $products->first()->have_weight != 1) {
-                    $product_details = $this->__parseWeighingBarcode($weighing_barcode);
-                    if ($product_details['success']) {
-                        $product_id = $product_details['product_id'];
-                        $variation_id = $product_details['variation_id'];
-                        $quantity = $product_details['qty'];
-                        $edit_quantity = $quantity;
-                    } else {
-                        $output['success'] = false;
-                        $output['msg'] = $product_details['msg'];
-                        return $output;
-                    }
+                if (empty($edit_quantity)) {
+                    $quantity = $have_weight ? (float)$have_weight : 1;
+                    $edit_quantity = !$products->first()->have_weight ? $request->input('edit_quantity') : $quantity;
                 }
+
+
                 $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
                 $product_all_discounts_categories = $this->productUtil->getProductAllDiscountCategories($product_id);
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
@@ -1185,7 +1190,8 @@ class SellPosController extends Controller
                         'exchange_rate','qty','dining_table','check_pay'))->render();
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
-            } else {
+            }
+            else {
                 $output['success'] = false;
                 $output['msg'] = __('lang.sku_no_match');
             }
@@ -1193,6 +1199,7 @@ class SellPosController extends Controller
             // dd ($output);
         }
     }
+
     public function addDiscounts(Request $request){
         if($request->ajax()){
             $customer_id = $request->input('customer_id');
@@ -1247,7 +1254,7 @@ class SellPosController extends Controller
                     return $output;
                 }
             }
-
+dd($weighing_barcode);
             if (!empty($product_id)) {
                 if(!empty($variation_id)){
                     $extensions=  ProductExtension::with('extension:id,name,translations')
@@ -2186,13 +2193,13 @@ class SellPosController extends Controller
         try {
             $stockLines=AddStockLine::where('sell_price','>',0)->where('variation_id',$variation_id)
             ->get();
-            
+
             if(!empty($stockLines)){
                 foreach($stockLines as $stockLine){
                     $stockLine->sell_price =request()->sell_price;
                     $stockLine->save();
                 }
-                
+
             }else{
                 $variation=Variation::find($variation_id);
                 $variation->default_sell_price=request()->sell_price;
@@ -2210,6 +2217,6 @@ class SellPosController extends Controller
             ];
         }
         return $output;
-    } 
+    }
 }
 
