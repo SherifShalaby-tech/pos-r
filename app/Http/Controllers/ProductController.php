@@ -539,8 +539,11 @@ class ProductController extends Controller
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
         $employee = Employee::where('user_id', auth()->user()->id)->first();
 
-        $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
-
+        if(!isset($employee->store_id) && env('SYSTEM_SUPERADMIN')=="superadmin@sherifshalaby.tech"){
+            $employee_stores  = Store::get();
+        }else{
+            $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
+        }
         if ($quick_add) {
             return view('product.create_quick_add')->with(compact(
                 'quick_add',
