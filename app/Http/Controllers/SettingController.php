@@ -123,13 +123,13 @@ class SettingController extends Controller
 
         $timezone_list = $this->commonUtil->allTimeZones();
         $terms_and_conditions = TermsAndCondition::where('type', 'invoice')->orderBy('name', 'asc')->pluck('name', 'id');
-
+        $fonts=System::getFonts();
         return view('settings.general_setting')->with(compact(
             'settings',
             'currencies',
             'timezone_list',
             'terms_and_conditions',
-            'languages'
+            'languages','fonts'
         ));
     }
 
@@ -206,7 +206,10 @@ class SettingController extends Controller
             ['key' => 'help_page_content'],
             ['value' => $request->help_page_content, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
         );
-
+        System::updateOrCreate(
+            ['key' => 'font_size_at_invoice'],
+            ['value' => $request->font_size_at_invoice, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
         if (!empty($request->language)) {
             session()->put('language', $request->language);
         }

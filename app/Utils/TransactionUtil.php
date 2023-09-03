@@ -1377,7 +1377,7 @@ class TransactionUtil extends Util
             'block_for_days' => 0,
             'tax_id' => $request->tax_id_hidden ?? null,
             // 'tax_method' => $request->tax_method ?? null,
-            'tax_rate' => $request->tax_rate ?? 0,
+            // 'tax_rate' => $request->tax_rate ?? 0,
             'total_tax' => $this->num_uf($request->total_tax),
             'total_item_tax' => $this->num_uf($request->total_item_tax),
             'sale_note' => $request->sale_note,
@@ -1554,6 +1554,25 @@ class TransactionUtil extends Util
                     $q->whereIn('variation_id',$current_products);
         })->get();
         $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
+        $font='16px';
+       $line_height1='10px';
+       $line_height2='24';
+       $font_size_at_invoice=System::getProperty('font_size_at_invoice');
+        if (!empty($font_size_at_invoice)){
+            if($font_size_at_invoice == 'max'){
+                $font='16px';
+                $line_height1='20px';
+                $line_height2='24px';
+            }else if($font_size_at_invoice == 'min'){
+                $font='9px';
+                $line_height1='10px';
+                $line_height2='17px';
+            }else if($font_size_at_invoice == 'avg'){
+                $font='12px';
+                $line_height1='15px';
+                $line_height2='21px';
+            }
+        }
         if ($invoice_lang == 'ar_and_en') {
             $html_content = view('sale_pos.partials.invoice_ar_and_end')->with(compact(
                 'transaction',
@@ -1568,7 +1587,8 @@ class TransactionUtil extends Util
                 'print_gift_invoice',
                 'transaction_sell_lines',
                 'current_products',
-                'transaction_payments'
+                'transaction_payments',
+                'font','line_height1','line_height2'
             ))->render();
         }
 
@@ -1792,10 +1812,31 @@ class TransactionUtil extends Util
 
 
         $balance_adjustment = CustomerBalanceAdjustment::where('customer_id', $customer_id)->sum('add_new_balance');
-        $balance = ($customer_details->total_paid - $customer_details->total_invoice  + $customer_details->total_return - $customer_details->total_return_paid)+ $customer_details->deposit_balance + $customer_details->added_balance;        // print_r( $customer_details->total_return); die();
+        $balance = ($customer_details->total_paid - $customer_details->total_invoice  + $customer_details->total_return - $customer_details->total_return_paid)+ $customer_details->deposit_balance + $customer_details->added_balance + $balance_adjustment;        // print_r( $customer_details->total_return); die();
         return ['balance' => $balance, 'points' => $customer_details->total_rp];
     }
+    public function getCustomerBalanceExceptTransaction($customer_id,$transaction_id)
+    {
+        $query = Customer::join('transactions as t', 'customers.id', 't.customer_id')
+        ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
+        ->where('customers.id', $customer_id);
+        $query->where('t.id','!=',$transaction_id);
+        $query->select(
+        'customers.total_rp',
+        'customers.deposit_balance',
+        'customers.added_balance',
+        DB::raw("SUM(IF(t.type = 'sell_return' AND t.status = 'final', final_total, 0)) as total_return"),
+        DB::raw("SUM(IF(t.type = 'sell_return' AND t.status = 'final', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as total_return_paid"),
+        DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', final_total, 0)) as total_invoice"),
+        DB::raw("SUM(IF(t.type = 'sell' AND t.status = 'final', (SELECT SUM(IF(is_return = 1,-1*amount,amount)) FROM transaction_payments WHERE transaction_payments.transaction_id=t.id), 0)) as total_paid"),
+        );
+        $customer_details = $query->first();
 
+
+        $balance_adjustment = CustomerBalanceAdjustment::where('customer_id', $customer_id)->sum('add_new_balance');
+        $balance = ($customer_details->total_paid - $customer_details->total_invoice  + $customer_details->total_return - $customer_details->total_return_paid)+ $customer_details->deposit_balance + $customer_details->added_balance + $balance_adjustment;        // print_r( $customer_details->total_return); die();
+        return ['balance' => $balance, 'points' => $customer_details->total_rp];
+    }
     /**
      * pay customer due
      *

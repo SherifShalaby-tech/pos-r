@@ -1460,4 +1460,10 @@ return [
     'not_available' => 'Not Available',
     'monthly_sale_and_purchase_report' => 'Monthly Sale And Purchase Report',
     'selling_price_for_this_product_is_changed'=>'Selling Price For This Product Is Changed',
+    'total_rows'=>'Total Employees Number',
+    'wins'=>'profits',
+    'font_size_at_invoice'=>'Font Size At Invoice',
+    'max'=>'Max',
+    'min'=>'Min',
+    'avg'=>'Avg',
 ];
