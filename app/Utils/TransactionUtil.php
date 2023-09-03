@@ -1553,10 +1553,10 @@ class TransactionUtil extends Util
             ->when( count($current_products) > 0 , function ($q) use($current_products) {
                     $q->whereIn('variation_id',$current_products);
         })->get();
-        $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
-        $font='16px';
-       $line_height1='10px';
-       $line_height2='24';
+        $total_due= $this->getCustomerBalance($transaction->customer_id)['balance'];
+                $font='16px';
+                $line_height1='20px';
+                $line_height2='24px';
        $font_size_at_invoice=System::getProperty('font_size_at_invoice');
         if (!empty($font_size_at_invoice)){
             if($font_size_at_invoice == 'max'){
@@ -1571,6 +1571,10 @@ class TransactionUtil extends Util
                 $font='12px';
                 $line_height1='15px';
                 $line_height2='21px';
+            }else{
+                $font='16px';
+                $line_height1='20px';
+                $line_height2='24';
             }
         }
         if ($invoice_lang == 'ar_and_en') {
