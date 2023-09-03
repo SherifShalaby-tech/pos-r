@@ -248,6 +248,14 @@ $(document).ready(function () {
                             ._trigger("select", "autocompleteselect", ui);
                         $(this).autocomplete("close");
                     } else if (ui.content.length == 0) {
+                        get_label_product_row(
+                            null,
+                            null,
+                            null,
+                            1,
+                            0,
+                            $("#search_product").val()
+                        );
                         // swal("Product not found");
                     }
                 },
@@ -397,7 +405,7 @@ function get_label_product_search_row(
                 customer_id: customer_id,
                 currency_id: currency_id,
                 edit_quantity: edit_quantity,
-                weighing_scale_barcode: weighing_scale_barcode,
+                weighing_scale_barcode: $("#search_product").val(),
                 dining_table_id: $("#dining_table_id").val(),
                 is_direct_sale: $("#is_direct_sale").val(),
                 batch_number_id:add_stock_lines_id,
@@ -511,7 +519,7 @@ function get_label_product_row(
                 customer_id: customer_id,
                 currency_id: currency_id,
                 edit_quantity: edit_quantity,
-                weighing_scale_barcode: weighing_scale_barcode,
+                weighing_scale_barcode: $("#search_product").val(),
                 dining_table_id: $("#dining_table_id").val(),
                 is_direct_sale: $("#is_direct_sale").val(),
             },
@@ -629,7 +637,7 @@ function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,sto
             extensions_ids: extensions_ids,
             extensions_quantity: extensions_quantity,
             extensions_sell_prices: extensions_sell_prices,
-            weighing_scale_barcode: weighing_scale_barcode,
+            weighing_scale_barcode: $("#search_product").val(),
             dining_table_id: $("#dining_table_id").val(),
             is_direct_sale: $("#is_direct_sale").val(),
             qty:qty
@@ -2388,7 +2396,7 @@ function get_recent_transactions() {
                         ? i
                         : 0;
             };
-    
+
             this.api()
                 .columns(".currencies", {
                     page: "current",
@@ -2401,7 +2409,7 @@ function get_recent_transactions() {
                         $(column.footer()).html(currencies_html);
                     });
                 });
-    
+
             this.api()
                 .columns(".sum", { page: "current" })
                 .every(function () {
@@ -2413,7 +2421,7 @@ function get_recent_transactions() {
                     column.data().each(function (group, i) {
                         b = $(group).text();
                         currency_id = $(group).data("currency_id");
-    
+
                         $.each(currency_obj, function (key, value) {
                             if (currency_id == value.currency_id) {
                                 currency_total[value.currency_id] += intVal(b);
