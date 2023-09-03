@@ -499,7 +499,10 @@ $is_first_after_extra=0;
                     </tr>
                     @if (!empty($transaction->terms_and_conditions))
                         <tr>
-                            <td class="centered" colspan="3">{!! $transaction->terms_and_conditions->description !!}</td>
+                            @php
+                             $terms_and_conditions=str_replace("\n", '', strip_tags( $transaction->terms_and_conditions->description));
+                            @endphp
+                            <td  class="centered" colspan="3" style="text-align: justify;">{!! $terms_and_conditions !!}</td>
                         </tr>
                     @endif
                     <tr>
