@@ -1553,7 +1553,8 @@ class TransactionUtil extends Util
             ->when( count($current_products) > 0 , function ($q) use($current_products) {
                     $q->whereIn('variation_id',$current_products);
         })->get();
-        $total_due= $this->getCustomerBalance($transaction->customer_id)['balance'];
+        // $total_due= $this->getCustomerBalance($transaction->customer_id)['balance'];
+        $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
                 $font='16px';
                 $line_height1='20px';
                 $line_height2='24px';
