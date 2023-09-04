@@ -307,13 +307,12 @@ $is_first_after_extra=0;
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.category_discount')</th>
                             </tr>
-                            @foreach ($transaction->transaction_sell_lines as $line)
-                                @if(!empty($line->discount_category))
+                           @foreach ($transaction->transaction_sell_lines as $line)
+                                @if(!isset($line->discount_category) && !isset($line->product_discount_amount))
                                 <tr>
                                     <th style="font-size: {{$font}};" colspan="3">{{$line->discount_category}}</th>
                                     <th style="font-size: {{$font}}; text-align:right;">
-                                        {{@num_format($line->product_discount_amount)}}
-                                        {{-- {{ @num_format($transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->where('discount_category',$line->discount_category)->sum('product_discount_amount')) }} --}}
+                                        {{ @num_format($transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->where('discount_category',$line->discount_category)->sum('product_discount_amount')) }}
                                         {{ $transaction->received_currency->symbol }}
                                     </th>
                                 </tr>
