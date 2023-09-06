@@ -522,7 +522,7 @@
                 columnDefs: [{
                     "targets": [0, 3],
                     "orderable": false,
-                    "searchable": false
+                    "searchable": true
                 }],
                 columns: [
                     @if(env('ENABLE_POS_Branch',false))
