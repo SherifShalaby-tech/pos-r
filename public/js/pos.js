@@ -914,7 +914,7 @@ function calculate_sub_totals() {
         __write_number($(tr).find(".sub_total"), sub_total);
         $(tr)
             .find(".sub_total_span")
-            .text(__currency_trans_from_en(sub_total, false));
+            .text(__currency_trans_from_en(roundToNearestQuarter(sub_total), false));
         total += sub_total;
 
         item_count++;
@@ -1042,6 +1042,10 @@ function calculate_sub_totals() {
     $(".final_total_span").text(__currency_trans_from_en(total, false));
 }
 
+function roundToNearestQuarter(number) {
+    return Math.round(number * 4) / 4;
+}
+
 function calculate_product_surplus(tr) {
     let surplus = 0;
 
@@ -1053,6 +1057,7 @@ function calculate_product_surplus(tr) {
 
     return surplus;
 }
+
 function calculate_product_discount(tr) {
     let discount = 0;
     let exchange_rate = __read_number($("#exchange_rate"));
