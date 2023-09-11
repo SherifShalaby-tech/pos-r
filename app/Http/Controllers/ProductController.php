@@ -537,7 +537,7 @@ class ProductController extends Controller
         $suppliers = Supplier::pluck('name', 'id');
         $printers = Printer::get(['id','name']);
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-        $employee = Employee::where('user_id', auth()->user()->id)->first();
+        $employee = Employee::where('user_id', Auth::user()->id)->first();
 
         if(!isset($employee->store_id) || env('SYSTEM_SUPERADMIN')=="superadmin@sherifshalaby.tech"){
             $employee_stores  = Store::get();
@@ -820,8 +820,11 @@ class ProductController extends Controller
         $printers_p = PrinterProduct::where('product_id',$id)->get();
         $printers = Printer::pluck('name','id');
         $employee = Employee::where('user_id', auth()->user()->id)->first();
-
-        $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
+        $employee_stores=[];
+        if(isset($employee->store_id)){
+            $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
+        }
+        
         return view('product.edit')->with(compact(
             'raw_materials',
             'raw_material_units',
