@@ -1755,7 +1755,13 @@ class ReportController extends Controller
 
         while ($start <= $end) {
             $start_date = $year . '-' . date('m', $start) . '-' . '01';
-            $end_date = $year . '-' . date('m', $start) . '-' . '31';
+            if(in_array(date('m', $start), [4, 6, 9, 11])){
+                $end_date = date("Y") . '-' . date('m', $start) . '-' . '30';
+            } elseif (date('m', $start) == 2) {
+                $end_date = date("Y") . '-' . date('m', $start) . '-' . '29';
+            } else {
+                $end_date = date("Y") . '-' . date('m', $start) . '-' . '31';
+            }
 
             $total_sell_query = Transaction::where('type', 'sell')->where('status', 'final')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
             if (!empty($store_id)) {
@@ -1925,7 +1931,13 @@ class ReportController extends Controller
 
         while ($start <= $end) {
             $start_date = $year . '-' . date('m', $start) . '-' . '01';
-            $end_date = $year . '-' . date('m', $start) . '-' . '31';
+            if(in_array(date('m', $start), [4, 6, 9, 11])){
+                $end_date = date("Y") . '-' . date('m', $start) . '-' . '30';
+            } elseif (date('m', $start) == 2) {
+                $end_date = date("Y") . '-' . date('m', $start) . '-' . '29';
+            } else {
+                $end_date = date("Y") . '-' . date('m', $start) . '-' . '31';
+            }
 
             $total_discount_query = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date);
             if (!empty($store_id)) {
