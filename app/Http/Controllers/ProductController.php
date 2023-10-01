@@ -537,7 +537,7 @@ class ProductController extends Controller
         $suppliers = Supplier::pluck('name', 'id');
         $printers = Printer::get(['id','name']);
         $extensions  = Extension::orderBy('name', 'asc')->pluck('name', 'id');
-        $employee = Employee::where('user_id', auth()->user()->id)->first();
+        $employee = Employee::where('user_id', Auth::user()->id)->first();
 
         if(!isset($employee->store_id) || env('SYSTEM_SUPERADMIN')=="superadmin@sherifshalaby.tech"){
             $employee_stores  = Store::get();
@@ -820,8 +820,11 @@ class ProductController extends Controller
         $printers_p = PrinterProduct::where('product_id',$id)->get();
         $printers = Printer::pluck('name','id');
         $employee = Employee::where('user_id', auth()->user()->id)->first();
-
-        $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
+        $employee_stores=[];
+        if(isset($employee->store_id)){
+            $employee_stores  = Store::whereIn('id', $employee->store_id)->get();
+        }
+        
         return view('product.edit')->with(compact(
             'raw_materials',
             'raw_material_units',
@@ -1036,14 +1039,21 @@ class ProductController extends Controller
 //                }
 //            }
         if ($request->has("cropImages") && count($request->cropImages) > 0) {
+            // Clear the media collection only once, before the loop
+            $product->clearMediaCollection('product');
+            
             foreach ($this->getCroppedImages($request->cropImages) as $imageData) {
-                $product->clearMediaCollection('product');
-                $extention = explode(";",explode("/",$imageData)[1])[0];
-                $image = rand(1,1500)."_image.".$extention;
+                $extention = explode(";", explode("/", $imageData)[1])[0];
+                $image = rand(1, 1500) . "_image." . $extention;
                 $filePath = public_path('uploads/' . $image);
-                $fp = file_put_contents($filePath,base64_decode(explode(",",$imageData)[1]));
+                $fp = file_put_contents($filePath, base64_decode(explode(",", $imageData)[1]));
                 $product->addMedia($filePath)->toMediaCollection('product');
             }
+        }
+
+        if (!isset($request->cropImages) || count($request->cropImages) == 0) {
+            // You can clear the media collection here if needed
+            $product->clearMediaCollection('product');
         }
 
 
