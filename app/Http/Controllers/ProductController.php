@@ -1031,13 +1031,6 @@ class ProductController extends Controller
                 }
 
             }
-
-//            if ($request->images) {
-//                $product->clearMediaCollection('product');
-//                foreach ($request->images as $image) {
-//                    $product->addMedia($image)->toMediaCollection('product');
-//                }
-//            }
         if ($request->has("cropImages") && count($request->cropImages) > 0) {
             // Clear the media collection only once, before the loop
             $product->clearMediaCollection('product');
@@ -1052,7 +1045,6 @@ class ProductController extends Controller
         }
 
         if (!isset($request->cropImages) || count($request->cropImages) == 0) {
-            // You can clear the media collection here if needed
             $product->clearMediaCollection('product');
         }
 
