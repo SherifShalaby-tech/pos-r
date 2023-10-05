@@ -153,6 +153,8 @@
                                             <label for="points" style="margin: 0px;">@lang('lang.points'):
                                                 <span class="points"><span
                                                         class="customer_points_span">{{ @num_format(0) }}</span></span></label>
+                                            <br>
+                                            <span class="staff_note small"></span>
                                         </div>
                                         @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
                                             <div class="col-md-2">

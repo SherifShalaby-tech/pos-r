@@ -2536,6 +2536,7 @@ function getCustomerBalance() {
         data: {},
         dataType: "json",
         success: function (result) {
+            $(".staff_note").text(result.staff_note);
             $(".customer_balance").text(
                 __currency_trans_from_en(result.balance, false)
             );
