@@ -21,9 +21,9 @@
                     <th>@lang('lang.mobile_number')</th>
                     <th>@lang('lang.address')</th>
                     <th class="sum">@lang('lang.balance')</th>
-                    <th>@lang('lang.purchases')</th>
-                    <th>@lang('lang.discount')</th>
-                    <th>@lang('lang.points')</th>
+                    <th class="sum_purchase">@lang('lang.purchases')</th>
+                    <th class="sum_discounts">@lang('lang.discount')</th>
+                    <th class="sum_points">@lang('lang.points')</th>
                     <th>@lang('lang.joining_date')</th>
                     <th>@lang('lang.created_by')</th>
                     <th class="notexport">@lang('lang.action')</th>
@@ -221,7 +221,7 @@
                 };
 
                 this.api()
-                    .columns(".sum", { page: "current" })
+                    .columns(".sum,.sum_purchase,.sum_discounts,.sum_points", { page: "current" })
                     .every(function () {
                         var column = this;
                         if (column.data().count()) {
