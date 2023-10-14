@@ -191,6 +191,17 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-sm-2 mt-2">
+                                <div class="wrapper count-title text-center">
+                                    <div class="icon"><i class="dripicons-trophy" style="color: #3f6dad"></i>
+                                    </div>
+                                    <div class="name"><strong
+                                            style="color: #3f6dad">@lang('lang.purchase')</strong>
+                                    </div>
+                                    <div class="count-number purchase-data">{{ @num_format(0) }}
+                                    </div>
+                                </div>
+                            </div>
                         @endif
                     </div>
                 </div>
@@ -266,6 +277,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     let profit_string = '<div>';
                     let expenses_string = '<div>';
                     let net_profit_string = '<div>';
+                    let purchase_string = '<div>';
                     result.forEach(element => {
                         currenct_stock_string += `<h3 class="dashboard_currency currency_total_${element.currency.currency_id}"
                                             data-currency_id="${element.currency.currency_id}"
@@ -382,7 +394,19 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                             <span
                                                 class="total">${__currency_trans_from_en(element.data.expenses, false)}</span>
                                         </h3>`;
+                        purchase_string += `<h3 class="dashboard_currency currency_total_${element.currency.currency_id}"
+                                            data-currency_id="${element.currency.currency_id}"
+                                            data-is_default="${element.currency.is_default}"
+                                            data-conversion_rate="${element.currency.conversion_rate}"
+                                            data-base_conversion="${element.currency.conversion_rate * element.data.purchase}"
+                                            data-orig_value="${element.data.purchase}">
+                                            <span class="symbol" style="padding-right: 10px;">
+                                                ${element.currency.symbol}</span>
+                                            <span
+                                                class="total">${__currency_trans_from_en(element.data.purchase, false)}</span>
+                                        </h3>`;
                     });
+
                     currenct_stock_string += `</div>`;
                     currenct_stock_string_p += `</div>`;
                     currenct_stock_string_m += `</div>`;
@@ -393,7 +417,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     profit_string += `</div>`;
                     expenses_string += `</div>`;
                     net_profit_string += '</div>';
-
+                    purchase_string += '</div>';
                     $(".revenue-data").html(revenue_string);
 
 
@@ -428,7 +452,9 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                     $('.expenses').show(500);
 
                    /* $("#store_id").selectpicker("refresh"); */
-
+                   $('.purchase-data').hide();
+                    $(".purchase-data").html(purchase_string);
+                    $('.purchase-data').show(500);
                 },
             });
             getChartAndTableSection(start_date, end_date, store_id);
