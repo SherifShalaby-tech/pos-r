@@ -860,6 +860,7 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // $request->cropImages;
         // return $request ;
         if (!auth()->user()->can('product_module.product.create_and_edit')) {
             abort(403, 'Unauthorized action.');
