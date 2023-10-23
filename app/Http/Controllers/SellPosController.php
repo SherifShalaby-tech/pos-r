@@ -435,7 +435,7 @@ class SellPosController extends Controller
             $this->transactionUtil->createOrUpdateTransactionCustomerSize($transaction, $request->transaction_customer_size);
         }
 
-        $this->transactionUtil->createOrUpdateTransactionSupplierService($transaction, $request);
+        // $this->transactionUtil->createOrUpdateTransactionSupplierService($transaction, $request);
 
         if (!empty($request->commissioned_employees)) {
             $this->transactionUtil->createOrUpdateTransactionCommissionedEmployee($transaction, $request);
@@ -759,7 +759,7 @@ class SellPosController extends Controller
             $this->transactionUtil->createOrUpdateTransactionCustomerSize($transaction, $request->transaction_customer_size);
         }
 
-        $this->transactionUtil->createOrUpdateTransactionSupplierService($transaction, $request);
+        // $this->transactionUtil->createOrUpdateTransactionSupplierService($transaction, $request);
 
         if (!empty($request->commissioned_employees)) {
             $this->transactionUtil->createOrUpdateTransactionCommissionedEmployee($transaction, $request->commissioned_employees);
