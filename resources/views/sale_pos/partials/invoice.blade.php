@@ -221,14 +221,14 @@ $is_first_after_extra=0;
                         @endif
                     </tr>
                 </thead>
-                <tbody>
+                <tbody >
 
                     @foreach ($transaction_sell_lines as $line)
                         <tr  class=" @if($line->sell_line_extensions->count() > 0 )no-border @endif {{$is_first_after_extra == 1 ?'border-top':''}}">
                             @php
                                 $is_first_after_extra=0;
                             @endphp
-                            <td style="width: 30%;">
+                            <td style="width: 30%;font-size:{{$data_font}}">
                                 @if (!empty($line->variation))
                                     @if ($line->variation->name != 'Default')
                                         {{ $line->variation->name }}
@@ -239,13 +239,13 @@ $is_first_after_extra=0;
                             </td>
                            
                             @if (empty($print_gift_invoice))
-                                <td style="text-align:center !important;vertical-align:bottom; width: 20%;">
+                                <td style="text-align:center !important;vertical-align:bottom; width: 20%;font-size:{{$data_font}}">
                                     {{ @num_format($line->sell_price) }}</td>
                             @endif
-                            <td style="text-align:center;vertical-align:bottom; width: 20%;">
+                            <td style="text-align:center;vertical-align:bottom; width: 20%;{{$data_font}}">
                                 {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
                             @if (empty($print_gift_invoice))
-                                <td style="text-align:center;vertical-align:bottom; width: 30%;">
+                                <td style="text-align:center;vertical-align:bottom; width: 30%;font-size:{{$data_font}}">
                                     @if ($line->product_discount_type != 'surplus')
                                         {{ @num_format($line->sub_total + $line->product_discount_amount) }}
                                     @else
@@ -254,7 +254,7 @@ $is_first_after_extra=0;
                                 </td>
                             @endif
                             @if(isset($line->discount_category) && isset($line->product_discount_amount))
-                            <td style="text-align:center;vertical-align:bottom; width: 20%;">{{$line->discount_category}} ({{@num_format($line->product_discount_amount) }})</td>
+                            <td style="text-align:center;vertical-align:bottom; width: 20%;font-size:{{$data_font}};">{{$line->discount_category}} ({{@num_format($line->product_discount_amount) }})</td>
                             @endif
                         </tr>
                         @if($line->sell_line_extensions)
@@ -295,7 +295,7 @@ $is_first_after_extra=0;
                     <tfoot>
                         <tr>
                             <th style="font-size: {{$font}};" colspan="3">@lang('lang.total', [], $invoice_lang)</th>
-                            <th style="font-size: {{$font}}; text-align:right;">
+                            <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                 {{ @num_format($transaction_sell_lines->sum('sub_total') + $transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }}
                                 {{-- {{ @num_format($transaction->grand_total + $transaction->transaction_sell_lines->where('product_discount_type', '!=', 'surplus')->sum('product_discount_amount')) }} --}}
                                 {{ $transaction->received_currency->symbol }}
@@ -305,7 +305,7 @@ $is_first_after_extra=0;
                         @if ($transaction->total_item_tax != 0)
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.tax', [], $invoice_lang)</th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->total_item_tax) }}
                                     {{ $transaction->received_currency->symbol }}
                                 </th>
@@ -314,7 +314,7 @@ $is_first_after_extra=0;
                         @if ($transaction->total_tax != 0)
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">{{ $transaction->tax->name ?? '' }}</th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->total_tax) }}
                                     {{ $transaction->received_currency->symbol }}</th>
                             </tr>
@@ -322,7 +322,7 @@ $is_first_after_extra=0;
                         @if ($transaction->service_fee_value > 0)
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.service')</th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->service_fee_value) }}
                                     {{ $transaction->received_currency->symbol }}</th>
                             </tr>
@@ -331,7 +331,7 @@ $is_first_after_extra=0;
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.order_discount', [], $invoice_lang)
                                 </th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->discount_amount) }}
                                     {{ $transaction->received_currency->symbol }}
                                 </th>
@@ -340,7 +340,7 @@ $is_first_after_extra=0;
                         @if ($transaction->total_sp_discount != 0)
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.sales_promotion', [], $invoice_lang)</th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->total_sp_discount) }}
                                     {{ $transaction->received_currency->symbol }}
                                 </th>
@@ -349,7 +349,7 @@ $is_first_after_extra=0;
                         @if ($transaction_sell_lines->sum('coupon_discount'))
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.coupon_discount', [], $invoice_lang)</th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->transaction_sell_lines->sum('coupon_discount')) }}
                                 </th>
                             </tr>
@@ -361,7 +361,7 @@ $is_first_after_extra=0;
                                         ({{ $transaction->deliveryman->employee_name }})
                                     @endif
                                 </th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->delivery_cost) }}
                                     {{ $transaction->received_currency->symbol }}
                                 </th>
@@ -371,14 +371,14 @@ $is_first_after_extra=0;
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.redeemed_point_value', [], $invoice_lang)
                                 </th>
-                                <th style="font-size: {{$font}}; text-align:right;">
+                                <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                     {{ @num_format($transaction->rp_redeemed_value) }}
                                 </th>
                             </tr>
                         @endif
                         <tr>
                             <th style="font-size: {{$font}};" colspan="3">@lang('lang.grand_total', [], $invoice_lang)</th>
-                            <th style="font-size: {{$font}}; text-align:right;">
+                            <th style="font-size: {{$font}}; text-align:right;" colspan="2">
                                 @if ($transaction->delivery_cost_given_to_deliveryman)
                                     @if($transaction->discount_amount!=0)
                                     {{ @num_format($transaction_sell_lines->sum('sub_total')  + $transaction->delivery_cost-$transaction->discount_amount -$transaction_sell_lines->sum('promotion_discount_amount')) }}
