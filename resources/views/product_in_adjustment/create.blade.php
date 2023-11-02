@@ -250,6 +250,9 @@
             </div>
         </div>
     </div>
+    <div style="text-align: center;">
+        <p style="color: rgb(219, 76, 76)">@lang('lang.check_purchase_price_please')</p>
+    </div>
     <div class="table-responsive">
         <table id="product_table" class="table" style="width: auto">
             <thead>
@@ -873,7 +876,20 @@
 
             // // calculate the total initially
             // calculateTotal();
+            $('#product_table').on('change', '.default_purchase_price, .default_sell_price', function() {
+                var row = $(this).closest('tr');
+                var purchasePrice = parseFloat(row.find('.default_purchase_price').val()) || 0;
+                var sellPrice = parseFloat(row.find('.default_sell_price').val()) || 0;
 
+                // Check if default_purchase_price is greater than or equal to default_sell_price
+                if (purchasePrice >= sellPrice) {
+                    row.find('.default_purchase_price').css('border', '2px solid red');
+                    row.find('.default_sell_price').css('border', '2px solid red');
+                } else {
+                    row.find('.default_purchase_price').css('border', '');
+                    row.find('.default_sell_price').css('border', ''); // Reset border if condition is not met
+                }
+            });
             // add event listener to parent element (table)
             $("#product_table").on("input", ".actual_stock", function() {
                 var tr = $(this).closest('tr');
