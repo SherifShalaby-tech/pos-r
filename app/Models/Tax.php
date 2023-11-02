@@ -45,7 +45,7 @@ class Tax extends Model
         foreach ($general_taxes as $g_tax) {
             $arr = ['id' => $g_tax->id, 'name' => $g_tax->name, 'rate' => $g_tax->rate];
             if ($g_tax->status == 1) {
-                if (!empty($g_tax->store_ids)) {
+                if (is_array( $g_tax->store_ids)) {
                     if (in_array($store_id, $g_tax->store_ids)) {
                         $taxes[] = $arr;
                     }
