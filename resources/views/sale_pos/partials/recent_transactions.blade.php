@@ -1,4 +1,5 @@
 <div class="table-responsive">
+    <h3 class="print-title-hint" style="display:none;">recent_transactions</h3>
     <table id="recent_transaction_table" class="table">
         <thead>
             <tr>
