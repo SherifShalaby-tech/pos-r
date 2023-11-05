@@ -32,7 +32,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\ProductClass;
 class ReportController extends Controller
 {
     /**
@@ -1595,7 +1595,7 @@ class ReportController extends Controller
         $stores = Store::getDropdown();
         $store_pos = StorePos::orderBy('name', 'asc')->pluck('name', 'id');
         $products = Product::orderBy('name', 'asc')->pluck('name', 'id');
-        $categories=Category::orderBy('name', 'asc')->pluck('name', 'id');
+        $categories=ProductClass::orderBy('name', 'asc')->pluck('name', 'id');
         return view('reports.product_report')->with(compact(
             'transactions',
             'store_pos',
