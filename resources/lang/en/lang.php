@@ -1466,4 +1466,6 @@ return [
     'max'=>'Max',
     'min'=>'Min',
     'avg'=>'Avg',
+    'category_report'=>'Category Report',
+    'category_purchases'=>'Category Purchases',
 ];

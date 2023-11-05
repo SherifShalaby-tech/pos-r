@@ -242,7 +242,7 @@ $is_first_after_extra=0;
                                 <td style="text-align:center !important;vertical-align:bottom; width: 20%;font-size:{{$data_font}}">
                                     {{ @num_format($line->sell_price) }}</td>
                             @endif
-                            <td style="text-align:center;vertical-align:bottom; width: 20%;{{$data_font}}">
+                            <td style="text-align:center;vertical-align:bottom; width: 20%;font-size:{{$data_font}};">
                                 {{ preg_match('/\.\d*[1-9]+/', (string)$line->quantity) ? $line->quantity : @num_format($line->quantity) }}</td>
                             @if (empty($print_gift_invoice))
                                 <td style="text-align:center;vertical-align:bottom; width: 30%;font-size:{{$data_font}}">
