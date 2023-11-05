@@ -1449,6 +1449,7 @@ return [
     'max'=>'كبير',
     'min'=>'صغير',
     'avg'=>'متوسط',
+    'check_purchase_price_please' => 'برجاء التاكد من ان سعر الشراء اقل من سعر البيع',
     'category_report'=>'تقرير المنتج',
     'category_purchases'=>'مبيعات المنتج',
 ];
