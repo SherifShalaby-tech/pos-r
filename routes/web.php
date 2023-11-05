@@ -385,7 +385,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('report/get-dining-report', 'ReportController@getDiningRoomReport');
     Route::delete('report/delete-employee-commission/{id}', 'ReportController@deleteEmployeeCommission');
     Route::get('report/get-sales-per-employee-report', 'ReportController@getSalesPerEmployeeReport');
-
+    Route::get('report/get-category-purchases', 'ReportController@getCategoryPurchases');
+    
     Route::post('sms/save-setting', 'SmsController@saveSetting');
     Route::get('sms/setting', 'SmsController@getSetting');
     Route::get('sms/resend/{id}', 'SmsController@resend');

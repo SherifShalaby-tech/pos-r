@@ -1449,4 +1449,6 @@ return [
     'max'=>'كبير',
     'min'=>'صغير',
     'avg'=>'متوسط',
+    'category_report'=>'تقرير المنتج',
+    'category_purchases'=>'مبيعات المنتج',
 ];

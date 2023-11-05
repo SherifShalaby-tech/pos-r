@@ -6,6 +6,7 @@
         <div class="card">
             <div class="card-header d-flex align-items-center">
                 <h4 class="print-title">@lang('lang.product_report')</h4>
+                <h3 class="print-title-hint" style="display:none;">product_report</h3>
             </div>
             <form action="">
                 <div class="col-md-12">
@@ -60,12 +61,25 @@
                                 {!! Form::select('product_id', $products, request()->product_id, ['class' => 'form-control', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
                             </div>
                         </div>
-
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                {!! Form::label('category_id', __('lang.category'), []) !!}
+                                {!! Form::select('category_id', $categories, request()->category_id, [
+                                    'class' => 'form-control',
+                                    'placeholder' => __('lang.all'),
+                                    'data-live-search' => 'true',
+                                ]) !!}
+                            </div>
+                        </div>
                         <div class="col-md-3">
                             <br>
                             <button type="submit" class="btn btn-success mt-2">@lang('lang.filter')</button>
                             <a href="{{ action('ReportController@getProductReport') }}"
                                 class="btn btn-danger mt-2 ml-2">@lang('lang.clear_filter')</a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="{{ action('ReportController@getCategoryPurchases') }}"
+                            class="btn btn-primary mt-2 ml-2">@lang('lang.category_purchases')</a>
                         </div>
                     </div>
                 </div>
@@ -82,6 +96,8 @@
                                     <th class="sum">@lang('lang.purchased_qty')</th>
                                     <th class="sum">@lang('lang.sold_amount')</th>
                                     <th class="sum">@lang('lang.sold_qty')</th>
+                                    <th class="sum">@lang('lang.purchase_price')</th>
+                                    <th class="sum">@lang('lang.sell_price')</th>
                                     <th class="sum">@lang('lang.profit')</th>
                                     <th class="sum">@lang('lang.in_stock')</th>
                                     <th class="sum">@lang('lang.employee')</th>
@@ -99,7 +115,10 @@
                                         <td> {{ @num_format($transaction->purchased_qty) }}</td>
                                         <td> {{ @num_format($transaction->sold_amount) }}</td>
                                         <td> {{ @num_format($transaction->sold_qty) }}</td>
-                                        <td> {{ @num_format($transaction->sold_amount - $transaction->purchase_cost) }}
+                                        <td> {{ @num_format($transaction->default_purchase_price) }}</td>
+                                        <td> {{ @num_format($transaction->default_sell_price) }}</td>
+                                        <td> {{ @num_format($transaction->sold_amount - $transaction->purchased_amount) }}
+                                        </td>
                                         </td>
                                         <td> {{ preg_match('/\.\d*[1-9]+/', (string)$transaction->in_stock) ? $transaction->in_stock : @num_format($transaction->in_stock) }}</td>
                                         <td>
