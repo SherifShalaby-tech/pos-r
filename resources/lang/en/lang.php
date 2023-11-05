@@ -1467,4 +1467,6 @@ return [
     'min'=>'Min',
     'avg'=>'Avg',
     'check_purchase_price_please' => 'please make sure that purchase price is less than sell price',
+    'category_report'=>'Category Report',
+    'category_purchases'=>'Category Purchases',
 ];
