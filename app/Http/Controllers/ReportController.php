@@ -1589,7 +1589,7 @@ class ReportController extends Controller
             'v.default_purchase_price as default_purchase_price',
             'v.default_sell_price as default_sell_price',
             'p.name as product_name',
-            'p.id'
+            'p.id',
         )->groupBy('p.id')->get();
 
         $stores = Store::getDropdown();
@@ -1605,7 +1605,7 @@ class ReportController extends Controller
     }
     public function getCategoryPurchases(Request $request){
         // $product_classes=ProductClass::
-     
+
         $query = Transaction::leftjoin('transaction_sell_lines as tsl', function ($join) {
             $join->on('transactions.id', 'tsl.transaction_id');
         })
@@ -1622,7 +1622,7 @@ class ReportController extends Controller
             ->where('transactions.payment_status', 'paid')
             ->whereIn('transactions.status', ['final']);
 
-      
+
         $store_query = '';
         if (!empty($store_id)) {
             $query->where('transactions.store_id',  $store_id);
@@ -1824,8 +1824,8 @@ class ReportController extends Controller
             $total_discount_sell[] = $total_sell_query->sum('discount_amount');
             //
             $total_addstock_query = Transaction::where('type', 'add_stock')->where('status', 'received')->whereDate('transaction_date', '>=', $start_date)->whereDate('transaction_date', '<=', $end_date)
-            ->with('add_stock_lines'); 
-           
+            ->with('add_stock_lines');
+
             if (!empty($store_id)) {
                 $total_addstock_query->where('store_id', $store_id);
             }
@@ -1837,7 +1837,7 @@ class ReportController extends Controller
             ///
             $total_tax_sell[] = $total_sell_query->sum('total_tax');
             ///
-   
+
             $total_tax_addstock[] = $total_addstock_query->sum('total_tax');
             //
             $shipping_cost_sell[] = $total_sell_query->sum('delivery_cost');

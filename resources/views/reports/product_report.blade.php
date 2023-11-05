@@ -1,6 +1,14 @@
 @extends('layouts.app')
 @section('title', __('lang.product_report'))
-
+@section('styles')
+    <style>
+        /* Add padding to DataTable cells */
+        .table td, .table th {
+            padding: 20px;
+            margin: 10px;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="col-md-12  no-print">
         <div class="card">
@@ -87,7 +95,7 @@
             <div class="card-body">
                 <div class="col-md-12">
                     <div class="table-responsive">
-                        <table class="table dataTable">
+                        <table class="table dataTable" >
                             <thead>
                                 <tr>
                                     <th>@lang('lang.product_name')</th>
@@ -108,6 +116,10 @@
 
                             <tbody>
                                 @foreach ($transactions as $transaction)
+                                    @php
+                                        $product_id = $transaction->id;
+                                        $stock_line = App\Models\AddStockLine::where('product_id', $product_id)->latest()->first();
+                                    @endphp
                                     <tr>
                                         <td>{{ $transaction->product_name }}</td>
                                         <td>{{ $transaction->sku }}</td>
@@ -115,8 +127,8 @@
                                         <td> {{ @num_format($transaction->purchased_qty) }}</td>
                                         <td> {{ @num_format($transaction->sold_amount) }}</td>
                                         <td> {{ @num_format($transaction->sold_qty) }}</td>
-                                        <td> {{ @num_format($transaction->default_purchase_price) }}</td>
-                                        <td> {{ @num_format($transaction->default_sell_price) }}</td>
+                                        <td> {{ @num_format(!empty($stock_line) ? $stock_line->purchase_price : $transaction->default_purchase_price) }}</td>
+                                        <td> {{ @num_format(!empty($stock_line) ? $stock_line->sell_price : $transaction->default_sell_price) }}</td>
                                         <td> {{ @num_format($transaction->sold_amount - $transaction->purchased_amount) }}
                                         </td>
                                         </td>
