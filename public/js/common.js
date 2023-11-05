@@ -424,6 +424,23 @@ if($('.print-title-hint').text()=="product_report"){
             ];
         buttons.push(button);
     }
+
+    if($('.print-title-hint').text()=="recent_transactions"){
+        var button= [
+                {
+                    extend: 'print',
+                    text: '<i class="fas fa-print"></i>',
+                    charset: 'UTF-8',
+                    bom: true,
+                    footer: true,
+                    title: print_title,
+                    exportOptions: {
+                        columns: [1,3,5,8]
+                    }
+                }
+            ];
+        buttons.push(button);
+    }
 var datatable_params = {
     lengthChange: true,
     paging: true,
