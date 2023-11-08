@@ -1246,7 +1246,7 @@ $(document).on("change", ".sell_price", function () {
             if (isConfirm) {
             $.ajax({
                 type: "post",
-                url: "/pos/change-selling-price/"+variation_id,
+                url: "/pos/change-selling-price/"+$(this).data('variation_id'),
                 data: {sell_price:sell_price},
                 success: function (response) {
                     swal("Success", response.msg, "success");
