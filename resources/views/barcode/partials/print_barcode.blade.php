@@ -88,7 +88,7 @@
                 class="sticker-border text-center">
                 <div style="display:inline-block;vertical-align:middle;line-height:14px !important; font-size: 14px;">
 
-                    <p class="text-center" style="padding: 6px !important; margin: 0px;">
+                    <p class="text-center" style="padding: 2px !important; margin: 0px;">
                         @if (!empty($print['name']))
                             @if (!empty($print['size']) && !empty($details['details']->size_name))
                                 {{ str_replace($details['details']->size_name, '', $details['details']->product_actual_name) }}
