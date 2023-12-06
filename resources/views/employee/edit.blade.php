@@ -39,7 +39,7 @@
                                 <input type="password" class="form-control" name="password" id="password"
                                     placeholder="Create New Password">
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-5">
                                 <label for="pass">@lang('lang.confirm_password')</label>
                                 <input type="password" class="form-control" id="password_confirmation"
                                     name="password_confirmation" placeholder="Conform Password">
@@ -47,7 +47,7 @@
                             <div class="col-sm-1 pt-4">
                                 <a class="btn-primary btn print-employee-barcode" target="blank"
                                     href="{{ route('print_employee_barcode', $employee->id) }}"
-                                    ><i class="fas fa-print"></i></a>
+                                    ><i class="dripicons-print"></i></a>
                             </div>
                         </div>
                         <div class="row mt-4">
