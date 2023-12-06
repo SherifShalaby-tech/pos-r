@@ -127,7 +127,7 @@
                                     ->latest()
                                     ->first();
                             @endphp
-                            {{ !empty($stockLines) ? @num_format($stockLines->sell_price) : @num_format($details['details']->default_sell_price) }}
+                            {{ !empty($stockLines) ? @num_format($stockLines->sell_price) : @num_format($details['details']->default_sell_price) }}{{ $currency->symbol??''}}
                         @endif
                     </span>
 
