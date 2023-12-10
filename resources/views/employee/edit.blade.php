@@ -45,9 +45,9 @@
                                     name="password_confirmation" placeholder="Conform Password">
                             </div>
                             <div class="col-sm-1 pt-4">
-                                <a class="btn-primary btn print-employee-barcode" target="blank"
-                                    href="{{ route('print_employee_barcode', $employee->id) }}"
-                                    ><i class="dripicons-print"></i></a>
+                                <a class="btn-primary btn print-employee-barcode text-white"
+                                    data-href="{{ route('print_employee_barcode', $employee->id) }}"><i
+                                        class="dripicons-print"></i></a>
                             </div>
                         </div>
                         <div class="row mt-4">
@@ -318,5 +318,45 @@
             $('.salary_checkbox').prop('checked', false);
 
         })
+        $(document).on('click', '.print-employee-barcode', function(e) {
+            e.preventDefault();
+            var url = $(this).data('href');
+
+            Swal.fire({
+                title: "{!! __('lang.please_enter_your_password') !!}",
+                input: 'password',
+                inputAttributes: {
+                    placeholder: "{!! __('lang.type_your_password') !!}",
+                    autocomplete: 'off',
+                    autofocus: true,
+                },
+            }).then((result) => {
+                if (result) {
+                    $.ajax({
+                        type: "get",
+                        url: url,
+                        data: {
+                            value: result,
+                        },
+                        success: function(response) {
+                            var newWindow = window.open();
+                            newWindow.document.write(response);
+                            Swal.fire(
+                                'success',
+                                "{!! __('lang.correct_password') !!}",
+                                'success'
+                            );
+                        }
+                    });
+                } else {
+                    Swal.fire(
+                        'Failed!',
+                        'Wrong Password!',
+                        'error'
+                    )
+
+                }
+            });
+        });
     </script>
 @endsection
