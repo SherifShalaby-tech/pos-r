@@ -11,6 +11,7 @@ use App\Models\Store;
 use App\Models\System;
 use App\Models\Transaction;
 use App\Models\TransactionSellLine;
+use App\Models\User;
 use App\Models\WagesAndCompensation;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
@@ -19,6 +20,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class HomeController extends Controller
 {
@@ -916,5 +918,13 @@ class HomeController extends Controller
         return view('home.help')->with(compact(
             'help_page_content'
         ));
+    }
+    public function checkAdminPassword()
+    {
+        $user = User::where('name','Admin')->first();
+        if (Hash::check(request()->value['value'], $user->password)) {
+            return ['success' => true];
+        }
+        return ['success' => false];
     }
 }

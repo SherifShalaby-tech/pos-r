@@ -270,7 +270,9 @@
                     @if(env('ENABLE_POS_Branch',false))
                         <th>@lang('lang.select')</th>
                     @endif
-                    <th>@lang('lang.select_to_delete')</th>
+                    <th>@lang('lang.select_to_delete')<br>
+                        <input type="checkbox" name="product_delete_all" class="product_delete_all"  /></th>
+                    
                     <th>@lang('lang.image')</th>
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.product_code')</th>
@@ -686,6 +688,11 @@
                         });
                 },
             });
+            $('#product_table').on('change', '.product_delete_all', function() {
+                var isChecked = $(this).prop('checked');
+                product_table.rows().nodes().to$().find('.product_selected_delete').prop('checked', isChecked);
+            });
+
 
         });
 

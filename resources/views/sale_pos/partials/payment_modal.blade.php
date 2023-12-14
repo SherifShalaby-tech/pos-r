@@ -125,6 +125,10 @@
                                             class="ml-1 btn btn-danger add_to_deposit">@lang('lang.add_to_deposit')</button>
                                         <input type="hidden" name="add_to_deposit" id="add_to_deposit" value="0">
                                     </div>
+                                    <div class="col-md-12 mb-2 ">
+                                        <button type="button" id="add_payment_row" class="btn btn-primary btn-block">
+                                            @lang('lang.add_payment_row')</button>
+                                    </div>
                                 </div>
                             </div>
                             @php

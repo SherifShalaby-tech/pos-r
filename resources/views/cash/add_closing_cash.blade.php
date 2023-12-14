@@ -259,4 +259,90 @@
             });
         }
     });
+    $(document).on('click', '#adjust-btn', function(e) {
+        e.preventDefault();
+        var title = "{!! __('lang.are_you_sure') !!}";
+        Swal.fire({
+            title: title,
+            text: "{!! __('lang.are_you_sure_you_wanna_update_it') !!}",
+            icon: 'warning',
+        }).then(willDelete => {
+            if (willDelete) {
+                // var check_password = $(this).data('check_password');
+                var href = $(this).data('href');
+                var data = $(this).serialize();
+
+                Swal.fire({
+                    title: "{!! __('lang.please_enter_your_password') !!}",
+                    input: 'password',
+                    inputAttributes: {
+                        placeholder: "{!! __('lang.type_your_password') !!}",
+                        autocomplete: 'off',
+                        autofocus: true,
+                    },
+                }).then((result) => {
+                    if (result) {
+                        $.ajax({
+                            url: '{{ route('check_admin_password') }}',
+                            method: 'POST',
+                            data: {
+                                value: result,
+                            },
+                            dataType: 'json',
+                            success: (data) => {
+
+                                if (data.success == true) {
+                                    $('#add_closing_cash_form').submit();
+
+                                    Swal.fire(
+                                        'success',
+                                        "{!! __('lang.correct_password') !!}",
+                                        'success'
+                                    );
+
+
+                                } else {
+                                    Swal.fire(
+                                        'Failed!',
+                                        'Wrong Password!',
+                                        'error'
+                                    )
+
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    });
+    $(document).ready(function() {
+        $('#add_closing_cash_form').submit(function(e) {
+            e.preventDefault(); 
+            $(this).validate();
+            $.ajax({
+                type: 'POST', // or 'GET' depending on your form's method
+                url: "{{ url('cash/save-add-closing-cash') }}",
+                data: $('#add_closing_cash_form').serialize(), // Serialize the form data
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire(
+                            'success',
+                            response.msg,
+                            'success'
+                        );
+                        location.reload();
+                    } else {
+                        Swal.fire(
+                            'Failed!',
+                            response.msg,
+                            'error'
+                        )
+                        // location.reload();
+                    }
+
+                }
+            });
+        });
+    });
 </script>
