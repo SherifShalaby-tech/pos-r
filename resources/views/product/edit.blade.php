@@ -897,7 +897,6 @@
         $(document).ready(function() {
             $('#different_prices_for_stores').change();
             $('#this_product_have_variant').change();
-            getEditProductImages();
         })
         $(document).ready(function() {
             var storeOption =$('#selectStore').val();   
@@ -983,7 +982,7 @@
     </script>
     <script>
         $("#submit-btn").on("click", function (e) {
-            // getEditProductImages()
+            getEditProductImages()
             e.preventDefault();
             setTimeout(() => {
                 if ($("#product-edit-form").valid()) {
