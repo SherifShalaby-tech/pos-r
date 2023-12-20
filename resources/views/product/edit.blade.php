@@ -897,6 +897,7 @@
         $(document).ready(function() {
             $('#different_prices_for_stores').change();
             $('#this_product_have_variant').change();
+            getEditProductImages();
         })
         $(document).ready(function() {
             var storeOption =$('#selectStore').val();   

@@ -1032,7 +1032,8 @@ class ProductController extends Controller
                 }
 
             }
-            if ($request->has("cropImages") && count($request->cropImages) > 0) {
+            if ($request->has("cropImages") && count($request->cropImages) > 0 
+            && strpos($request->cropImages[0], 'data:image/') === 0) {
                 // Clear the media collection only once, before the loop
                 $product->clearMediaCollection('product');
 
