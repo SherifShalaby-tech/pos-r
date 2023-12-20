@@ -10,6 +10,7 @@ use App\Models\MoneySafeTransaction;
 use App\Models\Store;
 use App\Models\StorePos;
 use App\Models\System;
+use App\Models\Transaction;
 use App\Models\User;
 use App\Utils\CashRegisterUtil;
 use App\Utils\Util;
@@ -163,12 +164,57 @@ class CashController extends Controller
         $cash_register->total_card_sales =  $cash_register->total_card_sales - $cash_register->total_refund_card;
         $cash_register->total_bank_transfer_sales =  $cash_register->total_bank_transfer_sales - $cash_register->total_refund_bank_transfer;
         $cash_register->total_cheque_sales =  $cash_register->total_cheque_sales - $cash_register->total_refund_cheque;
-
+        $total_latest_payments= DB::table('cash_register_transactions')
+        ->where('cash_register_id', $cash_register->id)
+        ->where('transaction_type', 'sell')
+        ->whereIn('transaction_id', function ($query) use ($cash_register) {
+            $query->select('id')
+                ->from('transactions')
+                ->where(function ($query) use ($cash_register) {
+                    $query->whereRaw('created_at <> updated_at');
+                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                    $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                })->
+                OrWhere(function ($query) use ($cash_register) {
+                    $query->whereRaw('created_at <> updated_at');
+                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                    $query->where('created_by', '!=', $cash_register->user_id)
+                        ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                        ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                });
+        })
+        ->sum('amount');
         return view('cash.show')->with(compact(
-            'cash_register'
+            'cash_register','total_latest_payments'
         ));
     }
-
+    public function showLatestPaymentDetails($id){
+        $cash_register=CashRegister::find($id);
+        $total_latest_payments= DB::table('cash_register_transactions')
+        ->where('cash_register_id', $id)
+        ->where('transaction_type', 'sell')
+        ->whereIn('transaction_id', function ($query) use ($cash_register) {
+            $query->select('id')
+                ->from('transactions')
+                ->where(function ($query) use ($cash_register) {
+                    $query->whereRaw('created_at <> updated_at');
+                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                    $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                })->
+                OrWhere(function ($query) use ($cash_register) {
+                    $query->whereRaw('created_at <> updated_at');
+                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                    $query->where('created_by', '!=', $cash_register->user_id)
+                        ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                        ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                });
+        })
+        ->pluck('transaction_id')->toArray();
+        $transactions=Transaction::whereIn('id',$total_latest_payments)->get();
+        return view('cash.latest-payments')->with(compact(
+            'transactions','id'
+        ));
+    }
     /**
      * add cash in
      *
@@ -416,9 +462,29 @@ class CashController extends Controller
             }
         }
 
-
+        $total_latest_payments= DB::table('cash_register_transactions')
+        ->where('cash_register_id', $cash_register_id)
+        ->where('transaction_type', 'sell')
+        ->whereIn('transaction_id', function ($query) use ($cash_register) {
+            $query->select('id')
+                ->from('transactions')
+                ->where(function ($query) use ($cash_register) {
+                    $query->whereRaw('created_at <> updated_at');
+                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                    $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                })->
+                OrWhere(function ($query) use ($cash_register) {
+                    $query->whereRaw('created_at <> updated_at');
+                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                    $query->where('created_by', '!=', $cash_register->user_id)
+                        ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                        ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                });
+        })
+        ->sum('amount');
         $users = User::Notview()->orderBy('name', 'asc')->pluck('name', 'id');
         return view('cash.add_closing_cash')->with(compact(
+            'total_latest_payments',
             'cash_register',
             'cr_data',
             'cash_register_id',

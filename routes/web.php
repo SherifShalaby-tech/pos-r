@@ -341,6 +341,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('cash/save-add-cash-out', 'CashController@saveAddCashOut');
     Route::get('cash/add-cash-in/{cash_register_id}', 'CashController@addCashIn');
     Route::post('cash/save-add-cash-in', 'CashController@saveAddCashIn');
+    Route::get('cash/show-latest-payment-details/{id}', 'CashController@showLatestPaymentDetails');
     Route::resource('cash', CashController::class);
     Route::resource('cash-out', CashOutController::class);
     Route::resource('cash-in', CashInController::class);

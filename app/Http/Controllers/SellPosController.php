@@ -204,6 +204,62 @@ class SellPosController extends Controller
             'payment_types'
         ));
     }
+    public function getDueForTransaction($transaction_id)
+    {
+        $transaction = Transaction::find($transaction_id);
+        $total_paid = Transaction::leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
+            ->where('transactions.id', $transaction_id)
+            ->sum('amount');
+
+        return $transaction->final_total - $total_paid;
+    }
+    public function payCustomerDue($customer_id)
+    {
+        $customer = Customer::find($customer_id);
+        $balance = $customer->added_balance;
+        $transactions = Transaction::where('customer_id', $customer_id)->where('type', 'sell')->whereIn('payment_status', ['pending', 'partial'])->orderBy('transaction_date', 'asc')->get();
+
+        $remaining_due_amount = 0;
+        $new_balance =0;
+        foreach ($transactions as $transaction) {
+            $due_for_transaction = $this->getDueForTransaction($transaction->id);
+            $paid_amount = 0;
+            if ($balance > 0) {
+                if ($balance >= $due_for_transaction) {
+                    $paid_amount = $due_for_transaction;
+                    $balance -= $due_for_transaction;
+                    $transaction->payment_status="paid";
+                    $transaction->save();
+                } else if ($balance < $due_for_transaction) {
+                    $paid_amount = $balance;
+                    $balance = 0;
+                }
+                
+                $remaining_due_amount += $paid_amount;
+                $customer->added_balance = $customer->added_balance - $paid_amount;
+                $customer->save();
+                $new_balance +=$paid_amount;
+                $payment_data = [
+                    'transaction_payment_id' => null,
+                    'transaction_id' =>  $transaction->id,
+                    'amount' => $paid_amount,
+                    'method' => 'cash',
+                    'paid_on' => date('Y-m-d'),
+                    'ref_number' => null,
+                    'bank_deposit_date' => null,
+                    'bank_name' => null,
+                ];
+                $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
+                $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
+                $this->cashRegisterUtil->addPayments($transaction, $payment_data, 'credit');
+                // $customer->added_balance = $customer->added_balance - $paid_amount;
+                // $customer->save();
+
+
+            }
+        }
+        return $new_balance;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -382,6 +438,10 @@ class SellPosController extends Controller
             foreach ($request->payments as $payment) {
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
+                if($payment['method']=='deposit'){
+                    $customer->added_balance = $customer->added_balance - $amount;
+                    $customer->save();
+                }
                 if ($amount > 0) {
                     // return $payment['method'];
                     $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
@@ -486,7 +546,20 @@ class SellPosController extends Controller
             }
         }
         DB::commit();
+        if($request->payments[0]['method']=='cash'){
+            $new_balance=$this->payCustomerDue($transaction->customer_id);
+            if ($new_balance < $request->add_to_customer_balance) {
+                // return [$this->commonUtil->num_uf($request->add_to_customer_balance),$new_balance];
+                $register = CashRegister::where('store_id', $request->store_id)->where('store_pos_id', $request->store_pos_id)->where('user_id', Auth::user()->id)->where('closed_at', null)->where('status', 'open')->first();
+                $this->cashRegisterUtil->createCashRegisterTransaction($register,$this->commonUtil->num_uf($request->add_to_customer_balance)-$new_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
+            }
 
+        }else{
+            if ($request->add_to_customer_balance > 0) {
+                $register = CashRegister::where('store_id', $request->store_id)->where('store_pos_id', $request->store_pos_id)->where('user_id', Auth::user()->id)->where('closed_at', null)->where('status', 'open')->first();
+                $this->cashRegisterUtil->createCashRegisterTransaction($register, $request->add_to_customer_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
+            }
+        }
         $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
 
 

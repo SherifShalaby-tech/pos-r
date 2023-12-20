@@ -1474,4 +1474,6 @@ return [
     'please_enter_your_password'=>'Please Enter Your Password',
     'type_your_password'=>'Type Your Password',
     'correct_password'=>'Correct Password',
+    'total_latest_payments'=>'Total Latest Payments',
+    'recieved_amount'=>'Recieved amount',
 ];
