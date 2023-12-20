@@ -983,7 +983,7 @@
     </script>
     <script>
         $("#submit-btn").on("click", function (e) {
-            getEditProductImages()
+            // getEditProductImages()
             e.preventDefault();
             setTimeout(() => {
                 if ($("#product-edit-form").valid()) {
