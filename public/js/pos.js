@@ -1939,6 +1939,10 @@ function reset_pos_form() {
     $("#received_currency_id").change();
     $("#received_currency_id").selectpicker("refresh");
     change_tax_id();
+
+    __write_number($("#add_to_customer_balance"),0);
+    $(".add_to_customer_balance").attr("disabled", false);
+    $(".add_to_customer_balance").addClass("hide");
 }
 $(document).ready(function () {
     $("#terms_and_condition_id").val($("#terms_and_condition_hidden").val());

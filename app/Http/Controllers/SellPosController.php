@@ -438,6 +438,10 @@ class SellPosController extends Controller
             foreach ($request->payments as $payment) {
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
+                if($payment['method']=='deposit'){
+                    $customer->added_balance = $customer->added_balance - $amount;
+                    $customer->save();
+                }
                 if ($amount > 0) {
                     // return $payment['method'];
                     $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
