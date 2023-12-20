@@ -1,4 +1,4 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog add_closing_cash" role="document">
     <div class="modal-content">
 
         {!! Form::open(['url' => action('CashController@saveAddClosingCash'), 'method' => 'post', 'id' => 'add_closing_cash_form', 'files' => true]) !!}
@@ -77,7 +77,11 @@
                             <td><b>@lang('lang.other_cash_sales')</b></td>
                             @foreach ($cr_data as $data)
                                 <td>{{ $data['currency']['symbol'] }}
-                                    {{ @num_format($data['cash_register']->total_cash_sales - $data['cash_register']->total_dining_in_cash) }}
+                                    @if(($data['cash_register']->total_cash_sales - $data['cash_register']->total_dining_in_cash)>0)
+                                        {{ @num_format($data['cash_register']->total_cash_sales - $data['cash_register']->total_dining_in_cash-$total_latest_payments) }}
+                                    @else
+                                        {{ @num_format($data['cash_register']->total_cash_sales - $data['cash_register']->total_dining_in_cash) }}
+                                    @endif
                                 </td>
                             @endforeach
                         </tr>
@@ -85,16 +89,43 @@
                             <td><b>@lang('lang.total_cash_sale')</b></td>
                             @foreach ($cr_data as $data)
                                 <td>{{ $data['currency']['symbol'] }}
-                                    {{ @num_format($data['cash_register']->total_cash_sales) }}</td>
+                                    @if($data['cash_register']->total_cash_sales>0)
+                                    {{ @num_format($data['cash_register']->total_cash_sales-$total_latest_payments) }}
+                                    @else
+                                    {{ @num_format($data['cash_register']->total_cash_sales) }}
+                                    @endif    
+                                </td>
                             @endforeach
                         </tr>
                         <tr>
                             <td><b>@lang('lang.total_sales')</b></td>
                             @foreach ($cr_data as $data)
                                 <td>{{ $data['currency']['symbol'] }}
+                                    @if($data['cash_register']->total_sale - $data['cash_register']->total_refund>0)
+                                    {{ @num_format($data['cash_register']->total_sale - $data['cash_register']->total_refund-$total_latest_payments) }}
+                                    @else
                                     {{ @num_format($data['cash_register']->total_sale - $data['cash_register']->total_refund) }}
+                                    @endif
                                 </td>
                             @endforeach
+                        </tr>
+                        <tr>
+                            <td><b>@lang('lang.total_latest_payments')</b></td>
+                            <td>
+                                @php  
+                                foreach ($cr_data as $data){
+                                    $currency=$data['currency']['symbol'];
+                                    break;
+                                }
+                                @endphp
+                                {{$currency}}
+                                {{ @num_format($total_latest_payments) }}
+                            </td>
+                            @if(!empty($total_latest_payments) && $total_latest_payments>0)
+                            <td><a data-href="{{action('CashController@showLatestPaymentDetails', $cash_register_id)}}"
+                                data-container=".view_modal" class="btn btn-modal btn-danger text-white close_cash"><i
+                                    class="fa fa-eye"></i> @lang('lang.view')</a></td>
+                            @endif
                         </tr>
                         <tr>
                             <td><b>@lang('lang.return_sales')</b></td>
