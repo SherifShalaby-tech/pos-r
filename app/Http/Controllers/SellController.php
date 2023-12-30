@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\TransactionSellLineImport;
+use App\Models\AddStockLine;
 use App\Models\Brand;
 use App\Models\CashRegisterTransaction;
 use App\Models\Category;
@@ -19,6 +20,7 @@ use App\Models\DiningTable;
 use App\Models\Employee;
 use App\Models\ExchangeRate;
 use App\Models\Extension;
+use App\Models\GiftCard;
 use App\Models\Grade;
 use App\Models\Product;
 use App\Models\ProductClass;
@@ -31,6 +33,7 @@ use App\Models\System;
 use App\Models\Tax;
 use App\Models\TermsAndCondition;
 use App\Models\Transaction;
+use App\Models\TransactionPayment;
 use App\Models\TransactionSellLine;
 use App\Models\Unit;
 use App\Models\User;
