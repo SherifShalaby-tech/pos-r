@@ -246,7 +246,7 @@ class MoneySafeUtil extends Util
 
         if ($transaction->type == 'add_stock' || $transaction->type == 'expense' || $transaction->type == 'wages_and_compensation') {
             $old_ms_transaction = MoneySafeTransaction::where('transaction_id', $transaction->id)->first();
-            if ($old_ms_transaction->money_safe_id != $money_safe->id) {
+            if (!empty($old_ms_transaction) && isset($old_ms_transaction->money_safe_id) && $old_ms_transaction->money_safe_id != $money_safe->id) {
                 MoneySafeTransaction::where('transaction_id', $transaction->id)->delete();
             }
 

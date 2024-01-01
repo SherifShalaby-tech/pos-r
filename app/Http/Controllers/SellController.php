@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\TransactionSellLineImport;
+use App\Models\AddStockLine;
 use App\Models\Brand;
 use App\Models\CashRegisterTransaction;
 use App\Models\Category;
@@ -19,6 +20,7 @@ use App\Models\DiningTable;
 use App\Models\Employee;
 use App\Models\ExchangeRate;
 use App\Models\Extension;
+use App\Models\GiftCard;
 use App\Models\Grade;
 use App\Models\Product;
 use App\Models\ProductClass;
@@ -31,6 +33,7 @@ use App\Models\System;
 use App\Models\Tax;
 use App\Models\TermsAndCondition;
 use App\Models\Transaction;
+use App\Models\TransactionPayment;
 use App\Models\TransactionSellLine;
 use App\Models\Unit;
 use App\Models\User;
@@ -104,19 +107,24 @@ class SellController extends Controller
                 ->where('transactions.type', 'sell')
                 ->whereIn('status', ['final', 'canceled']);
 
-            $product_ids='all';
-            if((!empty(request()->product_class_id) && !empty(array_filter(request()->product_class_id)))
-            || (!empty(request()->category_id) && !empty(array_filter(request()->category_id)))
-            ||(!empty(request()->sub_category_id) && !empty(array_filter(request()->sub_category_id)))
-            ||(!empty(request()->brand_id) && !empty(array_filter(request()->brand_id)))) {
-               $products= Product::whereNotNull('id');
-                if(!empty(request()->product_class_id) &&
-                    !empty(array_filter(request()->product_class_id))){
+            $product_ids = 'all';
+            if ((!empty(request()->product_class_id) && !empty(array_filter(request()->product_class_id)))
+                || (!empty(request()->category_id) && !empty(array_filter(request()->category_id)))
+                || (!empty(request()->sub_category_id) && !empty(array_filter(request()->sub_category_id)))
+                || (!empty(request()->brand_id) && !empty(array_filter(request()->brand_id)))
+            ) {
+                $products = Product::whereNotNull('id');
+                if (
+                    !empty(request()->product_class_id) &&
+                    !empty(array_filter(request()->product_class_id))
+                ) {
                     $products->whereIn('product_class_id', array_filter(request()->product_class_id));
                     $query->whereIn('products.product_class_id', array_filter(request()->product_class_id));
                 }
-                if (!empty(request()->category_id) &&
-                    !empty(array_filter(request()->category_id))) {
+                if (
+                    !empty(request()->category_id) &&
+                    !empty(array_filter(request()->category_id))
+                ) {
                     $products->whereIn('category_id', array_filter(request()->category_id));
 
                     $query->whereIn('products.category_id', array_filter(request()->category_id));
@@ -159,9 +167,9 @@ class SellController extends Controller
                 $query->where('store_id', $store_id);
             }
             if (!empty(request()->deliveryman_id)) {
-                if(request()->deliveryman_id == 'all_delivery'){
-                    $query->where('deliveryman_id','!=', null);
-                }else{
+                if (request()->deliveryman_id == 'all_delivery') {
+                    $query->where('deliveryman_id', '!=', null);
+                } else {
                     $query->where('deliveryman_id', request()->deliveryman_id);
                 }
             }
@@ -201,8 +209,8 @@ class SellController extends Controller
             if (strtolower($request->session()->get('user.job_title')) == 'cashier') {
                 $query->where('transactions.created_by', $request->session()->get('user.id'));
             }
-            if(strtolower(Session::get('user.job_title')) == 'cashier'){
-                $query->where('transactions.created_by',Auth::user()->id);
+            if (strtolower(Session::get('user.job_title')) == 'cashier') {
+                $query->where('transactions.created_by', Auth::user()->id);
             }
             $sales = $query->select(
                 'transactions.final_total',
@@ -228,19 +236,19 @@ class SellController extends Controller
                 'transaction_payments',
                 'deliveryman',
                 'canceled_by_user',
-                'transaction_sell_lines'=>function ($q) use($product_ids){
-                    if($product_ids != 'all'){
-                        $q->wherein('transaction_sell_lines.product_id',$product_ids);
+                'transaction_sell_lines' => function ($q) use ($product_ids) {
+                    if ($product_ids != 'all') {
+                        $q->wherein('transaction_sell_lines.product_id', $product_ids);
                     }
                 },
-                'sell_products'=>function ($q) use($product_ids){
-                    if($product_ids != 'all'){
-                        $q->wherein('products.id',$product_ids);
+                'sell_products' => function ($q) use ($product_ids) {
+                    if ($product_ids != 'all') {
+                        $q->wherein('products.id', $product_ids);
                     }
                 },
-                'sell_variations'=>function ($q) use($product_ids){
-                    if($product_ids != 'all'){
-                        $q->wherein('variations.product_id',$product_ids);
+                'sell_variations' => function ($q) use ($product_ids) {
+                    if ($product_ids != 'all') {
+                        $q->wherein('variations.product_id', $product_ids);
                     }
                 }
             ])
@@ -249,7 +257,7 @@ class SellController extends Controller
 
             return DataTables::of($sales)
                 // ->setTotalRecords(100)
-                ->editColumn('transaction_date','{{@format_date($created_at)}}')
+                ->editColumn('transaction_date', '{{@format_date($created_at)}}')
                 ->editColumn('invoice_no', function ($row) {
                     $string = $row->invoice_no . ' ';
                     if (!empty($row->return_parent)) {
@@ -265,31 +273,28 @@ class SellController extends Controller
 
                     return $string;
                 })
-                ->editColumn('final_total', function ($row) use ($default_currency_id,$product_ids) {
-                    if($product_ids == 'all'){
+                ->editColumn('final_total', function ($row) use ($default_currency_id, $product_ids) {
+                    if ($product_ids == 'all') {
                         if (!empty($row->return_parent)) {
-                            $final_total = number_format($row->final_total - $row->return_parent->final_total,2,'.',',');
+                            $final_total = number_format($row->final_total - $row->return_parent->final_total, 2, '.', ',');
                         } else {
-                            $final_total = number_format($row->final_total,2,'.',',');
+                            $final_total = number_format($row->final_total, 2, '.', ',');
                         }
-                    }else{
-                        $final_total=0;
-                        foreach ($row->transaction_sell_lines as $transaction_sell_line){
-                            $final_total += ($transaction_sell_line->quantity -$transaction_sell_line->quantity_returned )*$transaction_sell_line->sell_price;
+                    } else {
+                        $final_total = 0;
+                        foreach ($row->transaction_sell_lines as $transaction_sell_line) {
+                            $final_total += ($transaction_sell_line->quantity - $transaction_sell_line->quantity_returned) * $transaction_sell_line->sell_price;
                         }
                     }
 
                     $received_currency_id = $row->received_currency_id ?? $default_currency_id;
                     return '<span data-currency_id="' . $received_currency_id . '">' . $final_total . '</span>';
-
-
-
                 })
-                ->editColumn('sale_note', function($row) {
+                ->editColumn('sale_note', function ($row) {
                     return $row->sale_note;
                 })
-                ->addColumn('paid', function ($row) use ($request, $default_currency_id,$product_ids) {
-                    if($product_ids == 'all'){
+                ->addColumn('paid', function ($row) use ($request, $default_currency_id, $product_ids) {
+                    if ($product_ids == 'all') {
                         $amount_paid = 0;
                         if (!empty($request->method)) {
                             $payments = $row->transaction_payments->where('method', $request->method);
@@ -299,22 +304,22 @@ class SellController extends Controller
                         foreach ($payments as $payment) {
                             $amount_paid += $payment->amount;
                         }
-                    }else{
-                        $amount_paid=0;
-                        foreach ($row->transaction_sell_lines as $transaction_sell_line){
-                            $amount_paid += ($transaction_sell_line->quantity -$transaction_sell_line->quantity_returned )*$transaction_sell_line->sell_price;
+                    } else {
+                        $amount_paid = 0;
+                        foreach ($row->transaction_sell_lines as $transaction_sell_line) {
+                            $amount_paid += ($transaction_sell_line->quantity - $transaction_sell_line->quantity_returned) * $transaction_sell_line->sell_price;
                         }
                     }
                     $received_currency_id = $row->received_currency_id ?? $default_currency_id;
 
-                    return '<span data-currency_id="' . $received_currency_id . '">' . number_format($amount_paid,2,'.',',') . '</span>';
+                    return '<span data-currency_id="' . $received_currency_id . '">' . number_format($amount_paid, 2, '.', ',') . '</span>';
                 })
                 ->addColumn('due', function ($row) use ($default_currency_id) {
                     $paid = $row->transaction_payments->sum('amount');
                     $due = $row->final_total - $paid;
                     $received_currency_id = $row->received_currency_id ?? $default_currency_id;
 
-                    return '<span data-currency_id="' . $received_currency_id . '">' . number_format($due,2,'.',',') . '</span>';
+                    return '<span data-currency_id="' . $received_currency_id . '">' . number_format($due, 2, '.', ',') . '</span>';
                 })
                 ->addColumn('customer_type', function ($row) {
                     if (!empty($row->customer->customer_type)) {
@@ -329,7 +334,7 @@ class SellController extends Controller
                     foreach ($commissions as $commission) {
                         $total +=  $commission->final_total;
                     }
-                    return number_format($total,2,'.',',');
+                    return number_format($total, 2, '.', ',');
                 })
                 ->editColumn('received_currency_symbol', function ($row) use ($default_currency_id) {
                     $default_currency = Currency::find($default_currency_id);
@@ -478,13 +483,13 @@ class SellController extends Controller
                         }
                         $html .= '<li class="divider"></li>';
                         if (auth()->user()->can('return.sell_return.create_and_edit')) {
-//                            if (empty($row->return_parent)) {
-                                $html .=
-                                    '<li>
+                            //                            if (empty($row->return_parent)) {
+                            $html .=
+                                '<li>
                                     <a href="' . action('SellReturnController@add', $row->id) . '" class="btn"><i
                                         class="fa fa-undo"></i> ' . __('lang.sale_return') . '</a>
                                     </li>';
-//                            }
+                            //                            }
                         }
                         $html .= '<li class="divider"></li>';
                         if (auth()->user()->can('sale.pay.create_and_edit')) {
@@ -751,86 +756,154 @@ class SellController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+    // public function destroy($id)
+    // {
+
+    //     try {
+    //         $transaction = Transaction::find($id);
+
+    //         DB::beginTransaction();
+
+    //         $transaction_sell_lines = TransactionSellLine::where('transaction_id', $id)->get();
+    //         if (isset($transaction->sell_return)) {
+    //             $transaction_return_sell_lines = TransactionSellLine::where(
+    //                 'transaction_id',
+    //                 $transaction->return_parent_id
+    //             )->get();
+    //             foreach ($transaction_return_sell_lines as  $transaction_return_sell_line) {
+    //                 $product = Product::find($transaction_return_sell_line->product_id);
+    //                 if (!$product->is_service) {
+    //                     $this->productUtil->updateProductQuantityStore(
+    //                         $transaction_return_sell_line->product_id,
+    //                         $transaction_return_sell_line->variation_id,
+    //                         $transaction->store_id,
+    //                         -$transaction_return_sell_line['quantity_returned'],
+    //                         0
+    //                     );
+    //                 }
+    //                 $transaction_return_sell_line->quantity_returned = 0;
+    //                 $transaction_return_sell_line->save();
+    //             }
+    //         }
+    //         foreach ($transaction_sell_lines as $transaction_sell_line) {
+    //             if ($transaction->status == 'final') {
+    //                 $product = Product::find($transaction_sell_line->product_id);
+    //                 $def_quantity = $transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
+
+    //                 if (!$product->is_service) {
+
+    //                     $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $def_quantity);
+    //                 }
+
+    //                 $ConsumptionProducts = ConsumptionProduct::where('variation_id', $transaction_sell_line->variation_id)->get();
+    //                 foreach ($ConsumptionProducts as $ConsumptionProduct) {
+    //                     $Variation = Variation::where('product_id', $ConsumptionProduct->raw_material_id)->first();
+    //                     if ($Variation) {
+    //                         //amount_used raw_material_id variation_id updateRawMaterialQuantityStore
+    //                         $this->productUtil->updateProductQuantityStore($ConsumptionProduct->raw_material_id, $Variation->id, $transaction->store_id, $def_quantity * $ConsumptionProduct->amount_used);
+    //                     }
+    //                 }
+    //                 //                        sell_line_extensions
+    //                 $sell_line_extensions = SellLineExtension::where('transaction_sell_line_id', $transaction_sell_line->id)->get();
+    //                 //dd($sell_line_extensions);
+    //                 foreach ($sell_line_extensions as $sell_line_extension) {
+    //                     $Extension = Extension::whereId($sell_line_extension->extension_id)->first();
+    //                     if ($Extension) {
+    //                         $sell_line_extension_q = ($sell_line_extension->quantity * $Extension->quantity_use) * $def_quantity;
+
+    //                         if ($Extension->product_id != null) {
+    //                             $product = Product::where('id', $Extension->product_id)->first();
+
+    //                             $this->transactionUtil->updateBlockQuantityExtra(
+    //                                 $product->id,
+    //                                 $product->variations->first()->id,
+    //                                 $transaction->store_id,
+    //                                 0,
+    //                                 $sell_line_extension_q
+    //                             );
+    //                         }
+    //                     }
+    //                 }
+    //             }
+
+
+    //             $transaction_sell_line->delete();
+    //         }
+
+    //         $return_ids = Transaction::where('return_parent_id', $id)->pluck('id');
+    //         Transaction::where('return_parent_id', $id)->delete();
+    //         Transaction::where('parent_sale_id', $id)->delete();
+
+    //         $this->transactionUtil->updateCustomerRewardPoints($transaction->customer_id, 0, $transaction->rp_earned, 0, $transaction->rp_redeemed);
+
+    //         $transaction->delete();
+    //         CashRegisterTransaction::where('transaction_id', $id)->delete();
+    //         CashRegisterTransaction::wherein('transaction_id', $return_ids)->delete();
+
+    //         DiningTable::where('current_transaction_id', $id)->update(['current_transaction_id' => null, 'status' => 'available']);
+
+    //         DB::commit();
+    //         $output = [
+    //             'success' => true,
+    //             'msg' => __('lang.success')
+    //         ];
+    //     } catch (\Exception $e) {
+    //         Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+    //         $output = [
+    //             'success' => false,
+    //             'msg' => __('lang.something_went_wrong')
+    //         ];
+    //     }
+
+    //     return $output;
+    // }
     public function destroy($id)
     {
-
         try {
             $transaction = Transaction::find($id);
 
             DB::beginTransaction();
 
-            $transaction_sell_lines = TransactionSellLine::where('transaction_id', $id)->get();
-            if (isset($transaction->sell_return)){
-                $transaction_return_sell_lines = TransactionSellLine::where('transaction_id',
-                    $transaction->return_parent_id)->get();
-                foreach ($transaction_return_sell_lines as  $transaction_return_sell_line){
-                    $product = Product::find($transaction_return_sell_line->product_id);
-                    if (!$product->is_service) {
-                        $this->productUtil->updateProductQuantityStore(
-                            $transaction_return_sell_line->product_id,
-                            $transaction_return_sell_line->variation_id, $transaction->store_id,
-                            -$transaction_return_sell_line['quantity_returned'], 0);
-                    }
-                    $transaction_return_sell_line->quantity_returned = 0;
-                    $transaction_return_sell_line->save();
+            $transaction_sell_lines = TransactionSellLine::where('transaction_id', $transaction->return_parent_id)->get();
+            $transaction_sell_payments = TransactionPayment::where('transaction_id', $transaction->return_parent_id)->get();
+            foreach ($transaction_sell_payments as $transaction_sell_payment) {
+                if ($transaction_sell_payment->method == 'gift_card') {
+                    $GiftCard = GiftCard::where('card_number', $transaction_sell_payment->gift_card_number)->update([
+                        'balance' => DB::raw('balance + ' . $transaction_sell_payment->amount),
+                    ]);
+                    //                    dd($GiftCard);
                 }
-
-
             }
             foreach ($transaction_sell_lines as $transaction_sell_line) {
                 if ($transaction->status == 'final') {
                     $product = Product::find($transaction_sell_line->product_id);
-                    $def_quantity=$transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
-
                     if (!$product->is_service) {
-
-                        $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, $def_quantity);
-                    }
-
-                    $ConsumptionProducts = ConsumptionProduct::where('variation_id', $transaction_sell_line->variation_id)->get();
-                    foreach ($ConsumptionProducts as $ConsumptionProduct) {
-                        $Variation = Variation::where('product_id', $ConsumptionProduct->raw_material_id)->first();
-                        if ($Variation) {
-                            //amount_used raw_material_id variation_id updateRawMaterialQuantityStore
-                            $this->productUtil->updateProductQuantityStore($ConsumptionProduct->raw_material_id, $Variation->id, $transaction->store_id, $def_quantity * $ConsumptionProduct->amount_used);
+                        // return $transaction_sell_line->quantity - $transaction_sell_line->quantity_returned;
+                        $this->productUtil->updateProductQuantityStore($transaction_sell_line->product_id, $transaction_sell_line->variation_id, $transaction->store_id, -$transaction_sell_line->quantity_returned);
+                        if (isset($transaction_sell_line->stock_line_id)) {
+                            $stock = AddStockLine::where('id', $transaction_sell_line->stock_line_id)->first();
+                            $stock->update([
+                                'quantity_sold' =>  $stock->quantity - $transaction_sell_line->quantity
+                            ]);
                         }
-
                     }
-//                        sell_line_extensions
-                    $sell_line_extensions=SellLineExtension::where('transaction_sell_line_id',$transaction_sell_line->id)->get();
-                    //dd($sell_line_extensions);
-                    foreach ($sell_line_extensions as $sell_line_extension){
-                        $Extension=Extension::whereId($sell_line_extension->extension_id)->first();
-                        if($Extension){
-                            $sell_line_extension_q= ($sell_line_extension->quantity*$Extension->quantity_use)*$def_quantity;
-
-                            if($Extension->product_id!= null){
-                                $product=Product::where('id',$Extension->product_id)->first();
-
-                                $this->transactionUtil->updateBlockQuantityExtra($product->id,
-                                    $product->variations->first()->id, $transaction->store_id
-                                    , 0 ,$sell_line_extension_q);
-                            }
-
-                        }
-
-                    }
-
                 }
-
-
                 $transaction_sell_line->delete();
             }
 
-            $return_ids =Transaction::where('return_parent_id', $id)->pluck('id');
+            $return_ids = Transaction::where('return_parent_id', $id)->pluck('id');
+
+
+
             Transaction::where('return_parent_id', $id)->delete();
             Transaction::where('parent_sale_id', $id)->delete();
+
+            CashRegisterTransaction::wherein('transaction_id', $return_ids)->delete();
 
             $this->transactionUtil->updateCustomerRewardPoints($transaction->customer_id, 0, $transaction->rp_earned, 0, $transaction->rp_redeemed);
 
             $transaction->delete();
             CashRegisterTransaction::where('transaction_id', $id)->delete();
-            CashRegisterTransaction::wherein('transaction_id', $return_ids)->delete();
 
             DiningTable::where('current_transaction_id', $id)->update(['current_transaction_id' => null, 'status' => 'available']);
 
@@ -1114,9 +1187,9 @@ class SellController extends Controller
                 $query->where('store_id', $store_id);
             }
             if (!empty(request()->deliveryman_id)) {
-                if(request()->deliveryman_id == 'all_delivery'){
-                    $query->where('deliveryman_id','!=', null);
-                }else{
+                if (request()->deliveryman_id == 'all_delivery') {
+                    $query->where('deliveryman_id', '!=', null);
+                } else {
                     $query->where('deliveryman_id', request()->deliveryman_id);
                 }
             }
