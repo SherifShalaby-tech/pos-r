@@ -293,6 +293,7 @@
                                     <div class="row" style="">
                                         <div class="col-md-2">
                                             <div class="form-group">
+                                                <input type="hidden" value="{{$show_the_window_printing_prompt}}" class="show_the_window_printing_prompt" name="show_the_window_printing_prompt" />
                                                 <input type="hidden" value="0" class="is_bank_transfer" name="is_bank_transfer" />
                                                 <input type="hidden" value="0" class="is_quick_pay" name="is_quick_pay" />
                                                 <input type="hidden" value="0" class="SavedTransactionId" name="SavedTransactionId" />

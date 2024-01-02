@@ -1877,14 +1877,34 @@ function syntaxHighlight(json) {
 function pos_print(receipt) {
     $("#receipt_section").html(receipt);
     __currency_convert_recursively($("#receipt_section"));
-    if($('.is_quick_pay').val()=='1'){
-
-        html2pdf($("#receipt_section").html());
+    if(($('.is_quick_pay').val()=='1' || $('.is_bank_transfer').val()=='1') && $('.show_the_window_printing_prompt').val()=="1"){
+        var pdfOptions = {
+            margin: 10,
+            filename: 'output.pdf',
+            html2canvas: { scale: 2, logging: true, image: { type: 'jpeg', quality: 1 } },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+    
+        html2pdf(receipt, pdfOptions);
 
     }else{
         __print_receipt("receipt_section");
     } 
 }
+$(document).ready(function () {
+    $('#generatePdfButton').click(function() {
+        var pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+        });
+            pdf.fromHTML("<h3>sdds</h3>", 10, 10);
+    
+            // Automatically download the PDF
+            pdf.save('output.pdf');
+
+    });
+});
 
 function reset_pos_form() {
     //If on edit page then redirect to Add POS page

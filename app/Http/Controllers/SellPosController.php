@@ -164,7 +164,9 @@ class SellPosController extends Controller
         }
         $dining_rooms = DiningRoom::all();
         $active_tab_id = null;
+        $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt')??0;
         return view('sale_pos.pos')->with(compact(
+            'show_the_window_printing_prompt',
             'dining_rooms',
             'active_tab_id',
             'categories',
