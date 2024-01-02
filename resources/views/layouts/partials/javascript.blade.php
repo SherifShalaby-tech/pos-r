@@ -63,11 +63,10 @@ $moment_time_format = App\Models\System::getProperty('time_format') == '12' ? 'h
 </script>
 <script type="text/javascript" src="{{asset('vendor/cropperjs/cropper.min.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/printThis.js') }}"></script>
-<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script> --}}
-
 <script type="text/javascript" src="{{asset('js/common.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/currency_exchange.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/customer.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/cropper.js') }}"></script>
 <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+

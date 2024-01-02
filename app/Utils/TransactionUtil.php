@@ -1600,16 +1600,6 @@ class TransactionUtil extends Util
                 'transaction_payments',
                 'font','line_height1','line_height2','data_font'
             ))->render();
-            // $html_content = view('sale_pos.partials.invoice')->with(compact(
-            //     'transaction',
-            //     'payment_types',
-            //     'invoice_lang',
-            //     'print_gift_invoice',
-            //     'transaction_sell_lines',
-            //     'current_products',
-            //     'transaction_payments',
-            //     'font','line_height1','line_height2','data_font'
-            // ))->render();
         }
 
         if ($transaction->is_direct_sale == 1) {

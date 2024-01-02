@@ -1784,6 +1784,11 @@ $(document).ready(function () {
                         ) {
                             pos_print(result.html_content);
                         }
+                        // if (
+                        //     $("#print_the_transaction").prop("checked") == false &&(($('.is_quick_pay').val()=='1' || $('.is_bank_transfer').val()=='1'))
+                        // ) {
+                        //     pos_print(result.html_content);
+                        // }
                         $("#add-payment").modal("hide");
                         toastr.success(result.msg);
 
@@ -1877,7 +1882,8 @@ function syntaxHighlight(json) {
 function pos_print(receipt) {
     $("#receipt_section").html(receipt);
     __currency_convert_recursively($("#receipt_section"));
-    if(($('.is_quick_pay').val()=='1' || $('.is_bank_transfer').val()=='1') && $('.show_the_window_printing_prompt').val()=="1"){
+    // alert($('.show_the_window_printing_prompt').val())
+    if(($('.is_quick_pay').val()=='1' || $('.is_bank_transfer').val()=='1')){
         var pdfOptions = {
             margin: 10,
             filename: 'output.pdf',
