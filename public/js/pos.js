@@ -1698,6 +1698,16 @@ $(document).on("click", "#quick-pay-btn", function (e) {
         toastr.warning("No Product Added");
         return false;
     }
+    $(".is_quick_pay").val(1);
+    pos_form_obj.submit();
+});
+$(document).on("click", "#bank-transfer-btn", function (e) {
+    //Check if product is present or not.
+    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+        toastr.warning("No Product Added");
+        return false;
+    }
+    $(".is_bank_transfer").val(1);
     pos_form_obj.submit();
 });
 
@@ -1867,7 +1877,13 @@ function syntaxHighlight(json) {
 function pos_print(receipt) {
     $("#receipt_section").html(receipt);
     __currency_convert_recursively($("#receipt_section"));
-    __print_receipt("receipt_section");
+    if($('.is_quick_pay').val()=='1'){
+
+        html2pdf($("#receipt_section").html());
+
+    }else{
+        __print_receipt("receipt_section");
+    } 
 }
 
 function reset_pos_form() {
@@ -1887,6 +1903,8 @@ function reset_pos_form() {
     $(
         "#uploaded_file_names, #amount,.received_amount, .change_amount, #paying_amount, #discount_value, #final_total, #grand_total,  #gift_card_id, #total_tax, #total_item_tax, #coupon_id, #change, .delivery_address, .delivery_cost, #delivery_cost, #customer_points_value, #customer_total_redeemable, #rp_redeemed, #rp_redeemed_value, #is_redeem_points, #add_to_deposit, #remaining_deposit_balance, #used_deposit_balance, #current_deposit_balance, #change_amount, #total_sp_discount, #customer_size_id_hidden, #customer_size_id, #sale_note_draft, #sale_note, #deliveryman_id_hidden, #total_sp_discount, #total_pp_discount, #dining_table_id, #print_and_draft_hidden, #manual_delivery_zone"
     ).val("");
+    $(".is_quick_pay").val(0);
+    $(".is_bank_transfer").val(0);
     $("#dining_action_type").val("");
     $("#status").val("final");
     $("#row_count").val(0);
@@ -2741,11 +2759,11 @@ $(document).on("click", ".print-invoice", function () {
     });
 });
 
-function pos_print(receipt) {
-    $("#receipt_section").html(receipt);
-    __currency_convert_recursively($("#receipt_section"));
-    __print_receipt("receipt_section");
-}
+// function pos_print(receipt) {
+//     $("#receipt_section").html(receipt);
+//     __currency_convert_recursively($("#receipt_section"));
+//     __print_receipt("receipt_section");
+// }
 
 $(document).on("click", ".remove_draft", function (e) {
     e.preventDefault();

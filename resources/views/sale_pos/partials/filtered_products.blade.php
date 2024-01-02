@@ -7,7 +7,6 @@
                           $stockLines=\App\Models\AddStockLine::where('sell_price','>',0)->where('variation_id',$product->variation_id)
                         ->latest()->first();
                         $default_sell_price=$stockLines?$stockLines->sell_price : $Variation->default_sell_price;
-
                     }
 
             @endphp

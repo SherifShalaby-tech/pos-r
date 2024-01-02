@@ -63,6 +63,7 @@ $moment_time_format = App\Models\System::getProperty('time_format') == '12' ? 'h
 </script>
 <script type="text/javascript" src="{{asset('vendor/cropperjs/cropper.min.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/printThis.js') }}"></script>
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
 <script type="text/javascript" src="{{asset('js/common.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/currency_exchange.js') }}"></script>
 <script type="text/javascript" src="{{asset('js/customer.js') }}"></script>

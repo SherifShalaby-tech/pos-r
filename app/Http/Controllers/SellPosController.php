@@ -268,7 +268,7 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-        //   return TableReservation::all();
+        //   return $request->all();
         // try {
         DB::beginTransaction();
         $new_table=[];
@@ -285,6 +285,7 @@ class SellPosController extends Controller
                 'merge_table_id'=>[$request->merge_table_id,$table_status->dining_table_id]
             ]);
         }
+       
         $transaction_data = [
             'store_id' => $request->store_id,
             'customer_id' => $request->customer_id,
@@ -443,6 +444,9 @@ class SellPosController extends Controller
                     $customer->save();
                 }
                 if ($amount > 0) {
+                    if($request->is_bank_transfer=="1"){
+                        $payment['method']='bank_transfer';
+                    }
                     // return $payment['method'];
                     $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
                     $payment_data = [
