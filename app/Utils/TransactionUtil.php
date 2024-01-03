@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Http\Controllers\PurchaseOrderController;
+use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\AddStockLine;
 use App\Models\Brand;
 use App\Models\Category;
@@ -36,12 +37,15 @@ use App\Models\TransactionSellLine;
 use App\Models\Unit;
 use App\Models\Variation;
 use App\Utils\Util;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Mockery\Matcher\Type;
 use Psy\CodeCleaner\FunctionContextPass;
+use PDF;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 class TransactionUtil extends Util
 {
@@ -1591,7 +1595,12 @@ class TransactionUtil extends Util
             ))->render();
         } else {
             if($is_quick==1){
-                $html_content = view('sale_pos.partials.quick-invoice')->with(compact(
+                $letter_footer = System::getProperty('letter_footer');
+                // $imagePath = public_path('uploads/'.$letter_footer);
+                // $optimizer = OptimizerChainFactory::create();
+                // $optimizer->optimize($imagePath);
+                $html_content =
+                FacadePdf::loadView('sale_pos.partials.quick-invoice',compact(
                     'transaction',
                     'payment_types',
                     'invoice_lang',
@@ -1599,8 +1608,8 @@ class TransactionUtil extends Util
                     'transaction_sell_lines',
                     'current_products',
                     'transaction_payments',
-                    'font','line_height1','line_height2','data_font'
-                ))->render();
+                    'font','line_height1','line_height2','data_font','letter_footer'
+                ));
             }else{
                 $html_content = view('sale_pos.partials.invoice')->with(compact(
                     'transaction',

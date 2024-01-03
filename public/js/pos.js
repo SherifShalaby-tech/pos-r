@@ -1889,29 +1889,27 @@ function pos_print(receipt) {
             html2canvas: { scale: 2, logging: true, image: { type: 'png', quality: 4} },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
-    
+    console.log(receipt);
         html2pdf(receipt, pdfOptions);
-
+        // $.ajax({
+        //     url: '/generateAndPrint',
+        //     type: 'GET',
+        //     success: function (response) {
+        //         console.log(response);
+        //         alert(response.message);
+        //     },
+        //     error: function (error) {
+        //         console.error(error);
+        //         alert('Error generating or printing PDF.');
+        //     }
+        // });
     }else{
         $("#receipt_section").html(receipt);
         __currency_convert_recursively($("#receipt_section"));
         __print_receipt("receipt_section");
     } 
 }
-$(document).ready(function () {
-    $('#generatePdfButton').click(function() {
-        var pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-        });
-            pdf.fromHTML("<h3>sdds</h3>", 10, 10);
-    
-            // Automatically download the PDF
-            pdf.save('output.pdf');
 
-    });
-});
 
 function reset_pos_form() {
     //If on edit page then redirect to Add POS page

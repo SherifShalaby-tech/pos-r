@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+// use PDF;
 use App\Events\PrinterEvent;
 use App\Models\AddStockLine;
 use App\Models\Brand;
@@ -44,6 +44,8 @@ use App\Utils\NotificationUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\Util;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +53,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\View;
-use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Database\Eloquent\Builder;
 use Pusher\Pusher;
 use Spatie\Browsershot\Browsershot;
@@ -644,6 +645,10 @@ class SellPosController extends Controller
         // }
         if ($request->action == 'send' && $transaction->is_direct_sale == 1) {
             return redirect()->back()->with('status', $output);
+        }
+        if($is_quick==1){
+           $pdf= $this->generateAndPrint($html_content);
+            // return $pdf->stream('document.pdf');
         }
         return $output;
     }
@@ -2301,6 +2306,31 @@ class SellPosController extends Controller
             ];
         }
         return $output;
+    }
+    public function generateAndPrint($pdf)
+    {
+        // return $html_content;
+        try {
+            // Generate PDF
+            // $pdf = Pdf::loadView('pdf.example'); // Replace 'pdf.example' with your blade view
+            $pdfContent = $pdf->output();
+
+            // Print PDF directly to default printer
+            $printerCommand = 'lp -';
+            $process = proc_open($printerCommand, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+            fwrite($pipes[0], $pdfContent);
+            fclose($pipes[0]);
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+
+            return response()->json(['success' => true, 'message' => 'success generating or printing PDF.']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error generating or printing PDF.']);
+        }
     }
 }
 
