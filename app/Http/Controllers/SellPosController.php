@@ -579,7 +579,11 @@ class SellPosController extends Controller
                 $this->notificationUtil->sendSellInvoiceToCustomer($transaction->id, $request->emails);
             }
             if ($request->action == 'print') {
-                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products);
+                $is_quick=0;
+                if($request->is_bank_transfer=="1" || $request->is_quick_pay=="1"){
+                    $is_quick=1;
+                }
+                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products,$is_quick);
 
                 $output = [
                     'success' => true,

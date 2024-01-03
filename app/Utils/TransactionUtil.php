@@ -1537,7 +1537,7 @@ class TransactionUtil extends Util
      * @param array $payment_types
      * @return void
      */
-    public function getInvoicePrint($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[])
+    public function getInvoicePrint($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[],$is_quick=null)
     {
         $print_gift_invoice = request()->print_gift_invoice;
 
@@ -1590,16 +1590,29 @@ class TransactionUtil extends Util
                 'print_gift_invoice',
             ))->render();
         } else {
-            $html_content = view('sale_pos.partials.invoice')->with(compact(
-                'transaction',
-                'payment_types',
-                'invoice_lang',
-                'print_gift_invoice',
-                'transaction_sell_lines',
-                'current_products',
-                'transaction_payments',
-                'font','line_height1','line_height2','data_font'
-            ))->render();
+            if($is_quick==1){
+                $html_content = view('sale_pos.partials.quick-invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'invoice_lang',
+                    'print_gift_invoice',
+                    'transaction_sell_lines',
+                    'current_products',
+                    'transaction_payments',
+                    'font','line_height1','line_height2','data_font'
+                ))->render();
+            }else{
+                $html_content = view('sale_pos.partials.invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'invoice_lang',
+                    'print_gift_invoice',
+                    'transaction_sell_lines',
+                    'current_products',
+                    'transaction_payments',
+                    'font','line_height1','line_height2','data_font'
+                ))->render();
+            }
         }
 
         if ($transaction->is_direct_sale == 1) {
