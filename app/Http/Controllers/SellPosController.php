@@ -579,11 +579,8 @@ class SellPosController extends Controller
                 $this->notificationUtil->sendSellInvoiceToCustomer($transaction->id, $request->emails);
             }
             if ($request->action == 'print') {
-                $is_quick=0;
-                if($request->is_bank_transfer=="1" || $request->is_quick_pay=="1"){
-                    $is_quick=1;
-                }
-                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products,$is_quick);
+              
+                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products);
 
                 $output = [
                     'success' => true,
@@ -598,13 +595,13 @@ class SellPosController extends Controller
         }
 
         if (!empty($transaction->dining_table_id)) {
-            $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+            // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
-            $output = [
-                'success' => true,
-                'html_content' => $html_content,
-                'msg' => __('lang.success')
-            ];
+            // $output = [
+            //     'success' => true,
+            //     'html_content' => $html_content,
+            //     'msg' => __('lang.success')
+            // ];
 
             if ($request->dining_action_type == 'save') {
                 $output = [
@@ -624,7 +621,11 @@ class SellPosController extends Controller
         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
 // =======
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+        $is_quick=0;
+        if($request->is_bank_transfer=="1" || $request->is_quick_pay=="1"){
+            $is_quick=1;
+        }
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, $is_quick);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 //return $partialPrint;
         $output = [
