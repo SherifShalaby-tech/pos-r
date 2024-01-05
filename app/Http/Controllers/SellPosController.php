@@ -627,7 +627,7 @@ class SellPosController extends Controller
         if(($request->is_bank_transfer=="1" || $request->is_quick_pay=="1") && $show_the_window_printing_prompt=="0"){
             $is_quick=1;
         }
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, $is_quick);
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 //return $partialPrint;
         $output = [
@@ -648,7 +648,8 @@ class SellPosController extends Controller
             return redirect()->back()->with('status', $output);
         }
         if($is_quick==1){
-           $pdf= $this->generateAndPrint($html_content);
+            $quick_print = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, $is_quick);
+           $pdf= $this->generateAndPrint($quick_print);
             // return $pdf->stream('document.pdf');
         }
         return $output;
