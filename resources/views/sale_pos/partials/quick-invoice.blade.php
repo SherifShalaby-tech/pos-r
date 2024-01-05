@@ -141,10 +141,10 @@ $is_first_after_extra=0;
     <div id="receipt-data">
         <div class="centered">
             <div class="row" style="text-align: center;" id="invoice_heaer_div" >
-                @php
-                    $letter_header = App\Models\System::getProperty('letter_header');
-                @endphp
-                {{-- <img src="@if(!empty($letter_header)){{asset('uploads/'.$letter_header)}}@else{{asset('/uploads/'.session('logo'))}}@endif" alt="header" id="header_invoice_img" style="width: auto; margin: auto;  max-height: 150px;"> --}}
+                @if($is_quick=="2")
+                {{-- {{$is_quick}} --}}
+                @include('layouts.partials.print_header')
+                @endif
             </div>
 
             <p>{{ $transaction->store->name }}
@@ -514,14 +514,8 @@ $is_first_after_extra=0;
                 </tbody>
             </table>
         </div>
-        @php
-        $letter_footer = App\Models\System::getProperty('letter_footer');
-        @endphp
-        @if(!empty($letter_footer))
-        <div class="row" style="text-align: center; width: 100%;">
-            
-         
-        </div>
+        @if($is_quick=="2")
+        @include('layouts.partials.print_footer')
         @endif
         <div style="width: 100%; text-align: center;">
             <p><span class="">Proudly Developed at <a style="text-decoration: none;" target="_blank"

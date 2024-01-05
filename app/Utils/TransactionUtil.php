@@ -1595,10 +1595,6 @@ class TransactionUtil extends Util
             ))->render();
         } else {
             if($is_quick==1){
-                $letter_footer = System::getProperty('letter_footer');
-                // $imagePath = public_path('uploads/'.$letter_footer);
-                // $optimizer = OptimizerChainFactory::create();
-                // $optimizer->optimize($imagePath);
                 $html_content =
                 FacadePdf::loadView('sale_pos.partials.quick-invoice',compact(
                     'transaction',
@@ -1608,8 +1604,19 @@ class TransactionUtil extends Util
                     'transaction_sell_lines',
                     'current_products',
                     'transaction_payments',
-                    'font','line_height1','line_height2','data_font','letter_footer'
+                    'font','line_height1','line_height2','data_font','is_quick'
                 ));
+            }else if($is_quick==2){
+                $html_content = view('sale_pos.partials.quick-invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'invoice_lang',
+                    'print_gift_invoice',
+                    'transaction_sell_lines',
+                    'current_products',
+                    'transaction_payments',
+                    'font','line_height1','line_height2','data_font','is_quick'
+                ))->render();
             }else{
                 $html_content = view('sale_pos.partials.invoice')->with(compact(
                     'transaction',
