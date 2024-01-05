@@ -625,9 +625,9 @@ class SellPosController extends Controller
         $is_quick=0;
         $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt');
         if(($request->is_bank_transfer=="1" || $request->is_quick_pay=="1") && $show_the_window_printing_prompt=="0"){
-            $is_quick=1;
+            $is_quick=2;
         }
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products,$is_quick);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 //return $partialPrint;
         $output = [
@@ -647,10 +647,9 @@ class SellPosController extends Controller
         if ($request->action == 'send' && $transaction->is_direct_sale == 1) {
             return redirect()->back()->with('status', $output);
         }
-        if($is_quick==1){
-            $quick_print = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, $is_quick);
-           $pdf= $this->generateAndPrint($quick_print);
-            // return $pdf->stream('document.pdf');
+        if($is_quick==2){
+            $quick_print = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, 1);
+            $pdf= $this->generateAndPrint($quick_print);
         }
         return $output;
     }
