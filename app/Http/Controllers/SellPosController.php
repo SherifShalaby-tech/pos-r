@@ -623,7 +623,8 @@ class SellPosController extends Controller
 
 // =======
         $is_quick=0;
-        if($request->is_bank_transfer=="1" || $request->is_quick_pay=="1"){
+        $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt');
+        if(($request->is_bank_transfer=="1" || $request->is_quick_pay=="1") && $show_the_window_printing_prompt=="0"){
             $is_quick=1;
         }
         $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, $is_quick);

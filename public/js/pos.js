@@ -1882,7 +1882,7 @@ function syntaxHighlight(json) {
 function pos_print(receipt) {
   
     // alert($('.show_the_window_printing_prompt').val())
-    if(($('.is_quick_pay').val()=='1' || $('.is_bank_transfer').val()=='1')){
+    if((($('.is_quick_pay').val()=='1' || $('.is_bank_transfer').val()=='1' )&&$('.show_the_window_printing_prompt').val()=="0")){
         var pdfOptions = {
             margin: 0,
             filename: 'output.pdf',
