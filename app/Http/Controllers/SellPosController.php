@@ -2243,7 +2243,7 @@ class SellPosController extends Controller
                     })->get();
                 $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
 
-                $html_content = view('sale_pos.partials.printers_invoice')->with(compact(
+                $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
                     'transaction',
                     'payment_types',
                     'invoice_lang',
