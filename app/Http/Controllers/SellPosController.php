@@ -2243,15 +2243,23 @@ class SellPosController extends Controller
                     })->get();
                 $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
 
-                $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
-                    'transaction',
-                    'payment_types',
-                    'invoice_lang',
-                    'print_gift_invoice',
-                    'transaction_sell_lines',
-                    'productIds',
-                    'transaction_payments'
-                ))->render();
+                if ($invoice_lang == 'ar_and_en') {
+                    $html_content = view('sale_pos.partials.printers_invoice_ar_and_end')->with(compact(
+                        'transaction',
+                        'payment_types',
+                        'print_gift_invoice',
+                    ))->render();
+                } else {
+                    $html_content = view('sale_pos.partials.printers_invoice')->with(compact(
+                        'transaction',
+                        'payment_types',
+                        'invoice_lang',
+                        'print_gift_invoice',
+                        'transaction_sell_lines',
+                        'current_products',
+                        'transaction_payments'
+                    ))->render();
+                }
 
                 ConnectedPrinter::create([
                     'printer_name' => $cashier_printer->name,
