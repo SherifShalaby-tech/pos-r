@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+// use PDF;
 use App\Events\PrinterEvent;
 use App\Models\AddStockLine;
 use App\Models\Brand;
@@ -44,6 +44,8 @@ use App\Utils\NotificationUtil;
 use App\Utils\ProductUtil;
 use App\Utils\TransactionUtil;
 use App\Utils\Util;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,7 +53,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\View;
-use Barryvdh\DomPDF\Facade as PDF;
 use Illuminate\Database\Eloquent\Builder;
 use Pusher\Pusher;
 use Spatie\Browsershot\Browsershot;
@@ -164,7 +165,9 @@ class SellPosController extends Controller
         }
         $dining_rooms = DiningRoom::all();
         $active_tab_id = null;
+        $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt')??0;
         return view('sale_pos.pos')->with(compact(
+            'show_the_window_printing_prompt',
             'dining_rooms',
             'active_tab_id',
             'categories',
@@ -204,6 +207,62 @@ class SellPosController extends Controller
             'payment_types'
         ));
     }
+    public function getDueForTransaction($transaction_id)
+    {
+        $transaction = Transaction::find($transaction_id);
+        $total_paid = Transaction::leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
+            ->where('transactions.id', $transaction_id)
+            ->sum('amount');
+
+        return $transaction->final_total - $total_paid;
+    }
+    public function payCustomerDue($customer_id)
+    {
+        $customer = Customer::find($customer_id);
+        $balance = $customer->added_balance;
+        $transactions = Transaction::where('customer_id', $customer_id)->where('type', 'sell')->whereIn('payment_status', ['pending', 'partial'])->orderBy('transaction_date', 'asc')->get();
+
+        $remaining_due_amount = 0;
+        $new_balance =0;
+        foreach ($transactions as $transaction) {
+            $due_for_transaction = $this->getDueForTransaction($transaction->id);
+            $paid_amount = 0;
+            if ($balance > 0) {
+                if ($balance >= $due_for_transaction) {
+                    $paid_amount = $due_for_transaction;
+                    $balance -= $due_for_transaction;
+                    $transaction->payment_status="paid";
+                    $transaction->save();
+                } else if ($balance < $due_for_transaction) {
+                    $paid_amount = $balance;
+                    $balance = 0;
+                }
+                
+                $remaining_due_amount += $paid_amount;
+                $customer->added_balance = $customer->added_balance - $paid_amount;
+                $customer->save();
+                $new_balance +=$paid_amount;
+                $payment_data = [
+                    'transaction_payment_id' => null,
+                    'transaction_id' =>  $transaction->id,
+                    'amount' => $paid_amount,
+                    'method' => 'cash',
+                    'paid_on' => date('Y-m-d'),
+                    'ref_number' => null,
+                    'bank_deposit_date' => null,
+                    'bank_name' => null,
+                ];
+                $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
+                $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
+                $this->cashRegisterUtil->addPayments($transaction, $payment_data, 'credit');
+                // $customer->added_balance = $customer->added_balance - $paid_amount;
+                // $customer->save();
+
+
+            }
+        }
+        return $new_balance;
+    }
     /**
      * Store a newly created resource in storage.
      *
@@ -212,7 +271,7 @@ class SellPosController extends Controller
      */
     public function store(Request $request)
     {
-        //   return TableReservation::all();
+        //   return $request->all();
         // try {
         DB::beginTransaction();
         $new_table=[];
@@ -229,6 +288,7 @@ class SellPosController extends Controller
                 'merge_table_id'=>[$request->merge_table_id,$table_status->dining_table_id]
             ]);
         }
+       
         $transaction_data = [
             'store_id' => $request->store_id,
             'customer_id' => $request->customer_id,
@@ -382,7 +442,14 @@ class SellPosController extends Controller
             foreach ($request->payments as $payment) {
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
+                if($payment['method']=='deposit'){
+                    $customer->added_balance = $customer->added_balance - $amount;
+                    $customer->save();
+                }
                 if ($amount > 0) {
+                    if($request->is_bank_transfer=="1"){
+                        $payment['method']='bank_transfer';
+                    }
                     // return $payment['method'];
                     $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
                     $payment_data = [
@@ -486,7 +553,20 @@ class SellPosController extends Controller
             }
         }
         DB::commit();
+        if($request->payments[0]['method']=='cash'){
+            $new_balance=$this->payCustomerDue($transaction->customer_id);
+            if ($new_balance < $request->add_to_customer_balance) {
+                // return [$this->commonUtil->num_uf($request->add_to_customer_balance),$new_balance];
+                $register = CashRegister::where('store_id', $request->store_id)->where('store_pos_id', $request->store_pos_id)->where('user_id', Auth::user()->id)->where('closed_at', null)->where('status', 'open')->first();
+                $this->cashRegisterUtil->createCashRegisterTransaction($register,$this->commonUtil->num_uf($request->add_to_customer_balance)-$new_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
+            }
 
+        }else{
+            if ($request->add_to_customer_balance > 0) {
+                $register = CashRegister::where('store_id', $request->store_id)->where('store_pos_id', $request->store_pos_id)->where('user_id', Auth::user()->id)->where('closed_at', null)->where('status', 'open')->first();
+                $this->cashRegisterUtil->createCashRegisterTransaction($register, $request->add_to_customer_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
+            }
+        }
         $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
 
 
@@ -500,6 +580,7 @@ class SellPosController extends Controller
                 $this->notificationUtil->sendSellInvoiceToCustomer($transaction->id, $request->emails);
             }
             if ($request->action == 'print') {
+              
                 $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products);
 
                 $output = [
@@ -515,13 +596,13 @@ class SellPosController extends Controller
         }
 
         if (!empty($transaction->dining_table_id)) {
-            $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+            // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
-            $output = [
-                'success' => true,
-                'html_content' => $html_content,
-                'msg' => __('lang.success')
-            ];
+            // $output = [
+            //     'success' => true,
+            //     'html_content' => $html_content,
+            //     'msg' => __('lang.success')
+            // ];
 
             if ($request->dining_action_type == 'save') {
                 $output = [
@@ -541,7 +622,12 @@ class SellPosController extends Controller
         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
 // =======
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+        $is_quick=0;
+        $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt');
+        if(($request->is_bank_transfer=="1" || $request->is_quick_pay=="1") && $show_the_window_printing_prompt=="0"){
+            $is_quick=2;
+        }
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products,$is_quick);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
 //return $partialPrint;
         $output = [
@@ -560,6 +646,10 @@ class SellPosController extends Controller
         // }
         if ($request->action == 'send' && $transaction->is_direct_sale == 1) {
             return redirect()->back()->with('status', $output);
+        }
+        if($is_quick==2){
+            $quick_print = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, 1);
+            $pdf= $this->generateAndPrint($quick_print);
         }
         return $output;
     }
@@ -2217,6 +2307,31 @@ class SellPosController extends Controller
             ];
         }
         return $output;
+    }
+    public function generateAndPrint($pdf)
+    {
+        // return $html_content;
+        try {
+            // Generate PDF
+            // $pdf = Pdf::loadView('pdf.example'); // Replace 'pdf.example' with your blade view
+            $pdfContent = $pdf->output();
+
+            // Print PDF directly to default printer
+            $printerCommand = 'lp -';
+            $process = proc_open($printerCommand, [0 => ['pipe', 'r'], 1 => ['pipe', 'w'], 2 => ['pipe', 'w']], $pipes);
+            fwrite($pipes[0], $pdfContent);
+            fclose($pipes[0]);
+            $stdout = stream_get_contents($pipes[1]);
+            fclose($pipes[1]);
+            $stderr = stream_get_contents($pipes[2]);
+            fclose($pipes[2]);
+            proc_close($process);
+
+            return response()->json(['success' => true, 'message' => 'success generating or printing PDF.']);
+
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error generating or printing PDF.']);
+        }
     }
 }
 

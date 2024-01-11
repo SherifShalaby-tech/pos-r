@@ -69,6 +69,186 @@ class AddStockController extends Controller
 
     }
 
+    // public function index(Request $request)
+    // {
+    //     if (request()->ajax()) {
+    //         $default_currency_id = System::getProperty('currency');
+    //         $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
+    //         $pos_id = $this->transactionUtil->getFilterOptionValues($request)['pos_id'];
+
+
+
+    //         $query=Transaction::leftjoin('add_stock_lines', 'transactions.id', 'add_stock_lines.transaction_id')
+    //         ->leftjoin('suppliers', 'transactions.supplier_id', '=', 'suppliers.id')
+    //         ->leftjoin('users', 'transactions.created_by', '=', 'users.id')
+    //         ->leftjoin('currencies as paying_currency', 'transactions.paying_currency_id', 'paying_currency.id')
+    //         ->whereIn('type',['material_manufactured','add_stock'])
+    //        ->orWhere(function($query){
+    //             $manufacturingIds=Transaction::where('type','material_manufactured')->pluck('manufacturing_id');
+    //             $query->whereNotIn('manufacturing_id',$manufacturingIds)->where('type','material_under_manufacture');
+    //         })
+    //         ->where('status', '!=', 'draft');
+
+    //         if (!empty($store_id)) {
+    //             $query->where('transactions.store_id', $store_id);
+    //         }
+
+    //         if (!empty(request()->is_raw_material)) {
+    //             $query->where('transactions.is_raw_material', 1);
+    //         } else {
+    //             $query->where('transactions.is_raw_material', 0);
+    //         }
+    //         if (!empty(request()->supplier_id)) {
+    //             $query->where('transactions.supplier_id', request()->supplier_id);
+    //         }
+    //         if (!empty(request()->created_by)) {
+    //             $query->where('transactions.created_by', request()->created_by);
+    //         }
+    //         if (!empty(request()->product_id)) {
+    //             $query->where('add_stock_lines.product_id', request()->product_id);
+    //         }
+    //         if (!empty(request()->start_date)) {
+    //             $query->whereDate('transaction_date', '>=', request()->start_date);
+    //         }
+    //         if (!empty(request()->end_date)) {
+    //             $query->whereDate('transaction_date', '<=', request()->end_date);
+    //         }
+    //         if (!empty(request()->start_time)) {
+    //             $query->where('transaction_date', '>=', request()->start_date . ' ' . Carbon::parse(request()->start_time)->format('H:i:s'));
+    //         }
+    //         if (!empty(request()->end_time)) {
+    //             $query->where('transaction_date', '<=', request()->end_date . ' ' . Carbon::parse(request()->end_time)->format('H:i:s'));
+    //         }
+    //         // if (strtolower($request->session()->get('user.job_title')) == 'cashier') {
+    //         //     $query->where('transactions.created_by', $request->session()->get('user.id'));
+    //         // }
+
+    //         $add_stocks = $query->select(
+    //             'transactions.*',
+    //             'users.name as created_by_name',
+    //             'suppliers.name as supplier',
+    //             'paying_currency.symbol as paying_currency_symbol'
+    //         )->with(['add_stock_variations'])->groupBy('transactions.id');
+    //         // return $add_stocks;
+    //         return DataTables::of($add_stocks)
+    //             ->editColumn('created_at', '{{@format_datetime($created_at)}}')
+    //             ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
+    //             ->editColumn('due_date', '@if(!empty($add_stock->due_date) && $add_stock->payment_status != "paid"){{@format_datetime($due_date)}}@endif')
+    //             ->editColumn('created_by', '{{$created_by_name}}')
+    //             ->editColumn('final_total', function ($row) use ($default_currency_id) {
+    //                 $final_total =  $row->final_total;
+    //                 $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
+    //                 return '<span data-currency_id="' . $paying_currency_id . '">' . number_format($final_total,2) . '</span>';
+    //             })
+    //             ->addColumn('paid_amount', function ($row) use ($default_currency_id) {
+    //                 $amount_paid =  $row->transaction_payments->sum('amount');
+    //                 $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
+    //                 return '<span data-currency_id="' . $paying_currency_id . '">' . number_format($amount_paid,2) . '</span>';
+    //             })
+    //             ->addColumn('due', function ($row) use ($default_currency_id) {
+    //                 $due =  $row->final_total - $row->transaction_payments->sum('amount');
+    //                 $paying_currency_id = $row->paying_currency_id ?? $default_currency_id;
+    //                 return '<span data-currency_id="' . $paying_currency_id . '">' . number_format($due,2) . '</span>';
+    //             })
+    //             ->editColumn('paying_currency_symbol', function ($row) use ($default_currency_id) {
+    //                 $default_currency = Currency::find($default_currency_id);
+    //                 return $row->paying_currency_symbol ?? $default_currency->symbol;
+    //             })
+    //             ->addColumn('products', function ($row) use ($default_currency_id) {
+    //                 $string = '';
+    //                 foreach ($row->add_stock_variations as $add_stock_variation) {
+    //                     if (!empty($add_stock_variation)) {
+    //                         if ($add_stock_variation->name != 'Default') {
+    //                             $string .= $add_stock_variation->name . ' ' . $add_stock_variation->sub_sku . '<br>';
+    //                         } else {
+    //                             $string .= $add_stock_variation->product->name . '-' . $add_stock_variation->product->sku . '<br>';
+    //                         }
+    //                     }
+    //                 }
+
+    //                 return $string;
+    //             })
+    //             ->addColumn(
+    //                 'action',
+    //                 function ($row) {
+    //                     $html = ' <div class="btn-group">
+    //                     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"
+    //                         aria-haspopup="true" aria-expanded="false">' . __('lang.action') . '
+    //                         <span class="caret"></span>
+    //                         <span class="sr-only">Toggle Dropdown</span>
+    //                     </button>
+    //                     <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">';
+
+    //                     if (auth()->user()->can('stock.add_stock.view')) {
+    //                         $html .=
+    //                             '<li>
+    //                                 <a href="' . action('AddStockController@show', $row->id) . '" class=""><i
+    //                                 class="fa fa-eye btn"></i> ' . __('lang.view') . '</a>
+    //                              </li>';
+    //                     }
+    //                     $html .= '<li class="divider"></li>';
+    //                     if (auth()->user()->can('stock.add_stock.create_and_edit')) {
+    //                         $html .=
+    //                             '<li>
+    //                             <a href="' . action('AddStockController@edit', $row->id) . '"><i
+    //                                     class="dripicons-document-edit btn"></i>' . __('lang.edit') . '</a>
+    //                             </li>';
+    //                     }
+    //                     $html .= '<li class="divider"></li>';
+    //                     if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1) {
+    //                         $html .=
+    //                             '<li>
+    //                             <a data-href="' . action('AddStockController@destroy', $row->id) . '"
+    //                                 data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
+    //                                 class="btn text-red delete_item"><i class="dripicons-trash"></i>
+    //                                 ' . __('lang.delete') . '</a>
+    //                             </li>';
+    //                     }
+    //                     $html .= '<li class="divider"></li>';
+    //                     if (auth()->user()->can('stock.pay.create_and_edit')) {
+    //                         if ($row->payment_status != 'paid') {
+    //                             $html .=
+    //                                 '<li>
+    //                                 <a data-href="' . action('TransactionPaymentController@addPayment', ['id' => $row->id]) . '"
+    //                                     data-container=".view_modal" class="btn btn-modal"><i class="fa fa-money"></i>
+    //                                     ' . __('lang.pay') . '</a>
+    //                                 </li>';
+    //                         }
+    //                     }
+
+    //                     $html .= '</ul></div>';
+    //                     return $html;
+    //                 }
+    //             )
+    //             ->rawColumns([
+    //                 'po_no',
+    //                 'action',
+    //                 'transaction_date',
+    //                 'created_at',
+    //                 'due_date',
+    //                 'final_total',
+    //                 'paid_amount',
+    //                 'products',
+    //                 'due',
+    //                 'created_by',
+    //             ])
+    //             ->make(true);
+    //     }
+
+    //     $users = User::Notview()->orderBy('name', 'asc')->pluck('name', 'id');
+    //     $suppliers = Supplier::orderBy('name', 'asc')->pluck('name', 'id');
+    //     $products = Product::orderBy('name', 'asc')->pluck('name', 'id');
+    //     $stores = Store::getDropdown();
+    //     $status_array = $this->commonUtil->getPurchaseOrderStatusArray();
+
+    //     return view('add_stock.index')->with(compact(
+    //         'users',
+    //         'products',
+    //         'suppliers',
+    //         'stores',
+    //         'status_array'
+    //     ));
+    // }
     public function index(Request $request)
     {
         if (request()->ajax()) {
@@ -76,17 +256,15 @@ class AddStockController extends Controller
             $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
             $pos_id = $this->transactionUtil->getFilterOptionValues($request)['pos_id'];
 
-
-
             $query=Transaction::leftjoin('add_stock_lines', 'transactions.id', 'add_stock_lines.transaction_id')
             ->leftjoin('suppliers', 'transactions.supplier_id', '=', 'suppliers.id')
             ->leftjoin('users', 'transactions.created_by', '=', 'users.id')
             ->leftjoin('currencies as paying_currency', 'transactions.paying_currency_id', 'paying_currency.id')
             ->whereIn('type',['material_manufactured','add_stock'])
-           ->orWhere(function($query){
-                $manufacturingIds=Transaction::where('type','material_manufactured')->pluck('manufacturing_id');
-                $query->whereNotIn('manufacturing_id',$manufacturingIds)->where('type','material_under_manufacture');
-            })
+        //    ->orWhere(function($query){
+        //         $manufacturingIds=Transaction::where('type','material_manufactured')->pluck('manufacturing_id');
+        //         $query->whereNotIn('manufacturing_id',$manufacturingIds)->where('type','material_under_manufacture');
+        //     })
             ->where('status', '!=', 'draft');
 
             if (!empty($store_id)) {
@@ -129,7 +307,6 @@ class AddStockController extends Controller
                 'suppliers.name as supplier',
                 'paying_currency.symbol as paying_currency_symbol'
             )->with(['add_stock_variations'])->groupBy('transactions.id');
-            // return $add_stocks;
             return DataTables::of($add_stocks)
                 ->editColumn('created_at', '{{@format_datetime($created_at)}}')
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -249,7 +426,6 @@ class AddStockController extends Controller
             'status_array'
         ));
     }
-
     public function create()
     {
         $suppliers = Supplier::orderBy('name', 'asc')->pluck('name', 'id')->toArray();
@@ -530,7 +706,7 @@ class AddStockController extends Controller
     public function update(Request $request, $id)
     {
 
-        // try {
+        try {
         $data = $request->except('_token');
 
         if (!empty($data['po_no'])) {
@@ -546,14 +722,14 @@ class AddStockController extends Controller
             'default_currency_id' => $data['default_currency_id'],
             'exchange_rate' => $this->commonUtil->num_uf($data['exchange_rate']),
             'order_date' => !empty($ref_transaction_po) ? $ref_transaction_po->transaction_date : Carbon::now(),
-            'transaction_date' => $this->commonUtil->uf_date($data['transaction_date']) . ' ' . date('H:i:s'),
-            'payment_status' => $data['payment_status'],
+            'transaction_date' => isset($data['transaction_date'])? $this->commonUtil->uf_date($data['transaction_date']) . ' ' . date('H:i:s'):null,
+            'payment_status' =>isset($data['payment_status'])?$data['payment_status']:null,
             'po_no' => !empty($ref_transaction_po) ? $ref_transaction_po->po_no : null,
-            'grand_total' => $this->productUtil->num_uf($data['grand_total']),
+            'grand_total' => isset($data['grand_total'])?$this->productUtil->num_uf($data['grand_total']):0,
             'final_total' => $this->productUtil->num_uf($data['final_total']),
-            'discount_amount' => $this->productUtil->num_uf($data['discount_amount']),
-            'other_payments' => $this->productUtil->num_uf($data['other_payments']),
-            'other_expenses' => $this->productUtil->num_uf($data['other_expenses']),
+            'discount_amount' =>isset($data['discount_amount']) ? $this->productUtil->num_uf($data['discount_amount']):0,
+            'other_payments' => isset($data['other_payments'])?$this->productUtil->num_uf($data['other_payments']):null,
+            'other_expenses' => isset($data['other_expenses'])?$this->productUtil->num_uf($data['other_expenses']):null,
             'notes' => !empty($data['notes']) ? $data['notes'] : null,
             'details' => !empty($data['details']) ? $data['details'] : null,
             'invoice_no' => !empty($data['invoice_no']) ? $data['invoice_no'] : null,
@@ -671,7 +847,7 @@ class AddStockController extends Controller
         }
         DB::commit();
 
-        if ($data['submit'] == 'print') {
+        if (isset($data['submit']) &&  $data['submit'] == 'print') {
             $print = 'print';
             $url = action('AddStockController@show', $transaction->id) . '?print=' . $print;
 
@@ -682,13 +858,13 @@ class AddStockController extends Controller
             'success' => true,
             'msg' => __('lang.success')
         ];
-        // } catch (\Exception $e) {
-        //     Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
-        //     $output = [
-        //         'success' => false,
-        //         'msg' => __('lang.something_went_wrong')
-        //     ];
-        // }
+        } catch (\Exception $e) {
+            Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
+            $output = [
+                'success' => false,
+                'msg' => __('lang.something_went_wrong')
+            ];
+        }
 
         return redirect()->back()->with('status', $output);
     }

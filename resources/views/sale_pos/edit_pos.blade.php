@@ -293,9 +293,6 @@
                                     <div class="row" style="">
                                         <div class="col-md-2">
                                             <div class="form-group">
-                                                <input type="hidden" value="{{$show_the_window_printing_prompt}}" class="show_the_window_printing_prompt" name="show_the_window_printing_prompt" />
-                                                <input type="hidden" value="0" class="is_bank_transfer" name="is_bank_transfer" />
-                                                <input type="hidden" value="0" class="is_quick_pay" name="is_quick_pay" />
                                                 <input type="hidden" value="0" class="SavedTransactionId" name="SavedTransactionId" />
                                                 <input type="hidden" value="complete" class="isPayComplete" name="isPayComplete" />
                                                 {{-- <input type="hidden" id="finaltotalCheckedProducts" name="finaltotalCheckedProducts" /> --}}
@@ -519,10 +516,10 @@
                                 <button data-method="cheque" style="background-color: #fd7272" type="button"
                                     class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment"
                                     id="cheque-btn"><i class="fa fa-money"></i> @lang('lang.cheque')</button>
-                            </div> --}}
-                            {{-- <div class="column-5">
+                            </div>
+                            <div class="column-5">
                                 <button data-method="bank_transfer" style="background-color: #56962b" type="button"
-                                    class="btn btn-custom payment-btn"
+                                    class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment"
                                     id="bank-transfer-btn"><i class="fa fa-building-o"></i>
                                     @lang('lang.bank_transfer')</button>
                             </div> --}}
@@ -552,11 +549,6 @@
                                 <button style="background-color: #ffc107;" type="button" class="btn btn-custom"
                                     id="recent-transaction-btn"><i class="dripicons-clock"></i>
                                     @lang('lang.recent_transactions')</button>
-                            </div>
-                            <div class="column-5">
-                                <button style="background-color: #b321c0;" type="button" class="btn btn-custom"
-                                    id="bank-transfer-btn">
-                                    @lang('lang.bank_transfer')</button>
                             </div>
                         </div>
                     </div>
@@ -900,6 +892,7 @@
 @endsection
 
 @section('javascript')
+
     <script src="{{ asset('js/onscan.min.js') }}"></script>
     <script src="{{ asset('js/pos.js') }}"></script>
     <script src="{{ asset('js/dining_table.js') }}"></script>

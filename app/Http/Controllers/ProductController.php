@@ -248,7 +248,7 @@ class ProductController extends Controller
                     data-container=".view_modal" class="btn btn-modal">' . __('lang.view') . '</a>';
                     return $html;
                 })
-                ->editColumn('supplier_name', function ($row) {
+                ->addColumn('supplier_name', function ($row) {
                     return $row->supplier->name ?? '';
                 })
                 ->editColumn('batch_number', '{{$batch_number}}')
@@ -1032,7 +1032,8 @@ class ProductController extends Controller
                 }
 
             }
-            if ($request->has("cropImages") && count($request->cropImages) > 0) {
+            if ($request->has("cropImages") && count($request->cropImages) > 0 
+            && strpos($request->cropImages[0], 'data:image/') === 0) {
                 // Clear the media collection only once, before the loop
                 $product->clearMediaCollection('product');
 

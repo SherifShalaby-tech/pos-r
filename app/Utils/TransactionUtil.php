@@ -3,6 +3,7 @@
 namespace App\Utils;
 
 use App\Http\Controllers\PurchaseOrderController;
+use Intervention\Image\ImageManagerStatic as Image;
 use App\Models\AddStockLine;
 use App\Models\Brand;
 use App\Models\Category;
@@ -36,12 +37,15 @@ use App\Models\TransactionSellLine;
 use App\Models\Unit;
 use App\Models\Variation;
 use App\Utils\Util;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Mockery\Matcher\Type;
 use Psy\CodeCleaner\FunctionContextPass;
+use PDF;
+use Spatie\ImageOptimizer\OptimizerChainFactory;
 
 class TransactionUtil extends Util
 {
@@ -1537,7 +1541,7 @@ class TransactionUtil extends Util
      * @param array $payment_types
      * @return void
      */
-    public function getInvoicePrint($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[])
+    public function getInvoicePrint($transaction, $payment_types, $transaction_invoice_lang = null,$current_products=[],$is_quick=null)
     {
         $print_gift_invoice = request()->print_gift_invoice;
 
@@ -1590,16 +1594,41 @@ class TransactionUtil extends Util
                 'print_gift_invoice',
             ))->render();
         } else {
-            $html_content = view('sale_pos.partials.invoice')->with(compact(
-                'transaction',
-                'payment_types',
-                'invoice_lang',
-                'print_gift_invoice',
-                'transaction_sell_lines',
-                'current_products',
-                'transaction_payments',
-                'font','line_height1','line_height2','data_font'
-            ))->render();
+            if($is_quick==1){
+                $html_content =
+                FacadePdf::loadView('sale_pos.partials.quick-invoice',compact(
+                    'transaction',
+                    'payment_types',
+                    'invoice_lang',
+                    'print_gift_invoice',
+                    'transaction_sell_lines',
+                    'current_products',
+                    'transaction_payments',
+                    'font','line_height1','line_height2','data_font','is_quick'
+                ));
+            }else if($is_quick==2){
+                $html_content = view('sale_pos.partials.quick-invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'invoice_lang',
+                    'print_gift_invoice',
+                    'transaction_sell_lines',
+                    'current_products',
+                    'transaction_payments',
+                    'font','line_height1','line_height2','data_font','is_quick'
+                ))->render();
+            }else{
+                $html_content = view('sale_pos.partials.invoice')->with(compact(
+                    'transaction',
+                    'payment_types',
+                    'invoice_lang',
+                    'print_gift_invoice',
+                    'transaction_sell_lines',
+                    'current_products',
+                    'transaction_payments',
+                    'font','line_height1','line_height2','data_font'
+                ))->render();
+            }
         }
 
         if ($transaction->is_direct_sale == 1) {
@@ -2128,43 +2157,45 @@ class TransactionUtil extends Util
             $consumption_products = ConsumptionProduct::where('variation_id', $line->variation_id)->get();
             foreach ($consumption_products as $consumption_product) {
                 $raw_material = Product::find($consumption_product->raw_material_id);
-                if ($line_product->automatic_consumption == 1) {
-                    $consumption = Consumption::firstOrNew(['transaction_id' => $transaction->id, 'raw_material_id' => $raw_material->id]);
-                    $consumption->store_id = $transaction->store_id;
-                    $consumption->transaction_id = $transaction->id;
-                    $consumption->raw_material_id = $raw_material->id;
-                    $consumption->consumption_no = uniqid('CONA');
-                    $consumption->date_and_time = $transaction->transaction_date;
-                    $consumption->created_by = Auth::user()->id;
-                    $consumption->save();
+                if(!empty( $raw_material )){
+                    if ($line_product->automatic_consumption == 1) {
+                        $consumption = Consumption::firstOrNew(['transaction_id' => $transaction->id, 'raw_material_id' => $raw_material->id]);
+                        $consumption->store_id = $transaction->store_id;
+                        $consumption->transaction_id = $transaction->id;
+                        $consumption->raw_material_id = $raw_material->id;
+                        $consumption->consumption_no = uniqid('CONA');
+                        $consumption->date_and_time = $transaction->transaction_date;
+                        $consumption->created_by = Auth::user()->id;
+                        $consumption->save();
 
-                    $old_qty = 0;
-                    $total_quantity = 0;
-                    $consumption_detail_exist = ConsumptionDetail::where(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id])->first();
-                    if (!empty($consumption_detail_exist)) {
-                        $old_qty = $consumption_detail_exist->quantity;
+                        $old_qty = 0;
+                        $total_quantity = 0;
+                        $consumption_detail_exist = ConsumptionDetail::where(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id])->first();
+                        if (!empty($consumption_detail_exist)) {
+                            $old_qty = $consumption_detail_exist->quantity;
+                        }
+
+                        $consumption_detail = ConsumptionDetail::firstOrNew(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id]);
+                        $consumption_detail->consumption_id = $consumption->id;
+                        $consumption_detail->product_id = $line->product_id;
+                        $consumption_detail->variation_id = $line->variation_id;
+                        $consumption_detail->unit_id = $consumption_product->unit_id;
+                        $consumption_detail->quantity = $consumption_product->amount_used * $line->quantity;
+
+                        $consumption_detail->save();
+
+                        $raw_material_unit = Unit::find($raw_material->units->pluck('id')[0]);
+                        $consumption_unit = Unit::find($consumption_product->unit_id);
+                        $base_unit_multiplier = 1;
+                        if ($raw_material_unit->id != $consumption_unit->id) {
+                            $base_unit_multiplier = $consumption_unit->base_unit_multiplier;
+                        }
+                        $total_quantity = $line->quantity * $consumption_product->amount_used * $base_unit_multiplier;
+                        $old_qty = $old_qty * $base_unit_multiplier;
+
+                        $variation_rw = Variation::where('product_id', $raw_material->id)->first();
+                        $this->productUtil->decreaseProductQuantity($raw_material->id, $variation_rw->id, $transaction->store_id, $total_quantity, $old_qty);
                     }
-
-                    $consumption_detail = ConsumptionDetail::firstOrNew(['consumption_id' => $consumption->id, 'variation_id' => $line->variation_id]);
-                    $consumption_detail->consumption_id = $consumption->id;
-                    $consumption_detail->product_id = $line->product_id;
-                    $consumption_detail->variation_id = $line->variation_id;
-                    $consumption_detail->unit_id = $consumption_product->unit_id;
-                    $consumption_detail->quantity = $consumption_product->amount_used * $line->quantity;
-
-                    $consumption_detail->save();
-
-                    $raw_material_unit = Unit::find($raw_material->units->pluck('id')[0]);
-                    $consumption_unit = Unit::find($consumption_product->unit_id);
-                    $base_unit_multiplier = 1;
-                    if ($raw_material_unit->id != $consumption_unit->id) {
-                        $base_unit_multiplier = $consumption_unit->base_unit_multiplier;
-                    }
-                    $total_quantity = $line->quantity * $consumption_product->amount_used * $base_unit_multiplier;
-                    $old_qty = $old_qty * $base_unit_multiplier;
-
-                    $variation_rw = Variation::where('product_id', $raw_material->id)->first();
-                    $this->productUtil->decreaseProductQuantity($raw_material->id, $variation_rw->id, $transaction->store_id, $total_quantity, $old_qty);
                 }
             }
         }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ManufacturerController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
@@ -295,6 +296,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::group(['prefix' => 'hrm'], function () {
         Route::resource('job', JobController::class);
+        Route::get('print/employee-barcode/{id}','EmployeeController@printEmployeeBarcode')->name('print_employee_barcode');
         Route::get('get-same-job-employee-details/{id}', 'EmployeeController@getSameJobEmployeeDetails');
         Route::get('get-balance-leave-details/{id}', 'EmployeeController@getBalanceLeaveDetails');
         Route::get('get-employee-details-by-id/{id}', 'EmployeeController@getDetails');
@@ -339,6 +341,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('cash/save-add-cash-out', 'CashController@saveAddCashOut');
     Route::get('cash/add-cash-in/{cash_register_id}', 'CashController@addCashIn');
     Route::post('cash/save-add-cash-in', 'CashController@saveAddCashIn');
+    Route::get('cash/show-latest-payment-details/{id}', 'CashController@showLatestPaymentDetails');
     Route::resource('cash', CashController::class);
     Route::resource('cash-out', CashOutController::class);
     Route::resource('cash-in', CashInController::class);
@@ -356,6 +359,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('product-in-adjustment-store', 'ProductInAdjustmentsController@store')->name('add_product_adjustment');
     Route::delete('product-in-adjustment-delete/{id}', 'ProductInAdjustmentsController@delete')->name('delete_product_adjustment');
     Route::get('product-in-adjustment/get-details/{id}', 'ProductInAdjustmentsController@getDetails');
+    Route::post('user/check-admin-password', [HomeController::class, 'checkAdminPassword'])->name('check_admin_password');
 
     Route::get('report/get-profit-loss', 'ReportController@getProfitLoss');
     Route::get('report/daily-sales-summary', 'ReportController@getDailySalesSummary');
