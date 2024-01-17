@@ -981,12 +981,9 @@
                     },
                     success: function (response) {
                         // alert(response);
-                        console.log(response);
-                        console.log(response.transaction_id);
                         if(response.result==1){
                              get_dining_content();
                              transaction_id=response.transaction_id;
-                             alert(transaction_id)
                              if (data) {
                 // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
@@ -994,7 +991,6 @@
                 $('.online-order-badge').text(badge_count);
                 $('.online-order-badge').show();
 
-                alert( transaction_id)
                 console.log(transaction_id)
                 $.ajax({
                     method: 'get',
