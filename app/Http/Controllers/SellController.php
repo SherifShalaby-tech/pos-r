@@ -859,6 +859,7 @@ class SellController extends Controller
     // }
     public function destroy($id)
     {
+        //asd asd
         try {
             $transaction = Transaction::find($id);
 
