@@ -984,14 +984,26 @@
                         if(response.result==1){
                              get_dining_content();
                              transaction_id=response.transaction_id;
-                             if (data) {
+     
+                        }
+                    }
+                });
+            }
+            if (data) {
                 // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
-
-                $('.online-order-badge').text(badge_count);
+                $.ajax({
+                    type: "post",
+                    url: "/pos/add-new-online-orders-to-transaction-sellline",
+                    data: {
+                        order_id:data.order_id
+                    },
+                    success: function (response) {
+                        // alert(response);
+                        if(response.result==1){
+                             transaction_id=response.transaction_id;
+                             $('.online-order-badge').text(badge_count);
                 $('.online-order-badge').show();
-
-                console.log(transaction_id)
                 $.ajax({
                     method: 'get',
                     url: '/pos/get-transaction-details/' + transaction_id,
@@ -1027,12 +1039,11 @@
 
                     },
                 });
-            }
                         }
                     }
                 });
+             
             }
-         
         });
     </script>
 @endsection
