@@ -1917,7 +1917,8 @@ class SellPosController extends Controller
             $query = Transaction::leftjoin('transaction_payments', 'transactions.id', 'transaction_payments.transaction_id')
                 ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
                 ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
-                ->where('type', 'sell')->where('status', 'draft')
+                ->where('type', 'sell')
+                // ->where('status', 'draft')
                 ->whereNotNull('transactions.restaurant_order_id');
             if (!empty($store_id)) {
                 $query->where('transactions.store_id', $store_id);
@@ -1935,8 +1936,8 @@ class SellPosController extends Controller
                 'customers.name as customer_name',
                 'customers.mobile_number',
             )->with([
-                'return_parent']);
-
+                'return_parent'])->get();
+                // dd($transactions );
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('final_total', '{{@num_format($final_total)}}')
@@ -2165,6 +2166,7 @@ class SellPosController extends Controller
                 'dining_table_id' =>  $order->table_no,
                 'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
                 'created_by' => Auth::user()->id,
+                'restaurant_order_id'=>$order->id
             ];
             $transaction=Transaction::create($transaction_data);
         }
@@ -2182,7 +2184,7 @@ class SellPosController extends Controller
             $table->save();
         }
 
-        return 1;
+        return ['result'=>1,'transaction_id'=>$transaction->id];
     }
     public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
         // return $transaction;
@@ -2290,7 +2292,6 @@ class SellPosController extends Controller
 
     public function changeSellingPrice($variation_id){
         try {
-
             $stockLines=AddStockLine::where('variation_id',$variation_id)
             ->get();
             if(count($stockLines) > 0){

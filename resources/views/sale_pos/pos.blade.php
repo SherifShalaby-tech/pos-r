@@ -927,6 +927,7 @@
             cluster: '{{ env('PUSHER_APP_CLUSTER') }}'
         });
         var channel = pusher.subscribe('order-channel');
+        var transaction_id =0;
         channel.bind('new-order', function(data) {
             if(data.table_no){
                 var notificationContents = sessionStorage.getItem('notificationContents');
@@ -979,25 +980,24 @@
                         order_id:data.order_id
                     },
                     success: function (response) {
-                        if(response==1){
+                        // alert(response);
+                        if(response.result==1){
                              get_dining_content();
-                        }
-                    }
-                });
-            }
-            if (data) {
+                             transaction_id=response.transaction_id;
+                             if (data) {
                 // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
 
                 $('.online-order-badge').text(badge_count);
                 $('.online-order-badge').show();
 
-                var transaction_id = data.transaction_id;
+                console.log(transaction_id)
                 $.ajax({
                     method: 'get',
                     url: '/pos/get-transaction-details/' + transaction_id,
                     data: {},
                     success: function(result) {
+                        console.log(result);
                         toastr.success(LANG.new_order_placed_invoice_no + ' ' + result.invoice_no);
                         let notification_number = parseInt($('.notification-number').text());
                         console.log(notification_number, 'notification-number');
@@ -1028,6 +1028,11 @@
                     },
                 });
             }
+                        }
+                    }
+                });
+            }
+         
         });
     </script>
 @endsection
