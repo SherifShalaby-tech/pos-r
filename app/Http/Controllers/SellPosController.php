@@ -2186,6 +2186,35 @@ class SellPosController extends Controller
 
         return ['result'=>1,'transaction_id'=>$transaction->id];
     }
+    public function addNewonlineOrdersToTransactionSellline(Request $request)
+    {
+        $order=DB::table('orders')->where('id',$request->order_id)->first();
+        // return $order;
+        $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
+            $transaction_data = [
+                'store_id' => !empty($order->store_id)?$order->store_id:1,
+                'type' => 'sell',
+                'final_total' => $this->commonUtil->num_uf($order->final_total),
+                // 'grand_total' => $this->commonUtil->num_uf($request->grand_total),
+                'transaction_date' => !empty($order->created_at) ? $order->created_at : Carbon::now(),
+                'payment_status' => !empty($order->status)?$order->status:'pending',
+                'invoice_no' => $this->productUtil->getNumberByType('sell'),
+                'status' => 'draft',
+                'sale_note' => $order->sales_note,
+                'deliveryman_id' => !empty($request->deliveryman_id_hidden) ? $request->deliveryman_id_hidden : null,
+                'delivery_status' => !empty($order->delivery_status)?$order->delivery_status:'pending',
+                // 'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
+                'delivery_address' => !empty($order->address)?$order->address:'',
+                // 'dining_table_id' =>  $order->table_no,
+                // 'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
+                'created_by' => Auth::user()->id,
+                'restaurant_order_id'=>$order->id
+            ];
+            $transaction=Transaction::create($transaction_data);
+        $this->transactionUtil->createTransactionSellLineForOrder($transaction, $orderDetails);
+
+        return ['result'=>1,'transaction_id'=>$transaction->id];
+    }
     public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
         // return $transaction;
         // return $transaction->transaction_sell_lines ;
