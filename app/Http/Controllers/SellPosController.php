@@ -1918,7 +1918,7 @@ class SellPosController extends Controller
                 ->leftjoin('customers', 'transactions.customer_id', 'customers.id')
                 ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
                 ->where('type', 'sell')
-                // ->where('status', 'draft')
+                ->where('status', 'draft')
                 ->whereNotNull('transactions.restaurant_order_id');
             if (!empty($store_id)) {
                 $query->where('transactions.store_id', $store_id);
