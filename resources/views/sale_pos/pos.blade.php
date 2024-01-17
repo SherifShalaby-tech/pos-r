@@ -929,7 +929,7 @@
         var channel = pusher.subscribe('order-channel');
         var transaction_id =0;
         channel.bind('new-order', function(data) {
-            if(data.table_no){
+            if(data.table_no && data.table_no!=="not exist"){
                 var notificationContents = sessionStorage.getItem('notificationContents');
                 var notificationRoomContents = sessionStorage.getItem('notificationRoomContents');
                 obj.table_no = data.table_no;
@@ -989,7 +989,7 @@
                     }
                 });
             }
-            if (data) {
+            if (data && data.table_no=="not exist") {
                 // alert(data)
                 let badge_count = parseInt($('.online-order-badge').text()) + 1;
                 $.ajax({
