@@ -1459,5 +1459,25 @@ return [
     'correct_password'=>'كلمة السر صحيحة',
     'total_latest_payments'=>'اجمالى المدفوعات المتأخرة',
     'recieved_amount'=>'المبلغ المستلم',
+
+
+    'remove_damage' => 'ازالة منتج تالف',
+    'product_damage' => 'توالف المنتج المزالة',
+    'product_expiry' => 'المنتجات منتهية الصلاحية المزالة',
+    'quantity_of_expired_stock_removed' => 'كميه المخزون التالف المحذوف',
+    'value_of_the_removed_stocks' => 'قيمه المخزون التالف ',
+    'removed_expiry' => 'ازالة منتج منتهي الصلاحية',
+
+    'date_of_the_removal' => 'تاريخ الحذف',
+    'add_new_convolutions' => 'اضافه تلافيات جديده',
+    'expired_stock' => 'المخزون المنتهي الصلاحيه',
+
+    'date_of_the_expiry_of_the_expired_stock' => ' تاريخ انتهاء المخزون المنتهي',
+    'date_of_purchase_of_the_expired_stock' => 'تاريخ شراء المخزون المنتهي',
+    'quantity_to_be_removed' => 'الكميه المراد حذفها',
+    'value_of_removed_stock' => 'قيمه المخزون المحذوف',
+
+    'date_of_purchase_of_the_expired_stock_removed' => 'تاريخ شراء المخزون التالف المحذوف',
+    'deleted_by' => 'حذف بواسطة',
 ];
 
