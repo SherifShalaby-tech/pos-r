@@ -205,6 +205,7 @@ class ProductController extends Controller
             $is_add_stock = request()->is_add_stock;
             $products = $products->select(
                 'products.*',
+                'products.name as product_name',
                 'add_stock_lines.batch_number',
                 'variations.sub_sku',
                 'product_classes.name as product_class',
@@ -235,7 +236,7 @@ class ProductController extends Controller
                         return '<img src="' . asset('/uploads/' . session('logo')) . '" height="50px" width="50px">';
                     }
                 })
-                ->editColumn('variation_name', '@if($variation_name != "Default"){{$variation_name}} @else {{$name}}
+                ->editColumn('variation_name', '@if($variation_name != "Default"){{$variation_name}} @else {{$product_name}}
                 @endif')
                 ->editColumn('sub_sku', '{{$sub_sku}}')
                 ->editColumn('is_service',function ($row) {
