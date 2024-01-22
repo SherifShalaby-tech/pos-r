@@ -2287,7 +2287,7 @@ class SellPosController extends Controller
                         'invoice_lang',
                         'print_gift_invoice',
                         'transaction_sell_lines',
-                        'current_products',
+                        // 'current_products',
                         'transaction_payments'
                     ))->render();
                 }
