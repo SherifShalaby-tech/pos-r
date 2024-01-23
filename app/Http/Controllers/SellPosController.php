@@ -442,7 +442,7 @@ class SellPosController extends Controller
             foreach ($request->payments as $payment) {
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
-                if($payment['method']=='deposit'){
+                if(isset($payment['method']) && $payment['method']=='deposit'){
                     $customer->added_balance = $customer->added_balance - $amount;
                     $customer->save();
                 }
@@ -553,7 +553,7 @@ class SellPosController extends Controller
             }
         }
         DB::commit();
-        if($request->payments[0]['method']=='cash'){
+        if(isset($payment['method']) && $request->payments[0]['method']=='cash'){
             $new_balance=$this->payCustomerDue($transaction->customer_id);
             if ($new_balance < $request->add_to_customer_balance) {
                 // return [$this->commonUtil->num_uf($request->add_to_customer_balance),$new_balance];
