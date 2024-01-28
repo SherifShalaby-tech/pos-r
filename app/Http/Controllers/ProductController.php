@@ -208,6 +208,7 @@ class ProductController extends Controller
             $is_add_stock = request()->is_add_stock;
             $products = $products->select(
                 'products.*',
+                // 'products.name as product_name',
                 'add_stock_lines.batch_number',
                 'variations.sub_sku',
                 'product_classes.name as product_class',
