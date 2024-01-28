@@ -43,6 +43,9 @@ use Illuminate\Support\Facades\Http;
 use Lang;
 use PhpParser\Node\Expr\Print_;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
+use App\Models\ExpenseCategory;
+use App\Models\ExpenseBeneficiary;
 class ProductController extends Controller
 {
     /**
@@ -569,7 +572,7 @@ class ProductController extends Controller
                     if ($row->variation->name != "Default"){
                         return  $row->variation->name;
                     }else{
-                        return  "Default";
+                        return  $row->product->name;
                     }
                 })
                 ->editColumn('sub_sku', '{{$sub_sku}}')
@@ -602,7 +605,7 @@ class ProductController extends Controller
                     "product_id" =>$variation->product_id,
                     "variation_id" =>$variation->id,
                     "quantity_of_expired_stock_removed" =>$data["quantity_to_be_removed"],
-                    "date_of_purchase_of_expired_stock_removed" => Carbon::parse($data["date_of_purchase_of_expired_stock_removed"])->toDateTimeString(),
+                    "date_of_purchase_of_expired_stock_removed" => Carbon::now(),
                     "value_of_removed_stocks" => $data["value_of_removed_stocks"],
                     "added_by" => auth()->id(),
                 ]);
@@ -682,7 +685,7 @@ class ProductController extends Controller
                     if ($row->variation->name != "Default"){
                         return  $row->variation->name;
                     }else{
-                        return  "Default";
+                        return  $row->product->name;
                     }
                 })
                 ->editColumn('sub_sku', '{{$sub_sku}}')
@@ -714,7 +717,7 @@ class ProductController extends Controller
                    "product_id" =>$variation->product_id,
                    "variation_id" =>$variation->id,
                    "quantity_of_expired_stock_removed" =>$data["quantity_to_be_removed"],
-                   "date_of_purchase_of_expired_stock_removed" => Carbon::parse($data["date_of_purchase_of_expired_stock_removed"])->toDateTimeString(),
+                   "date_of_purchase_of_expired_stock_removed" => Carbon::now(),
                    "value_of_removed_stocks" => $data["value_of_removed_stocks"],
                    "added_by" => auth()->id(),
                ]);
