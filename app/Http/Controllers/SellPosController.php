@@ -1197,6 +1197,8 @@ class SellPosController extends Controller
             $dining_table_id = $request->input('dining_table_id');
             $is_direct_sale = $request->input('is_direct_sale');
             $table_id = $request->input('table_id');
+            $is_edit = $request->input('is_edit');
+            $transaction_id = $request->input('transaction_id');
             $dining_table=[];
             if(isset($table_id)){
                 $dining_table=DiningTable::find($table_id);
@@ -1275,7 +1277,7 @@ class SellPosController extends Controller
                 $html_content =  view('sale_pos.partials.product_row')
                     ->with(compact('products', 'index', 'sale_promotion_details'
                         , 'product_discount_details','product_all_discounts_categories','extensions', 'edit_quantity',
-                        "sum_extensions_sell_prices",
+                        "sum_extensions_sell_prices",'transaction_id','is_edit',
                         "extensions_ids","extensions_quantity",
                         "extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
                         'exchange_rate','qty','dining_table','check_pay'))->render();

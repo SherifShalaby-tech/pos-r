@@ -426,6 +426,8 @@ function get_label_product_search_row(
                 table_id: table_id,
                 check_pay: check_pay,
                 enable_checkbox: enable_checkbox,
+                is_edit:($("#is_edit").length === 0)?0:$("#is_edit").val(),
+                transaction_id:($("#transaction_id").length === 0)?0:$("#transaction_id").val(),
             },
             success: function (result) {
                 if (!result.success) {
@@ -2105,6 +2107,7 @@ function reset_pos_form() {
     __write_number($("#add_to_customer_balance"), 0);
     $(".add_to_customer_balance").attr("disabled", false);
     $(".add_to_customer_balance").addClass("hide");
+    $("#all_restaurant_filter").click();
 }
 $(document).ready(function () {
     $("#terms_and_condition_id").val($("#terms_and_condition_hidden").val());

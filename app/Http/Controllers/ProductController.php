@@ -1280,7 +1280,6 @@ class ProductController extends Controller
                         $variation->id,
                         $request->extension_details);
                 }
-
             }
             if ($request->has("cropImages") && count($request->cropImages) > 0 
             && strpos($request->cropImages[0], 'data:image/') === 0) {
