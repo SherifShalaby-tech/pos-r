@@ -237,7 +237,7 @@ class SellPosController extends Controller
                     $paid_amount = $balance;
                     $balance = 0;
                 }
-                
+
                 $remaining_due_amount += $paid_amount;
                 $customer->added_balance = $customer->added_balance - $paid_amount;
                 $customer->save();
@@ -288,7 +288,7 @@ class SellPosController extends Controller
                 'merge_table_id'=>[$request->merge_table_id,$table_status->dining_table_id]
             ]);
         }
-       
+
         $transaction_data = [
             'store_id' => $request->store_id,
             'customer_id' => $request->customer_id,
@@ -580,7 +580,7 @@ class SellPosController extends Controller
                 $this->notificationUtil->sendSellInvoiceToCustomer($transaction->id, $request->emails);
             }
             if ($request->action == 'print') {
-              
+
                 $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products);
 
                 $output = [
@@ -1008,18 +1008,42 @@ class SellPosController extends Controller
         }
         if (!empty($request->sale_promo_filter)) {
             if ($request->sale_promo_filter == 'items_in_sale_promotion') {
-                $sales_promotions = SalesPromotion::whereDate('start_date', '<=', date('Y-m-d'))->whereDate('end_date', '>=', date('Y-m-d'))->orWhere('is_discount_permenant','1')->get();
+                $sales_promotions = SalesPromotion::where('type', 'item_discount')
+                ->where(function ($query) {
+                    $query->whereDate('start_date', '<=', now())
+                        ->whereDate('end_date', '>=', now())
+                        ->orWhere('is_discount_permenant', '1');
+                })
+                ->get();
+
                 $sp_product_ids = [];
                 foreach ($sales_promotions as $sales_promotion) {
                     $sp_product_ids = array_merge($sp_product_ids, $sales_promotion->product_ids);
                 }
                 $query->whereIn('products.id',  $sp_product_ids);
 
-                if (session('system_mode') == 'restaurant') {
-                    return view('sale_pos.partials.promotions')->with(compact('sales_promotions'));
+
+            }
+        }
+        if (!empty($request->package_sale_promo_filter)) {
+
+
+            if($request->package_sale_promo_filter == 'package_in_sale_promotion'){
+                $sales_promotions = SalesPromotion::where('type', 'package_promotion')
+                ->where(function ($query) {
+                    $query->whereDate('start_date', '<=', now())
+                        ->whereDate('end_date', '>=', now())
+                        ->orWhere('is_discount_permenant', '1');
+                })
+                ->get();
+                foreach ($sales_promotions as $sales_promotion) {
+                    if ($sales_promotion->type != 'item_discount') {
+                        return view('sale_pos.partials.promotions')->with(compact('sales_promotions'));
+                    }
                 }
             }
         }
+
         if (!empty($request->store_id)) {
             $query->where('product_stores.store_id', $request->store_id);
         }

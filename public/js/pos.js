@@ -58,7 +58,7 @@ $(document).on("click", "#brand-filter", function (e) {
 });
 
 $(
-    ".selling_filter, .price_filter, .expiry_filter, .sorting_filter, .sale_promo_filter"
+    ".selling_filter, .price_filter, .expiry_filter, .sorting_filter, .sale_promo_filter, .package_sale_promo_filter"
 ).change(function () {
     let class_name = $(this).attr("class");
     let this_status = $(this).prop("checked");
@@ -175,9 +175,15 @@ $(document).on("change", "input[name=restaurant_filter]", function () {
     let product_class_id = null;
     if ($(this).val() === "all") {
         $(".sale_promo_filter").prop("checked", false);
+        $(".package_sale_promo_filter").prop("checked", false);
     } else if ($(this).val() === "promotions") {
         $(".sale_promo_filter").prop("checked", true);
+        $(".package_sale_promo_filter").prop("checked", false);
+    }else if ($(this).val() === "package_promotions") {
+        $(".sale_promo_filter").prop("checked", false);
+        $(".package_sale_promo_filter").prop("checked", true);
     } else {
+        $(".package_sale_promo_filter").prop("checked", false);
         $(".sale_promo_filter").prop("checked", false);
         product_class_id = $(this).val();
     }
@@ -197,6 +203,7 @@ function getFilterProductRightSide(
     var price_filter = getFilterCheckboxValue("price_filter");
     var expiry_filter = getFilterCheckboxValue("expiry_filter");
     var sale_promo_filter = getFilterCheckboxValue("sale_promo_filter");
+    var package_sale_promo_filter = getFilterCheckboxValue("package_sale_promo_filter");
     var sorting_filter = getFilterCheckboxValue("sorting_filter");
     var store_id = $("#store_id").val();
     let currency_id = $("select#received_currency_id").val();
@@ -209,6 +216,7 @@ function getFilterProductRightSide(
             price_filter,
             expiry_filter,
             sale_promo_filter,
+            package_sale_promo_filter,
             sorting_filter,
             store_id,
             category_id,

@@ -77,6 +77,12 @@
                             @lang('lang.items_in_sale_promotion')
                         </label>
                     </div>
+                    <div class="col-md-6 @if (session('system_mode') == 'restaurant') hide @endif">
+                        <label class="checkbox-inline">
+                            <input type="checkbox" class="package_sale_promo_filter" value="package_in_sale_promotion">
+                            @lang('lang.items_in_sale_promotion')
+                        </label>
+                    </div>
                     @if (session('system_mode') == 'restaurant')
                         <div class="col-md-12 filter-btn-div">
                             <div class="btn-group btn-group-toggle ml-2 btn-group-custom" data-toggle="buttons">
@@ -87,6 +93,10 @@
                                 <label class="btn btn-primary filter-btn">
                                     <input type="radio" autocomplete="off" name="restaurant_filter" value="promotions">
                                     @lang('lang.promotions')
+                                </label>
+                                <label class="btn btn-primary filter-btn">
+                                    <input type="radio" autocomplete="off" name="restaurant_filter" value="package_promotions">
+                                    @lang('lang.package_promotions')
                                 </label>
                                 @foreach ($product_classes as $product_class)
                                     <label class="btn btn-primary filter-btn">
