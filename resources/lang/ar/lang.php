@@ -1050,6 +1050,7 @@ return [
     'sp_module' => 'وحدة ترويج البيع',
     'email_module' => 'وحدة البريد الإلكتروني',
     'promotions' => 'العروض',
+    'package_promotions' => 'عروض الحزم',
     'add_payment_row' => 'دفع الباقي بطريقة أخرى',
     'version' => 'الإصدار',
     'last_update' => 'اخر تحديث',

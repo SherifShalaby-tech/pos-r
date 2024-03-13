@@ -989,6 +989,8 @@ return [
     'sp_module' => 'Satış Promosyonu Modülü',
     'email_module' => 'E-posta Modülü',
     'promotions' => 'Promosyonlar',
+    'package_promotions' => 'Paket Promosyonları',
+
     'add_payment_row' => 'Ödeme Satırı Ekle',
     'version' => 'sürüm',
     'last_update' => 'Son Güncelleme',

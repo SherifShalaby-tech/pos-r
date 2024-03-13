@@ -1055,6 +1055,8 @@ return [
     'sp_module' => 'Sale Promotion Module',
     'email_module' => 'Email Module',
     'promotions' => 'Promotions',
+    'package_promotions' => 'Package Promotions',
+
     'add_payment_row' => 'Pay the remaining amount with another Method',
     'version' => 'Version',
     'last_update' => 'Last Update',
