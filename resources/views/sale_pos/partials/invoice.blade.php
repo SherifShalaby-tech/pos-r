@@ -237,7 +237,7 @@ $is_first_after_extra=0;
                                     @endif
                                 @endif
                             </td>
-                           
+
                             @if (empty($print_gift_invoice))
                                 <td style="text-align:center !important;vertical-align:bottom; width: 20%;font-size:{{$data_font}}">
                                     {{ @num_format($line->sell_price) }}</td>
@@ -253,7 +253,7 @@ $is_first_after_extra=0;
                                     @endif
                                 </td>
                             @endif
-                            @if(isset($line->discount_category) && isset($line->product_discount_amount))
+                            @if(!empty($line->discount_category) && !empty($line->product_discount_amount))
                             <td style="text-align:center;vertical-align:bottom; width: 20%;font-size:{{$data_font}};">{{$line->discount_category}} ({{@num_format($line->product_discount_amount) }})</td>
                             @endif
                         </tr>
@@ -301,7 +301,7 @@ $is_first_after_extra=0;
                                 {{ $transaction->received_currency->symbol }}
                             </th>
                         </tr>
-                      
+
                         @if ($transaction->total_item_tax != 0)
                             <tr>
                                 <th style="font-size: {{$font}};" colspan="3">@lang('lang.tax', [], $invoice_lang)</th>
