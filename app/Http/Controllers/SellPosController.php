@@ -2283,46 +2283,46 @@ class SellPosController extends Controller
 
             //  Add cashier printer
 
-        $cashier_printer = Printer::where('is_cashier','=',1)->get()->first();
-            if(!empty($cashier_printer)){
-                $print_gift_invoice = request()->print_gift_invoice;
-                if (!empty($transaction_invoice_lang)) {
-                    $invoice_lang = $transaction_invoice_lang;
-                } else {
-                    $invoice_lang = System::getProperty('invoice_lang');
-                    if (empty($invoice_lang)) {
-                        $invoice_lang = request()->session()->get('language');
-                    }
-                }
-                $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
-                    ->when( count($productIds) > 0 , function ($q) use($productIds) {
-                        $q->whereIn('variation_id',$productIds);
-                    })->get();
-                $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
+        // $cashier_printer = Printer::where('is_cashier','=',1)->get()->first();
+        //     if(!empty($cashier_printer)){
+        //         $print_gift_invoice = request()->print_gift_invoice;
+        //         if (!empty($transaction_invoice_lang)) {
+        //             $invoice_lang = $transaction_invoice_lang;
+        //         } else {
+        //             $invoice_lang = System::getProperty('invoice_lang');
+        //             if (empty($invoice_lang)) {
+        //                 $invoice_lang = request()->session()->get('language');
+        //             }
+        //         }
+        //         $transaction_sell_lines=TransactionSellLine::where('transaction_id',$transaction->id)
+        //             ->when( count($productIds) > 0 , function ($q) use($productIds) {
+        //                 $q->whereIn('variation_id',$productIds);
+        //             })->get();
+        //         $transaction_payments=TransactionPayment::where('transaction_id',$transaction->id)->latest()->first();
 
-                if ($invoice_lang == 'ar_and_en') {
-                    $html_content = view('sale_pos.partials.printers_invoice_ar_and_end')->with(compact(
-                        'transaction',
-                        'payment_types',
-                        'print_gift_invoice',
-                    ))->render();
-                } else {
-                    $html_content = view('sale_pos.partials.printers_invoice')->with(compact(
-                        'transaction',
-                        'payment_types',
-                        'invoice_lang',
-                        'print_gift_invoice',
-                        'transaction_sell_lines',
-                        // 'current_products',
-                        'transaction_payments'
-                    ))->render();
-                }
+        //         if ($invoice_lang == 'ar_and_en') {
+        //             $html_content = view('sale_pos.partials.printers_invoice_ar_and_end')->with(compact(
+        //                 'transaction',
+        //                 'payment_types',
+        //                 'print_gift_invoice',
+        //             ))->render();
+        //         } else {
+        //             $html_content = view('sale_pos.partials.printers_invoice')->with(compact(
+        //                 'transaction',
+        //                 'payment_types',
+        //                 'invoice_lang',
+        //                 'print_gift_invoice',
+        //                 'transaction_sell_lines',
+        //                 // 'current_products',
+        //                 'transaction_payments'
+        //             ))->render();
+        //         }
 
-                ConnectedPrinter::create([
-                    'printer_name' => $cashier_printer->name,
-                    'html' => $html_content,
-                ]);
-            }
+        //         ConnectedPrinter::create([
+        //             'printer_name' => $cashier_printer->name,
+        //             'html' => $html_content,
+        //         ]);
+        //     }
 
 
 
