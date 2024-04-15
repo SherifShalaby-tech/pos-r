@@ -1102,8 +1102,12 @@ class SellPosController extends Controller
             })
             ->where('is_raw_material', 0)
             ->whereNull('variations.deleted_at');
-            if (!empty(request()->store_id)) {
-                $query->where('product_stores.store_id', request()->store_id);
+            $produc=$query->select('variations.id')->get();
+            $p_store=$query->select('product_stores.variation_id')->get();
+            if($produc == $p_store){
+                if (!empty(request()->store_id)  ) {
+                    $query->where('product_stores.store_id', request()->store_id);
+                }
             }
             $selectRaws=[
                 'products.id as product_id',
