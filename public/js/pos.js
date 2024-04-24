@@ -241,7 +241,7 @@ $(document).ready(function () {
         $("#search_product")
             .autocomplete({
                 source: function (request, response) {
-                    $.getJSON(
+                                        $.getJSON(
                         "/pos/get-products",
                         { store_id: $("#store_id").val(), term: request.term },
                         response
@@ -260,7 +260,7 @@ $(document).ready(function () {
                             null,
                             null,
                             null,
-                            1,
+                            0,
                             0,
                             $("#search_product").val()
                         );
@@ -402,7 +402,7 @@ function get_label_product_search_row(
         });
 
     if (add_via_ajax) {
-        var store_id = $("#store_id").val();
+                var store_id = $("#store_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
         var store_pos_id = $("#store_pos_id").val();
@@ -518,7 +518,7 @@ function get_label_product_row(
         });
 
     if (add_via_ajax) {
-        var store_id = $("#store_id").val();
+                var store_id = $("#store_id").val();
         var store_pos_id = $("#store_pos_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
@@ -527,7 +527,7 @@ function get_label_product_row(
             row_count = edit_row_count;
         } else {
             var row_count = parseInt($("#row_count").val());
-            $("#row_count").val(row_count + 1);
+                        $("#row_count").val(row_count + 1);
         }
         // var extensions =null;
         $.ajax({
