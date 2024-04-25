@@ -257,7 +257,7 @@ class SellController extends Controller
 
             return DataTables::of($sales)
                 // ->setTotalRecords(100)
-                ->editColumn('transaction_date', '{{@format_date($created_at)}}')
+                ->editColumn('transaction_date', '{{@format_datetime($created_at)}}')
                 ->editColumn('invoice_no', function ($row) {
                     $string = $row->invoice_no . ' ';
                     if (!empty($row->return_parent)) {
