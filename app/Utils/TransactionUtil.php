@@ -167,7 +167,7 @@ class TransactionUtil extends Util
             // if(!isset($line['dining_table_id'] )){
             // return $line->is_product_checked;
             if (!empty($transaction_sell_lines['transaction_sell_line_id'])) {
-                $transaction_sell_line = TransactionSellLine::find($transaction_sell_lines['transaction_sell_line_id']);
+                                $transaction_sell_line = TransactionSellLine::find($transaction_sell_lines['transaction_sell_line_id']);
                 $transaction_sell_line->check_pay = isset($line['is_product_checked']) && $line['is_product_checked'] == "1" ? 1 : 0;
                 $transaction_sell_line->product_id = $line['product_id'];
                 $transaction_sell_line->variation_id = $line['variation_id'];
@@ -269,16 +269,19 @@ class TransactionUtil extends Util
                     }
                 }
             } else {
-                $transaction_sell_line = [];
-                $IsExisttransaction_sell_line = TransactionSellLine::where('transaction_id', $transaction->id)->where('product_id', $line['product_id'])->where('variation_id', $line['variation_id'])->first();
+                                $transaction_sell_line = [];
+                                $IsExisttransaction_sell_line = TransactionSellLine::where('transaction_id', $transaction->id)->where('product_id', $line['product_id'])->where('variation_id', $line['variation_id'])->first();
                 if (!empty($IsExisttransaction_sell_line) && $IsExisttransaction_sell_line->check_pay == "0") {
-                    $transaction_sell_line = $IsExisttransaction_sell_line;
+                                        $transaction_sell_line = $IsExisttransaction_sell_line;
 
                     // $transaction_sell_line->check_pay = isset($line['is_product_checked']) && $line['is_product_checked']=="1"?1:0;
                     // $transaction_sell_line->save();
-                } else if (!empty($IsExisttransaction_sell_line) && $IsExisttransaction_sell_line->check_pay == "1") {
-                    $keep_sell_lines[] = $IsExisttransaction_sell_line->id;
-                } else {
+                }
+                // else if (!empty($IsExisttransaction_sell_line) && $IsExisttransaction_sell_line->check_pay == "1") {
+                //     $keep_sell_lines[] = $IsExisttransaction_sell_line->id;
+                // }
+
+                else {
                     $transaction_sell_line = new TransactionSellLine();
                 }
                 if (!empty($transaction_sell_line)) {
@@ -307,7 +310,7 @@ class TransactionUtil extends Util
                     $transaction_sell_line->tax_rate = !empty($line['tax_rate']) ? $this->num_uf($line['tax_rate']) : 0;
                     $transaction_sell_line->item_tax = !empty($line['item_tax']) ? $this->num_uf($line['item_tax']) : 0;
                     $transaction_sell_line->cost_ratio_per_one = $this->num_uf($line['cost_ratio_per_one']);
-                    $transaction_sell_line->save();
+                                        $transaction_sell_line->save();
                     $keep_sell_lines[] = $transaction_sell_line->id;
                     if (!empty($line['extensions_ids'])) {
                         foreach ($line['extensions_ids'] as $key_index => $extensions_id) {
@@ -337,7 +340,7 @@ class TransactionUtil extends Util
                     }
                 }
             }
-            if (!empty($transaction_sell_line)) {
+                        if (!empty($transaction_sell_line)) {
                 $this->updateSoldQuantityInAddStockLine(
                     $transaction_sell_line->product_id,
                     $transaction_sell_line->variation_id,
