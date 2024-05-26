@@ -185,24 +185,24 @@
                                     {!! Form::label('payment_status', __('lang.payment_status'). ':*', [])
                                     !!}
                                     {!! Form::select('payment_status', $payment_status_array,
-                                    null, ['class' => 'selectpicker form-control',
+                                    'paid', ['class' => 'selectpicker form-control',
                                     'data-live-search'=>"true", 'required',
                                     'style' =>'width: 80%' , 'placeholder' => __('lang.please_select')]) !!}
                                 </div>
                             </div>
-                            <div class="col-md-3 mt-1 payment_fields hide">
+                            <div class="col-md-3 mt-1 payment_fields ">
                                 <label>@lang('lang.payment_method')</label>
                                 {!! Form::select('payments[0][method]', $payment_types, null, ['class' =>
                                 'form-control',
                                 'id' =>
                                 'method', 'required', 'data-live-search' => 'true']) !!}
                             </div>
-                            <div class="col-md-3 mt-1 payment_fields hide">
+                            <div class="col-md-3 mt-1 payment_fields ">
                                 <label>@lang('lang.received_amount') *</label>
                                 <input type="text" name="payments[0][amount]" class="form-control numkey received_amount" required
                                     id="amount" step="any">
                             </div>
-                            <div class="col-md-3 mt-1 payment_fields hide">
+                            <div class="col-md-3 mt-1 payment_fields ">
                                 <label>@lang('lang.paying_amount') *</label>
                                 <input type="text" name="paying_amount" class="form-control numkey" id="paying_amount"
                                     step="any">
