@@ -359,7 +359,7 @@ class SellPosController extends Controller
             $transaction_data['validity_days'] = !empty($request->validity_days) ? $request->validity_days : 0;
         }
         $transaction='';
-        if(isset($request->SavedTransactionId) && $request->SavedTransactionId=="0"){
+        if((!isset($request->SavedTransactionId)) || (isset($request->SavedTransactionId) && $request->SavedTransactionId=="0")){
             $transaction = Transaction::create($transaction_data);
         }else{
             // return $request->SavedTransactionId;
