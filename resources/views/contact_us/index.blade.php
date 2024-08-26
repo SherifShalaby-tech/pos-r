@@ -1,6 +1,6 @@
 @extends('layouts.login')
 <style>
-     .error {
+    .error {
         color: red;
 
     }
@@ -12,7 +12,7 @@
     <div class="form-outer text-center d-flex align-items-center">
         <div class="form-inner">
             <div class="col-md-12 text-center align-items-center">
-                <h2 style="padding: 10px; color: #7c5cc4">@lang('lang.contact_us')</h2>
+                <h2 style="padding: 10px; color: var(--primary-color)">@lang('lang.contact_us')</h2>
             </div>
             <form method="POST" action="{{ action('ContactUsController@sendContactUs') }}" id="contact-us-form">
                 @csrf

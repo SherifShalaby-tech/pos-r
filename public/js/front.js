@@ -57,23 +57,23 @@ $(document).ready(function () {
     // Custom Scrollbar
     // ------------------------------------------------------ //
 
-    if ($(window).outerWidth() > 992) {
-        $(
-            "nav.side-navbar,.table-container,.transaction-list"
-        ).mCustomScrollbar({
-            theme: "light",
-            scrollInertia: 200,
-        });
-    }
+    // if ($(window).outerWidth() > 992) {
+    //     $(
+    //         "nav.side-navbar,.table-container,.transaction-list"
+    //     ).mCustomScrollbar({
+    //         theme: "light",
+    //         scrollInertia: 200,
+    //     });
+    // }
 
-    $(document).scroll(function () {
-        var y = $(this).scrollTop();
-        if (y > 65) {
-            $("nav.side-navbar").css("top", "0");
-        } else {
-            $("nav.side-navbar").css("top", "63px");
-        }
-    });
+    // $(document).scroll(function () {
+    //     var y = $(this).scrollTop();
+    //     if (y > 65) {
+    //         $("nav.side-navbar").css("top", "0");
+    //     } else {
+    //         $("nav.side-navbar").css("top", "63px");
+    //     }
+    // });
 
     // ------------------------------------------------------- //
     // Side Navbar Functionality

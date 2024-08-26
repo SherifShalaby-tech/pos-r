@@ -19,6 +19,7 @@
         margin: 30px 0px;
         border: 1px solid #ddd;
     }
+
     .preview img {
         width: 100%;
         height: 100%;
@@ -219,7 +220,7 @@
                 !!}
             </div>
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
-{{--            @include('layouts.partials.image_crop')--}}
+            {{-- @include('layouts.partials.image_crop')--}}
             <div class="form-group">
                 <label for="projectinput2"> {{ __('categories.image') }}</label>
                 <div class="container mt-3">
@@ -254,7 +255,7 @@
         </div>
         {!! Form::close() !!}
         <div class="modal fade" id="brandModal" tabindex="-1" role="dialog" aria-labelledby="brandModalLabel"
-             aria-hidden="true">
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -266,8 +267,8 @@
                     <div class="modal-body">
                         <div id="croppie-brand-modal" style="display:none">
                             <div id="croppie-brand-container"></div>
-                            <button data-dismiss="modal" id="croppie-brand-cancel-btn" type="button" class="btn btn-secondary"><i
-                                    class="fas fa-times"></i></button>
+                            <button data-dismiss="modal" id="croppie-brand-cancel-btn" type="button"
+                                class="btn btn-secondary"><i class="fas fa-times"></i></button>
                             <button id="croppie-brand-submit-btn" type="button" class="btn btn-primary"><i
                                     class="fas fa-crop"></i></button>
                         </div>
@@ -439,4 +440,3 @@
     }
 
 </script>
-

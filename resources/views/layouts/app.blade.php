@@ -23,10 +23,11 @@
         .mCSB_dragger_bar {
             width: 10px !important;
         }
-        input.form-control.v_sub_sku,input.form-control.v_name {
+
+        input.form-control.v_sub_sku,
+        input.form-control.v_name {
             min-width: 150px;
         }
-
     </style>
     @yield('styles')
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
@@ -39,6 +40,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, 170px);
         }
+
         .preview-edit-product-container {
             /* display: flex;
             flex-wrap: wrap;
@@ -241,16 +243,18 @@
 <body onload="myFunction()">
     <div id="loader"></div>
     @if (request()->segment(1) != 'pos')
-        @include('layouts.partials.header')
+    @include('layouts.partials.header')
     @endif
+
+
     <div class="@if (request()->segment(1) != 'pos') page @else pos-page @endif">
         @include('layouts.partials.sidebar')
         <div style="display:none" id="content" class="animate-bottom">
             @foreach ($errors->all() as $message)
-                <div class="alert alert-danger alert-dismissible text-center">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>{{ $message }}
-                </div>
+            <div class="alert alert-danger alert-dismissible text-center">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>{{ $message }}
+            </div>
             @endforeach
             <input type="hidden" id="__language" value="{{ session('language') }}">
             <input type="hidden" id="__decimal" value=".">
@@ -261,6 +265,13 @@
             <input type="hidden" id="__precision" value="3">
             <input type="hidden" id="__quantity_precision" value="3">
             <input type="hidden" id="system_mode" value="{{ env('SYSTEM_MODE') }}">
+
+
+
+
+
+
+
             @yield('content')
         </div>
 
@@ -298,9 +309,9 @@
         </div>
 
         @php
-            $cash_register = App\Models\CashRegister::where('user_id', Auth::user()->id)
-                ->where('status', 'open')
-                ->first();
+        $cash_register = App\Models\CashRegister::where('user_id', Auth::user()->id)
+        ->where('status', 'open')
+        ->first();
         @endphp
         <input type="hidden" name="is_register_close" id="is_register_close"
             value="@if (!empty($cash_register)) {{ 0 }}@else{{ 1 }} @endif">
@@ -451,14 +462,14 @@
                 $('nav.side-navbar').removeClass('shrink');
             }
         @endif
-        function myFunction() {
-            setTimeout(showPage, 150);
-        }
+        // function myFunction() {
+        //     setTimeout(showPage, 150);
+        // }
 
-        function showPage() {
-            document.getElementById("loader").style.display = "none";
-            document.getElementById("content").style.display = "block";
-        }
+        // function showPage() {
+        //     document.getElementById("loader").style.display = "none";
+        //     document.getElementById("content").style.display = "block";
+        // }
 
         $("div.alert").delay(3000).slideUp(750);
 
@@ -642,6 +653,34 @@
         })
         $.fn.modal.Constructor.prototype._enforceFocus = function() {};
         $('input').attr('autocomplete', 'off');
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            loadPrimaryColor();
+            setTimeout(showPage, 150);
+            });
+
+            function showPage() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("content").style.display = "block";
+            }
+
+            function changePrimaryColor(color , hoverColor) {
+
+            document.documentElement.style.setProperty('--primary-color', color);
+            document.documentElement.style.setProperty('--primary-color-hover', hoverColor);
+            localStorage.setItem('rest-primaryColor', color);
+            localStorage.setItem('rest-primaryColorHover', hoverColor);
+            }
+
+            function loadPrimaryColor() {
+            const savedColor = localStorage.getItem('rest-primaryColor');
+            const savedColorHover = localStorage.getItem('rest-primaryColorHover');
+            if (savedColor) {
+            document.documentElement.style.setProperty('--primary-color', savedColor);
+            document.documentElement.style.setProperty('--primary-color-hover', savedColorHover);
+            }
+            }
     </script>
 </body>
 

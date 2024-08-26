@@ -7,7 +7,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
     <nav class="navbar">
         <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
-                <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars" style="margin-top: 10px !important;"> </i></a>
+                <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars" style="margin-top: 10px !important;">
+                    </i></a>
                 <span class="brand-big">@if($logo)<img src="{{asset('/uploads/'.$logo)}}"
                         width="50">&nbsp;&nbsp;@endif<a href="{{url('/')}}">
                         <h1 class="d-inline">{{$site_title}}</h1>
@@ -15,20 +16,102 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
                 <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                     <li class="nav-item">
-                        <a href="{{action('SellController@create')}}" id="commercial_invoice_btn" data-toggle="tooltip" data-title="@lang('lang.add_sale')"
-                             class="btn no-print"><img src="{{asset('images/396 Commercial Invoice Icon.png')}}" alt="" style="height: 40px; width: 35px;">
+                        <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true"
+                            aria-expanded="false"
+                            class="nav-link dropdown-item d-flex justify-content-center align-items-center">
+                            <span style="width: 25px;height: 25px;background-color: var(--primary-color)"
+                                class="rounded-circle">
+                            </span>
+                        </a>
+                        <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                            <li class="d-flex" style="gap: 5px">
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#2563eb' , '#1d4ed8')">
+                                    <span style="width: 25px;height: 25px;background-color: #2563eb"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#16a34a' , '#15803d')">
+                                    <span style="width: 25px;height: 25px;background-color: #16a34a"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#ea580c','#c2410c')">
+                                    <span style="width: 25px;height: 25px;background-color: #ea580c"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#ec4899' , '#be185d')">
+                                    <span style="width: 25px;height: 25px;background-color: #ec4899"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#dc2626','#b91c1c')">
+                                    <span style="width: 25px;height: 25px;background-color: #dc2626"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#0284c7','#0369a1')">
+                                    <span style="width: 25px;height: 25px;background-color: #0284c7"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#475569','#334155')">
+                                    <span style="width: 25px;height: 25px;background-color: #475569"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#14b8a6','#0d9488')">
+                                    <span style="width: 25px;height: 25px;background-color: #14b8a6"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#eab308','#c8b400')">
+                                    <span style="width: 25px;height: 25px;background-color: #eab308"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                                <button class="border-0 d-flex justify-content-center align-items-center"
+                                    onclick="changePrimaryColor('#4f46e5','#3730a3')">
+                                    <span style="width: 25px;height: 25px;background-color: #4f46e5"
+                                        class="rounded-circle">
+                                    </span>
+                                </button>
+                            </li>
+
+
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{action('SellController@create')}}" id="commercial_invoice_btn" data-toggle="tooltip"
+                            data-title="@lang('lang.add_sale')" class="btn no-print"><img
+                                src="{{asset('images/396 Commercial Invoice Icon.png')}}" alt=""
+                                style="height: 40px; width: 35px;">
                         </a>
                     </li>
                     <li class="nav-item">
-                        {{-- <a target="_blank" href="{{action('ContactUsController@getUserContactUs')}}" id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
+                        {{-- <a target="_blank" href="{{action('ContactUsController@getUserContactUs')}}"
+                            id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
                             style="background-image: url('{{asset('images/handshake.jpg')}}');" class="btn no-print">
                         </a> --}}
-                        <a target="_blank" href="https://api.whatsapp.com/send?phone={{$watsapp_numbers}}" id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
-                            style="background-image: url('{{asset('images/watsapp.jpg')}}');background-size: 40px;" class="btn no-print">
+                        <a target="_blank" href="https://api.whatsapp.com/send?phone={{$watsapp_numbers}}"
+                            id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
+                            style="background-image: url('{{asset('images/watsapp.jpg')}}');background-size: 40px;"
+                            class="btn no-print">
                         </a>
                     </li>
-                    <li class="nav-item"><button class="btn-danger btn-sm hide" id="power_off_btn"  data-toggle="tooltip" data-title="@lang('lang.shut_down')"><i
-                                class="fa fa-power-off"></i></button></li>
+                    <li class="nav-item"><button class="btn-danger btn-sm hide" id="power_off_btn" data-toggle="tooltip"
+                            data-title="@lang('lang.shut_down')"><i class="fa fa-power-off"></i></button></li>
                     @can('sale.pos.create_and_edit')
                     <li class="nav-item"><a class="dropdown-item btn-pos btn-sm"
                             href="{{action('SellPosController@create')}}"><i class="dripicons-shopping-bag"></i><span>
