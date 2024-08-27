@@ -2,14 +2,24 @@
 @section('title', __('lang.purchase_order'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+
+                <x-page-title>
+
+                    <h4>@lang('lang.purchase_order')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.purchase_order')</h4>
-                    </div>
+
                     {!! Form::open(['url' => action('PurchaseOrderController@update', $purchase_order->id), 'method' =>
                     'put', 'id' =>
                     'purchase_order_form']) !!}
@@ -74,7 +84,8 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 25%" class="col-sm-8">@lang( 'lang.products' )</th>
-                                            @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+                                            @if(session('system_mode') == 'pos' || session('system_mode') == 'garments'
+                                            || session('system_mode') == 'supermarket')
                                             <th style="width: 25%" class="col-sm-4">@lang( 'lang.sku' )</th>
                                             @endif
                                             <th style="width: 25%" class="col-sm-4">@lang( 'lang.quantity' )</th>
@@ -102,7 +113,8 @@
                                                     name="purchase_order_lines[{{$loop->index}}][variation_id]"
                                                     value="{{$product->variation_id}}">
                                             </td>
-                                            @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+                                            @if(session('system_mode') == 'pos' || session('system_mode') == 'garments'
+                                            || session('system_mode') == 'supermarket')
                                             <td>
                                                 {{$product->variation->sub_sku}}
                                             </td>

@@ -1,3 +1,11 @@
-<div>
-    <!-- If you do not have a consistent goal in life, you can not live it in a consistent way. - Marcus Aurelius -->
+@props([
+'buttons'=>"",
+])
+<div class="card mb-2 @if (app()->isLocale('ar')) page-title-ar @else page-title-en @endif">
+    <div
+        class="card-header py-2 d-flex align-items-center justify-content-between @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+        {{ $slot }}
+
+        {{ $buttons ?? $buttons }}
+    </div>
 </div>

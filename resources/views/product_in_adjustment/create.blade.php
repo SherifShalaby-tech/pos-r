@@ -2,7 +2,7 @@
 @section('title', __('lang.product'))
 
 @section('content')
-{{-- <form  id="product_form" method="POST" action="{{route('add_product_adjustment')}}"> --}}
+{{-- <form id="product_form" method="POST" action="{{route('add_product_adjustment')}}"> --}}
     {{-- @csrf --}}
     <div class="container-fluid">
         <div class="card mt-3">
@@ -10,160 +10,162 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            {!! Form::label('product_class_id', session('system_mode') == 'restaurant' ? __('lang.category') : __('lang.product_class') . ':', []) !!}
+                            {!! Form::label('product_class_id', session('system_mode') == 'restaurant' ?
+                            __('lang.category') : __('lang.product_class') . ':', []) !!}
                             {!! Form::select('product_class_id', $product_classes, request()->product_class_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     @if (session('system_mode') != 'restaurant')
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('category_id', __('lang.category') . ':', []) !!}
-                                {!! Form::select('category_id', $categories, request()->category_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                            </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('category_id', __('lang.category') . ':', []) !!}
+                            {!! Form::select('category_id', $categories, request()->category_id, [
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('sub_category_id', __('lang.sub_category') . ':', []) !!}
-                                {!! Form::select('sub_category_id', $sub_categories, request()->sub_category_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('sub_category_id', __('lang.sub_category') . ':', []) !!}
+                            {!! Form::select('sub_category_id', $sub_categories, request()->sub_category_id, [
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('brand_id', __('lang.brand') . ':', []) !!}
-                                {!! Form::select('brand_id', $brands, request()->brand_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('brand_id', __('lang.brand') . ':', []) !!}
+                            {!! Form::select('brand_id', $brands, request()->brand_id, [
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
+                    </div>
                     @endif
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('supplier_id', __('lang.supplier') . ':', []) !!}
                             {!! Form::select('supplier_id', $suppliers, request()->supplier_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('unit_id', __('lang.unit') . ':', []) !!}
                             {!! Form::select('unit_id', $units, request()->unit_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('color_id', __('lang.color') . ':', []) !!}
                             {!! Form::select('color_id', $colors, request()->color_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('size_id', __('lang.size') . ':', []) !!}
                             {!! Form::select('size_id', $sizes, request()->size_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('grade_id', __('lang.grade') . ':', []) !!}
                             {!! Form::select('grade_id', $grades, request()->grade_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('tax_id', __('lang.tax') . ':', []) !!}
                             {!! Form::select('tax_id', $taxes, request()->tax_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('store_id', __('lang.store'), []) !!}
-                            {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control filter_product', 'data-live-search' => 'true']) !!}
+                            {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control
+                            filter_product', 'data-live-search' => 'true']) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('customer_type_id', __('lang.customer_type') . ':', []) !!}
                             {!! Form::select('customer_type_id', $customer_types, request()->customer_type_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('created_by', __('lang.created_by') . ':', []) !!}
                             {!! Form::select('created_by', $users, request()->created_by, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('active', __('lang.active') . ':', []) !!}
                             {!! Form::select('active', [0 => __('lang.no'), 1 => __('lang.yes')], request()->active, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -172,10 +174,11 @@
                                 Don't show zero stocks
                             </label> --}}
                             {!! Form::label('show_zero_stocks',"Don't show zero stocks" . ':') !!}
-                            {!! Form::checkbox('show_zero_stocks', 1, false, ['class' => ' form-control  show_zero_stocks','data-live-search' => 'true',
+                            {!! Form::checkbox('show_zero_stocks', 1, false, ['class' => ' form-control
+                            show_zero_stocks','data-live-search' => 'true',
                             ], request()->show_zero_stocks ? true : false) !!}
-                            
-                            
+
+
                         </div>
                     </div>
                     <input type="hidden" name="product_id" id="product_id" value="">
@@ -187,19 +190,19 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                
+
                 <button type="button" value="14" class="badge badge-pill badge-primary column-toggle">
                     @if (session('system_mode') == 'restaurant')
-                        @lang('lang.category')
+                    @lang('lang.category')
                     @else
-                        @lang('lang.class')
+                    @lang('lang.class')
                     @endif
                 </button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="15"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
-                    <button type="button" value="16"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
+                <button type="button" value="15"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
+                <button type="button" value="16"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
                 @endif
                 <button type="button" value="17"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_history')</button>
@@ -210,8 +213,8 @@
                 <button type="button" value="19"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.tax')</button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="20"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
+                <button type="button" value="20"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
                 @endif
                 <button type="button" value="21"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
@@ -222,12 +225,12 @@
                 <button type="button" value="24"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.grade')</button>
                 @if (empty($page))
-                    <button type="button" value="5"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
+                <button type="button" value="5"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
                 @endif
                 @if (!empty($page))
-                    <button type="button" value="25"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
+                <button type="button" value="25"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
                 @endif
                 <button type="button" value="26"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
@@ -238,9 +241,9 @@
                 <button type="button" value="29"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.discount')</button>
                 @can('product_module.purchase_price.view')
-                    <button type="button" value="10"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
-                    <button type="button" value="9"
+                <button type="button" value="10"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
+                <button type="button" value="9"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.avg_purchase_price')</button>
                 @endcan
                 <button type="button" value="30"
@@ -260,36 +263,38 @@
                     <th></th>
                     <th></th>
                     <th>@lang('lang.image')</th>
-                    <th style="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@lang('lang.name')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                    <th style="">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@lang('lang.name')&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </th>
                     <th>@lang('lang.product_code')</th>
                     <th class="sum">@lang('lang.current_stock')</th>
                     <th>@lang('lang.actual_stock')</th>
                     <th>@lang('lang.shortage')</th>
                     <th>@lang('lang.value_of_shortage')</th>
                     @can('product_module.purchase_price.view')
-                        <th>@lang('lang.avg_purchase_price')</th>
-                        <th>@lang('lang.purchase_price')</th>  
-                        <th></th>
+                    <th>@lang('lang.avg_purchase_price')</th>
+                    <th>@lang('lang.purchase_price')</th>
+                    <th></th>
                     @endcan
                     <th>@lang('lang.selling_price')</th>
-                    <th></th> 
+                    <th></th>
                     <th>
                         @if (session('system_mode') == 'restaurant')
-                            @lang('lang.category')
+                        @lang('lang.category')
                         @else
-                            @lang('lang.class')
+                        @lang('lang.class')
                         @endif
                     </th>
                     @if (session('system_mode') != 'restaurant')
-                        <th>@lang('lang.category')</th>
-                        <th>@lang('lang.sub_category')</th>
+                    <th>@lang('lang.category')</th>
+                    <th>@lang('lang.sub_category')</th>
                     @endif
                     <th>@lang('lang.purchase_history')</th>
                     <th>@lang('lang.batch_number')</th>
-                    
+
                     <th>@lang('lang.tax')</th>
                     @if (session('system_mode') != 'restaurant')
-                        <th>@lang('lang.brand')</th>
+                    <th>@lang('lang.brand')</th>
                     @endif
                     <th>@lang('lang.unit')</th>
                     <th>@lang('lang.color')</th>
@@ -300,7 +305,7 @@
                     <th>@lang('lang.expiry_date')</th>
                     <th>@lang('lang.manufacturing_date')</th>
                     <th>@lang('lang.discount')</th>
-                    
+
                     <th>@lang('lang.supplier')</th>
                     <th>@lang('lang.active')</th>
                 </tr>
@@ -315,7 +320,7 @@
                     <th style="text-align: right">@lang('lang.total')</th>
                     <td></td>
                     <td></td>
-                    
+
                     <td></td>
 
                     <td>@lang('lang.total_shortage_value')</td>
@@ -341,15 +346,18 @@
     </div>
     <input type="hidden" id="des" value="{{\App\Models\System::getProperty('numbers_length_after_dot')}}" />
     <input hidden value="" name="total_shortage_value" id="total_shortage_value">
-    <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="btn btn-primary check_pass">Save</button>
-    <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="check_pass btn btn-primary"  onclick="printTable()" >Print Table</button>
+    <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}"
+        class="btn btn-primary check_pass">Save</button>
+    <button data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}"
+        class="check_pass btn btn-primary" onclick="printTable()">Print Table</button>
 
-    {{-- </form> --}}
+    {{--
+</form> --}}
 @endsection
 
 @section('javascript')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             // $('.column-toggle').each(function(i, obj) {
             //     if (i > 0) {
             //         i = i + 2;
@@ -380,7 +388,7 @@
             var actualStockColIndex = null;
             var currentStockColIndex = null;
             product_table = $('#product_table').DataTable({
-                
+
                 lengthChange: true,
                 paging: true,
                 info: false,
@@ -425,13 +433,13 @@
                     },
                 },
                 columnDefs: [{
-                    "targets": [2, 10],  
+                    "targets": [2, 10],
                     "orderable": false,
                     "searchable": false
                 }],
                 columns: [
                     {
-                        data: 'id', 
+                        data: 'id',
                         'render': function (data, type, val, meta){
                             return '<span hidden type="text" readonly="readonly" class="pro_id" name="product_id" />'+data+'</span>';
                         },
@@ -439,7 +447,7 @@
                         sortable: false,
                     },
                     {
-                        data: 'variation_id', 
+                        data: 'variation_id',
                         'render': function (data, type, val, meta){
                             return '<span hidden type="text" readonly="readonly" class="variation_id" name="variation_id" />'+data+'</span>';
                         },
@@ -562,7 +570,7 @@
                         data: 'batch_number',
                         name: 'add_stock_lines.batch_number'
                     },
-                    
+
                     {
                         data: 'tax',
                         name: 'taxes.name'
@@ -680,7 +688,7 @@
             newWin.close();
         }
 
-       
+
         $(document).ready(function() {
             var hiddenColumnArray = JSON.parse('{!! addslashes(json_encode(Cache::get("key_" . auth()->id(), []))) !!}');
 
@@ -825,7 +833,7 @@
                 }
             });
         });
-        
+
 
         $(document).ready(function() {
             var total = 0;
@@ -841,7 +849,7 @@
                     }
                 });
                 total = sum;
-                
+
                 // update the total value in the HTML element
                 const totalElement = document.getElementById('total');
                 const totalElementinput = document.getElementById('total_shortage_value');
@@ -864,7 +872,7 @@
                      shortage = (current_stock - actual_stock);
                      shortage_val = (current_stock - actual_stock) * purchase_price;
                 }
-                
+
                 if (!isNaN(shortage_val)) {
                     // total += parseFloat(shortage_val);
                     tr.find(".shortage").text(shortage.toFixed(des));
@@ -977,13 +985,13 @@
             });
 
         }
-   
-        
 
 
 
 
 
-        
-    </script>
+
+
+
+</script>
 @endsection

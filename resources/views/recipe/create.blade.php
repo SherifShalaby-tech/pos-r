@@ -2,14 +2,23 @@
 @section('title', __('lang.raw_materials'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.add_new_recipe')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.add_new_recipe')</h4>
-                    </div>
+
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                         {!! Form::open(['url' => action('RecipeController@store'), 'id' => 'product-form', 'method'
@@ -26,9 +35,9 @@
                                 </div>
                                 @can('raw_material_module.production.create_and_edit')
 
-                                <div class="form-group  m-1" >
+                                <div class="form-group  m-1">
                                     <input type="button" value="{{trans('lang.use now')}}" id="submit-btn-use"
-                                           class="btn btn-outline-warning">
+                                        class="btn btn-outline-warning">
                                 </div>
                                 @endcan
                             </div>
@@ -44,9 +53,8 @@
 @endsection
 
 @section('javascript')
-    <script>
-
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
             $(document).on("click", '#submit-btn-add-product', function(e) {
                 e.preventDefault();
                 var sku = $('#sku').val();
@@ -393,11 +401,11 @@
         }
 
 
-    </script>
+</script>
 
 
-    <script>
-        function get_unit(units,row_id) {
+<script>
+    function get_unit(units,row_id) {
             $v=document.getElementById('select_unit_id_'+row_id).value;
 
             $.each(units, function(key, value) {
@@ -413,7 +421,7 @@
                 }
             });
         }
-    </script>
+</script>
 
 
 

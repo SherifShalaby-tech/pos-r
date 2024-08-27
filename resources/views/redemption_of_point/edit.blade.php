@@ -1,17 +1,27 @@
 @extends('layouts.app')
 @section('title', __('lang.redemption_of_point_system'))
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.edit_redemption_of_point_system')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.edit_redemption_of_point_system')</h4>
-                    </div>
+
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('RedemptionOfPointController@update', $redemption_of_point->id), 'id'
+                        {!! Form::open(['url' => action('RedemptionOfPointController@update', $redemption_of_point->id),
+                        'id'
                         => 'customer-type-form',
                         'method' =>
                         'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
@@ -19,17 +29,21 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('store_ids', __( 'lang.store' ) . ':*') !!}
-                                    {!! Form::select('store_ids[]', $stores, $redemption_of_point->store_ids, ['class' =>
+                                    {!! Form::select('store_ids[]', $stores, $redemption_of_point->store_ids, ['class'
+                                    =>
                                     'selectpicker
-                                    form-control', 'data-live-search' => "true", 'multiple', 'required', "data-actions-box"=>"true"]) !!}
+                                    form-control', 'data-live-search' => "true", 'multiple', 'required',
+                                    "data-actions-box"=>"true"]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('earning_of_point_ids', __( 'lang.earning_of_points' ) . ':*') !!}
-                                    {!! Form::select('earning_of_point_ids[]', $earning_of_points, $redemption_of_point->earning_of_point_ids, ['class' =>
+                                    {!! Form::select('earning_of_point_ids[]', $earning_of_points,
+                                    $redemption_of_point->earning_of_point_ids, ['class' =>
                                     'selectpicker
-                                    form-control', 'data-live-search' => "true", 'multiple', 'required', "data-actions-box"=>"true"]) !!}
+                                    form-control', 'data-live-search' => "true", 'multiple', 'required',
+                                    "data-actions-box"=>"true"]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -53,7 +67,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('end_date', __( 'lang.end_date' ) . ':') !!}
-                                    {!! Form::text('end_date', $redemption_of_point->end_date, ['class' => 'form-control'])
+                                    {!! Form::text('end_date', $redemption_of_point->end_date, ['class' =>
+                                    'form-control'])
                                     !!}
                                 </div>
                             </div>

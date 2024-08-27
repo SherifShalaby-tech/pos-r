@@ -1,14 +1,19 @@
 @extends('layouts.app')
 @section('title', __('lang.customer_type'))
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.edit')</h4>
+
+
+                </x-page-title>
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.edit')</h4>
-                    </div>
+
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                         {!! Form::open(['url' => action('CustomerTypeController@update', $customer_type->id), 'id' =>
@@ -28,7 +33,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('store', __( 'lang.store' ) . ':*') !!}
-                                    {!! Form::select('stores[]', $stores, $customer_type->customer_type_store->pluck('store_id'), ['class' => 'selectpicker
+                                    {!! Form::select('stores[]', $stores,
+                                    $customer_type->customer_type_store->pluck('store_id'), ['class' => 'selectpicker
                                     form-control', 'data-live-search' => "true", 'multiple', 'required']) !!}
                                 </div>
                             </div>

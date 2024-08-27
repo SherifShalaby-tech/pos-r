@@ -2,20 +2,27 @@
 @section('title', __('lang.money_safe'))
 
 @section('content')
+
+<section class="forms pt-2">
+
     <div class="container-fluid">
 
         <div class="col-md-12  no-print">
-            <div class="card-header d-flex align-items-center">
-                <h3 class="print-title">@lang('lang.money_safe')</h3>
-            </div>
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
+
+            <x-page-title>
+                <h4 class="print-title">@lang('lang.money_safe')</h4>
+
+                <x-slot name="buttons">
                     @can('safe_module.money_safe.create_and_edit')
-                        <a style="color: white" data-href="{{ action('MoneySafeController@create') }}"
-                            data-container=".view_modal" class="btn btn-modal btn-info"><i class="dripicons-plus"></i>
-                            @lang('lang.add_money_safe')</a>
+                    <a style="color: white" data-href="{{ action('MoneySafeController@create') }}"
+                        data-container=".view_modal" class="btn btn-modal btn-info"><i class="dripicons-plus"></i>
+                        @lang('lang.add_money_safe')</a>
                     @endcan
-                </div>
+
+                </x-slot>
+            </x-page-title>
+
+            <div class="card">
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table" id="money_safe_table">
@@ -51,9 +58,9 @@
             </div>
         </div>
     </div>
-@endsection
+    @endsection
 
-@section('javascript')
+    @section('javascript')
     <script>
         $(document).ready(function() {
             money_safe_table = $("#money_safe_table").DataTable({
@@ -214,4 +221,4 @@
                 .text(__currency_trans_from_en(converted_value, false));
         });
     </script>
-@endsection
+    @endsection

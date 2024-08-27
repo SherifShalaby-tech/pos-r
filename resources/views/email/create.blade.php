@@ -2,14 +2,21 @@
 @section('title', __('lang.email'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.email')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.email')</h4>
-                    </div>
+
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-4">

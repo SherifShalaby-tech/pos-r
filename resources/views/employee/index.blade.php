@@ -2,18 +2,29 @@
 @section('title', __('lang.employee'))
 
 @section('content')
+
+<section class="forms pt-2">
+
     <div class="container-fluid">
-        <div class="card-header d-flex align-items-center">
-            <h3 class="print-title">@lang('lang.employees')</h3>
-        </div>
-        @can('hr_management.employee.create_and_edit')
-            <a style="color: white" href="{{ action('EmployeeController@create') }}" class="btn btn-info"><i
-                    class="dripicons-plus"></i>
-                @lang('lang.add_new_employee')</a>
-            <a style="color: white" href="{{route('employee.trash')}}" class="btn btn-danger"><i
-                    class="dripicons-trash"></i>
-                @lang('lang.trash_employee')</a>
-        @endcan
+
+        <x-page-title>
+
+            <h4 class="print-title">@lang('lang.employees')</h4>
+
+            <x-slot name="buttons">
+                @can('hr_management.employee.create_and_edit')
+                <a style="color: white" href="{{ action('EmployeeController@create') }}" class="btn btn-primary"><i
+                        class="dripicons-plus"></i>
+                    @lang('lang.add_new_employee')</a>
+                <a style="color: white" href="{{route('employee.trash')}}" class="btn btn-danger"><i
+                        class="dripicons-trash"></i>
+                    @lang('lang.trash_employee')</a>
+                @endcan
+            </x-slot>
+        </x-page-title>
+
+
+
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
@@ -23,36 +34,43 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                        {!! Form::text('start_date', request()->start_date, ['class' => 'form-control filter']) !!}
+                                        {!! Form::text('start_date', request()->start_date, ['class' =>
+                                        'form-control filter']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         {!! Form::label('start_time', __('lang.start_time'), []) !!}
-                                        {!! Form::text('start_time', request()->start_time, ['class' => 'form-control time_picker filter']) !!}
+                                        {!! Form::text('start_time', request()->start_time, ['class' =>
+                                        'form-control time_picker filter']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                        {!! Form::text('end_date', request()->end_date, ['class' => 'form-control filter']) !!}
+                                        {!! Form::text('end_date', request()->end_date, ['class' => 'form-control
+                                        filter']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         {!! Form::label('end_time', __('lang.end_time'), []) !!}
-                                        {!! Form::text('end_time', request()->end_time, ['class' => 'form-control time_picker filter']) !!}
+                                        {!! Form::text('end_time', request()->end_time, ['class' => 'form-control
+                                        time_picker filter']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('payment_status', __('lang.payment_status'), []) !!}
-                                        {!! Form::select('payment_status', ['pending' => __('lang.pending'), 'paid' => __('lang.paid')], request()->payment_status, ['class' => 'form-control filter', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                                        {!! Form::select('payment_status', ['pending' => __('lang.pending'), 'paid'
+                                        => __('lang.paid')], request()->payment_status, ['class' => 'form-control
+                                        filter', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <br>
-                                    <button class="btn btn-primary mt-2 ml-2" type="submit">@lang('lang.filter')</button>
+                                    <button class="btn btn-primary mt-2 ml-2"
+                                        type="submit">@lang('lang.filter')</button>
                                     <a href="{{ action('EmployeeController@index') }}"
                                         class="btn btn-danger mt-2 ml-2">@lang('lang.clear_filter')</a>
                                 </div>
@@ -88,187 +106,191 @@
 
                                         <tbody>
                                             {{-- @foreach ($employees as $employee)
-                                                <tr>
-                                                    <td><img src="@if (!empty($employee->getFirstMediaUrl('employee_photo'))) {{ $employee->getFirstMediaUrl('employee_photo') }}@else{{ asset('/uploads/' . session('logo')) }} @endif"
-                                                            alt="photo" width="50" height="50">
-                                                    </td>
-                                                    <td>
-                                                        {{ $employee->name }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $employee->email }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $employee->mobile }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $employee->job_title }}
-                                                    </td>
-                                                    <td>
-                                                        {{ $employee->fixed_wage_value }}
-                                                    </td>
-                                                    <td>
-                                                        {{ App\Models\Employee::getBalanceLeave($employee->id) }}
-                                                    </td>
-                                                    <td>
-                                                        @if (!empty($employee->date_of_birth))
-                                                            {{ \Carbon\Carbon::parse($employee->date_of_birth)->diff(\Carbon\Carbon::now())->format('%y') }}
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @if (!empty($employee->date_of_start_working))
-                                                            {{ @format_date($employee->date_of_start_working) }}
-                                                        @endif
-                                                    </td>
-                                                    <td>
-                                                        @php
-                                                            $today_on_leave = App\Models\Leave::where('employee_id', $employee->id)
-                                                                ->whereDate('end_date', '>=', date('Y-m-d'))
-                                                                ->whereDate('start_date', '<=', date('Y-m-d'))
-                                                                ->where('status', 'approved')
-                                                                ->first();
+                                            <tr>
+                                                <td><img src="@if (!empty($employee->getFirstMediaUrl('employee_photo'))) {{ $employee->getFirstMediaUrl('employee_photo') }}@else{{ asset('/uploads/' . session('logo')) }} @endif"
+                                                        alt="photo" width="50" height="50">
+                                                </td>
+                                                <td>
+                                                    {{ $employee->name }}
+                                                </td>
+                                                <td>
+                                                    {{ $employee->email }}
+                                                </td>
+                                                <td>
+                                                    {{ $employee->mobile }}
+                                                </td>
+                                                <td>
+                                                    {{ $employee->job_title }}
+                                                </td>
+                                                <td>
+                                                    {{ $employee->fixed_wage_value }}
+                                                </td>
+                                                <td>
+                                                    {{ App\Models\Employee::getBalanceLeave($employee->id) }}
+                                                </td>
+                                                <td>
+                                                    @if (!empty($employee->date_of_birth))
+                                                    {{
+                                                    \Carbon\Carbon::parse($employee->date_of_birth)->diff(\Carbon\Carbon::now())->format('%y')
+                                                    }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @if (!empty($employee->date_of_start_working))
+                                                    {{ @format_date($employee->date_of_start_working) }}
+                                                    @endif
+                                                </td>
+                                                <td>
+                                                    @php
+                                                    $today_on_leave = App\Models\Leave::where('employee_id',
+                                                    $employee->id)
+                                                    ->whereDate('end_date', '>=', date('Y-m-d'))
+                                                    ->whereDate('start_date', '<=', date('Y-m-d')) ->where('status',
+                                                        'approved')
+                                                        ->first();
                                                         @endphp
                                                         @if (!empty($today_on_leave))
-                                                            <label for=""
-                                                                style="font-weight: bold; color: red">@lang('lang.on_leave')</label>
+                                                        <label for=""
+                                                            style="font-weight: bold; color: red">@lang('lang.on_leave')</label>
                                                         @else
-                                                            @php
-                                                                $status_today = App\Models\Attendance::where('employee_id', $employee->id)
-                                                                    ->whereDate('date', date('Y-m-d'))
-                                                                    ->first();
-                                                            @endphp
-                                                            @if (!empty($status_today))
-                                                                @if ($status_today->status == 'late' || $status_today->status == 'present')
-                                                                    <label for=""
-                                                                        style="font-weight: bold; color: green">@lang('lang.on_duty')</label>
-                                                                @endif
-                                                                @if ($status_today->status == 'on_leave')
-                                                                    <label for=""
-                                                                        style="font-weight: bold; color: red">@lang('lang.on_leave')</label>
-                                                                @endif
-                                                            @endif
+                                                        @php
+                                                        $status_today = App\Models\Attendance::where('employee_id',
+                                                        $employee->id)
+                                                        ->whereDate('date', date('Y-m-d'))
+                                                        ->first();
+                                                        @endphp
+                                                        @if (!empty($status_today))
+                                                        @if ($status_today->status == 'late' ||
+                                                        $status_today->status == 'present')
+                                                        <label for=""
+                                                            style="font-weight: bold; color: green">@lang('lang.on_duty')</label>
                                                         @endif
-                                                    </td>
-                                                    <td>{{ implode(', ', $employee->store->pluck('name')->toArray()) }}
-                                                    </td>
-                                                    <td>{{ $employee->store_pos }}</td>
-                                                    @php
-                                                        $logged_employee = App\Models\Employee::where('user_id', Auth::id())->first();
-                                                    @endphp
-                                                    @if (auth()->user()->can('hr_management.employee_commission.view'))
-                                                        <td>{{ @num_format($employee->total_commission) }}</td>
-                                                        <td>{{ @num_format($employee->total_commission_paid) }}</td>
-                                                        <td>{{ @num_format($employee->total_commission - $employee->total_commission_paid) }}
-                                                        </td>
-                                                    @elseif($employee->id == $logged_employee->id)
-                                                        <td>{{ @num_format($employee->total_commission) }}</td>
-                                                        <td>{{ @num_format($employee->total_commission_paid) }}</td>
-                                                        <td>{{ @num_format($employee->total_commission - $employee->total_commission_paid) }}
-                                                        </td>
-                                                    @else
-                                                        <td></td>
-                                                        <td></td>
-                                                        <td></td>
-                                                    @endif
+                                                        @if ($status_today->status == 'on_leave')
+                                                        <label for=""
+                                                            style="font-weight: bold; color: red">@lang('lang.on_leave')</label>
+                                                        @endif
+                                                        @endif
+                                                        @endif
+                                                </td>
+                                                <td>{{ implode(', ', $employee->store->pluck('name')->toArray()) }}
+                                                </td>
+                                                <td>{{ $employee->store_pos }}</td>
+                                                @php
+                                                $logged_employee = App\Models\Employee::where('user_id',
+                                                Auth::id())->first();
+                                                @endphp
+                                                @if (auth()->user()->can('hr_management.employee_commission.view'))
+                                                <td>{{ @num_format($employee->total_commission) }}</td>
+                                                <td>{{ @num_format($employee->total_commission_paid) }}</td>
+                                                <td>{{ @num_format($employee->total_commission -
+                                                    $employee->total_commission_paid) }}
+                                                </td>
+                                                @elseif($employee->id == $logged_employee->id)
+                                                <td>{{ @num_format($employee->total_commission) }}</td>
+                                                <td>{{ @num_format($employee->total_commission_paid) }}</td>
+                                                <td>{{ @num_format($employee->total_commission -
+                                                    $employee->total_commission_paid) }}
+                                                </td>
+                                                @else
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                @endif
 
-                                                    <td>
-                                                        <div class="btn-group">
-                                                            <button type="button"
-                                                                class="btn btn-default btn-sm dropdown-toggle"
-                                                                data-toggle="dropdown" aria-haspopup="true"
-                                                                aria-expanded="false">@lang('lang.action')
-                                                                <span class="caret"></span>
-                                                                <span class="sr-only">Toggle Dropdown</span>
-                                                            </button>
-                                                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
-                                                                user="menu">
-                                                                @can('hr_management.employee.view')
-                                                                    <li>
-                                                                        <a href="{{ action('EmployeeController@show', $employee->id) }}"
-                                                                            class="btn"><i
-                                                                                class="fa fa-eye"></i>
-                                                                            @lang('lang.view')</a>
-                                                                    </li>
-                                                                    <li class="divider"></li>
-                                                                @endcan
-                                                                @can('hr_management.employee.create_and_edit')
-                                                                    <li>
-                                                                        <a href="{{ action('EmployeeController@edit', $employee->id) }}"
-                                                                            class="btn edit_employee"><i
-                                                                                class="fa fa-pencil-square-o"></i>
-                                                                            @lang('lang.edit')</a>
-                                                                    </li>
-                                                                    <li class="divider"></li>
-                                                                @endcan
-                                                                @can('hr_management.employee.delete')
-                                                                    <li>
-                                                                        <a data-href="{{ action('EmployeeController@destroy', $employee->id) }}"
-                                                                            data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
-                                                                            class="btn delete_item text-red"><i
-                                                                                class="fa fa-trash"></i>
-                                                                            @lang('lang.delete')</a>
-                                                                    </li>
-                                                                @endcan
-                                                                @can('hr_management.suspend.create_and_edit')
-                                                                    <li>
-                                                                        <a data-href="{{ action('EmployeeController@toggleActive', $employee->id) }}"
-                                                                            class="btn toggle-active"><i
-                                                                                class="fa fa-ban"></i>
-                                                                            @if ($employee->is_active)
-                                                                                @lang('lang.suspend')
-                                                                            @else
-                                                                                @lang('lang.reactivate')
-                                                                            @endif
-                                                                        </a>
-                                                                    </li>
-                                                                @endcan
-                                                                @can('hr_management.send_credentials.create_and_edit')
-                                                                    <li>
-                                                                        <a href="{{ action('EmployeeController@sendLoginDetails', $employee->id) }}"
-                                                                            class="btn"><i
-                                                                                class="fa fa-paper-plane"></i>
-                                                                            @lang('lang.send_credentials')</a>
-                                                                    </li>
-                                                                @endcan
-                                                                @can('sms_module.sms.create_and_edit')
-                                                                    <li>
-                                                                        <a href="{{ action('SmsController@create', ['employee_id' => $employee->id]) }}"
-                                                                            class="btn"><i
-                                                                                class="fa fa-comments-o"></i>
-                                                                            @lang('lang.send_sms')</a>
-                                                                    </li>
-                                                                @endcan
-                                                                @can('email_module.email.create_and_edit')
-                                                                    <li>
-                                                                        <a href="{{ action('EmailController@create', ['employee_id' => $employee->id]) }}"
-                                                                            class="btn"><i
-                                                                                class="fa fa-envelope "></i>
-                                                                            @lang('lang.send_email')</a>
-                                                                    </li>
-                                                                @endcan
-                                                                @can('hr_management.leaves.create_and_edit')
-                                                                    <li>
-                                                                        <a class="btn btn-modal"
-                                                                            data-href="{{ action('LeaveController@create', ['employee_id' => $employee->id]) }}"
-                                                                            data-container=".view_modal">
-                                                                            <i class="fa fa-sign-out"></i> @lang( 'lang.leave')
-                                                                        </a>
-                                                                    </li>
-                                                                @endcan
-                                                                @can('hr_management.forfeit_leaves.create_and_edit')
-                                                                    <li>
-                                                                        <a class="btn btn-modal"
-                                                                            data-href="{{ action('ForfeitLeaveController@create', ['employee_id' => $employee->id]) }}"
-                                                                            data-container=".view_modal">
-                                                                            <i class="fa fa-ban"></i> @lang(
-                                                                            'lang.forfeit_leave')
-                                                                        </a>
-                                                                    </li>
-                                                                @endcan
-                                                            </ul>
-                                                        </div>
-                                                    </td>
-                                                </tr>
+                                                <td>
+                                                    <div class="btn-group">
+                                                        <button type="button"
+                                                            class="btn btn-default btn-sm dropdown-toggle"
+                                                            data-toggle="dropdown" aria-haspopup="true"
+                                                            aria-expanded="false">@lang('lang.action')
+                                                            <span class="caret"></span>
+                                                            <span class="sr-only">Toggle Dropdown</span>
+                                                        </button>
+                                                        <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
+                                                            user="menu">
+                                                            @can('hr_management.employee.view')
+                                                            <li>
+                                                                <a href="{{ action('EmployeeController@show', $employee->id) }}"
+                                                                    class="btn"><i class="fa fa-eye"></i>
+                                                                    @lang('lang.view')</a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                            @endcan
+                                                            @can('hr_management.employee.create_and_edit')
+                                                            <li>
+                                                                <a href="{{ action('EmployeeController@edit', $employee->id) }}"
+                                                                    class="btn edit_employee"><i
+                                                                        class="fa fa-pencil-square-o"></i>
+                                                                    @lang('lang.edit')</a>
+                                                            </li>
+                                                            <li class="divider"></li>
+                                                            @endcan
+                                                            @can('hr_management.employee.delete')
+                                                            <li>
+                                                                <a data-href="{{ action('EmployeeController@destroy', $employee->id) }}"
+                                                                    data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
+                                                                    class="btn delete_item text-red"><i
+                                                                        class="fa fa-trash"></i>
+                                                                    @lang('lang.delete')</a>
+                                                            </li>
+                                                            @endcan
+                                                            @can('hr_management.suspend.create_and_edit')
+                                                            <li>
+                                                                <a data-href="{{ action('EmployeeController@toggleActive', $employee->id) }}"
+                                                                    class="btn toggle-active"><i class="fa fa-ban"></i>
+                                                                    @if ($employee->is_active)
+                                                                    @lang('lang.suspend')
+                                                                    @else
+                                                                    @lang('lang.reactivate')
+                                                                    @endif
+                                                                </a>
+                                                            </li>
+                                                            @endcan
+                                                            @can('hr_management.send_credentials.create_and_edit')
+                                                            <li>
+                                                                <a href="{{ action('EmployeeController@sendLoginDetails', $employee->id) }}"
+                                                                    class="btn"><i class="fa fa-paper-plane"></i>
+                                                                    @lang('lang.send_credentials')</a>
+                                                            </li>
+                                                            @endcan
+                                                            @can('sms_module.sms.create_and_edit')
+                                                            <li>
+                                                                <a href="{{ action('SmsController@create', ['employee_id' => $employee->id]) }}"
+                                                                    class="btn"><i class="fa fa-comments-o"></i>
+                                                                    @lang('lang.send_sms')</a>
+                                                            </li>
+                                                            @endcan
+                                                            @can('email_module.email.create_and_edit')
+                                                            <li>
+                                                                <a href="{{ action('EmailController@create', ['employee_id' => $employee->id]) }}"
+                                                                    class="btn"><i class="fa fa-envelope "></i>
+                                                                    @lang('lang.send_email')</a>
+                                                            </li>
+                                                            @endcan
+                                                            @can('hr_management.leaves.create_and_edit')
+                                                            <li>
+                                                                <a class="btn btn-modal"
+                                                                    data-href="{{ action('LeaveController@create', ['employee_id' => $employee->id]) }}"
+                                                                    data-container=".view_modal">
+                                                                    <i class="fa fa-sign-out"></i> @lang(
+                                                                    'lang.leave')
+                                                                </a>
+                                                            </li>
+                                                            @endcan
+                                                            @can('hr_management.forfeit_leaves.create_and_edit')
+                                                            <li>
+                                                                <a class="btn btn-modal"
+                                                                    data-href="{{ action('ForfeitLeaveController@create', ['employee_id' => $employee->id]) }}"
+                                                                    data-container=".view_modal">
+                                                                    <i class="fa fa-ban"></i> @lang(
+                                                                    'lang.forfeit_leave')
+                                                                </a>
+                                                            </li>
+                                                            @endcan
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
 
                                             @endforeach --}}
 
@@ -301,11 +323,12 @@
             </div>
         </div>
     </div>
+</section>
 @endsection
 
 @section('javascript')
-    <script>
-        $(document).on('click', 'a.toggle-active', function(e) {
+<script>
+    $(document).on('click', 'a.toggle-active', function(e) {
             e.preventDefault();
 
             $.ajax({
@@ -465,7 +488,7 @@
                                 return intVal(a) + intVal(b);
                             }, 0);
                         totalRows = api.page.info().recordsDisplay;
-                
+
                     $(api.column(5).footer()).html(
                             total2
                             );
@@ -513,5 +536,5 @@
                 employee_table.ajax.reload();
             });
         })
-    </script>
+</script>
 @endsection

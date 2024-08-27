@@ -3,47 +3,58 @@
 
 @section('content')
 
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
+<section class="forms pt-2">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+
+                <x-page-title>
+
                     <h4>@lang('lang.import_products')</h4>
-                </div>
-                <div class="card-body">
-                    {!! Form::open(['url' => action('ProductController@saveImport'), 'method' => 'post', 'files' =>
-                    true, 'class' => 'pos-form', 'id' => 'import_sale_form']) !!}
-                    <div class="row">
-                        <div class="col-md-12">
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        {!! Form::open(['url' => action('ProductController@saveImport'), 'method' => 'post', 'files' =>
+                        true, 'class' => 'pos-form', 'id' => 'import_sale_form']) !!}
+                        <div class="row">
                             <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            {!! Form::label('file', __('lang.file'), []) !!} <br>
-                                            {!! Form::file('file', []) !!}
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                {!! Form::label('file', __('lang.file'), []) !!} <br>
+                                                {!! Form::file('file', []) !!}
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a class="btn btn-block btn-primary"
+                                                href="{{asset('sample_files/product_import.xlsx')}}"><i
+                                                    class="fa fa-download"></i>@lang('lang.download_sample_file')</a>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <a class="btn btn-block btn-primary"
-                                            href="{{asset('sample_files/product_import.xlsx')}}"><i
-                                                class="fa fa-download"></i>@lang('lang.download_sample_file')</a>
-                                    </div>
                                 </div>
+
+                            </div>
+                            <div class="col-md-12 ml-3">
+                                <br>
+                                <button type="submit" class="btn btn-primary">@lang('lang.import')</button>
                             </div>
 
+                            {!! Form::close() !!}
                         </div>
-                        <div class="col-md-12 ml-3">
-                            <br>
-                            <button type="submit" class="btn btn-primary">@lang('lang.import')</button>
-                        </div>
-
-                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <!-- This will be printed -->
 <section class="invoice print_section print-only" id="receipt_section"> </section>

@@ -2,14 +2,22 @@
 @section('title', __('lang.raw_materials'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+
+                    <h4>@lang('lang.edit_raw_material')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.edit_raw_material')</h4>
-                    </div>
+
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                         {!! Form::open(['url' => action('RawMaterialController@update', $raw_material->id), 'id' =>
@@ -49,12 +57,16 @@
                                 <div class="form-group supplier_div">
                                     {!! Form::label('supplier_id', __('lang.supplier'), []) !!}
                                     <div class="input-group my-group">
-                                        {!! Form::select('supplier_id', $suppliers, !empty($raw_material->supplier) ? $raw_material->supplier->id : false, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                        {!! Form::select('supplier_id', $suppliers, !empty($raw_material->supplier) ?
+                                        $raw_material->supplier->id : false, ['class' => 'selectpicker form-control',
+                                        'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' =>
+                                        __('lang.please_select')]) !!}
                                         <span class="input-group-btn">
                                             @can('supplier_module.supplier.create_and_edit')
-                                                <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
-                                                    data-href="{{ action('SupplierController@create') }}?quick_add=1"
-                                                    data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                            <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                                data-href="{{ action('SupplierController@create') }}?quick_add=1"
+                                                data-container=".view_modal"><i
+                                                    class="fa fa-plus-circle text-primary fa-lg"></i></button>
                                             @endcan
                                         </span>
                                     </div>
@@ -139,7 +151,8 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="" class="unit_label" style="margin-top: 37px;">{{$raw_material->alert_quantity_unit->name??''}}</label>
+                                        <label for="" class="unit_label"
+                                            style="margin-top: 37px;">{{$raw_material->alert_quantity_unit->name??''}}</label>
                                     </div>
                                     <div class="col-md-6 hide">
                                         <div class="form-group">
@@ -272,8 +285,8 @@
 <script type="text/javascript">
 
 </script>
-<script> 
-$("#submit-btn").on("click", function (e) {
+<script>
+    $("#submit-btn").on("click", function (e) {
     e.preventDefault();
     setTimeout(() => {
         if ($("#product-edit-form").valid()) {

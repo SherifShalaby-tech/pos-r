@@ -2,7 +2,7 @@
 @section('title', __('lang.invoice_no'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="col-md-12 print-only">
             @include('layouts.partials.print_header')
@@ -28,7 +28,8 @@
                                 <b>{{$supplier->mobile_number ?? ''}}</b>
                             </div>
                             <div class="col-md-4">
-                                {!! Form::label('address', __('lang.address'), []) !!}: <b>{{$supplier->address ?? ''}}</b>
+                                {!! Form::label('address', __('lang.address'), []) !!}: <b>{{$supplier->address ??
+                                    ''}}</b>
                             </div>
                             <div class="col-md-4">
                                 {!! Form::label('store', __('lang.store'), []) !!}: <b>{{$add_stock->store->name ??
@@ -150,11 +151,11 @@
                                 <div class="form-group">
                                     {!! Form::label('files', __('lang.files'), []) !!}: <br>
                                     @php
-                                        $mediaItems = $add_stock->getMedia('add_stock');
+                                    $mediaItems = $add_stock->getMedia('add_stock');
                                     @endphp
                                     @if(!empty($mediaItems))
                                     @foreach ($mediaItems as $item)
-                                        <a href="{{$item->getUrl()}}">{{$item->name}}</a> <br>
+                                    <a href="{{$item->getUrl()}}">{{$item->name}}</a> <br>
                                     @endforeach
 
                                     @endif

@@ -2,14 +2,20 @@
 @section('title', __('lang.customer_point_adjustment'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.customer_point_adjustment')</h4>
+
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.customer_point_adjustment')</h4>
-                    </div>
+
                     {!! Form::open(['url' => action('CustomerPointAdjustmentController@store'), 'method' => 'post',
                     'id' =>
                     'sms_form', 'files' => true
@@ -27,7 +33,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('customer_id', __('lang.customer'), []) !!}
-                                    {!! Form::select('customer_id', $customers, !empty(request()->customer_id) ? request()->customer_id : false, ['class' => 'form-control
+                                    {!! Form::select('customer_id', $customers, !empty(request()->customer_id) ?
+                                    request()->customer_id : false, ['class' => 'form-control
                                     selectpicker', 'id' => 'customer_id', 'data-live-search' => "true", 'placeholder' =>
                                     __('lang.please_select'), 'required']) !!}
                                 </div>

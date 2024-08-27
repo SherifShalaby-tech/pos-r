@@ -3,15 +3,27 @@
 
 @section('content')
 
+<section class="forms pt-2">
+
     <div class="container-fluid no-print">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.quotation')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.quotation')</h4>
-                    </div>
+
                     <div class="card-body">
-                        {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class' => 'pos-form', 'id' => 'add_pos_form']) !!}
+                        {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true,
+                        'class' => 'pos-form', 'id' => 'add_pos_form']) !!}
                         <input type="hidden" name="row_count" id="row_count" value="0">
                         <input type="hidden" name="default_customer_id" id="default_customer_id"
                             value="@if (!empty($walk_in_customer)) {{ $walk_in_customer->id }} @endif">
@@ -23,13 +35,16 @@
                                     <div class="col-md-4">
                                         {!! Form::label('customer_id', __('lang.customer'), []) !!}
                                         <div class="input-group my-group">
-                                            {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ? $walk_in_customer->id : null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'customer_id', 'required', 'placeholder' => __('lang.please_select')]) !!}
+                                            {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
+                                            $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
+                                            'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
+                                            'customer_id', 'required', 'placeholder' => __('lang.please_select')]) !!}
                                             <span class="input-group-btn">
                                                 @can('customer_module.customer.create_and_edit')
-                                                    <button class="btn-modal btn btn-default bg-white btn-flat"
-                                                        data-href="{{ action('CustomerController@create') }}?quick_add=1"
-                                                        data-container=".view_modal"><i
-                                                            class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                <button class="btn-modal btn btn-default bg-white btn-flat"
+                                                    data-href="{{ action('CustomerController@create') }}?quick_add=1"
+                                                    data-container=".view_modal"><i
+                                                        class="fa fa-plus-circle text-primary fa-lg"></i></button>
                                                 @endcan
                                             </span>
                                         </div>
@@ -41,7 +56,9 @@
                                     <div class="col-md-4">
                                         {!! Form::label('store_id', __('lang.store'), []) !!}
                                         <div class="input-group my-group">
-                                            {!! Form::select('store_id', $stores, session('user.store_id'), ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'store_id', 'required']) !!}
+                                            {!! Form::select('store_id', $stores, session('user.store_id'), ['class' =>
+                                            'selectpicker form-control', 'data-live-search' => 'true', 'style' =>
+                                            'width: 80%', 'id' => 'store_id', 'required']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-8 offset-md-1" style="margin-top: 10px;">
@@ -49,8 +66,8 @@
                                             <button type="button" class="btn btn-secondary btn-lg" id="search_button"><i
                                                     class="fa fa-search"></i></button>
                                             <input type="text" name="search_product" id="search_product"
-                                                placeholder="@lang('lang.enter_product_name_to_print_labels')" class="form-control ui-autocomplete-input"
-                                                autocomplete="off">
+                                                placeholder="@lang('lang.enter_product_name_to_print_labels')"
+                                                class="form-control ui-autocomplete-input" autocomplete="off">
 
 
 
@@ -119,13 +136,15 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('block_for_days', __('lang.block_for_days') . ':') !!}
-                                    {!! Form::text('block_for_days', 1, ['class' => 'form-control', 'placeholder' => __('lang.block_for_days')]) !!}
+                                    {!! Form::text('block_for_days', 1, ['class' => 'form-control', 'placeholder' =>
+                                    __('lang.block_for_days')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('validity_days', __('lang.validity_days') . ':') !!}
-                                    {!! Form::text('validity_days', null, ['class' => 'form-control', 'placeholder' => __('lang.validity_days')]) !!}
+                                    {!! Form::text('validity_days', null, ['class' => 'form-control', 'placeholder' =>
+                                    __('lang.validity_days')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -134,8 +153,8 @@
                                     <select class="form-control" name="tax_id" id="tax_id">
                                         <option value="" selected>No Tax</option>
                                         @foreach ($taxes as $tax)
-                                            <option data-rate="{{ $tax->rate }}" value="{{ $tax->id }}">
-                                                {{ $tax->name }}</option>
+                                        <option data-rate="{{ $tax->rate }}" value="{{ $tax->id }}">
+                                            {{ $tax->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -143,19 +162,24 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('discount_type', __('lang.discount_type') . ':') !!}
-                                    {!! Form::select('discount_type', ['fixed' => 'Fixed', 'percentage' => 'Percentage'], 'fixed', ['class' => 'form-control', 'data-live-search' => 'true']) !!}
+                                    {!! Form::select('discount_type', ['fixed' => 'Fixed', 'percentage' =>
+                                    'Percentage'], 'fixed', ['class' => 'form-control', 'data-live-search' => 'true'])
+                                    !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('discount_value', __('lang.discount_value') . ':') !!}
-                                    {!! Form::text('discount_value', null, ['class' => 'form-control', 'placeholder' => __('lang.discount_value')]) !!}
+                                    {!! Form::text('discount_value', null, ['class' => 'form-control', 'placeholder' =>
+                                    __('lang.discount_value')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('terms_and_condition_id', __('lang.terms_and_conditions'), []) !!}
-                                    {!! Form::select('terms_and_condition_id', $tac, null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'placeholder' => __('lang.please_select'), 'id' => 'terms_and_condition_id']) !!}
+                                    {!! Form::select('terms_and_condition_id', $tac, null, ['class' => 'selectpicker
+                                    form-control', 'data-live-search' => 'true', 'placeholder' =>
+                                    __('lang.please_select'), 'id' => 'terms_and_condition_id']) !!}
                                 </div>
                                 <div class="tac_description_div"><span></span></div>
                             </div>
@@ -164,8 +188,10 @@
                         <input type="hidden" name="submit_type" id="submit_type" value="save">
                         <div class="row">
                             <div class="col-md-12">
-                                <button type="button" class="btn btn-primary" id="submit-btn">@lang('lang.save')</button>
-                                <button type="button" class="btn btn-secondary" id="print-btn">@lang('lang.print')</button>
+                                <button type="button" class="btn btn-primary"
+                                    id="submit-btn">@lang('lang.save')</button>
+                                <button type="button" class="btn btn-secondary"
+                                    id="print-btn">@lang('lang.print')</button>
                                 <button type="button" class="btn btn-danger" data-toggle="modal"
                                     data-target="#email_modal">@lang('lang.send')</button>
                             </div>
@@ -176,8 +202,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title">@lang('lang.email')</h5>
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-label="Close">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
@@ -207,16 +232,17 @@
             </div>
         </div>
     </div>
+</section>
 
-    <!-- This will be printed -->
-    <section class="invoice print_section print-only" id="receipt_section"> </section>
+<!-- This will be printed -->
+<section class="invoice print_section print-only" id="receipt_section"> </section>
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/pos.js') }}"></script>
-    <script src="{{ asset('js/product_selection.js') }}"></script>
-    <script>
-        $('#print-btn').click(function() {
+<script src="{{ asset('js/pos.js') }}"></script>
+<script src="{{ asset('js/product_selection.js') }}"></script>
+<script>
+    $('#print-btn').click(function() {
             $('#submit_type').val('print');
             pos_form_obj.submit();
         })
@@ -232,5 +258,5 @@
             product_selected = [];
             product_table.ajax.reload();
         })
-    </script>
+</script>
 @endsection

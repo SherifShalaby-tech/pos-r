@@ -2,14 +2,18 @@
 @section('title', __('lang.cash_out_adjustment'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+
+                    <h4>@lang('lang.cash_out_adjustment')</h4>
+
+                </x-page-title>
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.cash_out_adjustment')</h4>
-                    </div>
+
                     {!! Form::open(['url' => action('CashOutAdjustmentController@store'), 'method' => 'post', 'id' =>
                     'sms_form', 'files' => true
                     ]) !!}
@@ -34,21 +38,24 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('current_cash', __('lang.current_cash'), []) !!}
-                                    {!! Form::text('current_cash', null, ['class' => 'form-control', 'id' => 'current_cash' ,'placeholder' =>
+                                    {!! Form::text('current_cash', null, ['class' => 'form-control', 'id' =>
+                                    'current_cash' ,'placeholder' =>
                                     __('lang.current_cash'), 'readonly']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('amount', __('lang.amount'), []) !!}
-                                    {!! Form::text('amount', null, ['class' => 'form-control', 'id' => 'amount' ,'placeholder' =>
+                                    {!! Form::text('amount', null, ['class' => 'form-control', 'id' => 'amount'
+                                    ,'placeholder' =>
                                     __('lang.amount')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('discrepancy', __('lang.discrepancy'), []) !!}
-                                    {!! Form::text('discrepancy', null, ['class' => 'form-control', 'id' => 'discrepancy' ,'placeholder' =>
+                                    {!! Form::text('discrepancy', null, ['class' => 'form-control', 'id' =>
+                                    'discrepancy' ,'placeholder' =>
                                     __('lang.discrepancy')]) !!}
                                 </div>
                             </div>

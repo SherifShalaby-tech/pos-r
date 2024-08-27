@@ -3,161 +3,186 @@
 
 @section('content')
 
-    <section class="forms">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header d-flex align-items-center">
-                            <h4>@lang('lang.edit_production')</h4>
-                        </div>
-                        <div class="card-body">
-                            <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                            {!! Form::open(['url' =>route('productions.update', $production->id),
- 'id' =>'product-edit-form', 'method'=>'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                            <div class="row">
-                                <div class="col-md-4">
-                                    {!! Form::label('recipe_id', __('lang.recipe'), []) !!}
-                                    <div class="input-group my-group">
+<section class="forms pt-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
 
-                                        <select name="recipe_id" id="recipe_id"
-                                                class='select_recipe_id selectpicker form-control'
-                                                data-live-search='true' style='width: 30%;' placeholder ="{{__('lang.please_select')}}"
-                                        ">
+                <x-page-title>
+                    <h4>@lang('lang.edit_production')</h4>
+
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+                <div class="card">
+
+                    <div class="card-body">
+                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
+                        {!! Form::open(['url' =>route('productions.update', $production->id),
+                        'id' =>'product-edit-form', 'method'=>'PUT', 'class' => '', 'enctype' => 'multipart/form-data'])
+                        !!}
+                        <div class="row">
+                            <div class="col-md-4">
+                                {!! Form::label('recipe_id', __('lang.recipe'), []) !!}
+                                <div class="input-group my-group">
+
+                                    <select name="recipe_id" id="recipe_id"
+                                        class='select_recipe_id selectpicker form-control' data-live-search='true'
+                                        style='width: 30%;' placeholder="{{__('lang.please_select')}}" ">
                                         @foreach($recipes as $item)
-                                            <option value="{{$item->id}}" @isset($production) @if($item->id == $production ->id) selected @endif @endisset>{{$item->variation_name != 'Default' ?:$item->product_name }} ({{$item->name}})</option>
+                                            <option value=" {{$item->id}}" @isset($production) @if($item->id ==
+                                        $production ->id) selected @endif @endisset>{{$item->variation_name != 'Default'
+                                        ?:$item->product_name }} ({{$item->name}})</option>
 
-                                            @endforeach
+                                        @endforeach
 
-                                            </select>
+                                    </select>
 
-                                    </div>
                                 </div>
-                                <div class="col-md-4 row">
-                                    <div class="col-7">
-                                        <div class="form-group">
-                                            {!! Form::label('quantity_product', __('lang.quantity'), []) !!}
-                                            {!! Form::number('quantity_product',!empty($production) ?
+                            </div>
+                            <div class="col-md-4 row">
+                                <div class="col-7">
+                                    <div class="form-group">
+                                        {!! Form::label('quantity_product', __('lang.quantity'), []) !!}
+                                        {!! Form::number('quantity_product',!empty($production) ?
                                         number_format($production->quantity_product,5,'.','') :
                                         null,
-                                            ['class' => 'form-control', 'placeholder' =>
-                                            __('lang.quantity_product')]) !!}
-                                        </div>
+                                        ['class' => 'form-control', 'placeholder' =>
+                                        __('lang.quantity_product')]) !!}
                                     </div>
-                                    <div class="col-5">
-                                        <label for="" class="unit_label" id="label_unit_id_material" style="text-align: center; margin-top: 40%;"> </label>
-                                        <input type="text" class="hide" id="unit_id_material" value="" name="unit_id_material" >
-                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <label for="" class="unit_label" id="label_unit_id_material"
+                                        style="text-align: center; margin-top: 40%;"> </label>
+                                    <input type="text" class="hide" id="unit_id_material" value=""
+                                        name="unit_id_material">
+                                </div>
+
+                            </div>
+                            <div class="col-md-4">
+                                {!! Form::label('store_id', __('lang.sendTo'), []) !!}
+                                <div class="input-group my-group">
+                                    {!! Form::select('store_id', $stores, false,
+                                    ['class' => 'select_store_id selectpicker form-control',
+                                    'data-live-search' => 'true',
+                                    'style' => 'width: 80%', 'id' => 'store_id']) !!}
 
                                 </div>
-                                <div class="col-md-4">
-                                    {!! Form::label('store_id', __('lang.sendTo'), []) !!}
-                                    <div class="input-group my-group">
-                                        {!! Form::select('store_id', $stores, false,
-                                            ['class' => 'select_store_id selectpicker form-control',
-                                             'data-live-search' => 'true',
-                                              'style' => 'width: 80%', 'id' => 'store_id']) !!}
-
-                                    </div>
+                            </div>
+                            <div class="col-md-4 d-none">
+                                <div class="i-checks">
+                                    <input id="automatic_consumption" name="automatic_consumption" type="checkbox"
+                                        value="1" @if (!empty($recipe) && $recipe->automatic_consumption == 1) checked
+                                    @endif class="form-control-custom">
+                                    <label
+                                        for="automatic_consumption"><strong>@lang('lang.automatic_consumption')</strong></label>
                                 </div>
-                                <div class="col-md-4 d-none">
-                                    <div class="i-checks">
-                                        <input id="automatic_consumption" name="automatic_consumption" type="checkbox" value="1"
-                                               @if (!empty($recipe) && $recipe->automatic_consumption == 1) checked @endif     class="form-control-custom">
-                                        <label for="automatic_consumption"><strong>@lang('lang.automatic_consumption')</strong></label>
-                                    </div>
+                            </div>
+                            <div class="col-md-4 d-none">
+                                <div class="i-checks">
+                                    <input id="price_based_on_raw_material" name="price_based_on_raw_material"
+                                        type="checkbox" @if (!empty($recipe) && $recipe->price_based_on_raw_material ==
+                                    1) checked @endif value="1" class="form-control-custom">
+                                    <label
+                                        for="price_based_on_raw_material"><strong>@lang('lang.price_based_on_raw_material')</strong></label>
                                 </div>
-                                <div class="col-md-4 d-none">
-                                    <div class="i-checks">
-                                        <input id="price_based_on_raw_material" name="price_based_on_raw_material" type="checkbox"
-                                               @if (!empty($recipe) && $recipe->price_based_on_raw_material == 1) checked @endif  value="1" class="form-control-custom">
-                                        <label for="price_based_on_raw_material"><strong>@lang('lang.price_based_on_raw_material')</strong></label>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <table class="table table-bordered" id="consumption_table">
-                                        <thead>
+                            </div>
+                            <div class="col-md-12">
+                                <table class="table table-bordered" id="consumption_table">
+                                    <thead>
                                         <tr>
                                             <th style="width: 30%;">@lang('lang.raw_materials')</th>
                                             <th style="width: 30%;">@lang('lang.used_amount')</th>
                                             <th style="width: 30%;">@lang('lang.unit')</th>
                                             <th style="width: 30%;">@lang('lang.cost')</th>
-                                            <th style="width: 10%;"><button class="btn btn-xs btn-success add_raw_material_row"
-                                                                            type="button"><i class="fa fa-plus"></i></button></th>
+                                            <th style="width: 10%;"><button
+                                                    class="btn btn-xs btn-success add_raw_material_row" type="button"><i
+                                                        class="fa fa-plus"></i></button></th>
                                         </tr>
-                                        </thead>
-                                        <tbody id="body-table-material">
+                                    </thead>
+                                    <tbody id="body-table-material">
                                         @isset($production)
-                                            @foreach ($production->consumption_products as $consumption_product)
+                                        @foreach ($production->consumption_products as $consumption_product)
 
 
-                                                @include('recipe.partial.raw_material_row', [
-                                                      'row_id' => $loop->index,
-                                                'consumption_product' => $consumption_product,
-                                                'quantity_product'=>$production->quantity_product])
-                                            @endforeach
+                                        @include('recipe.partial.raw_material_row', [
+                                        'row_id' => $loop->index,
+                                        'consumption_product' => $consumption_product,
+                                        'quantity_product'=>$production->quantity_product])
+                                        @endforeach
                                         @endisset
-                                        </tbody>
-                                    </table>
-                                    <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="{{$production->consumption_products->count()}}">
-                                </div>
-                                @can('product_module.purchase_price.create_and_edit')
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
-                                            {!! Form::text('other_cost', !empty($production) ? @num_format($production->other_cost) : null, ['class' => 'form-control', 'placeholder' => __('lang.other_cost')]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('purchase_price_per_unit', __('lang.cost_per_unit')  . ' *', []) !!}
-                                            {!! Form::text('purchase_price_per_unit',  !empty($production) ?  @num_format($production->purchase_price/$production->quantity_product) : null, ['class' => 'form-control', 'placeholder' =>  __('lang.cost_per_unit'), 'required']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
-                                            {!! Form::text('purchase_price',  !empty($production) ?  @num_format($production->purchase_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.cost'), 'required']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
-                                            {!! Form::text('sell_price',  !empty($production) ?  @num_format($production->sell_price) : null, ['class' => 'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
-                                        </div>
-                                    </div>
-                                @endcan
-
-                                <input type="hidden" name="is_raw_material" id="is_raw_material" value="1">
-                                <input type="hidden" name="row_id" id="row_id"
-                                       value="{{$production->consumption_products->count()}}">
+                                    </tbody>
+                                </table>
+                                <input type="hidden" name="raw_material_row_index" id="raw_material_row_index"
+                                    value="{{$production->consumption_products->count()}}">
                             </div>
-
-
-                            <input type="hidden" name="active" value="1">
-                            <div class="row">
-                                <div class="col-md-4 mt-5">
-                                    <div class="form-group">
-                                        <input type="button" value="{{trans('lang.submit')}}" id="submit-btn"
-                                               class="btn btn-primary">
-                                    </div>
+                            @can('product_module.purchase_price.create_and_edit')
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
+                                    {!! Form::text('other_cost', !empty($production) ?
+                                    @num_format($production->other_cost) : null, ['class' => 'form-control',
+                                    'placeholder' => __('lang.other_cost')]) !!}
                                 </div>
                             </div>
-                            {!! Form::close() !!}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('purchase_price_per_unit', __('lang.cost_per_unit') . ' *', []) !!}
+                                    {!! Form::text('purchase_price_per_unit', !empty($production) ?
+                                    @num_format($production->purchase_price/$production->quantity_product) : null,
+                                    ['class' => 'form-control', 'placeholder' => __('lang.cost_per_unit'), 'required'])
+                                    !!}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('purchase_price', __('lang.cost') . ' *', []) !!}
+                                    {!! Form::text('purchase_price', !empty($production) ?
+                                    @num_format($production->purchase_price) : null, ['class' => 'form-control',
+                                    'placeholder' => __('lang.cost'), 'required']) !!}
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
+                                    {!! Form::text('sell_price', !empty($production) ?
+                                    @num_format($production->sell_price) : null, ['class' => 'form-control',
+                                    'placeholder' => __('lang.sell_price'), 'required']) !!}
+                                </div>
+                            </div>
+                            @endcan
+
+                            <input type="hidden" name="is_raw_material" id="is_raw_material" value="1">
+                            <input type="hidden" name="row_id" id="row_id"
+                                value="{{$production->consumption_products->count()}}">
                         </div>
+
+
+                        <input type="hidden" name="active" value="1">
+                        <div class="row">
+                            <div class="col-md-4 mt-5">
+                                <div class="form-group">
+                                    <input type="button" value="{{trans('lang.submit')}}" id="submit-btn"
+                                        class="btn btn-primary">
+                                </div>
+                            </div>
+                        </div>
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection
 
 @section('javascript')
 
 
-    <script>
-
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
             calculate_price_base_on_raw_material();
             gert_unit_base_for_select_material_id();
 
@@ -575,11 +600,11 @@
         }
 
 
-    </script>
+</script>
 
 
-    <script>
-        function get_unit(units,row_id) {
+<script>
+    function get_unit(units,row_id) {
             $v=document.getElementById('select_unit_id_'+row_id).value;
 
             $.each(units, function(key, value) {
@@ -595,6 +620,6 @@
                 }
             });
         }
-    </script>
+</script>
 
 @endsection

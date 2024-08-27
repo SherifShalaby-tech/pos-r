@@ -1,14 +1,21 @@
 @extends('layouts.app')
 @section('title', __('lang.customer'))
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.edit_customer')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.edit_customer')</h4>
-                    </div>
+
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                         {!! Form::open(['url' => action('CustomerController@update', $customer->id), 'id' =>
@@ -97,7 +104,8 @@
                                 </table>
                             </div>
                         </div>
-                        <input type="hidden" name="important_date_index" id="important_date_index" value="{{$customer->customer_important_dates->count()}}">
+                        <input type="hidden" name="important_date_index" id="important_date_index"
+                            value="{{$customer->customer_important_dates->count()}}">
 
                         <div class="row">
                             <div class="col-md-12">

@@ -2,15 +2,24 @@
 @section('title', __('lang.remove_stock'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+
+                    <h4>@lang('lang.remove_stock')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.remove_stock')</h4>
-                    </div>
-                    {!! Form::open(['url' => action('RemoveStockController@update', $remove_stock->id), 'method' => 'put', 'id' =>
+
+                    {!! Form::open(['url' => action('RemoveStockController@update', $remove_stock->id), 'method' =>
+                    'put', 'id' =>
                     'remove_stock_form', 'enctype' => 'multipart/form-data' ]) !!}
                     <div class="card-body">
                         <div class="row">
@@ -24,7 +33,8 @@
                                 <div class="form-group">
                                     {!! Form::label('store_id', __('lang.store'). ':*', []) !!}
                                     {!! Form::select('store_id', $stores,
-                                    $remove_stock->store_id, ['class' => 'selectpicker form-control', 'data-live-search'=>"true",
+                                    $remove_stock->store_id, ['class' => 'selectpicker form-control',
+                                    'data-live-search'=>"true",
                                     'required',
                                     'style' =>'width: 80%' , 'placeholder' => __('lang.please_select')]) !!}
                                 </div>
@@ -68,7 +78,8 @@
                                 </table>
                             </div>
                         </div>
-                        <input type="hidden" name="is_raw_material" id="is_raw_material" value="{{$remove_stock->is_raw_material}}">
+                        <input type="hidden" name="is_raw_material" id="is_raw_material"
+                            value="{{$remove_stock->is_raw_material}}">
                         <input type="hidden" name="final_total" id="final_total" value="{{$remove_stock->final_total}}">
                         <div class="row">
                             <div class="col-md-3">
@@ -82,14 +93,16 @@
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('reason', __('lang.reason'). ':', []) !!} <br>
-                                    {!! Form::textarea('reason', $remove_stock->reason, ['class' => 'form-control', 'rows' => 3]) !!}
+                                    {!! Form::textarea('reason', $remove_stock->reason, ['class' => 'form-control',
+                                    'rows' => 3]) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
                                     {!! Form::label('notes', __('lang.notes'). ':', []) !!} <br>
-                                    {!! Form::textarea('notes', $remove_stock->notes, ['class' => 'form-control', 'rows' => 3]) !!}
+                                    {!! Form::textarea('notes', $remove_stock->notes, ['class' => 'form-control', 'rows'
+                                    => 3]) !!}
                                 </div>
                             </div>
 
@@ -116,7 +129,6 @@
 @section('javascript')
 <script src="{{asset('js/add_stock.js')}}"></script>
 <script type="text/javascript">
-
     $('#invoice_id').change(function () {
         let invoice_id = $(this).val();
 

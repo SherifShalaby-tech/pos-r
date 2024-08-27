@@ -1,14 +1,22 @@
 @extends('layouts.app')
 @section('title', __('lang.redemption_of_point_system'))
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.add_redemption_of_point_system')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.add_redemption_of_point_system')</h4>
-                    </div>
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                         {!! Form::open(['url' => action('RedemptionOfPointController@store'), 'id' =>
@@ -20,7 +28,8 @@
                                 <div class="form-group">
                                     {!! Form::label('store_ids', __( 'lang.store' ) . ':*') !!}
                                     {!! Form::select('store_ids[]', $stores, false, ['class' => 'selectpicker
-                                    form-control', 'data-live-search' => "true", 'multiple', 'required', "data-actions-box"=>"true"]) !!}
+                                    form-control', 'data-live-search' => "true", 'multiple', 'required',
+                                    "data-actions-box"=>"true"]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -28,7 +37,8 @@
                                     {!! Form::label('earning_of_point_ids', __( 'lang.earning_of_points' ) . ':*') !!}
                                     {!! Form::select('earning_of_point_ids[]', $earning_of_points, false, ['class' =>
                                     'selectpicker
-                                    form-control', 'data-live-search' => "true", 'multiple', 'required', "data-actions-box"=>"true"]) !!}
+                                    form-control', 'data-live-search' => "true", 'multiple', 'required',
+                                    "data-actions-box"=>"true"]) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">

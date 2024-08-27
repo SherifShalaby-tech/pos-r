@@ -144,6 +144,34 @@
         text-align: right
     }
 
+    .modal-header {
+        background: linear-gradient(to right, var(--primary-color), #6b73ff);
+        color: white
+    }
+
+    .modal-footer {
+        border: none;
+        padding: 0
+    }
+
+
+    .modal-close-btn {
+        width: 35px;
+        height: 35px;
+        font-weight: 600;
+        font-size: 1.5rem;
+        background-color: #fff;
+    }
+
+    .modal-close-btn:hover {
+        background-color: #efefef;
+    }
+
+    .btn-modal {
+        border-radius: 0 6px 6px 0px;
+        border: 2px solid var(--primary-color);
+    }
+
     ::-webkit-scrollbar-track {
         border: 3px solid white;
 

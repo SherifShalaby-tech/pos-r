@@ -2,15 +2,23 @@
 @section('title', __('lang.customer_balance_adjustment'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+
+                    <h4>@lang('lang.customer_balance_adjustment')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.customer_balance_adjustment')</h4>
-                    </div>
-                    {!! Form::open(['url' => action('CustomerBalanceAdjustmentController@update', $customer_balance_adjustment->id),
+
+                    {!! Form::open(['url' => action('CustomerBalanceAdjustmentController@update',
+                    $customer_balance_adjustment->id),
                     'method' => 'put', 'id' =>
                     'sms_form', 'files' => true
                     ]) !!}
@@ -19,7 +27,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('store_id', __('lang.store'), []) !!}
-                                    {!! Form::select('store_id', $stores, $customer_balance_adjustment->store_id, ['class' =>
+                                    {!! Form::select('store_id', $stores, $customer_balance_adjustment->store_id,
+                                    ['class' =>
                                     'form-control
                                     selectpicker', 'id' => 'store_id' ,'placeholder' =>
                                     __('lang.please_select')]) !!}
@@ -28,7 +37,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('user_id', __('lang.cashier'), []) !!}
-                                    {!! Form::select('user_id', $users, $customer_balance_adjustment->user_id, ['class' =>
+                                    {!! Form::select('user_id', $users, $customer_balance_adjustment->user_id, ['class'
+                                    =>
                                     'form-control
                                     selectpicker', 'id' => 'user_id' ,'placeholder' =>
                                     __('lang.please_select')]) !!}
@@ -37,7 +47,8 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('customer_id', __('lang.customer'), []) !!}
-                                    {!! Form::select('customer_id', $customers, $customer_balance_adjustment->customer_id, ['class' => 'form-control
+                                    {!! Form::select('customer_id', $customers,
+                                    $customer_balance_adjustment->customer_id, ['class' => 'form-control
                                     selectpicker', 'id' => 'customer_id', 'data-live-search' => "true", 'placeholder' =>
                                     __('lang.please_select'), 'required']) !!}
                                 </div>
@@ -45,7 +56,9 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('current_balance', __('lang.current_balance'), []) !!}
-                                    {!! Form::text('current_balance', @num_format($customer_balance_adjustment->current_balance), ['class' => 'form-control', 'id' =>
+                                    {!! Form::text('current_balance',
+                                    @num_format($customer_balance_adjustment->current_balance), ['class' =>
+                                    'form-control', 'id' =>
                                     'current_balance' ,'placeholder' =>
                                     __('lang.current_balance'), 'readonly']) !!}
                                 </div>
@@ -53,7 +66,9 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('add_new_balance', __('lang.add_new_balance'), []) !!}
-                                    {!! Form::text('add_new_balance', @num_format($customer_balance_adjustment->add_new_balance), ['class' => 'form-control', 'id' =>
+                                    {!! Form::text('add_new_balance',
+                                    @num_format($customer_balance_adjustment->add_new_balance), ['class' =>
+                                    'form-control', 'id' =>
                                     'add_new_balance' ,'placeholder' =>
                                     __('lang.add_new_balance')]) !!}
                                 </div>
@@ -61,14 +76,17 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('new_balance', __('lang.new_balance'), []) !!}
-                                    {!! Form::text('new_balance', @num_format($customer_balance_adjustment->new_balance), ['class' => 'form-control', 'id' =>
+                                    {!! Form::text('new_balance',
+                                    @num_format($customer_balance_adjustment->new_balance), ['class' => 'form-control',
+                                    'id' =>
                                     'new_balance' ,'placeholder' =>
                                     __('lang.new_balance')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 {!! Form::label('notes', __('lang.notes'), []) !!}
-                                {!! Form::textarea('notes', $customer_balance_adjustment->notes, ['class' => 'form-control', 'rows' => 3]) !!}
+                                {!! Form::textarea('notes', $customer_balance_adjustment->notes, ['class' =>
+                                'form-control', 'rows' => 3]) !!}
                             </div>
 
                         </div>

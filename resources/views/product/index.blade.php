@@ -1,104 +1,121 @@
 @extends('layouts.app')
 @section('title', __('lang.product'))
 @php
-    use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Cache;
 @endphp
 @section('content')
+
+<section class="forms pt-2">
+
     <div class="container-fluid">
-       <div class="card-header d-flex align-items-center">
+
+
+        <x-page-title>
             @if (request()->segment(1) == 'product')
             <h4 class="print-title">@lang('lang.product_lists')</h4>
             @endif
             @if (request()->segment(1) == 'product-stocks')
             <h4 class="print-title">@lang('lang.product_stocks')</h4>
             @endif
-        </div>
-        @if (empty($page))
-            @can('product_module.product.create_and_edit')
-                <a style="color: white" href="{{ action('ProductController@create') }}" class="btn btn-info"><i
-                        class="dripicons-plus"></i>
-                    @lang('lang.add_product')</a>
-            @endcan
-            <a style="color: white" href="{{ action('ProductController@getImport') }}" class="btn btn-primary"><i
-                    class="fa fa-arrow-down"></i>
-                @lang('lang.import')</a>
-        @else
-            <a style="color: white" href="{{ action('AddStockController@getImport') }}" class="btn btn-primary"><i
-                    class="fa fa-arrow-down"></i>
-                @lang('lang.import')</a>
-        @endif
+
+            <x-slot name="buttons">
+                <div>
+                    @if (empty($page))
+                    @can('product_module.product.create_and_edit')
+                    <a href="{{ action('ProductController@create') }}" class="btn btn-primary py-2"><i
+                            class="dripicons-plus"></i>
+                        @lang('lang.add_product')</a>
+                    @endcan
+                    <a href="{{ action('ProductController@getImport') }}" class="btn btn-primary py-2"><i
+                            class="fa fa-arrow-down"></i>
+                        @lang('lang.import')</a>
+                    @else
+                    <a href="{{ action('AddStockController@getImport') }}" class="btn btn-primary py-2"><i
+                            class="fa fa-arrow-down"></i>
+                        @lang('lang.import')</a>
+                    @endif
+                </div>
+            </x-slot>
+        </x-page-title>
+
+
+
+
+
         <div class="card mt-3">
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            {!! Form::label('product_class_id', session('system_mode') == 'restaurant' ? __('lang.category') : __('lang.product_class') . ':', []) !!}
+                            {!! Form::label('product_class_id', session('system_mode') == 'restaurant' ?
+                            __('lang.category')
+                            : __('lang.product_class') . ':', []) !!}
                             {!! Form::select('product_class_id', $product_classes, request()->product_class_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     @if (session('system_mode') != 'restaurant')
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('category_id', __('lang.category') . ':', []) !!}
-                                {!! Form::select('category_id', $categories, request()->category_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                            </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('category_id', __('lang.category') . ':', []) !!}
+                            {!! Form::select('category_id', $categories, request()->category_id, [
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('sub_category_id', __('lang.sub_category') . ':', []) !!}
-                                {!! Form::select('sub_category_id', $sub_categories, request()->sub_category_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('sub_category_id', __('lang.sub_category') . ':', []) !!}
+                            {!! Form::select('sub_category_id', $sub_categories, request()->sub_category_id, [
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('brand_id', __('lang.brand') . ':', []) !!}
-                                {!! Form::select('brand_id', $brands, request()->brand_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
-                            </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            {!! Form::label('brand_id', __('lang.brand') . ':', []) !!}
+                            {!! Form::select('brand_id', $brands, request()->brand_id, [
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
+                    </div>
                     @endif
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('supplier_id', __('lang.supplier') . ':', []) !!}
                             {!! Form::select('supplier_id', $suppliers, request()->supplier_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('unit_id', __('lang.unit') . ':', []) !!}
                             {!! Form::select('unit_id', $units, request()->unit_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
 
@@ -106,12 +123,12 @@
                         <div class="form-group">
                             {!! Form::label('size_id', __('lang.size') . ':', []) !!}
                             {!! Form::select('size_id', $sizes, request()->size_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
 
@@ -119,51 +136,52 @@
                         <div class="form-group">
                             {!! Form::label('tax_id', __('lang.tax') . ':', []) !!}
                             {!! Form::select('tax_id', $taxes, request()->tax_id, [
-    'class' => 'form-control
-                        filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control
+                            filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('store_id', __('lang.store'), []) !!}
-                            {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control filter_product', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                            {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control
+                            filter_product', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('customer_type_id', __('lang.customer_type') . ':', []) !!}
                             {!! Form::select('customer_type_id', $customer_types, request()->customer_type_id, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('created_by', __('lang.created_by') . ':', []) !!}
                             {!! Form::select('created_by', $users, request()->created_by, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             {!! Form::label('active', __('lang.active') . ':', []) !!}
                             {!! Form::select('active', [0 => __('lang.no'), 1 => __('lang.yes')], request()->active, [
-    'class' => 'form-control filter_product
-                        selectpicker',
-    'data-live-search' => 'true',
-    'placeholder' => __('lang.all'),
-]) !!}
+                            'class' => 'form-control filter_product
+                            selectpicker',
+                            'data-live-search' => 'true',
+                            'placeholder' => __('lang.all'),
+                            ]) !!}
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -172,7 +190,8 @@
                                 Don't show zero stocks
                             </label> --}}
                             {!! Form::label('show_zero_stocks',"Don't show zero stocks" . ':') !!}
-                            {!! Form::checkbox('show_zero_stocks', 1, false, ['class' => ' form-control  show_zero_stocks','data-live-search' => 'true',
+                            {!! Form::checkbox('show_zero_stocks', 1, false, ['class' => ' form-control
+                            show_zero_stocks','data-live-search' => 'true',
                             ], request()->show_zero_stocks ? true : false) !!}
 
 
@@ -191,16 +210,16 @@
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.image')</button>
                 <button type="button" value="4" class="badge badge-pill badge-primary column-toggle">
                     @if (session('system_mode') == 'restaurant')
-                        @lang('lang.category')
+                    @lang('lang.category')
                     @else
-                        @lang('lang.class')
+                    @lang('lang.class')
                     @endif
                 </button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="5"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
-                    <button type="button" value="6"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
+                <button type="button" value="5"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
+                <button type="button" value="6"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
                 @endif
                 <button type="button" value="5"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_history')</button>
@@ -211,8 +230,8 @@
                 <button type="button" value="8"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.tax')</button>
                 @if (session('system_mode') != 'restaurant')
-                    <button type="button" value="9"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
+                <button type="button" value="9"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
                 @endif
                 <button type="button" value="9"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
@@ -221,12 +240,12 @@
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
 
                 @if (empty($page))
-                    <button type="button" value="11"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
+                <button type="button" value="11"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
                 @endif
                 @if (!empty($page))
-                    <button type="button" value="12"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
+                <button type="button" value="12"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
                 @endif
                 <button type="button" value="13"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
@@ -237,8 +256,8 @@
                 <button type="button" value="16"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.discount')</button>
                 @can('product_module.purchase_price.view')
-                    <button type="button" value="17"
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
+                <button type="button" value="17"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
                 @endcan
                 <button type="button" value="18"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.supplier')</button>
@@ -246,8 +265,8 @@
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.active')</button>
                 <button type="button" value="20"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.created_by')</button>
-                <button type="button" value="22"    
-                        class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
+                <button type="button" value="22"
+                    class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
             </div>
         </div>
 
@@ -255,12 +274,12 @@
     </div>
     <div class="table-responsive">
 
-        <button type="button"
-                class="badge badge-pill badge-primary column-toggle send_to_branch" id="send_to_branch">@lang('lang.send_to_branch')</button>
+        <button type="button" class="badge badge-pill badge-primary column-toggle send_to_branch"
+            id="send_to_branch">@lang('lang.send_to_branch')</button>
 
         <a data-href="{{ action('ProductController@multiDeleteRow') }}" id="delete_all"
-           data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
-           class="btn btn-danger text-white delete_all"><i class="fa fa-trash"></i>
+            data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
+            class="btn btn-danger text-white delete_all"><i class="fa fa-trash"></i>
             @lang('lang.delete_all')</a>
 
 
@@ -268,16 +287,17 @@
             <thead>
                 <tr>
                     @if(env('ENABLE_POS_Branch',false))
-                        <th>@lang('lang.select')</th>
+                    <th>@lang('lang.select')</th>
                     @endif
                     <th>@lang('lang.select_to_delete')<br>
-                        <input type="checkbox" name="product_delete_all" class="product_delete_all"  /></th>
-                    
+                        <input type="checkbox" name="product_delete_all" class="product_delete_all" />
+                    </th>
+
                     <th>@lang('lang.image')</th>
                     <th>@lang('lang.name')</th>
                     <th>@lang('lang.product_code')</th>
                     <th>
-                            @lang('lang.category')
+                        @lang('lang.category')
 
                     </th>
                     <th>@lang('lang.purchase_history')</th>
@@ -293,7 +313,7 @@
                     <th>@lang('lang.manufacturing_date')</th>
                     <th>@lang('lang.discount')</th>
                     @can('product_module.purchase_price.view')
-                        <th>@lang('lang.purchase_price')</th>
+                    <th>@lang('lang.purchase_price')</th>
                     @endcan
                     <th>@lang('lang.supplier')</th>
                     <th>@lang('lang.active')</th>
@@ -331,10 +351,13 @@
             </tfoot>
         </table>
     </div>
+</section>
+
+
 @endsection
 @push('javascripts')
-    <script>
-        $(document).on('click', '#delete_all', function() {
+<script>
+    $(document).on('click', '#delete_all', function() {
             var checkboxes = document.querySelectorAll('input[name="product_selected_delete"]');
             var selected_delete_ids = [];
             for (var i = 0; i < checkboxes.length; i++) {
@@ -445,13 +468,13 @@
 
 
         });
-    </script>
+</script>
 
 @endpush
 
 @section('javascript')
-    <script>
-        var product_selected_send = [];
+<script>
+    var product_selected_send = [];
         $(document).ready(function() {
             // $('.column-toggle').each(function(i, obj) {
             //     if (i > 0) {
@@ -967,5 +990,5 @@
             });
         })
 
-    </script>
+</script>
 @endsection

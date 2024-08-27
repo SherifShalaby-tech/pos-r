@@ -2,14 +2,23 @@
 @section('title', __('lang.purchase_order'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.import_purchase_order')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.import_purchase_order')</h4>
-                    </div>
+
                     {!! Form::open(['url' => action('PurchaseOrderController@saveImport'), 'method' => 'post', 'id' =>
                     'import_purchase_order_form', 'files' => true]) !!}
                     <div class="card-body">
@@ -50,7 +59,9 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <a class="btn btn-block btn-primary" href="{{asset('sample_files/purchase_order_import.xlsx')}}"><i class="fa fa-download"></i>@lang('lang.download_sample_file')</a>
+                                    <a class="btn btn-block btn-primary"
+                                        href="{{asset('sample_files/purchase_order_import.xlsx')}}"><i
+                                            class="fa fa-download"></i>@lang('lang.download_sample_file')</a>
                                 </div>
                             </div>
                         </div>
@@ -78,8 +89,8 @@
                             'lang.send_to_supplier' )</button>
                         @endcan
                         @can('purchase_order.send_to_admin.create_and_edit')
-                        <button type="submit" name="submit" id="send_to_admin" style="margin: 10px"
-                            value="sent_admin" class="btn btn-primary pull-right btn-flat submit">@lang(
+                        <button type="submit" name="submit" id="send_to_admin" style="margin: 10px" value="sent_admin"
+                            class="btn btn-primary pull-right btn-flat submit">@lang(
                             'lang.send_to_admin' )</button>
                         @endcan
                         <div class="modal fade supplier_modal" id="supplier_modal" role="dialog" aria-hidden="true">

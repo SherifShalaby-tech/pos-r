@@ -1,24 +1,26 @@
 @extends('layouts.app')
 @section('title', __('lang.contact_us'))
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+                    <h4>@lang('lang.contact_us')</h4>
+
+                </x-page-title>
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.contact_us')</h4>
-                    </div>
-                    <form method="POST" action="{{ action('ContactUsController@sendUserContactUs') }}" enctype="multipart/form-data"
-                        id="contact-us-form">
+
+                    <form method="POST" action="{{ action('ContactUsController@sendUserContactUs') }}"
+                        enctype="multipart/form-data" id="contact-us-form">
                         <div class="card-body">
                             @csrf
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <input id="phone_number" type="phone_number" name="phone_number"
-                                            class="form-control" value=""
-                                            placeholder="{{trans('lang.phone_number')}}">
+                                            class="form-control" value="" placeholder="{{trans('lang.phone_number')}}">
                                         @if($errors->has('phone_number'))
                                         <div class="error">{{ $errors->first('phone_number') }}</div>
                                         @endif

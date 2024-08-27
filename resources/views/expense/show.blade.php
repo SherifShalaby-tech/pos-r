@@ -4,16 +4,23 @@
     label {
         font-weight: bold;
     }
-
 </style>
 @section('content')
+<section class="forms pt-2">
+
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+                    <h4>@lang('lang.expense')</h4>
+
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.expense')</h4>
-                    </div>
+
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
@@ -32,17 +39,20 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="store_id">@lang('lang.store'): </label> {{ $expense->store->name }}
+                                            <label for="store_id">@lang('lang.store'): </label> {{
+                                            $expense->store->name }}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('source_type', __('lang.source_type'), []) !!}: {{ ucfirst($expense->source_type) }}
+                                            {!! Form::label('source_type', __('lang.source_type'), []) !!}: {{
+                                            ucfirst($expense->source_type) }}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('amount', __('lang.amount'), []) !!}: {{ @num_format($expense->final_total) }}
+                                            {!! Form::label('amount', __('lang.amount'), []) !!}: {{
+                                            @num_format($expense->final_total) }}
                                         </div>
                                     </div>
                                     @if (isset($expense->transaction_payments->first()->method))
@@ -76,6 +86,7 @@
             </div>
         </div>
     </div>
+</section>
 @endsection
 
 @section('javascript')

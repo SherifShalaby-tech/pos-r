@@ -2,14 +2,22 @@
 @section('title', __('lang.raw_materials'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+
+                    <h4>@lang('lang.add_new_raw_material')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.add_new_raw_material')</h4>
-                    </div>
+
                     <div class="card-body">
                         <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
                         {!! Form::open(['url' => action('RawMaterialController@store'), 'id' => 'product-form', 'method'

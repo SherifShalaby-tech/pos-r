@@ -2,47 +2,76 @@
 @section('title', __('lang.expense'))
 
 @section('content')
+<section class="forms pt-2">
+
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+
+                    <h4>@lang('lang.add_new_expense')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.add_new_expense')</h4>
-                    </div>
+
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
-                                {!! Form::open(['url' => action('ExpenseController@store'), 'method' => 'post', 'enctype' => 'multipart/form-data']) !!}
+                                {!! Form::open(['url' => action('ExpenseController@store'), 'method' => 'post',
+                                'enctype' => 'multipart/form-data']) !!}
 
                                 <div class="row">
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="expense_category_id">@lang('lang.expense_category')</label>
-                                            {!! Form::select('expense_category_id', $expense_categories, null, ['class' => 'form-control selectpicker', 'required', 'id' => 'expense_category_id', 'placeholder' => __('lang.please_select'), 'data-live-search' => 'true']) !!}
+                                            {!! Form::select('expense_category_id', $expense_categories, null,
+                                            ['class' => 'form-control selectpicker', 'required', 'id' =>
+                                            'expense_category_id', 'placeholder' => __('lang.please_select'),
+                                            'data-live-search' => 'true']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="expense_beneficiary_id">@lang('lang.beneficiary')</label>
-                                            {!! Form::select('expense_beneficiary_id', [], null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true',  'id' => 'expense_beneficiary_id', 'placeholder' => __('lang.please_select')]) !!}
+                                            {!! Form::select('expense_beneficiary_id', [], null, ['class' =>
+                                            'form-control selectpicker', 'data-live-search' => 'true', 'id' =>
+                                            'expense_beneficiary_id', 'placeholder' => __('lang.please_select')])
+                                            !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             <label for="store_id">@lang('lang.store')</label>
-                                            {!! Form::select('store_id', $stores, array_key_first($stores), ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required', 'id' => 'store_id', 'placeholder' => __('lang.please_select')]) !!}
+                                            {!! Form::select('store_id', $stores, array_key_first($stores), ['class'
+                                            => 'form-control selectpicker', 'data-live-search' => 'true',
+                                            'required', 'id' => 'store_id', 'placeholder' =>
+                                            __('lang.please_select')]) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
                                             {!! Form::label('source_type', __('lang.source_type'), []) !!} <br>
-                                            {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' => __('lang.pos'), 'store' => __('lang.store'), 'safe' => __('lang.safe')], 'user', ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+                                            {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' =>
+                                            __('lang.pos'), 'store' => __('lang.store'), 'safe' => __('lang.safe')],
+                                            'user', ['class' => 'selectpicker form-control', 'data-live-search' =>
+                                            'true', 'style' => 'width: 80%', 'placeholder' =>
+                                            __('lang.please_select')]) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
-                                            {!! Form::select('source_id', $users, null, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id', 'required']) !!}
+                                            {!! Form::label('source_of_payment', __('lang.source_of_payment'), [])
+                                            !!} <br>
+                                            {!! Form::select('source_id', $users, null, ['class' => 'selectpicker
+                                            form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
+                                            'placeholder' => __('lang.please_select'), 'id' => 'source_id',
+                                            'required']) !!}
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -73,7 +102,8 @@
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label for="details">@lang('lang.details')</label> <br>
-                                            <textarea class="form-control" name="details" id="details" rows="3"></textarea>
+                                            <textarea class="form-control" name="details" id="details"
+                                                rows="3"></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -91,11 +121,12 @@
             </div>
         </div>
     </div>
+</section>
 @endsection
 
 @section('javascript')
-    <script>
-        $('#method').change(function() {
+<script>
+    $('#method').change(function() {
             var method = $(this).val();
 
             if (method === 'card') {
@@ -154,5 +185,5 @@
                 });
             }
         });
-    </script>
+</script>
 @endsection

@@ -3,15 +3,26 @@
 
 @section('content')
 
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+
+                    <h4>@lang('lang.edit_quotation')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.edit_quotation')</h4>
-                    </div>
+
                     <div class="card-body">
-                        {!! Form::open(['url' => action('QuotationController@update', $sale->id), 'method' => 'put', 'files' => true, 'class' => 'pos-form', 'id' => 'edit_quotation_form']) !!}
+                        {!! Form::open(['url' => action('QuotationController@update', $sale->id), 'method' => 'put',
+                        'files' => true, 'class' => 'pos-form', 'id' => 'edit_quotation_form']) !!}
                         <input type="hidden" name="row_count" id="row_count"
                             value="{{ $sale->transaction_sell_lines->count() }}">
                         <input type="hidden" name="store_id" id="store_id" value="{{ $sale->store_id }}">
@@ -30,13 +41,15 @@
                                     <div class="col-md-4">
                                         {!! Form::label('customer_id', __('lang.customer'), []) !!}
                                         <div class="input-group my-group">
-                                            {!! Form::select('customer_id', $customers, $sale->customer_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'customer_id', 'required']) !!}
+                                            {!! Form::select('customer_id', $customers, $sale->customer_id, ['class' =>
+                                            'selectpicker form-control', 'data-live-search' => 'true', 'style' =>
+                                            'width: 80%', 'id' => 'customer_id', 'required']) !!}
                                             <span class="input-group-btn">
                                                 @can('customer_module.customer.create_and_edit')
-                                                    <button class="btn-modal btn btn-default bg-white btn-flat"
-                                                        data-href="{{ action('CustomerController@create') }}?quick_add=1"
-                                                        data-container=".view_modal"><i
-                                                            class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                <button class="btn-modal btn btn-default bg-white btn-flat"
+                                                    data-href="{{ action('CustomerController@create') }}?quick_add=1"
+                                                    data-container=".view_modal"><i
+                                                        class="fa fa-plus-circle text-primary fa-lg"></i></button>
                                                 @endcan
                                             </span>
                                         </div>
@@ -44,7 +57,9 @@
                                     <div class="col-md-4">
                                         {!! Form::label('store_id', __('lang.store'), []) !!}
                                         <div class="input-group my-group">
-                                            {!! Form::select('store_id', $stores, $sale->store_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'store_id', 'required']) !!}
+                                            {!! Form::select('store_id', $stores, $sale->store_id, ['class' =>
+                                            'selectpicker form-control', 'data-live-search' => 'true', 'style' =>
+                                            'width: 80%', 'id' => 'store_id', 'required']) !!}
                                         </div>
                                     </div>
 
@@ -53,8 +68,8 @@
                                             <button type="button" class="btn btn-secondary btn-lg" id="search_button"><i
                                                     class="fa fa-search"></i></button>
                                             <input type="text" name="search_product" id="search_product"
-                                                placeholder="@lang('lang.enter_product_name_to_print_labels')" class="form-control ui-autocomplete-input"
-                                                autocomplete="off">
+                                                placeholder="@lang('lang.enter_product_name_to_print_labels')"
+                                                class="form-control ui-autocomplete-input" autocomplete="off">
                                         </div>
                                     </div>
                                     <div class="col-md-2">
@@ -76,7 +91,7 @@
                                             </thead>
                                             <tbody>
                                                 @include('sale.partials.edit_product_row', [
-                                                    'products' => $sale->transaction_sell_lines,
+                                                'products' => $sale->transaction_sell_lines,
                                                 ])
                                             </tbody>
                                             <tfoot>
@@ -85,8 +100,8 @@
                                                     <td></td>
                                                     <td></td>
                                                     <th style="text-align: right">@lang('lang.total')</th>
-                                                    <th><span
-                                                            class="grand_total_span">{{ @num_format($sale->grand_total) }}</span>
+                                                    <th><span class="grand_total_span">{{
+                                                            @num_format($sale->grand_total) }}</span>
                                                     </th>
                                                 </tr>
                                             </tfoot>
@@ -122,9 +137,9 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <div class="i-checks">
-                                        <input id="block_qty" name="block_qty" type="checkbox"
-                                            @if ($sale->block_qty) checked @endif value="1"
-                                            class="form-control-custom">
+                                        <input id="block_qty" name="block_qty" type="checkbox" @if ($sale->block_qty)
+                                        checked @endif value="1"
+                                        class="form-control-custom">
                                         <label for="block_qty"><strong>@lang('lang.block_qty')</strong></label>
                                     </div>
                                 </div>
@@ -132,13 +147,15 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('block_for_days', __('lang.block_for_days') . ':') !!}
-                                    {!! Form::text('block_for_days', $sale->block_for_days, ['class' => 'form-control', 'placeholder' => __('lang.block_for_days'), 'required']) !!}
+                                    {!! Form::text('block_for_days', $sale->block_for_days, ['class' => 'form-control',
+                                    'placeholder' => __('lang.block_for_days'), 'required']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('validity_days', __('lang.validity_days') . ':') !!}
-                                    {!! Form::text('validity_days', $sale->validity_days, ['class' => 'form-control', 'placeholder' => __('lang.validity_days'), 'required']) !!}
+                                    {!! Form::text('validity_days', $sale->validity_days, ['class' => 'form-control',
+                                    'placeholder' => __('lang.validity_days'), 'required']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -147,9 +164,9 @@
                                     <select class="form-control" name="tax_id" id="tax_id">
                                         <option value="" selected>No Tax</option>
                                         @foreach ($taxes as $tax)
-                                            <option @if ($tax->id == $sale->tax_id) selected @endif
-                                                data-rate="{{ $tax->rate }}" value="{{ $tax->id }}">
-                                                {{ $tax->name }}</option>
+                                        <option @if ($tax->id == $sale->tax_id) selected @endif
+                                            data-rate="{{ $tax->rate }}" value="{{ $tax->id }}">
+                                            {{ $tax->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -157,25 +174,33 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('discount_type', __('lang.type') . ':*') !!}
-                                    {!! Form::select('discount_type', ['fixed' => 'Fixed', 'percentage' => 'Percentage'], $sale->discount_type, ['class' => 'form-control', 'data-live-search' => 'true']) !!}
+                                    {!! Form::select('discount_type', ['fixed' => 'Fixed', 'percentage' =>
+                                    'Percentage'], $sale->discount_type, ['class' => 'form-control', 'data-live-search'
+                                    => 'true']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('discount_value', __('lang.discount_value') . ':*') !!}
-                                    {!! Form::text('discount_value', @num_format($sale->discount_value), ['class' => 'form-control', 'placeholder' => __('lang.discount_value'), 'required']) !!}
+                                    {!! Form::text('discount_value', @num_format($sale->discount_value), ['class' =>
+                                    'form-control', 'placeholder' => __('lang.discount_value'), 'required']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 {!! Form::label('status', __('lang.status'), []) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('status', ['draft' => 'Draft', 'approved' => 'Approved', 'rejected' => 'Rejected', 'expired' => 'Expired', 'valid' => 'Valid'], $sale->status, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'status', 'required']) !!}
+                                    {!! Form::select('status', ['draft' => 'Draft', 'approved' => 'Approved', 'rejected'
+                                    => 'Rejected', 'expired' => 'Expired', 'valid' => 'Valid'], $sale->status, ['class'
+                                    => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width:
+                                    80%', 'id' => 'status', 'required']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 {!! Form::label('terms_and_condition_id', __('lang.terms_and_conditions'), []) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('terms_and_condition_id', $tac, $sale->terms_and_condition_id, ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'id' => 'terms_and_condition_id']) !!}
+                                    {!! Form::select('terms_and_condition_id', $tac, $sale->terms_and_condition_id,
+                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' =>
+                                    'width: 80%', 'id' => 'terms_and_condition_id']) !!}
                                 </div>
                                 <div class="tac_description_div"><span></span></div>
                             </div>
@@ -193,16 +218,17 @@
             </div>
         </div>
     </div>
+</section>
 
-    <!-- This will be printed -->
-    <section class="invoice print_section print-only" id="receipt_section"> </section>
+<!-- This will be printed -->
+<section class="invoice print_section print-only" id="receipt_section"> </section>
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/pos.js') }}"></script>
-    <script src="{{ asset('js/product_selection.js') }}"></script>
-    <script>
-        $(document).on('click', '#add-selected-btn', function() {
+<script src="{{ asset('js/pos.js') }}"></script>
+<script src="{{ asset('js/product_selection.js') }}"></script>
+<script>
+    $(document).on('click', '#add-selected-btn', function() {
             $('#select_products_modal').modal('hide');
             $.each(product_selected, function(index, value) {
                 get_label_product_row(value.product_id, value.variation_id);
@@ -218,5 +244,5 @@
             product_selected = [];
             product_table.ajax.reload();
         })
-    </script>
+</script>
 @endsection

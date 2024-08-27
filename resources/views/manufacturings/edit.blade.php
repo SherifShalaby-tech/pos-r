@@ -3,59 +3,67 @@
 
 @section('content')
 
-    <section class="forms">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header d-flex align-items-center">
-                            <h4>@lang('lang.edit_manufacturing_status')</h4>
-                        </div>
-                        <div class="card-body">
-                            <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                            {!! Form::open(['url' =>action('ManufacturingController@updates'), 'id' =>'product-edit-form', 'method'=>'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                            <input type="hidden" name="store_id" value="{{ $manufacturing->store->id }}">
-                            <input type="hidden" name="manufacturer_id" value="{{ $manufacturing->manufacturer->id }}">
-                            <input type="hidden" name="manufacturing_id" value="{{ $manufacturing->id }}">
-                            <input type="hidden" id="product_ids" name="product_ids" value="{{ json_encode($product_ids) }}">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    {!! Form::label('store_id', __('lang.store'), []) !!}
-                                    <div class="input-group my-group">
-                                        <select required name="store_id" id="store_id"
-                                                class='select_product_ids selectpicker  form-control'
-                                                data-live-search='true' style='width: 30%;'
-                                                placeholder="{{__('lang.please_select')}}">
+<section class="forms pt-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
 
-                                            <option selected disabled value="{{ $manufacturing->store->id }}">
-                                                {{ $manufacturing->store->name }}
-                                            </option>
-                                        </select>
-                                    </div>
+                <x-page-title>
+
+
+                    <h4>@lang('lang.edit_manufacturing_status')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
+                <div class="card">
+
+                    <div class="card-body">
+                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
+                        {!! Form::open(['url' =>action('ManufacturingController@updates'), 'id' =>'product-edit-form',
+                        'method'=>'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                        <input type="hidden" name="store_id" value="{{ $manufacturing->store->id }}">
+                        <input type="hidden" name="manufacturer_id" value="{{ $manufacturing->manufacturer->id }}">
+                        <input type="hidden" name="manufacturing_id" value="{{ $manufacturing->id }}">
+                        <input type="hidden" id="product_ids" name="product_ids"
+                            value="{{ json_encode($product_ids) }}">
+                        <div class="row">
+                            <div class="col-md-6">
+                                {!! Form::label('store_id', __('lang.store'), []) !!}
+                                <div class="input-group my-group">
+                                    <select required name="store_id" id="store_id"
+                                        class='select_product_ids selectpicker  form-control' data-live-search='true'
+                                        style='width: 30%;' placeholder="{{__('lang.please_select')}}">
+
+                                        <option selected disabled value="{{ $manufacturing->store->id }}">
+                                            {{ $manufacturing->store->name }}
+                                        </option>
+                                    </select>
                                 </div>
-                                <div class="col-md-6">
-                                    {!! Form::label('manufacturer_id', __('lang.manufacturer'), []) !!}
-                                    <div class="input-group my-group">
-                                        <select required name="manufacturer_id" id="manufacturer_id"
-                                                class='select_product_ids selectpicker  form-control'
-                                                data-live-search='true' style='width: 30%;'
-                                                placeholder="{{__('lang.please_select')}}">
-                                            <option selected disabled value="{{ $manufacturing->manufacturer->id }}">
-                                                {{ $manufacturing->manufacturer->name }}
-                                            </option>
-                                        </select>
-
-                                    </div>
-                                </div>
-
-
                             </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <table class="table table-bordered table-striped table-condensed"
-                                           id="product_table">
-                                        <thead>
+                            <div class="col-md-6">
+                                {!! Form::label('manufacturer_id', __('lang.manufacturer'), []) !!}
+                                <div class="input-group my-group">
+                                    <select required name="manufacturer_id" id="manufacturer_id"
+                                        class='select_product_ids selectpicker  form-control' data-live-search='true'
+                                        style='width: 30%;' placeholder="{{__('lang.please_select')}}">
+                                        <option selected disabled value="{{ $manufacturing->manufacturer->id }}">
+                                            {{ $manufacturing->manufacturer->name }}
+                                        </option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-bordered table-striped table-condensed" id="product_table">
+                                    <thead>
                                         <tr>
 
                                             <th style="width: 7%" class="col-sm-8">@lang( 'lang.image' )</th>
@@ -65,121 +73,120 @@
                                             <th style="width: 10%" class="col-sm-4">@lang( 'lang.unit' )</th>
                                             <th style="width: 10%" class="col-sm-4">@lang( 'lang.action' )</th>
                                         </tr>
-                                        </thead>
-                                        <tbody>
+                                    </thead>
+                                    <tbody>
                                         @if(isset($underManufacturings) && count($underManufacturings) >0)
-                                            @foreach($underManufacturings as $material)
-                                                <tr>
-                                                    <td>
-                                                        <img
-                                                            src="@if(!empty($material->product->getFirstMediaUrl('product'))){{$material->product->getFirstMediaUrl('product')}}@else{{asset('/uploads/'.session('logo'))}}@endif"
-                                                            alt="photo" width="50" height="50"></td>
-                                                    </td>
-                                                    <td>
-                                                        {{$material->product->name}}
-                                                    </td>
-                                                    <td>
-                                                        {{$material->status == "1" ?  __('lang.manufactured') : __('lang.underManufacturing') }}
-                                                    </td>
-                                                    <input type="hidden" id="product_stock_{{$material->product->id}}" value="{{ $material->product->product_stores->first()->qty_available }} ">
-                                                    <td>
-                                                        <input type="hidden"
-                                                               class="form-control quantity product_{{$material->product->id}}"
-                                                               id="input_product_status_{{$material->product->id}}"
-                                                               name="product_material_under_manufactured[{{$material->product->id}}][status]"
-                                                               required
-                                                               value="{{ $material->status }}">
-                                                        <input type="text"
-                                                               class="form-control quantity product_{{$material->product->id}}"
-                                                               id="input_product_{{$material->product->id}}"
-                                                               name="product_material_under_manufactured[{{$material->product->id}}][quantity]"
-                                                               required
-                                                               value="{{ $material->quantity }}">
-                                                    </td>
-                                                    <td>
+                                        @foreach($underManufacturings as $material)
+                                        <tr>
+                                            <td>
+                                                <img src="@if(!empty($material->product->getFirstMediaUrl('product'))){{$material->product->getFirstMediaUrl('product')}}@else{{asset('/uploads/'.session('logo'))}}@endif"
+                                                    alt="photo" width="50" height="50">
+                                            </td>
+                                            </td>
+                                            <td>
+                                                {{$material->product->name}}
+                                            </td>
+                                            <td>
+                                                {{$material->status == "1" ? __('lang.manufactured') :
+                                                __('lang.underManufacturing') }}
+                                            </td>
+                                            <input type="hidden" id="product_stock_{{$material->product->id}}"
+                                                value="{{ $material->product->product_stores->first()->qty_available }} ">
+                                            <td>
+                                                <input type="hidden"
+                                                    class="form-control quantity product_{{$material->product->id}}"
+                                                    id="input_product_status_{{$material->product->id}}"
+                                                    name="product_material_under_manufactured[{{$material->product->id}}][status]"
+                                                    required value="{{ $material->status }}">
+                                                <input type="text"
+                                                    class="form-control quantity product_{{$material->product->id}}"
+                                                    id="input_product_{{$material->product->id}}"
+                                                    name="product_material_under_manufactured[{{$material->product->id}}][quantity]"
+                                                    required value="{{ $material->quantity }}">
+                                            </td>
+                                            <td>
 
-                                                    </td>
-                                                    <td>
-                                                        <button style="margin-top: 33px;" type="button"
-                                                                class="btn btn-danger btn-sx remove_product_row"><i
-                                                                class="fa fa-times"></i></button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                            </td>
+                                            <td>
+                                                <button style="margin-top: 33px;" type="button"
+                                                    class="btn btn-danger btn-sx remove_product_row"><i
+                                                        class="fa fa-times"></i></button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                         @endif
 
                                         @if(isset($manufactureds) && count($manufactureds) >0)
-                                            @foreach($manufactureds as $material)
-                                                <tr>
-                                                    <td>
-                                                        <img
-                                                            src="@if(!empty($material->product->getFirstMediaUrl('product'))){{$material->product->getFirstMediaUrl('product')}}@else{{asset('/uploads/'.session('logo'))}}@endif"
-                                                            alt="photo" width="50" height="50"></td>
-                                                    </td>
-                                                    <td>
-                                                        {{$material->product->name}}
-                                                    </td>
-                                                    <td>
-                                                        {{$material->status == "1" ?  __('lang.manufactured') : __('lang.underManufacturing') }}
-                                                    </td>
-                                                    <input type="hidden" id="product_stock_{{$material->product->id}}" value="{{ $material->product->product_stores->first()->qty_available }} ">
-                                                    <td>
-                                                        <input type="hidden"
-                                                               class="form-control quantity product_{{$material->product->id}}"
-                                                               id="input_product_status_{{$material->product->id}}"
-                                                               name="product_material_recived[{{$material->product->id}}][status]"
-                                                               required
-                                                               value="{{ $material->status }}">
-                                                        <input type="text"
-                                                               class="form-control quantity product_{{$material->product->id}}"
-                                                               id="input_product_{{$material->product->id}}"
-                                                               name="product_material_recived[{{$material->product->id}}][quantity]"
-                                                               required
-                                                               value="{{ $material->quantity }}">
-                                                    </td>
-                                                    <td>
-                                                    </td>
-                                                    <td>
-                                                        <button style="margin-top: 33px;" type="button"
-                                                                class="btn btn-danger btn-sx remove_product_row"><i
-                                                                class="fa fa-times"></i></button>
-                                                    </td>
-                                                </tr>
-                                            @endforeach
+                                        @foreach($manufactureds as $material)
+                                        <tr>
+                                            <td>
+                                                <img src="@if(!empty($material->product->getFirstMediaUrl('product'))){{$material->product->getFirstMediaUrl('product')}}@else{{asset('/uploads/'.session('logo'))}}@endif"
+                                                    alt="photo" width="50" height="50">
+                                            </td>
+                                            </td>
+                                            <td>
+                                                {{$material->product->name}}
+                                            </td>
+                                            <td>
+                                                {{$material->status == "1" ? __('lang.manufactured') :
+                                                __('lang.underManufacturing') }}
+                                            </td>
+                                            <input type="hidden" id="product_stock_{{$material->product->id}}"
+                                                value="{{ $material->product->product_stores->first()->qty_available }} ">
+                                            <td>
+                                                <input type="hidden"
+                                                    class="form-control quantity product_{{$material->product->id}}"
+                                                    id="input_product_status_{{$material->product->id}}"
+                                                    name="product_material_recived[{{$material->product->id}}][status]"
+                                                    required value="{{ $material->status }}">
+                                                <input type="text"
+                                                    class="form-control quantity product_{{$material->product->id}}"
+                                                    id="input_product_{{$material->product->id}}"
+                                                    name="product_material_recived[{{$material->product->id}}][quantity]"
+                                                    required value="{{ $material->quantity }}">
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td>
+                                                <button style="margin-top: 33px;" type="button"
+                                                    class="btn btn-danger btn-sx remove_product_row"><i
+                                                        class="fa fa-times"></i></button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
                                         @endif
-                                        </tbody>
-                                    </table>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
-
-
-                            <input type="hidden" name="active" value="1">
-                            <div class="row">
-                                <div class="col-md-4 mt-5">
-                                    <div class="form-group">
-                                        <input type="button" value="{{trans('lang.edit')}}" id="submit-btns"
-                                               class="btn btn-primary mr-3">
-                                        <a href="{{ route("manufacturing-s.index") }}"
-                                           class="btn btn-danger">{{trans('lang.cancel')}}</a>
-                                    </div>
-                                </div>
-                            </div>
-                            {!! Form::close() !!}
                         </div>
+
+
+                        <input type="hidden" name="active" value="1">
+                        <div class="row">
+                            <div class="col-md-4 mt-5">
+                                <div class="form-group">
+                                    <input type="button" value="{{trans('lang.edit')}}" id="submit-btns"
+                                        class="btn btn-primary mr-3">
+                                    <a href="{{ route(" manufacturing-s.index") }}"
+                                        class="btn btn-danger">{{trans('lang.cancel')}}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 @endsection
 
 @push('javascripts')
 
-    <script src="{{ asset('js/add_stock.js') }}"></script>
-    <script src="{{ asset('js/product_selection_manufacturing.js') }}"></script>
-    <script type="text/javascript">
-
-        $(document).ready(function () {
+<script src="{{ asset('js/add_stock.js') }}"></script>
+<script src="{{ asset('js/product_selection_manufacturing.js') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
 
               let product_ids =JSON.parse($("#product_ids").val()) ;
               for (var key in product_ids) {
@@ -473,5 +480,5 @@
 
             });
         });
-    </script>
+</script>
 @endpush

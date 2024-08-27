@@ -2,9 +2,13 @@
 @section('title', __('lang.statement'))
 
 @section('content')
+
+<section class="forms pt-2">
+
     <div class="container-fluid">
 
         <div class="col-md-12  no-print">
+
             <div class="card">
                 <div class="card-body">
                     <div class="col-md-12">
@@ -12,13 +16,15 @@
                             <div class="col-md-2">
                                 <div class="form-group">
                                     {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control sale_filter']) !!}
+                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control
+                                    sale_filter']) !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control sale_filter']) !!}
+                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control
+                                    sale_filter']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -63,11 +69,12 @@
             </div>
         </div>
     </div>
+</section>
 @endsection
 
 @section('javascript')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             safe_statement_table = $("#safe_statement_table").DataTable({
                 lengthChange: false,
                 paging: false,
@@ -195,5 +202,5 @@
                 safe_statement_table.ajax.reload();
             });
         })
-    </script>
+</script>
 @endsection

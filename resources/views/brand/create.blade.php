@@ -201,7 +201,6 @@
 
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-
         {!! Form::open(['url' => action('BrandController@store'), 'method' => 'post', 'id' => $quick_add ?
         'quick_add_brand_form' : 'brand_add_form', 'files' => true ]) !!}
 

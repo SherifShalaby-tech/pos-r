@@ -1,43 +1,51 @@
 @extends('layouts.app')
 @section('title', __('lang.customer'))
 @section('content')
-    <section class="forms">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-header d-flex align-items-center">
-                            <h4>@lang('lang.add_customer')</h4>
-                        </div>
-                        <div class="card-body">
-                            <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                            {!! Form::open(['url' => action('CustomerController@store'), 'id' => 'customer-form', 'method' => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+<section class="forms pt-2">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
 
-                            @include('customer.partial.create_customer_form')
+                <x-page-title>
+                    <h4>@lang('lang.add_customer')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
 
 
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="form-group">
-                                        <input type="submit" value="{{ trans('lang.save') }}" id="submit-btn"
-                                            class="btn btn-primary">
-                                    </div>
+                <div class="card">
+
+                    <div class="card-body">
+                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
+                        {!! Form::open(['url' => action('CustomerController@store'), 'id' => 'customer-form', 'method'
+                        => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+
+                        @include('customer.partial.create_customer_form')
+
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <input type="submit" value="{{ trans('lang.save') }}" id="submit-btn"
+                                        class="btn btn-primary">
                                 </div>
                             </div>
-                            {!! Form::close() !!}
                         </div>
+                        {!! Form::close() !!}
                     </div>
                 </div>
             </div>
         </div>
-        <div class="modal gift_card_modal no-print" role="dialog" aria-hidden="true"></div>
-    </section>
+    </div>
+    <div class="modal gift_card_modal no-print" role="dialog" aria-hidden="true"></div>
+</section>
 @endsection
 
 @section('javascript')
-    <script src="{{ asset('js/customer_pst.js') }}"></script>
-    <script type="text/javascript">
-        $('#customer-type-form').submit(function() {
+<script src="{{ asset('js/customer_pst.js') }}"></script>
+<script type="text/javascript">
+    $('#customer-type-form').submit(function() {
             $(this).validate();
             if ($(this).valid()) {
                 $(this).submit();
@@ -152,5 +160,5 @@
             language: '{{ session('language') }}',
             todayHighlight: true,
         });
-    </script>
+</script>
 @endsection

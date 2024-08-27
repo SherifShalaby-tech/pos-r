@@ -2,14 +2,18 @@
 @section('title', __('lang.cash_in_adjustment'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.cash_in_adjustment')</h4>
+
+                </x-page-title>
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.cash_in_adjustment')</h4>
-                    </div>
+
                     {!! Form::open(['url' => action('CashInAdjustmentController@update', $cash_in_adjustment->id),
                     'method' => 'put', 'id' =>
                     'sms_form', 'files' => true

@@ -3,13 +3,24 @@
 
 
 @section('content')
+<section class="forms pt-2">
+
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+                <x-page-title>
+
+                    <h4 class="print-title">@lang('lang.expenses')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h3 class="print-title">@lang('lang.expenses')</h3>
-                    </div>
+
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-12">
@@ -18,104 +29,124 @@
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    {!! Form::label('expense_category_id', __('lang.expense_category'), []) !!}
-                                                    {!! Form::select('expense_category_id', $expense_categories, request()->expense_category_id, ['class' => 'form-control', 'placeholder' => __('lang.all'), 'data-live-search' => 'true','id'=>'expense_category_id']) !!}
+                                                    {!! Form::label('expense_category_id', __('lang.expense_category'),
+                                                    []) !!}
+                                                    {!! Form::select('expense_category_id', $expense_categories,
+                                                    request()->expense_category_id, ['class' => 'form-control',
+                                                    'placeholder' => __('lang.all'), 'data-live-search' =>
+                                                    'true','id'=>'expense_category_id']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    {!! Form::label('expense_beneficiary_id', __('lang.expense_beneficiary'), []) !!}
-                                                    {!! Form::select('expense_beneficiary_id', $expense_beneficiaries, request()->expense_beneficiary_id, ['class' => 'form-control', 'placeholder' => __('lang.all'), 'data-live-search' => 'true','id'=>'expense_beneficiary_id']) !!}
+                                                    {!! Form::label('expense_beneficiary_id',
+                                                    __('lang.expense_beneficiary'), []) !!}
+                                                    {!! Form::select('expense_beneficiary_id', $expense_beneficiaries,
+                                                    request()->expense_beneficiary_id, ['class' => 'form-control',
+                                                    'placeholder' => __('lang.all'), 'data-live-search' =>
+                                                    'true','id'=>'expense_beneficiary_id']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
                                                     {!! Form::label('store_id', __('lang.store'), []) !!}
-                                                    {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control', 'placeholder' => __('lang.all'), 'data-live-search' => 'true','id'=>'store_id']) !!}
+                                                    {!! Form::select('store_id', $stores, request()->store_id, ['class'
+                                                    => 'form-control', 'placeholder' => __('lang.all'),
+                                                    'data-live-search' => 'true','id'=>'store_id']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    {!! Form::label('store_paid_id', __('lang.store') . ' ' . __('lang.paid_by'), []) !!}
-                                                    {!! Form::select('store_paid_id', $stores, request()->store_paid_id, ['class' => 'form-control', 'placeholder' => __('lang.all'), 'data-live-search' => 'true','id'=>'store_paid_id']) !!}
+                                                    {!! Form::label('store_paid_id', __('lang.store') . ' ' .
+                                                    __('lang.paid_by'), []) !!}
+                                                    {!! Form::select('store_paid_id', $stores, request()->store_paid_id,
+                                                    ['class' => 'form-control', 'placeholder' => __('lang.all'),
+                                                    'data-live-search' => 'true','id'=>'store_paid_id']) !!}
                                                 </div>
                                             </div>
 
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control','id'=>'start_date']) !!}
+                                                    {!! Form::text('start_date', request()->start_date, ['class' =>
+                                                    'form-control','id'=>'start_date']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     {!! Form::label('start_time', __('lang.start_time'), []) !!}
-                                                    {!! Form::text('start_time', request()->start_time, ['class' => 'form-control time_picker sale_filter','id'=>'start_time']) !!}
+                                                    {!! Form::text('start_time', request()->start_time, ['class' =>
+                                                    'form-control time_picker sale_filter','id'=>'start_time']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control','id'=>'end_date']) !!}
+                                                    {!! Form::text('end_date', request()->end_date, ['class' =>
+                                                    'form-control','id'=>'end_date']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-2">
                                                 <div class="form-group">
                                                     {!! Form::label('end_time', __('lang.end_time'), []) !!}
-                                                    {!! Form::text('end_time', request()->end_time, ['class' => 'form-control time_picker sale_filter','id'=>'end_time']) !!}
+                                                    {!! Form::text('end_time', request()->end_time, ['class' =>
+                                                    'form-control time_picker sale_filter','id'=>'end_time']) !!}
                                                 </div>
                                             </div>
                                             <div class="col-md-3">
-                                                <button type="button" class="btn btn-success mt-4 filter_product">@lang('lang.filter')</button>
-                    
-                                                <button class="btn btn-danger mt-4 clear_filters">@lang('lang.clear_filters')</button>
-                                            
-                                            </div> 
+                                                <button type="button"
+                                                    class="btn btn-success mt-4 filter_product">@lang('lang.filter')</button>
+
+                                                <button
+                                                    class="btn btn-danger mt-4 clear_filters">@lang('lang.clear_filters')</button>
+
+                                            </div>
                                         </div>
                                     </div>
-                                {{-- </form> --}}
+                                    {{--
+                                </form> --}}
                             </div>
                             <div class="col-sm-12">
                                 <br>
                                 <div class="table-responsive">
-                                <table class="table" style="width: auto" id="expense_table">
-                                    <thead>
-                                        <tr>
-                                            <th>@lang('lang.expense_category')</th>
-                                            <th>@lang('lang.beneficiary')</th>
-                                            <th>@lang('lang.store')</th>
-                                            <th class="sum">@lang('lang.amount_paid')</th>
-                                            <th>@lang('lang.created_by')</th>
-                                            <th>@lang('lang.creation_date')</th>
-                                            <th>@lang('lang.payment_date')</th>
-                                            <th>@lang('lang.next_payment_date')</th>
-                                            <th>@lang('lang.store') @lang('lang.paid_by')</th>
-                                            <th>@lang('lang.source_of_payment')</th>
-                                            <th>@lang('lang.files')</th>
-                                            <th class="notexport">@lang('lang.action')</th> 
-                                        </tr>
-                                    </thead>
+                                    <table class="table" style="width: auto" id="expense_table">
+                                        <thead>
+                                            <tr>
+                                                <th>@lang('lang.expense_category')</th>
+                                                <th>@lang('lang.beneficiary')</th>
+                                                <th>@lang('lang.store')</th>
+                                                <th class="sum">@lang('lang.amount_paid')</th>
+                                                <th>@lang('lang.created_by')</th>
+                                                <th>@lang('lang.creation_date')</th>
+                                                <th>@lang('lang.payment_date')</th>
+                                                <th>@lang('lang.next_payment_date')</th>
+                                                <th>@lang('lang.store') @lang('lang.paid_by')</th>
+                                                <th>@lang('lang.source_of_payment')</th>
+                                                <th>@lang('lang.files')</th>
+                                                <th class="notexport">@lang('lang.action')</th>
+                                            </tr>
+                                        </thead>
 
-                                    <tbody>
-                                    
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <td></td>
-                                            <td></td>
-                                            <td class="text-right"><strong>@lang('lang.total')</strong></td>
-                                            <td class="sum"></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
+                                        <tbody>
+
+                                        </tbody>
+                                        <tfoot>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="text-right"><strong>@lang('lang.total')</strong></td>
+                                                <td class="sum"></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
                                 </div>
 
                             </div>
@@ -125,11 +156,12 @@
             </div>
         </div>
     </div>
+</section>
 @endsection
 
 @section('javascript')
-    <script>
-         $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             store_table = $('#expense_table').DataTable({
                 lengthChange: true,
                 paging: true,
@@ -279,5 +311,5 @@
             $('#end_time').val('')
             store_table.ajax.reload();
         });
-    </script>
+</script>
 @endsection
