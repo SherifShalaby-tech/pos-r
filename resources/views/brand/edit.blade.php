@@ -19,6 +19,7 @@
         margin: 30px 0px;
         border: 1px solid #ddd;
     }
+
     .preview img {
         width: 100%;
         height: 100%;
@@ -200,19 +201,20 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('BrandController@update', $brand->id), 'method' => 'put', 'id' => 'brand_edit_form', 'files' => true ]) !!}
+        {!! Form::open(['url' => action('BrandController@update', $brand->id), 'method' => 'put', 'id' =>
+        'brand_edit_form', 'files' => true ]) !!}
 
-        <div class="modal-header">
-
+        <x-modal-header>
             <h4 class="modal-title">@lang( 'lang.edit' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
+
+
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
-                {!! Form::text('name', $brand->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ), 'required' ]);
+                {!! Form::text('name', $brand->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
+                'required' ])
                 !!}
             </div>
 
@@ -238,47 +240,46 @@
                         </div>
                         <div class="col-10 offset-1">
                             <div class="preview-edit-brand-container">
-                                    @if($brand)
-                                        <div id="preview{{ $brand->id }}" class="preview">
-                                            @if (!empty($brand->getFirstMediaUrl('brand')))
-                                                <img src="{{ $brand->getFirstMediaUrl('brand') }}"
-                                                     id="img{{  $brand->id }}" alt="">
-                                            @else
-                                                <img src="{{ asset('/uploads/'.session('logo')) }}" alt=""
-                                                     id="img{{  $brand->id }}">
-                                            @endif
-                                        </div>
+                                @if($brand)
+                                <div id="preview{{ $brand->id }}" class="preview">
+                                    @if (!empty($brand->getFirstMediaUrl('brand')))
+                                    <img src="{{ $brand->getFirstMediaUrl('brand') }}" id="img{{  $brand->id }}" alt="">
+                                    @else
+                                    <img src="{{ asset('/uploads/'.session('logo')) }}" alt=""
+                                        id="img{{  $brand->id }}">
                                     @endif
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-{{--            @include('layouts.partials.image_crop', ['image_url' => $brand->getFirstMediaUrl('brand') ?? null])--}}
+            {{-- @include('layouts.partials.image_crop', ['image_url' => $brand->getFirstMediaUrl('brand') ?? null])--}}
         </div>
         <div id="cropped_edit_brand_images"></div>
         <div class="modal-footer">
-            <button id="submit-edit-brand-btn" class="btn btn-primary">@lang( 'lang.update' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button id="submit-edit-brand-btn" class="btn btn-primary  col-6  ">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}
         <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog" aria-labelledby="editBrandModalLabel"
-             aria-hidden="true">
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+
+                    <x-modal-header>
+
                         <h5 class="modal-title" id="editBrandModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+
+                    </x-modal-header>
+
                     <div class="modal-body">
                         <div id="croppie-modal-brand-edit" style="display:none">
                             <div id="croppie-container-brand-edit"></div>
                             <button data-dismiss="modal" id="croppie-cancel-btn-brand-edit" type="button"
-                                    class="btn btn-secondary"><i
-                                    class="fas fa-times"></i></button>
+                                class="btn btn-secondary"><i class="fas fa-times"></i></button>
                             <button id="croppie-submit-btn-brand-edit" type="button" class="btn btn-primary"><i
                                     class="fas fa-crop"></i></button>
                         </div>
@@ -442,4 +443,3 @@
     }
 
 </script>
-

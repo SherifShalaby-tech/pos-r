@@ -1,5 +1,5 @@
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 <style>
     .preview-images-container {
         /* display: flex;
@@ -70,11 +70,11 @@
         align-items: center;
     }
 
-    .variants > div {
+    .variants>div {
         margin-right: 5px;
     }
 
-    .variants > div:last-of-type {
+    .variants>div:last-of-type {
         margin-right: 0;
     }
 
@@ -85,11 +85,11 @@
         align-items: center;
     }
 
-    .file > input[type='file'] {
+    .file>input[type='file'] {
         display: none
     }
 
-    .file > label {
+    .file>label {
         font-size: 1rem;
         font-weight: 300;
         cursor: pointer;
@@ -110,75 +110,75 @@
         align-items: center;
     }
 
-    .file > label:hover {
+    .file>label:hover {
         border-color: hsl(0, 0%, 21%);
     }
 
-    .file > label:active {
+    .file>label:active {
         background-color: hsl(0, 0%, 96%);
     }
 
-    .file > label > i {
+    .file>label>i {
         padding-right: 5px;
     }
 
-    .file--upload > label {
+    .file--upload>label {
         color: hsl(204, 86%, 53%);
         border-color: hsl(204, 86%, 53%);
     }
 
-    .file--upload > label:hover {
+    .file--upload>label:hover {
         border-color: hsl(204, 86%, 53%);
         background-color: hsl(204, 86%, 96%);
     }
 
-    .file--upload > label:active {
+    .file--upload>label:active {
         background-color: hsl(204, 86%, 91%);
     }
 
-    .file--uploading > label {
+    .file--uploading>label {
         color: hsl(48, 100%, 67%);
         border-color: hsl(48, 100%, 67%);
     }
 
-    .file--uploading > label > i {
+    .file--uploading>label>i {
         animation: pulse 5s infinite;
     }
 
-    .file--uploading > label:hover {
+    .file--uploading>label:hover {
         border-color: hsl(48, 100%, 67%);
         background-color: hsl(48, 100%, 96%);
     }
 
-    .file--uploading > label:active {
+    .file--uploading>label:active {
         background-color: hsl(48, 100%, 91%);
     }
 
-    .file--success > label {
+    .file--success>label {
         color: hsl(141, 71%, 48%);
         border-color: hsl(141, 71%, 48%);
     }
 
-    .file--success > label:hover {
+    .file--success>label:hover {
         border-color: hsl(141, 71%, 48%);
         background-color: hsl(141, 71%, 96%);
     }
 
-    .file--success > label:active {
+    .file--success>label:active {
         background-color: hsl(141, 71%, 91%);
     }
 
-    .file--danger > label {
+    .file--danger>label {
         color: hsl(348, 100%, 61%);
         border-color: hsl(348, 100%, 61%);
     }
 
-    .file--danger > label:hover {
+    .file--danger>label:hover {
         border-color: hsl(348, 100%, 61%);
         background-color: hsl(348, 100%, 96%);
     }
 
-    .file--danger > label:active {
+    .file--danger>label:active {
         background-color: hsl(348, 100%, 91%);
     }
 
@@ -186,7 +186,7 @@
         cursor: not-allowed;
     }
 
-    .file--disabled > label {
+    .file--disabled>label {
         border-color: #e6e7ef;
         color: #e6e7ef;
         pointer-events: none;
@@ -209,38 +209,40 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('ProductClassController@update', $product_class->id), 'method' => 'put', 'id' => 'product_class_add_form']) !!}
-
-        <div class="modal-header">
+        {!! Form::open(['url' => action('ProductClassController@update', $product_class->id), 'method' => 'put', 'id' =>
+        'product_class_add_form']) !!}
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.edit' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __('lang.name') . ':*') !!}
                 <div class="input-group my-group">
-                    {!! Form::text('name', $product_class->name, ['class' => 'form-control', 'placeholder' => __('lang.name'), 'required', 'readonly' => $product_class->name == 'Extras' ? true : false]) !!}
+                    {!! Form::text('name', $product_class->name, ['class' => 'form-control', 'placeholder' =>
+                    __('lang.name'), 'required', 'readonly' => $product_class->name == 'Extras' ? true : false]) !!}
                     <span class="input-group-btn">
                         <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
-                                data-type="product_class"><i class="dripicons-web text-primary fa-lg"></i></button>
+                            data-type="product_class"><i class="dripicons-web text-primary fa-lg"></i></button>
                     </span>
                 </div>
             </div>
             @include('layouts.partials.translation_inputs', [
-                'attribute' => 'name',
-                'translations' => $product_class->translations,
-                'type' => 'product_class',
+            'attribute' => 'name',
+            'translations' => $product_class->translations,
+            'type' => 'product_class',
             ])
             <div class="form-group">
                 {!! Form::label('description', __('lang.description') . ':') !!}
-                {!! Form::text('description', $product_class->description, ['class' => 'form-control', 'placeholder' => __('lang.description')]) !!}
+                {!! Form::text('description', $product_class->description, ['class' => 'form-control', 'placeholder' =>
+                __('lang.description')]) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('sort', __('lang.sort') . ':*') !!}
-                {!! Form::number('sort', $product_class->sort, ['class' => 'form-control', 'placeholder' => __('lang.sort'), 'required']) !!}
+                {!! Form::number('sort', $product_class->sort, ['class' => 'form-control', 'placeholder' =>
+                __('lang.sort'), 'required']) !!}
             </div>
             <div class="form-group">
                 <div class="i-checks">
@@ -254,24 +256,21 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label for="projectinput2">{{ __('categories.image') }}</label>
-                    {{--                                                        <input type="file" id="projectinput2"  class="form-control img" name="image" accept="image/*" />--}}
+                    {{-- <input type="file" id="projectinput2" class="form-control img" name="image"
+                        accept="image/*" />--}}
                     <div class="container mt-3">
-                        <div class="row mx-0"
-                             style="border: 1px solid #ddd;padding: 30px 0px;">
+                        <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
                             <div class="col-12">
                                 <div class="mt-3">
                                     <div class="row">
                                         <div class="col-10 offset-1">
                                             <div class="variants">
                                                 <div class='file file--upload w-100'>
-                                                    <label for='file-input-edit'
-                                                           class="w-100">
+                                                    <label for='file-input-edit' class="w-100">
                                                         <i class="fas fa-cloud-upload-alt"></i>Upload
                                                     </label>
                                                     <!-- <input  id="file-input" multiple type='file' /> -->
-                                                    <input type="file"
-                                                           id="file-input-edit"
-                                                    >
+                                                    <input type="file" id="file-input-edit">
                                                 </div>
                                             </div>
                                         </div>
@@ -282,15 +281,15 @@
                             <div class="col-10 offset-1">
                                 <div class="preview-edit-container">
                                     @if($product_class)
-                                        <div id="preview{{ $product_class->id }}" class="preview">
-                                            @if (!empty($product_class->getFirstMediaUrl('product_class')))
-                                                <img src="{{ $product_class->getFirstMediaUrl('product_class') }}"
-                                                     id="img{{  $product_class->id }}" alt="">
-                                            @else
-                                                <img src="{{ asset('/uploads/' . session('logo')) }}" alt=""
-                                                     id="img{{  $product_class->id }}">
-                                            @endif
-                                        </div>
+                                    <div id="preview{{ $product_class->id }}" class="preview">
+                                        @if (!empty($product_class->getFirstMediaUrl('product_class')))
+                                        <img src="{{ $product_class->getFirstMediaUrl('product_class') }}"
+                                            id="img{{  $product_class->id }}" alt="">
+                                        @else
+                                        <img src="{{ asset('/uploads/' . session('logo')) }}" alt=""
+                                            id="img{{  $product_class->id }}">
+                                        @endif
+                                    </div>
                                     @endif
                                 </div>
                             </div>
@@ -301,8 +300,8 @@
         </div>
 
         <div class="modal-footer">
-            <button id="sub-button-form" class="btn btn-primary">@lang( 'lang.update' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button id="sub-button-form" class="btn btn-primary col-6">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}
@@ -311,20 +310,19 @@
 </div><!-- /.modal-dialog -->
 
 <div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imagesModalLabel"
-     aria-hidden="true">
+    aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <x-modal-header>
+
                 <h5 class="modal-title" id="imagesModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+
+            </x-modal-header>
+
             <div class="modal-body">
                 <div id="croppie-modal-edit" style="display:none">
                     <div id="croppie-container-edit"></div>
-                    <button data-dismiss="modal" id="croppie-cancel-btn-edit" type="button"
-                            class="btn btn-secondary"><i
+                    <button data-dismiss="modal" id="croppie-cancel-btn-edit" type="button" class="btn btn-secondary"><i
                             class="fas fa-times"></i></button>
                     <button id="croppie-submit-btn-edit" type="button" class="btn btn-primary"><i
                             class="fas fa-crop"></i></button>

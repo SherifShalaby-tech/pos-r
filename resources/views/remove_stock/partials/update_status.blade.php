@@ -5,13 +5,12 @@
         'method'
         => 'post', 'id' =>
         'update_status_form' ]) !!}
+        <x-modal-header>
 
-        <div class="modal-header">
 
             <h4 class="modal-title">@lang( 'lang.compensated' ) ({{$transaction->invoice_no}})</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="row">
@@ -33,7 +32,8 @@
             <div class="col-md-12">
                 <div class="form-group">
                     {!! Form::label('compensated_at', __('lang.date'). ':*', []) !!}
-                    {!! Form::text('compensated_at', date('Y-m-d'), ['class' => 'form-control  datepicker', 'required']) !!}
+                    {!! Form::text('compensated_at', date('Y-m-d'), ['class' => 'form-control datepicker', 'required'])
+                    !!}
                 </div>
                 <div class="form-group">
                     {!! Form::label('compensated_invoice_no', __('lang.invoice_no'). ':*', []) !!}
@@ -47,8 +47,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" id="update-status">@lang( 'lang.update' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6" id="update-status">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

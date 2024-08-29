@@ -1,11 +1,11 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <div class="modal-header">
+        <x-modal-header>
+
 
             <h4 class="modal-title">@lang('lang.return_purchase')</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="row">
@@ -27,14 +27,16 @@
                         <b>{{ $purchase_return->supplier->name }}</b>
                     </div>
                     <div class="col-md-12">
-                        {!! Form::label('email', __('lang.email'), []) !!}: <b>{{ $purchase_return->supplier->email }}</b>
+                        {!! Form::label('email', __('lang.email'), []) !!}: <b>{{ $purchase_return->supplier->email
+                            }}</b>
                     </div>
                     <div class="col-md-12">
                         {!! Form::label('mobile_number', __('lang.mobile_number'), []) !!}:
                         <b>{{ $purchase_return->supplier->mobile_number }}</b>
                     </div>
                     <div class="col-md-12">
-                        {!! Form::label('address', __('lang.address'), []) !!}: <b>{{ $purchase_return->supplier->address }}</b>
+                        {!! Form::label('address', __('lang.address'), []) !!}: <b>{{
+                            $purchase_return->supplier->address }}</b>
                     </div>
                 </div>
             </div>
@@ -55,51 +57,51 @@
                         </thead>
                         <tbody>
                             @php
-                                $total = 0;
+                            $total = 0;
                             @endphp
                             @foreach ($purchase_return->purchase_return_lines as $line)
-                                @if ($line->quantity == 0)
-                                    @continue
-                                @endif
+                            @if ($line->quantity == 0)
+                            @continue
+                            @endif
 
-                                <tr>
-                                    <td>
-                                        {{ $line->product->name }}
-                                        @if (!empty($line->variation))
-                                            @if ($line->variation->name != 'Default')
-                                                <b>{{ $line->variation->name }}</b>
-                                            @endif
-                                        @endif
+                            <tr>
+                                <td>
+                                    {{ $line->product->name }}
+                                    @if (!empty($line->variation))
+                                    @if ($line->variation->name != 'Default')
+                                    <b>{{ $line->variation->name }}</b>
+                                    @endif
+                                    @endif
 
-                                    </td>
-                                    <td>
-                                        @if (!empty($line->variation))
-                                            @if ($line->variation->name != 'Default')
-                                                {{ $line->variation->sub_sku }}
-                                            @else
-                                                {{ $line->product->sku ?? '' }}
-                                            @endif
-                                        @else
-                                            {{ $line->product->sku ?? '' }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if (isset($line->quantity))
-                                            {{ $line->quantity }}@else{{ 0 }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if (isset($line->purchase_price))
-                                            {{ @num_format($line->purchase_price) }}@else{{ 0 }}
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ @num_format($line->purchase_price * $line->quantity) }}
-                                    </td>
-                                </tr>
-                                @php
-                                    $total += $line->purchase_price * $line->quantity;
-                                @endphp
+                                </td>
+                                <td>
+                                    @if (!empty($line->variation))
+                                    @if ($line->variation->name != 'Default')
+                                    {{ $line->variation->sub_sku }}
+                                    @else
+                                    {{ $line->product->sku ?? '' }}
+                                    @endif
+                                    @else
+                                    {{ $line->product->sku ?? '' }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (isset($line->quantity))
+                                    {{ $line->quantity }}@else{{ 0 }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (isset($line->purchase_price))
+                                    {{ @num_format($line->purchase_price) }}@else{{ 0 }}
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ @num_format($line->purchase_price * $line->quantity) }}
+                                </td>
+                            </tr>
+                            @php
+                            $total += $line->purchase_price * $line->quantity;
+                            @endphp
                             @endforeach
                         </tbody>
                         <tfoot>
@@ -117,7 +119,7 @@
             <br>
             <br>
             @include('transaction_payment.partials.payment_table', [
-                'payments' => $purchase_return->transaction_payments,
+            'payments' => $purchase_return->transaction_payments,
             ])
 
             <br>
@@ -137,7 +139,8 @@
                         </tr>
                         <tr>
                             <th>@lang('lang.due'):</th>
-                            <td> {{ @num_format($purchase_return->final_total - $purchase_return->transaction_payments->sum('amount')) }}
+                            <td> {{ @num_format($purchase_return->final_total -
+                                $purchase_return->transaction_payments->sum('amount')) }}
                             </td>
                         </tr>
                     </table>
@@ -148,7 +151,7 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang('lang.close')</button>
+            <button type="button" class="btn btn-default col-12" data-dismiss="modal">@lang('lang.close')</button>
         </div>
 
 

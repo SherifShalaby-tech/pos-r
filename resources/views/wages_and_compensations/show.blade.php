@@ -4,16 +4,26 @@
     label {
         font-weight: bold !important;
     }
-
 </style>
 @section('content')
+<section class="forms pt-2">
+
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+
+                    <h4>@lang('lang.wages_and_compensations')</h4>
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.wages_and_compensations')</h4>
-                    </div>
+
                     <div class="card-body">
 
                         <div class="row">
@@ -27,7 +37,7 @@
                                 <div class="form-group">
                                     <label for="payment_type">@lang('lang.payment_type'):</label>
                                     @if (!empty($payment_types[$wages_and_compensation->payment_type]))
-                                        {{ $payment_types[$wages_and_compensation->payment_type] }}
+                                    {{ $payment_types[$wages_and_compensation->payment_type] }}
                                     @endif
                                 </div>
                             </div>
@@ -45,7 +55,8 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-8 account_period_dates @if ($wages_and_compensation->payment_type == 'salary') hide @endif">
+                            <div
+                                class="col-md-8 account_period_dates @if ($wages_and_compensation->payment_type == 'salary') hide @endif">
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
@@ -85,7 +96,7 @@
                                 <div class="form-group">
                                     <label for="payment_date">@lang('lang.payment_date'):</label>
                                     @if (!empty($wages_and_compensation->payment_date))
-                                        {{ @format_date($wages_and_compensation->payment_date) }}
+                                    {{ @format_date($wages_and_compensation->payment_date) }}
                                     @endif
                                 </div>
                             </div>
@@ -93,7 +104,7 @@
                                 <div class="form-group">
                                     {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
                                     @if (!empty($wages_and_compensation->transaction))
-                                        {{ $wages_and_compensation->transaction->source->name }}
+                                    {{ $wages_and_compensation->transaction->source->name }}
                                     @endif
                                 </div>
                             </div>
@@ -118,7 +129,8 @@
             </div>
         </div>
     </div>
-    <div class="modal fade second_modal" role="dialog" aria-hidden="true"></div>
+</section>
+<div class="modal fade second_modal" role="dialog" aria-hidden="true"></div>
 
 @endsection
 

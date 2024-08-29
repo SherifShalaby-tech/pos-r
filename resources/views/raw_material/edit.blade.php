@@ -252,12 +252,12 @@
 <div class="modal fade" id="product_cropper_modal" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <x-modal-header>
+
                 <h5 class="modal-title">@lang('lang.crop_image_before_upload')</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
+
+            </x-modal-header>
+
             <div class="modal-body">
                 <div class="img-container">
                     <div class="row">
@@ -271,8 +271,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" id="product_crop" class="btn btn-primary">@lang('lang.crop')</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="product_crop" class="btn btn-primary col-6">@lang('lang.crop')</button>
+                <button type="button" class="btn btn-default col-6" data-dismiss="modal">Cancel</button>
             </div>
         </div>
     </div>

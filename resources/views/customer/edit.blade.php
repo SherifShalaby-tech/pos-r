@@ -40,7 +40,7 @@
                                     {!! Form::label('name', __( 'lang.name' ) . ':') !!}
                                     {!! Form::text('name', $customer->name, ['class' => 'form-control', 'placeholder' =>
                                     __(
-                                    'lang.name' )]);
+                                    'lang.name' )])
                                     !!}
                                 </div>
                             </div>
@@ -56,7 +56,7 @@
                                     {!! Form::text('mobile_number', $customer->mobile_number, ['class' =>
                                     'form-control', 'placeholder' =>
                                     __(
-                                    'lang.mobile_number' ), 'required' ]);
+                                    'lang.mobile_number' ), 'required' ])
                                     !!}
                                 </div>
                             </div>
@@ -65,7 +65,7 @@
                                     {!! Form::label('address', __( 'lang.address' ) . ':') !!}
                                     {!! Form::textarea('address', $customer->address, ['class' => 'form-control', 'rows'
                                     => 3, 'placeholder' => __(
-                                    'lang.address' ) ]);
+                                    'lang.address' ) ])
                                     !!}
                                 </div>
                             </div>
@@ -74,7 +74,7 @@
                                     {!! Form::label('email', __( 'lang.email' ) . ':') !!}
                                     {!! Form::email('email', $customer->email, ['class' => 'form-control', 'placeholder'
                                     => __(
-                                    'lang.email' ) ]);
+                                    'lang.email' ) ])
                                     !!}
                                 </div>
                             </div>

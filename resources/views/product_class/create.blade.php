@@ -19,6 +19,7 @@
         margin: 30px 0px;
         border: 1px solid #ddd;
     }
+
     .preview img {
         width: 100%;
         height: 100%;
@@ -201,26 +202,27 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('ProductClassController@store'), 'method' => 'post', 'id' => $quick_add ? 'quick_add_product_class_form' : 'product_class_add_form']) !!}
-
-        <div class="modal-header">
+        {!! Form::open(['url' => action('ProductClassController@store'), 'method' => 'post', 'id' => $quick_add ?
+        'quick_add_product_class_form' : 'product_class_add_form']) !!}
+        <x-modal-header>
 
             <h4 class="modal-title">
                 @if (session('system_mode') == 'restaurant')
-                    @lang( 'lang.add_category' )
+                @lang( 'lang.add_category' )
                 @else
-                    @lang('lang.add_class')
+                @lang('lang.add_class')
                 @endif
             </h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __('lang.name') . ':*') !!}
                 <div class="input-group my-group">
-                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'), 'required']) !!}
+                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'),
+                    'required']) !!}
                     <span class="input-group-btn">
                         <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
                             data-type="product_class"><i class="dripicons-web text-primary fa-lg"></i></button>
@@ -228,18 +230,20 @@
                 </div>
             </div>
             @include('layouts.partials.translation_inputs', [
-                'attribute' => 'name',
-                'translations' => [],
-                'type' => 'product_class',
+            'attribute' => 'name',
+            'translations' => [],
+            'type' => 'product_class',
             ])
             <input type="hidden" name="quick_add" value="{{ $quick_add }}">
             <div class="form-group">
                 {!! Form::label('description', __('lang.description') . ':') !!}
-                {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' => __('lang.description')]) !!}
+                {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' =>
+                __('lang.description')]) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('sort', __('lang.sort') . ':*') !!}
-                {!! Form::number('sort', 1, ['class' => 'form-control', 'placeholder' => __('lang.sort'), 'required']) !!}
+                {!! Form::number('sort', 1, ['class' => 'form-control', 'placeholder' => __('lang.sort'), 'required'])
+                !!}
             </div>
             <div class="form-group">
                 <div class="i-checks">
@@ -249,7 +253,7 @@
                         </strong></label>
                 </div>
             </div>
-{{--            @include('layouts.partials.image_crop')--}}
+            {{-- @include('layouts.partials.image_crop')--}}
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
@@ -278,9 +282,10 @@
                                 </div>
                             </div>
                         </div>
-                        {{--                                                            <input type="file" id="projectinput2"--}}
-                        {{--                                                                   class="form-control img" name="image" accept="image/*" />--}}
-                        {{--                                                                   <img src="{{ asset('images/logo.png') }}" alt="" class="img-thumbnail img-preview " style="width: 100px">--}}
+                        {{-- <input type="file" id="projectinput2" --}} {{-- class="form-control img" name="image"
+                            accept="image/*" />--}}
+                        {{-- <img src="{{ asset('images/logo.png') }}" alt="" class="img-thumbnail img-preview "
+                            style="width: 100px">--}}
                     </div>
                     @error('image')
                     <p class="text-danger" style="font-size: 12px">{{ $message }}</p>
@@ -291,26 +296,26 @@
         </div>
 
         <div class="modal-footer">
-            <button id="submit-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button id="submit-btn" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
         <div id="cropped_product_class_images"></div>
         {!! Form::close() !!}
-        <div class="modal fade" id="exampleClassModal" tabindex="-1" role="dialog" aria-labelledby="exampleClassModalLabel"
-             aria-hidden="true">
+        <div class="modal fade" id="exampleClassModal" tabindex="-1" role="dialog"
+            aria-labelledby="exampleClassModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <x-modal-header>
+
                         <h5 class="modal-title" id="exampleClassModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+
+                    </x-modal-header>
+
                     <div class="modal-body">
                         <div id="croppie-class-modal" style="display:none">
                             <div id="croppie-class-container"></div>
-                            <button data-dismiss="modal" id="croppie-class-cancel-btn" type="button" class="btn btn-secondary"><i
-                                    class="fas fa-times"></i></button>
+                            <button data-dismiss="modal" id="croppie-class-cancel-btn" type="button"
+                                class="btn btn-secondary"><i class="fas fa-times"></i></button>
                             <button id="croppie-class-submit-btn" type="button" class="btn btn-primary"><i
                                     class="fas fa-crop"></i></button>
                         </div>
@@ -324,8 +329,6 @@
 </div><!-- /.modal-dialog -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 <script>
-
-
     var fileClassInput = document.querySelector('#file-class-input');
     var previewClassContainer = document.querySelector('.preview-class-container');
     var croppieClassModal = document.querySelector('#croppie-class-modal');

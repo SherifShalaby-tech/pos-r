@@ -2,99 +2,118 @@
 @section('title', __('lang.sales_per_employee'))
 
 @section('content')
-    <div class="col-md-12  no-print">
-        <div class="card">
-            <div class="card-header d-flex align-items-center">
+<section class="forms pt-2">
+
+    <div class="container-fluid">
+        <div class="col-md-12  no-print">
+            <x-page-title>
+
+
                 <h4 class="print-title">@lang('lang.sales_per_employee')</h4>
-            </div>
-            <form action="">
-                <div class="col-md-12">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                {!! Form::text('start_date', request()->start_date, ['class' => 'form-control filter']) !!}
+
+                <x-slot name="buttons">
+
+                </x-slot>
+            </x-page-title>
+
+
+            <div class="card">
+
+                <form action="">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('start_date', __('lang.start_date'), []) !!}
+                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control
+                                    filter']) !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                {!! Form::label('start_time', __('lang.start_time'), []) !!}
-                                {!! Form::text('start_time', null, ['class' => 'form-control time_picker filter']) !!}
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    {!! Form::label('start_time', __('lang.start_time'), []) !!}
+                                    {!! Form::text('start_time', null, ['class' => 'form-control time_picker filter'])
+                                    !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                {!! Form::text('end_date', request()->end_date, ['class' => 'form-control filter']) !!}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('end_date', __('lang.end_date'), []) !!}
+                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control filter'])
+                                    !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class="form-group">
-                                {!! Form::label('end_time', __('lang.end_time'), []) !!}
-                                {!! Form::text('end_time', null, ['class' => 'form-control time_picker filter']) !!}
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    {!! Form::label('end_time', __('lang.end_time'), []) !!}
+                                    {!! Form::text('end_time', null, ['class' => 'form-control time_picker filter']) !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                {!! Form::label('employee_id', __('lang.employee'), []) !!}
-                                {!! Form::select('employee_id', $employees, request()->employee_id, ['class' => 'form-control filter', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    {!! Form::label('employee_id', __('lang.employee'), []) !!}
+                                    {!! Form::select('employee_id', $employees, request()->employee_id, ['class' =>
+                                    'form-control filter', 'placeholder' => __('lang.all'), 'data-live-search' =>
+                                    'true']) !!}
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-3">
-                            <br>
-                            <button href="{{ action('ReportController@getDueReport') }}" type="button"
-                                class="btn btn-danger mt-2 ml-2 clear_filter">@lang('lang.clear_filter')</button>
+                            <div class="col-md-3">
+                                <br>
+                                <button href="{{ action('ReportController@getDueReport') }}" type="button"
+                                    class="btn btn-danger mt-2 ml-2 clear_filter">@lang('lang.clear_filter')</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-            <div class="card-body">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table" id="sales_table">
-                            <thead>
-                                <tr>
-                                    <th>@lang('lang.date')</th>
-                                    <th>@lang('lang.reference')</th>
-                                    <th>@lang('lang.employee')</th>
-                                    <th class="currencies">@lang('lang.currency')</th>
-                                    <th class="sum">@lang('lang.commission')</th>
-                                    <th class="sum">@lang('lang.paid')</th>
-                                    <th class="sum">@lang('lang.due')</th>
-                                    <th>@lang('lang.payment_type')</th>
-                                    <th>@lang('lang.payment_status')</th>
-                                    <th class="notexport">@lang('lang.action')</th>
-                                </tr>
-                            </thead>
+                </form>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="table-responsive">
+                            <table class="table" id="sales_table">
+                                <thead>
+                                    <tr>
+                                        <th>@lang('lang.date')</th>
+                                        <th>@lang('lang.reference')</th>
+                                        <th>@lang('lang.employee')</th>
+                                        <th class="currencies">@lang('lang.currency')</th>
+                                        <th class="sum">@lang('lang.commission')</th>
+                                        <th class="sum">@lang('lang.paid')</th>
+                                        <th class="sum">@lang('lang.due')</th>
+                                        <th>@lang('lang.payment_type')</th>
+                                        <th>@lang('lang.payment_status')</th>
+                                        <th class="notexport">@lang('lang.action')</th>
+                                    </tr>
+                                </thead>
 
-                            <tbody>
+                                <tbody>
 
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <th style="text-align: right">@lang('lang.total')</th>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <th style="text-align: right">@lang('lang.total')</th>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</section>
 
-    <!-- This will be printed -->
-    <section class="invoice print_section print-only" id="receipt_section"> </section>
+<!-- This will be printed -->
+<section class="invoice print_section print-only" id="receipt_section"> </section>
 @endsection
 
 @section('javascript')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             sales_table = $("#sales_table").DataTable({
                 lengthChange: true,
                 paging: true,
@@ -289,5 +308,5 @@
             __currency_convert_recursively($("#receipt_section"));
             __print_receipt("receipt_section");
         }
-    </script>
+</script>
 @endsection

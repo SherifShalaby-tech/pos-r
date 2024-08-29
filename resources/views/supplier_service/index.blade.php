@@ -4,63 +4,86 @@
 
 
 @section('content')
-    <section class="">
-        <div class="col-md-22">
+<section class="forms pt-2">
+
+    <div class="container-fluid">
+        <div class="col-md-12">
+
+            <x-page-title>
+
+
+
+                <h4 class="print-title">@lang('lang.supplier_services')</h4>
+                <x-slot name="buttons">
+
+                </x-slot>
+            </x-page-title>
+
+
             <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <h3 class="print-title">@lang('lang.supplier_services')</h3>
-                </div>
+
                 <div class="card-body">
                     <form action="">
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('store_id', __('lang.store'), []) !!}
-                                    {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                                    {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control
+                                    filters', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('supplier_id', __('lang.supplier'), []) !!}
-                                    {!! Form::select('supplier_id', $suppliers, request()->supplier_id, ['class' => 'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                                    {!! Form::select('supplier_id', $suppliers, request()->supplier_id, ['class' =>
+                                    'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' =>
+                                    'true']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('created_by', __('lang.added_by'), []) !!}
-                                    {!! Form::select('created_by', $users, request()->created_by, ['class' => 'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                                    {!! Form::select('created_by', $users, request()->created_by, ['class' =>
+                                    'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' =>
+                                    'true']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('product_id', __('lang.product'), []) !!}
-                                    {!! Form::select('product_id', $products, request()->product_id, ['class' => 'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
+                                    {!! Form::select('product_id', $products, request()->product_id, ['class' =>
+                                    'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' =>
+                                    'true']) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-2">
                                 <div class="form-group">
                                     {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control sale_filter', 'id' => 'start_date']) !!}
+                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control
+                                    sale_filter', 'id' => 'start_date']) !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     {!! Form::label('start_time', __('lang.start_time'), []) !!}
-                                    {!! Form::text('start_time', null, ['class' => 'form-control time_picker sale_filter']) !!}
+                                    {!! Form::text('start_time', null, ['class' => 'form-control time_picker
+                                    sale_filter']) !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control sale_filter', 'id' => 'end_date']) !!}
+                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control
+                                    sale_filter', 'id' => 'end_date']) !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
                                     {!! Form::label('end_time', __('lang.end_time'), []) !!}
-                                    {!! Form::text('end_time', null, ['class' => 'form-control time_picker sale_filter']) !!}
+                                    {!! Form::text('end_time', null, ['class' => 'form-control time_picker
+                                    sale_filter']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -108,12 +131,13 @@
                 </tfoot>
             </table>
         </div>
-    </section>
+    </div>
+</section>
 @endsection
 
 @section('javascript')
-    <script type="text/javascript">
-        $(document).ready(function() {
+<script type="text/javascript">
+    $(document).ready(function() {
             supplier_service_table = $('#supplier_service_table').DataTable({
                 lengthChange: true,
                 paging: true,
@@ -277,5 +301,5 @@
             $('.filters').selectpicker('refresh')
             supplier_service_table.ajax.reload();
         })
-    </script>
+</script>
 @endsection

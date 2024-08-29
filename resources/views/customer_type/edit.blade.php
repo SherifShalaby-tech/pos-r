@@ -26,7 +26,7 @@
                                     {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
                                     {!! Form::text('name', $customer_type->name, ['class' => 'form-control',
                                     'placeholder' => __(
-                                    'lang.name' ), 'required' ]);
+                                    'lang.name' ), 'required' ])
                                     !!}
                                 </div>
                             </div>

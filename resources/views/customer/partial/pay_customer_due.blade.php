@@ -1,33 +1,34 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('CustomerController@postPayContactDue', $customer_details->customer_id), 'method' => 'post', 'id' =>
+        {!! Form::open(['url' => action('CustomerController@postPayContactDue', $customer_details->customer_id),
+        'method' => 'post', 'id' =>
         'add_payment_form', 'enctype' => 'multipart/form-data' ])
         !!}
 
-        <div class="modal-header">
+        <x-modal-header>
+
 
             <h4 class="modal-title">@lang( 'lang.add_payment' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-6">
                     <div class="well">
-                      <strong>@lang('lang.customer_name'): </strong>{{ $customer_details->name }}<br>
-                      <strong>@lang('lang.mobile'): </strong>{{ $customer_details->mobile_number }}<br><br>
+                        <strong>@lang('lang.customer_name'): </strong>{{ $customer_details->name }}<br>
+                        <strong>@lang('lang.mobile'): </strong>{{ $customer_details->mobile_number }}<br><br>
                     </div>
-                  </div>
+                </div>
                 <div class="col-md-6">
                     <div class="well">
-                        <strong>@lang('lang.total_purchase'): </strong><span class=""
-                            data-currency_symbol="true">{{ @num_format($customer_details->total_invoice) }}</span><br>
-                        <strong>@lang('lang.total_paid'): </strong><span class=""
-                            data-currency_symbol="true">{{ @num_format($customer_details->total_paid) }}</span><br>
-                        <strong>@lang('lang.due'): </strong><span class=""
-                            data-currency_symbol="true">{{ @num_format($customer_details->total_invoice - $customer_details->total_paid) }}</span><br>
+                        <strong>@lang('lang.total_purchase'): </strong><span class="" data-currency_symbol="true">{{
+                            @num_format($customer_details->total_invoice) }}</span><br>
+                        <strong>@lang('lang.total_paid'): </strong><span class="" data-currency_symbol="true">{{
+                            @num_format($customer_details->total_paid) }}</span><br>
+                        <strong>@lang('lang.due'): </strong><span class="" data-currency_symbol="true">{{
+                            @num_format($customer_details->total_invoice - $customer_details->total_paid) }}</span><br>
                     </div>
                 </div>
             </div>
@@ -37,7 +38,8 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('amount', __('lang.amount'). ':*', []) !!} <br>
-                        {!! Form::text('amount', @num_format($customer_details->total_invoice - $customer_details->total_paid), ['class' => 'form-control', 'placeholder'
+                        {!! Form::text('amount', @num_format($customer_details->total_invoice -
+                        $customer_details->total_paid), ['class' => 'form-control', 'placeholder'
                         => __('lang.amount')]) !!}
                     </div>
                 </div>
@@ -109,8 +111,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

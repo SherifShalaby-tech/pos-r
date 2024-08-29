@@ -61,12 +61,13 @@
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+
+                                    <x-modal-header>
+
                                         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
+
+                                    </x-modal-header>
+
                                     <div class="modal-body">
                                         <form action="{{route('item-borrowed.give')}}" method="POST">
                                             @csrf
@@ -100,9 +101,10 @@
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
+                                                <button type="button" class="btn btn-default col-6"
                                                     data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                                <button type="submit" class="btn btn-primary col-6">Save
+                                                    changes</button>
                                             </div>
                                         </form>
                                     </div>
@@ -113,12 +115,13 @@
                             aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+
+                                    <x-modal-header>
+
+
                                         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
+                                    </x-modal-header>
+
                                     <div class="modal-body">
                                         <form action="{{route('item-borrowed.update','test')}}" method="POST">
                                             @csrf

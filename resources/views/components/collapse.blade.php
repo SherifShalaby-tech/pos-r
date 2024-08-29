@@ -1,26 +1,30 @@
 @props([
 'button'=>"",
 ])
-<div>
-    <button {{ $attributes->merge(['class' => 'btn btn-primary']) }} style="width:fit-content" type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#{{ $collapseId }}"
-        aria-expanded="false" aria-controls="{{ $collapseId }}" {{ $attributes }}>
-        {{ $button ?? $button }}
+
+<div class="w-100">
+
+    <button class="btn btn-primary {{ $buttonClass }}" type="button" data-bs-toggle="collapse"
+        data-bs-target="#{{ $collapseId }}" aria-expanded="false" aria-controls="{{ $collapseId }}">
+
+        {{ $button }}
+
     </button>
 
-    <div {{ $attributes->merge(['class' => 'collapse ']) }} style="width:100%" id="{{ $collapseId }}">
+    <div class="collapse {{ $bodyClass }}" style="width:100%" id="{{ $collapseId }}">
 
         <div class="card mb-0 card-body">
             {{ $slot }}
         </div>
+
     </div>
+
 </div>
 
 
 
 
-{{-- <x-collapse color="primary" collapse-id="Filter">
+{{-- <x-collapse collapse-id="Filter">
     <x-slot name="button">
         button
     </x-slot>

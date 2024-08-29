@@ -4,20 +4,19 @@
         {!! Form::open(['url' => action('TransactionPaymentController@payCustomerDue', $customer->id), 'method' =>
         'post', 'id' => 'pay_customer_due_form' ])
         !!}
-
-        <div class="modal-header">
-
+        <x-modal-header>
             <h4 class="modal-title">@lang( 'lang.pay_customer_due' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-body">
-                            <input type="hidden" value="{{$extract_due}}" name="extract_due"/>
+                            <input type="hidden" value="{{$extract_due}}" name="extract_due" />
                             <label for="">@lang('lang.customer_name'): {{$customer->name}}</label> <br>
                             <label for="">@lang('lang.mobile'): {{$customer->mobile}}</label><br>
                             <label for="">@lang('lang.address'): {{$customer->address}}</label><br>
@@ -32,7 +31,7 @@
                             {!! Form::label('amount', __('lang.amount'). ':*', []) !!} <br>
                             {!! Form::text('amount', @num_format($due), ['class' => 'form-control', 'placeholder'
                             => __('lang.amount')]) !!}
-                            <input type="hidden" value="{{@num_format($due)}}" name="balance"/>
+                            <input type="hidden" value="{{@num_format($due)}}" name="balance" />
                         </div>
                     </div>
 
@@ -49,7 +48,8 @@
                     <div class="col-md-4">
                         <div class="form-group">
                             {!! Form::label('paid_on', __('lang.payment_date'). ':', []) !!} <br>
-                            {!! Form::text('paid_on',  @format_date(date('Y-m-d')), ['class' => 'form-control datepicker', 'readonly','required',
+                            {!! Form::text('paid_on', @format_date(date('Y-m-d')), ['class' => 'form-control
+                            datepicker', 'readonly','required',
                             'placeholder' => __('lang.payment_date')]) !!}
                         </div>
                     </div>
@@ -88,8 +88,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

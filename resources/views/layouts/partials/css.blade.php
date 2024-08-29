@@ -50,6 +50,9 @@
     @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@100..900&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
     @import url('https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Noto+Kufi+Arabic:wght@100..900&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+    @import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Beiruti:wght@200..900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
 </style>
 <style>
     .my-group .form-control {
@@ -80,9 +83,6 @@
         --primary-color: #4f46e5;
         --primary-color-hover: #362ebd;
     }
-
-
-
 
     /* HTML: <div class="loader"></div> */
     #loader {
@@ -123,8 +123,15 @@
 
     body {
         /* font-family: "Noto Kufi Arabic", sans-serif !important; */
-        font-family: "Almarai", sans-serif !important;
+        /* font-family: "Almarai", sans-serif !important; */
+        /* font-family: "Rubik", sans-serif; */
+        font-family: "Beiruti", sans-serif;
     }
+
+    .dash-padding {
+        padding: 1px;
+    }
+
 
     .page-title-en {
         border-left: 2px solid var(--primary-color);
@@ -145,7 +152,7 @@
     }
 
     .modal-header {
-        background: linear-gradient(to right, var(--primary-color), #6b73ff);
+        background: linear-gradient(to right, var(--primary-color), var(--primary-color-hover));
         color: white
     }
 
@@ -154,6 +161,20 @@
         padding: 0
     }
 
+    .modal-footer .btn {
+        margin: 0;
+        padding: 10px;
+        border-radius: 0;
+        text-align: center
+    }
+
+    .modal-footer .btn-default {
+        transition: 0.3s
+    }
+
+    .modal-footer .btn-default:hover {
+        background: #ebebeb;
+    }
 
     .modal-close-btn {
         width: 35px;
@@ -168,8 +189,8 @@
     }
 
     .btn-modal {
-        border-radius: 0 6px 6px 0px;
-        border: 2px solid var(--primary-color);
+        /* border-radius: 0 6px 6px 0px; */
+        /* border: 2px solid var(--primary-color); */
     }
 
     ::-webkit-scrollbar-track {
@@ -186,5 +207,30 @@
     ::-webkit-scrollbar-thumb {
         background-color: var(--primary-color);
         border-radius: 3px;
+    }
+
+    .count-title {
+        position: relative;
+    }
+
+    .count-title .name {
+        font-size: 15px;
+        background: white;
+        border-radius: 4px;
+        color: var(--primary-color);
+    }
+
+    .count-title .icon {
+        position: absolute;
+        bottom: 0;
+        right: 5px;
+        font-size: 50px;
+        opacity: 0.5;
+        display: flex;
+        transition: 0.2s
+    }
+
+    .count-title:hover .icon {
+        opacity: 0.8;
     }
 </style>

@@ -1,31 +1,35 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('MoneySafeTransferController@postAddMoneyToSafe', $money_safe_id), 'method' => 'post', 'id' => 'add_money_form']) !!}
+        {!! Form::open(['url' => action('MoneySafeTransferController@postAddMoneyToSafe', $money_safe_id), 'method' =>
+        'post', 'id' => 'add_money_form']) !!}
 
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.add_money_to_safe' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('source_type', __('lang.source_type') . ':*') !!}
-                {!! Form::select('source_type', ['employee' => __('lang.employee'), 'safe' => __('lang.safe')], 'employee', ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required']) !!}
+                {!! Form::select('source_type', ['employee' => __('lang.employee'), 'safe' => __('lang.safe')],
+                'employee', ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required']) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('source_id', __('lang.source') . ':*') !!}
-                {!! Form::select('source_id', $emplooyes, false, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required', 'placeholder' => __('lang.please_select')]) !!}
+                {!! Form::select('source_id', $emplooyes, false, ['class' => 'form-control selectpicker',
+                'data-live-search' => 'true', 'required', 'placeholder' => __('lang.please_select')]) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('job_type_id', __('lang.job') . ':*') !!}
-                {!! Form::select('job_type_id', $job_types, false, ['class' => 'form-control', 'required', 'readonly', 'placeholder' => __('lang.please_select')]) !!}
+                {!! Form::select('job_type_id', $job_types, false, ['class' => 'form-control', 'required', 'readonly',
+                'placeholder' => __('lang.please_select')]) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('store_id', __('lang.store') . ':*') !!}
-                {!! Form::select('store_id', $stores, false, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required', 'placeholder' => __('lang.please_select')]) !!}
+                {!! Form::select('store_id', $stores, false, ['class' => 'form-control selectpicker', 'data-live-search'
+                => 'true', 'required', 'placeholder' => __('lang.please_select')]) !!}
             </div>
             <div class="form-group">
                 {!! Form::label('amount', __('lang.amount')) !!}
@@ -33,7 +37,8 @@
             </div>
             <div class="form-group">
                 {!! Form::label('currency_id', __('lang.currency') . ':*') !!}
-                {!! Form::select('currency_id', $currencies, false, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required']) !!}
+                {!! Form::select('currency_id', $currencies, false, ['class' => 'form-control selectpicker',
+                'data-live-search' => 'true', 'required']) !!}
             </div>
 
             <div class="form-group">
@@ -44,8 +49,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

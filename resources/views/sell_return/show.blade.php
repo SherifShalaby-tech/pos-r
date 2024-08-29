@@ -1,11 +1,12 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <div class="modal-header">
+        <x-modal-header>
+
 
             <h4 class="modal-title">@lang( 'lang.return_sale' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
+
+
 
         <div class="modal-body">
             <div class="row">
@@ -83,7 +84,9 @@
                                     {{$line->variation->sub_sku}}
                                 </td>
                                 <td>
-                                    @if(isset($line->quantity_returned)){{preg_match('/\.\d*[1-9]+/', (string)$line->quantity_returned) ? $line->quantity_returned : @num_format($line->quantity_returned)}}@else{{0}}@endif
+                                    @if(isset($line->quantity_returned)){{preg_match('/\.\d*[1-9]+/',
+                                    (string)$line->quantity_returned) ? $line->quantity_returned :
+                                    @num_format($line->quantity_returned)}}@else{{0}}@endif
                                 </td>
                                 <td>
                                     @if(isset($line->sell_price)){{@num_format($line->sell_price)}}@else{{0}}@endif
@@ -131,7 +134,8 @@
                         </tr>
                         <tr>
                             <th>@lang('lang.due'):</th>
-                            <td> {{@num_format($sale->return_parent->final_total - $sale->return_parent->transaction_payments->sum('amount'))}}
+                            <td> {{@num_format($sale->return_parent->final_total -
+                                $sale->return_parent->transaction_payments->sum('amount'))}}
                             </td>
                         </tr>
                     </table>
@@ -142,7 +146,7 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="button" class="btn btn-default col-12" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
 

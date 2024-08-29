@@ -200,12 +200,12 @@
                         <div class="modal fade" role="dialog" id="email_modal">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <x-modal-header>
+
                                         <h5 class="modal-title">@lang('lang.email')</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
+
+                                    </x-modal-header>
+
                                     <div class="modal-body">
                                         <div class="col-md-12">
                                             <div class="form-group">
@@ -217,9 +217,9 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger"
+                                        <button type="button" class="btn btn-primary col-6"
                                             id="send-btn">@lang('lang.send')</button>
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" class="btn btn-default col-6"
                                             data-dismiss="modal">@lang('lang.close')</button>
                                     </div>
                                 </div>

@@ -1,11 +1,11 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
-        <div class="modal-header">
+
+        <x-modal-header>
+
 
             <h4 class="modal-title">@lang( 'lang.customer_size' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="well">
@@ -63,7 +63,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default close-btn" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="button" class="btn btn-default close-btn col-12" data-dismiss="modal">@lang( 'lang.close'
+                )</button>
         </div>
 
     </div><!-- /.modal-content -->

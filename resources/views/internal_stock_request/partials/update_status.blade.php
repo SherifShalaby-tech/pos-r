@@ -5,12 +5,11 @@
         => 'post', 'id' =>
         'update_status_form' ]) !!}
 
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.update_status' ) ({{$transaction->invoice_no}})</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="row">
@@ -99,8 +98,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" id="update-status">@lang( 'lang.update' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6" id="update-status">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

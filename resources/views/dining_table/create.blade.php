@@ -1,33 +1,36 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('DiningTableController@store'), 'method' => 'post', 'id' => 'dining_table_form', 'files' => true]) !!}
+        {!! Form::open(['url' => action('DiningTableController@store'), 'method' => 'post', 'id' => 'dining_table_form',
+        'files' => true]) !!}
 
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.add_table' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __('lang.name') . ':*') !!}
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'), 'required', 'id' => 'dining_table_name']) !!}
+                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'), 'required',
+                'id' => 'dining_table_name']) !!}
             </div>
             @if (!empty($from_setting))
-                <div class="form-group">
-                    {!! Form::label('dining_room_id', __('lang.dining_room') . ':*') !!}
-                    {!! Form::select('dining_room_id', $dining_rooms, false, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'required', 'placeholder' => __('lang.please_select')]) !!}
-                </div>
+            <div class="form-group">
+                {!! Form::label('dining_room_id', __('lang.dining_room') . ':*') !!}
+                {!! Form::select('dining_room_id', $dining_rooms, false, ['class' => 'form-control selectpicker',
+                'data-live-search' => 'true', 'required', 'placeholder' => __('lang.please_select')]) !!}
+            </div>
             @else
-                <input type="hidden" name="dining_room_id" value="{{ $dining_room->id }}">
+            <input type="hidden" name="dining_room_id" value="{{ $dining_room->id }}">
             @endif
         </div>
 
         <div class="modal-footer">
-            <button type="button" id="add_dining_table_btn" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="button" id="add_dining_table_btn" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

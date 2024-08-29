@@ -2,15 +2,24 @@
 @section('title', __('lang.edit_transfer'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.edit_transfer')</h4>
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.edit_transfer')</h4>
-                    </div>
-                    {!! Form::open(['url' => action('TransferController@update', $transfer->id), 'method' => 'put', 'id' =>
+
+                    {!! Form::open(['url' => action('TransferController@update', $transfer->id), 'method' => 'put', 'id'
+                    =>
                     'edit_transfer_form', 'enctype' => 'multipart/form-data' ]) !!}
                     <div class="card-body">
                         <div class="row">
@@ -18,7 +27,8 @@
                                 <div class="form-group">
                                     {!! Form::label('sender_store_id', __('lang.sender_store'). ':*', []) !!}
                                     {!! Form::select('sender_store_id', $stores,
-                                    $transfer->sender_store_id, ['class' => 'selectpicker form-control', 'data-live-search'=>"true",
+                                    $transfer->sender_store_id, ['class' => 'selectpicker form-control',
+                                    'data-live-search'=>"true",
                                     'required',
                                     'style' =>'width: 80%' , 'placeholder' => __('lang.please_select')]) !!}
                                 </div>
@@ -27,7 +37,8 @@
                                 <div class="form-group">
                                     {!! Form::label('receiver_store_id', __('lang.receiver_store'). ':*', []) !!}
                                     {!! Form::select('receiver_store_id', $stores,
-                                    $transfer->receiver_store_id, ['class' => 'selectpicker form-control', 'data-live-search'=>"true",
+                                    $transfer->receiver_store_id, ['class' => 'selectpicker form-control',
+                                    'data-live-search'=>"true",
                                     'required',
                                     'style' =>'width: 80%' , 'placeholder' => __('lang.please_select')]) !!}
                                 </div>
@@ -70,33 +81,45 @@
                                                 {{$product->product->name}}
 
                                                 @if($product->variation->name != "Default")
-                                                    <b>{{$product->variation->name}}</b>
+                                                <b>{{$product->variation->name}}</b>
                                                 @endif
-                                                <input type="hidden" name="transfer_lines[{{$loop->index}}][transfer_line_id]" value="{{$product->id}}">
-                                                <input type="hidden" name="transfer_lines[{{$loop->index}}][product_id]" value="{{$product->product_id}}">
-                                                <input type="hidden" name="transfer_lines[{{$loop->index}}][variation_id]" value="{{$product->variation_id}}">
+                                                <input type="hidden"
+                                                    name="transfer_lines[{{$loop->index}}][transfer_line_id]"
+                                                    value="{{$product->id}}">
+                                                <input type="hidden" name="transfer_lines[{{$loop->index}}][product_id]"
+                                                    value="{{$product->product_id}}">
+                                                <input type="hidden"
+                                                    name="transfer_lines[{{$loop->index}}][variation_id]"
+                                                    value="{{$product->variation_id}}">
                                             </td>
                                             <td>
                                                 {{$product->variation->sub_sku}}
                                             </td>
                                             @php
-                                                $qty_available = App\Models\ProductStore::where('variation_id', $product->variation_id)->where('store_id', $transfer->sender_store_id)->first();
+                                            $qty_available = App\Models\ProductStore::where('variation_id',
+                                            $product->variation_id)->where('store_id',
+                                            $transfer->sender_store_id)->first();
                                             @endphp
                                             <td>
-                                                <input type="text" class="form-control quantity"  max="{{$qty_available ? preg_match('/\.\d*[1-9]+/', (string)$qty_available->qty_available) ? $qty_available->qty_available : @num_format($qty_available->qty_available) : preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}"
-                                                name="transfer_lines[{{$loop->index}}][quantity]" required value="@if(isset($product->quantity)){{ preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}@else{{1}}@endif">
+                                                <input type="text" class="form-control quantity"
+                                                    max="{{$qty_available ? preg_match('/\.\d*[1-9]+/', (string)$qty_available->qty_available) ? $qty_available->qty_available : @num_format($qty_available->qty_available) : preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}"
+                                                    name="transfer_lines[{{$loop->index}}][quantity]" required
+                                                    value="@if(isset($product->quantity)){{ preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}@else{{1}}@endif">
                                             </td>
                                             <td>
                                                 <input type="text" class="form-control purchase_price"
-                                                name="transfer_lines[{{$loop->index}}][purchase_price]" required value="@if(isset($product->purchase_price)){{@num_format($product->purchase_price)}}@else{{0}}@endif">
+                                                    name="transfer_lines[{{$loop->index}}][purchase_price]" required
+                                                    value="@if(isset($product->purchase_price)){{@num_format($product->purchase_price)}}@else{{0}}@endif">
                                             </td>
                                             <td>
                                                 <span class="sub_total_span">{{@num_format($product->sub_total)}}</span>
                                                 <input type="hidden" class="form-control sub_total"
-                                                name="transfer_lines[{{$loop->index}}][sub_total]" value="{{$product->sub_total}}">
+                                                    name="transfer_lines[{{$loop->index}}][sub_total]"
+                                                    value="{{$product->sub_total}}">
                                             </td>
                                             <td>
-                                                <button type="button" class="btn btn-danger btn-sx remove_row"><i class="fa fa-times"></i></button>
+                                                <button type="button" class="btn btn-danger btn-sx remove_row"><i
+                                                        class="fa fa-times"></i></button>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -107,8 +130,10 @@
                         <br>
                         <div class="col-md-12">
                             <div class="col-md-3 offset-md-8 text-right">
-                                <h3> @lang('lang.total'): <span class="final_total_span">{{@num_format($transfer->final_total)}}</span> </h3>
-                                <input type="hidden" name="final_total" id="final_total" value="{{$transfer->final_total}}">
+                                <h3> @lang('lang.total'): <span
+                                        class="final_total_span">{{@num_format($transfer->final_total)}}</span> </h3>
+                                <input type="hidden" name="final_total" id="final_total"
+                                    value="{{$transfer->final_total}}">
                             </div>
                         </div>
                         <br>
@@ -123,7 +148,8 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     {!! Form::label('notes', __('lang.notes'). ':', []) !!} <br>
-                                    {!! Form::textarea('notes', $transfer->notes, ['class' => 'form-control', 'rows' => 3]) !!}
+                                    {!! Form::textarea('notes', $transfer->notes, ['class' => 'form-control', 'rows' =>
+                                    3]) !!}
                                 </div>
                             </div>
 

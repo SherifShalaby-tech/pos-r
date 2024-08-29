@@ -1,28 +1,28 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('SupplierCategoryController@update', $supplier_category->id), 'method' => 'put', 'id' => 'supplier_category_add_form'
+        {!! Form::open(['url' => action('SupplierCategoryController@update', $supplier_category->id), 'method' => 'put',
+        'id' => 'supplier_category_add_form'
         ]) !!}
-
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.edit' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
-                {!! Form::text('name', $supplier_category->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
-                'required' ]);
+                {!! Form::text('name', $supplier_category->name, ['class' => 'form-control', 'placeholder' => __(
+                'lang.name' ),
+                'required' ])
                 !!}
             </div>
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

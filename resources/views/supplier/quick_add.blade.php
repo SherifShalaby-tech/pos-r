@@ -1,21 +1,22 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('SupplierController@store'), 'id' => $quick_add ? 'quick_add_supplier_form' : 'supplier-form', 'method' => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+        {!! Form::open(['url' => action('SupplierController@store'), 'id' => $quick_add ? 'quick_add_supplier_form' :
+        'supplier-form', 'method' => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+        <x-modal-header>
 
-        <div class="modal-header">
             <h4 class="modal-title">@lang('lang.add_supplier')</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             @include('supplier.partial.create_supplier_form')
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary" id="save-supplier">@lang('lang.save')</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang('lang.close')</button>
+            <button type="submit" class="btn btn-primary col-6" id="save-supplier">@lang('lang.save')</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang('lang.close')</button>
         </div>
 
         {!! Form::close() !!}

@@ -204,18 +204,16 @@
         {!! Form::open(['url' => action('BrandController@store'), 'method' => 'post', 'id' => $quick_add ?
         'quick_add_brand_form' : 'brand_add_form', 'files' => true ]) !!}
 
-        <div class="modal-header">
 
+        <x-modal-header>
             <h4 class="modal-title">@lang( 'lang.add_brand' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ), 'required'
-                ]);
+                ])
                 !!}
             </div>
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
@@ -249,20 +247,22 @@
         </div>
         <div id="cropped_brand_images"></div>
         <div class="modal-footer">
-            <button id="submit-create-brand-btn" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button id="submit-create-brand-btn" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
         {!! Form::close() !!}
         <div class="modal fade" id="brandModal" tabindex="-1" role="dialog" aria-labelledby="brandModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+
+                    <x-modal-header>
+
                         <h5 class="modal-title" id="brandModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+
+                    </x-modal-header>
+
+
                     <div class="modal-body">
                         <div id="croppie-brand-modal" style="display:none">
                             <div id="croppie-brand-container"></div>

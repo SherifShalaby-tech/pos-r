@@ -3,20 +3,19 @@
 
         {!! Form::open(['url' => action('CustomerSizeController@update', $customer_size->id), 'method' => 'put', 'id' =>
         'customer_size_edit_form', 'files' => true ]) !!}
-
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.edit' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
                 {!! Form::text('name', $customer_size->name, ['class' => 'form-control', 'placeholder' => __(
                 'lang.name' ), 'required'
-                ]);
+                ])
                 !!}
             </div>
             <div class="row">
@@ -36,13 +35,15 @@
                                     <label for="">{{$value}}</label>
                                 </td>
                                 <td>
-                                    <input type="number" data-name="{{$key}}" name="{{$key}}[cm]" class="form-control cm_size" step="any"
+                                    <input type="number" data-name="{{$key}}" name="{{$key}}[cm]"
+                                        class="form-control cm_size" step="any"
                                         value="{{@num_format($customer_size->$key['cm'])}}"
                                         placeholder="@lang('lang.cm')">
                                 </td>
                                 <td>
-                                    <input type="number" data-name="{{$key}}" name="{{$key}}[inches]" class="form-control inches_size"
-                                        step="any" value="{{@num_format($customer_size->$key['inches'])}}"
+                                    <input type="number" data-name="{{$key}}" name="{{$key}}[inches]"
+                                        class="form-control inches_size" step="any"
+                                        value="{{@num_format($customer_size->$key['inches'])}}"
                                         placeholder="@lang('lang.inches')">
                                 </td>
                             </tr>
@@ -57,8 +58,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.update' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}
@@ -66,7 +67,7 @@
     </div><!-- /.modal-content -->
 </div><!-- /.modal-dialog -->
 <script>
-$(document).on('change', '.cm_size', function(){
+    $(document).on('change', '.cm_size', function(){
     let row = $(this).closest('tr');
     let cm_size = __read_number(row.find('.cm_size'));
     let inches_size = cm_size * 0.393701;

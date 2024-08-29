@@ -1,13 +1,12 @@
 <div class="modal-dialog" role="document" style="max-width: 65%;">
     <div class="modal-content">
 
-
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang('lang.purchase_history') ({{$product->name}})</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="row">
@@ -50,7 +49,8 @@
                                     {{@num_format($add_stock->transaction_payments->sum('amount'))}}
                                 </td>
                                 <td>
-                                    {{@num_format($add_stock->final_total - $add_stock->transaction_payments->sum('amount'))}}
+                                    {{@num_format($add_stock->final_total -
+                                    $add_stock->transaction_payments->sum('amount'))}}
                                 </td>
                                 <td>@if(!empty($add_stock->due_date) && $add_stock->payment_status != 'paid')
                                     {{@format_date($add_stock->due_date)}} @endif</td>
@@ -113,7 +113,7 @@
         </div>
 
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="button" class="btn btn-default col-12" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
 

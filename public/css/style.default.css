@@ -393,12 +393,13 @@ nav.navbar a.menu-btn i[class*="icon-"] {
 .side-navbar li a {
     position: relative;
     line-height: 30px;
-    font-size: 15px;
-    font-weight: 400;
+    font-size: 18px;
+    font-weight: 500;
     text-transform: capitalize;
     color: #303030;
     display: block;
     /* border-radius: 4px; */
+    border-bottom: 1px solid #eee;
     margin: 5px 10px;
     padding: 8px 10px;
 }
@@ -2773,7 +2774,7 @@ a>code {
 }
 
 .card-header:first-child {
-    border-radius: 5px 5px 0 0;
+    border-radius: 3px;
 }
 
 .card-header-transparent {

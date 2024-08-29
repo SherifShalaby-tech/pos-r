@@ -6,217 +6,196 @@ $module_settings = App\Models\System::getProperty('module_settings');
 $module_settings = !empty($module_settings) ? json_decode($module_settings, true) : [];
 @endphp
 @section('content')
-    @if (!empty($module_settings['dashboard']))
-        <div class="row">
-            <div class="container-fluid">
-                <div class="col-md-12">
-                    <div class="brand-text float-left mt-4">
+@if (!empty($module_settings['dashboard']))
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 mt-1">
+            <div class="brand-text">
+                <div class="card mb-2 @if (app()->isLocale('ar')) page-title-ar @else page-title-en @endif">
+                    <div
+                        class="card-header py-2 d-flex align-items-center justify-content-between @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                         <h3>@lang('lang.welcome') <span>{{ Auth::user()->name }}</span> </h3>
                     </div>
-                    @if (auth()->user()->can('superadmin') ||
-                        auth()->user()->is_admin ||
-                        auth()->user()->can('dashboard.profit.view')) 
-                        @if (strtolower(session('user.job_title')) != 'deliveryman') 
-                            <div class="filter-toggle btn-group">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <label for="store_id"><b>@lang('lang.store')</b></label>
-                                        {!! Form::select('store_id', $stores,  key($stores), ['class' => 'form-control ','multiple','data-live-search' => 'true', 'id' => 'store_id']) !!}
-                                     {{--
-
-                                     Form::select('store_id', $stores, array_keys($stores), ['class' => 'form-control ','multiple' , 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' => null]) --}}
-
-
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="from_date"><b>@lang('lang.from_date')</b></label>
-                                        <input type="date" class="form-control filter" name="from_date" id="from_date"
-                                            value="{{ date('Y-m-01') }}" placeholder="{{ __('lang.from_date') }}">
-
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label for="start_time"><b>@lang('lang.start_time')</b></label>
-                                            {!! Form::text('start_time', null, ['class' => 'form-control time_picker filter', 'id' => 'start_time']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="to_date"><b>@lang('lang.to_date')</b></label>
-                                        <input type="date" class="form-control filter" name="to_date" id="to_date"
-                                            value="{{ date('Y-m-t') }}" placeholder="{{ __('lang.to_date') }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <label for="end_time"><b>@lang('lang.end_time')</b></label>
-                                            {!! Form::text('end_time', null, ['class' => 'form-control time_picker filter', 'id' => 'end_time']) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-                    @endif
                 </div>
             </div>
         </div>
+        @if (auth()->user()->can('superadmin') ||
+        auth()->user()->is_admin ||
+        auth()->user()->can('dashboard.profit.view'))
         @if (strtolower(session('user.job_title')) != 'deliveryman')
-            <div class="container-fluid">
-                <div class="row">
-                    @if(auth()->user()->can('superadmin') || auth()->user()->is_admin)
-                        <!-- Count item widget-->
-                        <div class="col-sm-2">
-                            <div class="wrapper count-title text-center">
-                                <div class="icon"><i class="fa fa-cubes" style="color: #498636"></i>
-{{--
-                    <div class="col-md-12 form-group">
-                        <div class="row">
-                            @if(auth()->user()->can('superadmin') || auth()->user()->is_admin||
-                        auth()->user()->can('dashboard.profit.view'))
-                                <!-- Count item widget-->
-                                <div class="col-sm-2">
-                                    <div class="wrapper count-title text-center">
-                                        <div class="icon"><i class="fa fa-cubes" style="color: #498636"></i>
-                                        </div>
-                                        <div class="name"><strong
-                                                style="color: #498636">@lang('lang.current_stock_value')</strong>
-                                        </div>
-                                        <div class="count-number current_stock_value-data">
-                                            {{ @num_format(0) }}</div>
-                                    </div>
---}}
-                                </div>
-                                <div class="name"><strong
-                                        style="color: #498636">@lang('lang.current_stock_value')</strong>
-                                </div>
-                                <div class="count-number current_stock_value-data">
-                                    {{ @num_format(0) }}</div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col-sm-2">
-                            <div class="wrapper count-title text-center">
-                                <div class="icon"><i class="dripicons-graph-bar"
-                                        style="color: #733686"></i>
-                                </div>
-                                <div class="name"><strong
-                                        style="color: #733686">@lang('lang.revenue')</strong>
-                                </div>
-                                <div class="count-number revenue-data">{{ @num_format(0) }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col-sm-2">
-                            <div class="wrapper count-title text-center">
-                                <div class="icon"><i class="dripicons-return" style="color: #ff8952"></i>
-                                </div>
-                                <div class="name"><strong
-                                        style="color: #ff8952">@lang('lang.sale_return')</strong>
-                                </div>
-                                <div class="count-number sell_return-data">
-                                    {{ @num_format(0) }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col-sm-2">
-                            <div class="wrapper count-title text-center">
-                                <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
-                                </div>
-                                <div class="name"><strong
-                                        style="color: #297ff9">@lang('lang.total_taxes')</strong>
-                                </div>
-                                <div class="count-number total_tax">{{ @num_format(0) }}
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col-sm-2">
-                            <div class="wrapper count-title text-center">
-                                    <div class="icon"><i class="dripicons-media-loop"
-                                            style="color: #00c689"></i>
-                                    </div>
-                                    <div class="name"><strong
-                                            style="color: #00c689">@lang('lang.purchase_return')</strong>
-                                    </div>
-                                    <div class="count-number purchase_return-data">
-                                        {{ @num_format(0) }}</div>
-                                </div>
-                        </div>
-                        <!-- Count item widget-->
-                        <div class="col-sm-2">
-                            <div class="wrapper count-title text-center">
-                                    <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i>
-                                    </div>
-                                    <div class="name"><strong
-                                            style="color: #297ff9">@lang('lang.profit')</strong>
-                                    </div>
-                                    <div class="count-number profit-data">{{ @num_format(0) }}
-                              {{--
 
-                                <!-- Count item widget-->
-                                <div class="col-sm-2">
+        <div class="col-md-12 mt-1">
+            <div class="card mb-2 p-2 @if (app()->isLocale('ar')) page-title-ar @else page-title-en @endif">
 
-                                    <div class="wrapper count-title text-center">
-                                        <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
-                                        </div>
-                                        <div class="name"><strong
-                                                style="color: #297ff9">@lang('lang.total_taxes')</strong>
-                                        </div>
-                                        <div class="count-number total_tax">{{ @num_format(0) }}
-                                        </div>
-                                --}}
-                                    </div>
-                            </div>
-                            
-                        </div>
-                            <div class="col-sm-2 mt-2">
-                                <div class="wrapper count-title text-center">
-                                    <div class="icon"><i class="dripicons-media-loop" style="color: #297ff9"></i>
-                                    </div>
-                                    <div class="name"><strong
-                                            style="color: #297ff9">@lang('lang.expenses')</strong>
-                                    </div>
-                                    <div class="count-number expenses">{{ @num_format(0) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-2 mt-2">
-                                <div class="wrapper count-title text-center">
-                                    <div class="icon"><i class="dripicons-trophy" style="color: #3f6dad"></i>
-                                    </div>
-                                    <div class="name"><strong
-                                            style="color: #3f6dad">@lang('lang.net_profit')</strong>
-                                    </div>
-                                    <div class="count-number net_profitt-data">{{ @num_format(0) }}
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-2 mt-2">
-                                <div class="wrapper count-title text-center">
-                                    <div class="icon"><i class="dripicons-trophy" style="color: #3f6dad"></i>
-                                    </div>
-                                    <div class="name"><strong
-                                            style="color: #3f6dad">@lang('lang.purchase')</strong>
-                                    </div>
-                                    <div class="count-number purchase-data">{{ @num_format(0) }}
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
+                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    <div class="col-md-2">
+                        <label class="mb-0 @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="store_id"><b>@lang('lang.store')</b></label>
+                        {!! Form::select('store_id', $stores, key($stores), ['class' => 'form-control
+                        ','multiple','data-live-search' => 'true', 'id' => 'store_id']) !!}
+                    </div>
+                    <div class="col-md-3">
+                        <label class="mb-0 @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="from_date"><b>@lang('lang.from_date')</b></label>
+                        <input type="date" class="form-control filter" name="from_date" id="from_date"
+                            value="{{ date('Y-m-01') }}" placeholder="{{ __('lang.from_date') }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="mb-0 @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="to_date"><b>@lang('lang.to_date')</b></label>
+                        <input type="date" class="form-control filter" name="to_date" id="to_date"
+                            value="{{ date('Y-m-t') }}" placeholder="{{ __('lang.to_date') }}">
+                    </div>
+                    <div class="col-md-2">
+
+                        <label class="mb-0 @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="start_time"><b>@lang('lang.start_time')</b></label>
+                        {!! Form::text('start_time', null, ['class' => 'form-control time_picker filter',
+                        'id' =>
+                        'start_time']) !!}
+
+                    </div>
+                    <div class="col-md-2">
+
+                        <label class="mb-0 @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="end_time"><b>@lang('lang.end_time')</b></label>
+                        {!! Form::text('end_time', null, ['class' => 'form-control time_picker filter', 'id'
+                        =>
+                        'end_time']) !!}
+
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="container-fluid" id="chart_and_table_section">
-                {{-- @include('home.partials.chart_and_table') --}}
+        @endif
+        @endif
+    </div>
+</div>
+@if (strtolower(session('user.job_title')) != 'deliveryman')
+<div class="container-fluid">
+    @if(auth()->user()->can('superadmin') || auth()->user()->is_admin)
+    <div class="d-flex justify-content-between">
+
+
+        <!-- Count item widget-->
+        <div style="width: 10%" class=" px-0">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="fa fa-cubes" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.current_stock_value')</strong>
+                </div>
+                <div class="count-number current_stock_value-data">
+                    {{ @num_format(0) }}</div>
             </div>
-        @endif 
-     @endif 
+        </div>
+        <!-- Count item widget-->
+        <div style="width: 10%" class=" px-0">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-graph-bar" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.revenue')</strong>
+                </div>
+                <div class="count-number revenue-data">{{ @num_format(0) }}
+                </div>
+            </div>
+        </div>
+        <!-- Count item widget-->
+        <div style="width: 10%" class=" px-0">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-return" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.sale_return')</strong>
+                </div>
+                <div class="count-number sell_return-data">
+                    {{ @num_format(0) }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Count item widget-->
+        <div style="width: 10%" class=" px-0">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-media-loop" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.total_taxes')</strong>
+                </div>
+                <div class="count-number total_tax">{{ @num_format(0) }}
+                </div>
+            </div>
+        </div>
+        <!-- Count item widget-->
+        <div style="width: 10%" class=" px-0">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-media-loop" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.purchase_return')</strong>
+                </div>
+                <div class="count-number purchase_return-data">
+                    {{ @num_format(0) }}</div>
+            </div>
+        </div>
+        <!-- Count item widget-->
+        <div style="width: 10%" class=" px-0">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-trophy" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.profit')</strong>
+                </div>
+                <div class="count-number profit-data">{{ @num_format(0) }}
+                </div>
+            </div>
+
+        </div>
+
+
+        <div style="width: 10%" class=" px-0 ">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-media-loop" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.expenses')</strong>
+                </div>
+                <div class="count-number expenses">{{ @num_format(0) }}
+                </div>
+            </div>
+        </div>
+
+        <div style="width: 10%" class=" px-0 ">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-trophy" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.net_profit')</strong>
+                </div>
+                <div class="count-number net_profitt-data">{{ @num_format(0) }}
+                </div>
+            </div>
+        </div>
+
+        <div style="width: 10%" class=" px-0 ">
+            <div class="wrapper count-title text-center h-100">
+                <div class="icon"><i class="dripicons-trophy" style="color: white"></i>
+                </div>
+                <div class="name"><strong style="">@lang('lang.purchase')</strong>
+                </div>
+                <div class="count-number purchase-data">{{ @num_format(0) }}
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+</div>
+
+
+<div class="container-fluid mt-2" id="chart_and_table_section">
+    {{-- @include('home.partials.chart_and_table') --}}
+</div>
+@endif
+@endif
 @endsection
 
 @section('javascript')
-    <script>
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             $('#store_id').change();
 
         });
@@ -300,7 +279,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                                 ${element.currency.symbol}</span>
                                             <span
                                                 class="total">${__currency_trans_from_en(element.data.current_stock_value_product, false)}</span>
-                                        <span style="color: #3fc3ee">P</span>
+                                        <span style="color: #2a2d2e">P</span>
                                         </h5>`;
                                         currenct_stock_string_m +=`<h5 class="dashboard_currency currency_total_${element.currency.currency_id}"
                             data-currency_id="${element.currency.currency_id}"
@@ -311,7 +290,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 ${element.currency.symbol}</span>
                             <span
                                 class="total">${__currency_trans_from_en(element.data.current_stock_value_material, false)}</span>
-                        <span style="color: #3fc3ee">M</span>
+                        <span style="color: #2a2d2e">M</span>
                         </h5>`;
 
 
@@ -817,5 +796,5 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                 });
             }
         }
-    </script>
+</script>
 @endsection

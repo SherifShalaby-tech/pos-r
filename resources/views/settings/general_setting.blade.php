@@ -1,523 +1,578 @@
 @extends('layouts.app')
 @section('title', __('lang.general_settings'))
 @section('styles')
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
-    <style>
-        .preview-logo-container {
-            /* display: flex;
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
+<style>
+    .preview-logo-container {
+        /* display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 20px; */
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 170px);
-        }
-        .preview-header-container {
-            /* display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 170px);
+    }
+
+    .preview-header-container {
+        /* display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 20px; */
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 170px);
-        }
-        .preview-footer-container {
-            /* display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 170px);
+    }
+
+    .preview-footer-container {
+        /* display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-top: 20px; */
-            display: grid;
-            grid-template-columns: repeat(auto-fill, 170px);
-        }
-        .preview {
-            position: relative;
-            width: 150px;
-            height: 150px;
-            padding: 4px;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-            margin: 30px 0px;
-            border: 1px solid #ddd;
-        }
-        .preview img {
-            width: 100%;
-            height: 100%;
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-            border: 1px solid #ddd;
-            object-fit: cover;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, 170px);
+    }
 
-        }
+    .preview {
+        position: relative;
+        width: 150px;
+        height: 150px;
+        padding: 4px;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin: 30px 0px;
+        border: 1px solid #ddd;
+    }
 
-        .delete-btn {
-            position: absolute;
-            top: 156px;
-            right: 0px;
-            /*border: 2px solid #ddd;*/
-            border: none;
-            cursor: pointer;
-        }
+    .preview img {
+        width: 100%;
+        height: 100%;
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        border: 1px solid #ddd;
+        object-fit: cover;
 
-        .delete-btn {
-            background: transparent;
-            color: rgba(235, 32, 38, 0.97);
-        }
+    }
 
-        .crop-btn {
-            position: absolute;
-            top: 156px;
-            left: 0px;
-            /*border: 2px solid #ddd;*/
-            border: none;
-            cursor: pointer;
-            background: transparent;
-            color: #007bff;
-        }
-    </style>
+    .delete-btn {
+        position: absolute;
+        top: 156px;
+        right: 0px;
+        /*border: 2px solid #ddd;*/
+        border: none;
+        cursor: pointer;
+    }
 
-    <style>
-        .variants {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .delete-btn {
+        background: transparent;
+        color: rgba(235, 32, 38, 0.97);
+    }
 
-        .variants>div {
-            margin-right: 5px;
-        }
+    .crop-btn {
+        position: absolute;
+        top: 156px;
+        left: 0px;
+        /*border: 2px solid #ddd;*/
+        border: none;
+        cursor: pointer;
+        background: transparent;
+        color: #007bff;
+    }
+</style>
 
-        .variants>div:last-of-type {
-            margin-right: 0;
-        }
+<style>
+    .variants {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .file {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .variants>div {
+        margin-right: 5px;
+    }
 
-        .file>input[type='file'] {
-            display: none
-        }
+    .variants>div:last-of-type {
+        margin-right: 0;
+    }
 
-        .file>label {
-            font-size: 1rem;
-            font-weight: 300;
-            cursor: pointer;
-            outline: 0;
-            user-select: none;
-            border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
-            border-style: solid;
-            border-radius: 4px;
-            border-width: 1px;
-            background-color: hsl(0, 0%, 100%);
-            color: hsl(0, 0%, 29%);
-            padding-left: 16px;
-            padding-right: 16px;
-            padding-top: 16px;
-            padding-bottom: 16px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .file {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .file>label:hover {
-            border-color: hsl(0, 0%, 21%);
-        }
+    .file>input[type='file'] {
+        display: none
+    }
 
-        .file>label:active {
-            background-color: hsl(0, 0%, 96%);
-        }
+    .file>label {
+        font-size: 1rem;
+        font-weight: 300;
+        cursor: pointer;
+        outline: 0;
+        user-select: none;
+        border-color: rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186);
+        border-style: solid;
+        border-radius: 4px;
+        border-width: 1px;
+        background-color: hsl(0, 0%, 100%);
+        color: hsl(0, 0%, 29%);
+        padding-left: 16px;
+        padding-right: 16px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .file>label>i {
-            padding-right: 5px;
-        }
+    .file>label:hover {
+        border-color: hsl(0, 0%, 21%);
+    }
 
-        .file--upload>label {
-            color: hsl(204, 86%, 53%);
-            border-color: hsl(204, 86%, 53%);
-        }
+    .file>label:active {
+        background-color: hsl(0, 0%, 96%);
+    }
 
-        .file--upload>label:hover {
-            border-color: hsl(204, 86%, 53%);
-            background-color: hsl(204, 86%, 96%);
-        }
+    .file>label>i {
+        padding-right: 5px;
+    }
 
-        .file--upload>label:active {
-            background-color: hsl(204, 86%, 91%);
-        }
+    .file--upload>label {
+        color: hsl(204, 86%, 53%);
+        border-color: hsl(204, 86%, 53%);
+    }
 
-        .file--uploading>label {
+    .file--upload>label:hover {
+        border-color: hsl(204, 86%, 53%);
+        background-color: hsl(204, 86%, 96%);
+    }
+
+    .file--upload>label:active {
+        background-color: hsl(204, 86%, 91%);
+    }
+
+    .file--uploading>label {
+        color: hsl(48, 100%, 67%);
+        border-color: hsl(48, 100%, 67%);
+    }
+
+    .file--uploading>label>i {
+        animation: pulse 5s infinite;
+    }
+
+    .file--uploading>label:hover {
+        border-color: hsl(48, 100%, 67%);
+        background-color: hsl(48, 100%, 96%);
+    }
+
+    .file--uploading>label:active {
+        background-color: hsl(48, 100%, 91%);
+    }
+
+    .file--success>label {
+        color: hsl(141, 71%, 48%);
+        border-color: hsl(141, 71%, 48%);
+    }
+
+    .file--success>label:hover {
+        border-color: hsl(141, 71%, 48%);
+        background-color: hsl(141, 71%, 96%);
+    }
+
+    .file--success>label:active {
+        background-color: hsl(141, 71%, 91%);
+    }
+
+    .file--danger>label {
+        color: hsl(348, 100%, 61%);
+        border-color: hsl(348, 100%, 61%);
+    }
+
+    .file--danger>label:hover {
+        border-color: hsl(348, 100%, 61%);
+        background-color: hsl(348, 100%, 96%);
+    }
+
+    .file--danger>label:active {
+        background-color: hsl(348, 100%, 91%);
+    }
+
+    .file--disabled {
+        cursor: not-allowed;
+    }
+
+    .file--disabled>label {
+        border-color: #e6e7ef;
+        color: #e6e7ef;
+        pointer-events: none;
+    }
+
+
+    @keyframes pulse {
+        0% {
             color: hsl(48, 100%, 67%);
-            border-color: hsl(48, 100%, 67%);
         }
 
-        .file--uploading>label>i {
-            animation: pulse 5s infinite;
+        50% {
+            color: hsl(48, 100%, 38%);
         }
 
-        .file--uploading>label:hover {
-            border-color: hsl(48, 100%, 67%);
-            background-color: hsl(48, 100%, 96%);
+        100% {
+            color: hsl(48, 100%, 67%);
         }
-
-        .file--uploading>label:active {
-            background-color: hsl(48, 100%, 91%);
-        }
-
-        .file--success>label {
-            color: hsl(141, 71%, 48%);
-            border-color: hsl(141, 71%, 48%);
-        }
-
-        .file--success>label:hover {
-            border-color: hsl(141, 71%, 48%);
-            background-color: hsl(141, 71%, 96%);
-        }
-
-        .file--success>label:active {
-            background-color: hsl(141, 71%, 91%);
-        }
-
-        .file--danger>label {
-            color: hsl(348, 100%, 61%);
-            border-color: hsl(348, 100%, 61%);
-        }
-
-        .file--danger>label:hover {
-            border-color: hsl(348, 100%, 61%);
-            background-color: hsl(348, 100%, 96%);
-        }
-
-        .file--danger>label:active {
-            background-color: hsl(348, 100%, 91%);
-        }
-
-        .file--disabled {
-            cursor: not-allowed;
-        }
-
-        .file--disabled>label {
-            border-color: #e6e7ef;
-            color: #e6e7ef;
-            pointer-events: none;
-        }
-
-
-        @keyframes pulse {
-            0% {
-                color: hsl(48, 100%, 67%);
-            }
-
-            50% {
-                color: hsl(48, 100%, 38%);
-            }
-
-            100% {
-                color: hsl(48, 100%, 67%);
-            }
-        }
-    </style>
+    }
+</style>
 @endsection
 @section('content')
-    <div class="col-md-12  no-print">
-        <div class="card">
-            <div class="card-header d-flex align-items-center">
+
+<section class="forms pt-2">
+
+    <div class="container-fluid">
+        <div class="col-md-12  no-print">
+
+            <x-page-title>
+
                 <h4>@lang('lang.general_settings')</h4>
-            </div>
-            <div class="card-body">
-                {!! Form::open(['url' => action('SettingController@updateGeneralSetting'), 'method' => 'post','id'=>'setting_form', 'enctype' => 'multipart/form-data']) !!}
-                <div class="row">
-                    <div class="col-md-3">
-                        {!! Form::label('site_title', __('lang.site_title'), []) !!}
-                        {!! Form::text('site_title', !empty($settings['site_title']) ? $settings['site_title'] : null, ['class' => 'form-control']) !!}
-                    </div>
-                    <div class="col-md-3 hide">
-                        {!! Form::label('developed_by', __('lang.developed_by'), []) !!}
-                        {!! Form::text('developed_by', null, ['class' => 'form-control']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('time_format', __('lang.time_format'), []) !!}
-                        {!! Form::select('time_format', ['12' => '12 hours', '24' => '24 hours'], !empty($settings['time_format']) ? $settings['time_format'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('timezone', __('lang.timezone'), []) !!}
-                        {!! Form::select('timezone', $timezone_list, !empty($settings['timezone']) ? $settings['timezone'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('language', __('lang.language'), []) !!}
-                        {!! Form::select('language', $languages, !empty($settings['language']) ? $settings['language'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('currency', __('lang.currency'), []) !!}
-                        {!! Form::select('currency', $currencies, !empty($settings['currency']) ? $settings['currency'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('invoice_lang', __('lang.invoice_lang'), []) !!}
-                        {!! Form::select('invoice_lang', $languages + ['ar_and_en' => 'Arabic and English'], !empty($settings['invoice_lang']) ? $settings['invoice_lang'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        {!! Form::label('invoice_terms_and_conditions', __('lang.tac_to_be_printed'), []) !!}
-                        {!! Form::select('invoice_terms_and_conditions', $terms_and_conditions, !empty($settings['invoice_terms_and_conditions']) ? $settings['invoice_terms_and_conditions'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'placeholder' => __('lang.please_select')]) !!}
-                    </div>
-                    @if (session('system_mode') != 'restaurant')
+
+
+                <x-slot name="buttons">
+
+                </x-slot>
+            </x-page-title>
+
+
+            <div class="card">
+                <div class="card-body">
+                    {!! Form::open(['url' => action('SettingController@updateGeneralSetting'), 'method' =>
+                    'post','id'=>'setting_form', 'enctype' => 'multipart/form-data']) !!}
+                    <div class="row">
                         <div class="col-md-3">
-                            {!! Form::label('default_purchase_price_percentage', __('lang.default_purchase_price_percentage'), []) !!} <i class="dripicons-question" data-toggle="tooltip"
-                                title="@lang('lang.default_purchase_price_percentage_info')"></i>
-                            {!! Form::number('default_purchase_price_percentage', !empty($settings['default_purchase_price_percentage']) ? $settings['default_purchase_price_percentage'] : null, ['class' => 'form-control']) !!}
+                            {!! Form::label('site_title', __('lang.site_title'), []) !!}
+                            {!! Form::text('site_title', !empty($settings['site_title']) ? $settings['site_title'] :
+                            null, ['class' => 'form-control']) !!}
                         </div>
-                    @else
+                        <div class="col-md-3 hide">
+                            {!! Form::label('developed_by', __('lang.developed_by'), []) !!}
+                            {!! Form::text('developed_by', null, ['class' => 'form-control']) !!}
+                        </div>
                         <div class="col-md-3">
-                            {!! Form::label('default_profit_percentage', __('lang.default_profit_percentage'), []) !!} <small>@lang('lang.without_%_symbol')</small>
-                            {!! Form::number('default_profit_percentage', !empty($settings['default_profit_percentage']) ? $settings['default_profit_percentage'] : null, ['class' => 'form-control']) !!}
+                            {!! Form::label('time_format', __('lang.time_format'), []) !!}
+                            {!! Form::select('time_format', ['12' => '12 hours', '24' => '24 hours'],
+                            !empty($settings['time_format']) ? $settings['time_format'] : null, ['class' =>
+                            'form-control selectpicker', 'data-live-search' => 'true']) !!}
                         </div>
-                    @endif
-                    <div class="col-md-3">
-                        {!! Form::label('Watsapp Numbers', __('lang.watsapp_numbers')) !!}
-                        {!! Form::text('watsapp_numbers', !empty($settings['watsapp_numbers']) ? $settings['watsapp_numbers'] : null, ['class' => 'form-control',Auth::user()->is_superadmin == 1?'':'disabled']) !!}
-                    </div>
-                     <div class="col-md-3">
-                        {!! Form::label('font_size_at_invoice', __('lang.font_size_at_invoice'), []) !!}
-                        {!! Form::select('font_size_at_invoice', $fonts, !empty($settings['font_size_at_invoice']) ? $settings['font_size_at_invoice'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                    </div>
-                    <div class="col-md-3">
-                        <div class="i-checks">
-                            <input id="show_the_window_printing_prompt" name="show_the_window_printing_prompt"
-                                type="checkbox" @if (!empty($settings['show_the_window_printing_prompt']) && $settings['show_the_window_printing_prompt'] == '1') checked @endif value="1"
-                                class="form-control-custom">
-                            <label for="show_the_window_printing_prompt"><strong>
-                                    @lang('lang.show_the_window_printing_prompt')
-                                </strong></label>
+                        <div class="col-md-3">
+                            {!! Form::label('timezone', __('lang.timezone'), []) !!}
+                            {!! Form::select('timezone', $timezone_list, !empty($settings['timezone']) ?
+                            $settings['timezone'] : null, ['class' => 'form-control selectpicker', 'data-live-search' =>
+                            'true']) !!}
                         </div>
-                    </div>
-                    @if (session('system_mode') == 'restaurant')
+                        <div class="col-md-3">
+                            {!! Form::label('language', __('lang.language'), []) !!}
+                            {!! Form::select('language', $languages, !empty($settings['language']) ?
+                            $settings['language'] : null, ['class' => 'form-control selectpicker', 'data-live-search' =>
+                            'true']) !!}
+                        </div>
+                        <div class="col-md-3">
+                            {!! Form::label('currency', __('lang.currency'), []) !!}
+                            {!! Form::select('currency', $currencies, !empty($settings['currency']) ?
+                            $settings['currency'] : null, ['class' => 'form-control selectpicker', 'data-live-search' =>
+                            'true']) !!}
+                        </div>
+                        <div class="col-md-3">
+                            {!! Form::label('invoice_lang', __('lang.invoice_lang'), []) !!}
+                            {!! Form::select('invoice_lang', $languages + ['ar_and_en' => 'Arabic and English'],
+                            !empty($settings['invoice_lang']) ? $settings['invoice_lang'] : null, ['class' =>
+                            'form-control selectpicker', 'data-live-search' => 'true']) !!}
+                        </div>
+                        <div class="col-md-3">
+                            {!! Form::label('invoice_terms_and_conditions', __('lang.tac_to_be_printed'), []) !!}
+                            {!! Form::select('invoice_terms_and_conditions', $terms_and_conditions,
+                            !empty($settings['invoice_terms_and_conditions']) ?
+                            $settings['invoice_terms_and_conditions'] : null, ['class' => 'form-control selectpicker',
+                            'data-live-search' => 'true', 'placeholder' => __('lang.please_select')]) !!}
+                        </div>
+                        @if (session('system_mode') != 'restaurant')
+                        <div class="col-md-3">
+                            {!! Form::label('default_purchase_price_percentage',
+                            __('lang.default_purchase_price_percentage'), []) !!} <i class="dripicons-question"
+                                data-toggle="tooltip" title="@lang('lang.default_purchase_price_percentage_info')"></i>
+                            {!! Form::number('default_purchase_price_percentage',
+                            !empty($settings['default_purchase_price_percentage']) ?
+                            $settings['default_purchase_price_percentage'] : null, ['class' => 'form-control']) !!}
+                        </div>
+                        @else
+                        <div class="col-md-3">
+                            {!! Form::label('default_profit_percentage', __('lang.default_profit_percentage'), []) !!}
+                            <small>@lang('lang.without_%_symbol')</small>
+                            {!! Form::number('default_profit_percentage', !empty($settings['default_profit_percentage'])
+                            ? $settings['default_profit_percentage'] : null, ['class' => 'form-control']) !!}
+                        </div>
+                        @endif
+                        <div class="col-md-3">
+                            {!! Form::label('Watsapp Numbers', __('lang.watsapp_numbers')) !!}
+                            {!! Form::text('watsapp_numbers', !empty($settings['watsapp_numbers']) ?
+                            $settings['watsapp_numbers'] : null, ['class' => 'form-control',Auth::user()->is_superadmin
+                            == 1?'':'disabled']) !!}
+                        </div>
+                        <div class="col-md-3">
+                            {!! Form::label('font_size_at_invoice', __('lang.font_size_at_invoice'), []) !!}
+                            {!! Form::select('font_size_at_invoice', $fonts, !empty($settings['font_size_at_invoice']) ?
+                            $settings['font_size_at_invoice'] : null, ['class' => 'form-control selectpicker',
+                            'data-live-search' => 'true']) !!}
+                        </div>
                         <div class="col-md-3">
                             <div class="i-checks">
-                                <input id="enable_the_table_reservation" name="enable_the_table_reservation" type="checkbox"
-                                    @if (!empty($settings['enable_the_table_reservation']) && $settings['enable_the_table_reservation'] == '1') checked @endif value="1" class="form-control-custom">
+                                <input id="show_the_window_printing_prompt" name="show_the_window_printing_prompt"
+                                    type="checkbox" @if (!empty($settings['show_the_window_printing_prompt']) &&
+                                    $settings['show_the_window_printing_prompt']=='1' ) checked @endif value="1"
+                                    class="form-control-custom">
+                                <label for="show_the_window_printing_prompt"><strong>
+                                        @lang('lang.show_the_window_printing_prompt')
+                                    </strong></label>
+                            </div>
+                        </div>
+                        @if (session('system_mode') == 'restaurant')
+                        <div class="col-md-3">
+                            <div class="i-checks">
+                                <input id="enable_the_table_reservation" name="enable_the_table_reservation"
+                                    type="checkbox" @if (!empty($settings['enable_the_table_reservation']) &&
+                                    $settings['enable_the_table_reservation']=='1' ) checked @endif value="1"
+                                    class="form-control-custom">
                                 <label for="enable_the_table_reservation"><strong>
                                         @lang('lang.enable_the_table_reservation')
                                     </strong></label>
                             </div>
                         </div>
-                    @endif
-                    <div class="col-md-3">
-                        {!! Form::label('numbers_length_after_dot', __('lang.numbers_length_after_dot'), []) !!}
-                        {!! Form::select('numbers_length_after_dot', ['1' => '0.0', '2' => '0.00', '3' => '0.000','4' => '0.0000', '5' => '0.00000', '6' => '0.000000', '7' => '0.0000000'],  !empty($settings['numbers_length_after_dot']) ? $settings['numbers_length_after_dot'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
+                        @endif
+                        <div class="col-md-3">
+                            {!! Form::label('numbers_length_after_dot', __('lang.numbers_length_after_dot'), []) !!}
+                            {!! Form::select('numbers_length_after_dot', ['1' => '0.0', '2' => '0.00', '3' =>
+                            '0.000','4' => '0.0000', '5' => '0.00000', '6' => '0.000000', '7' => '0.0000000'],
+                            !empty($settings['numbers_length_after_dot']) ? $settings['numbers_length_after_dot'] :
+                            null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
+                        </div>
                     </div>
-                </div>
-                <br>
-                <hr>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="projectinput2"> {{  __('lang.letter_header') }}</label>
-                            <div class="container mt-3">
-                                <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                                    <div class="col-12">
-                                        <div class="mt-3">
-                                            <div class="row">
-                                                <div class="col-10 offset-1">
-                                                    <div class="variants">
-                                                        <div class='file file--upload w-100'>
-                                                            <label for='file-input-header' class="w-100">
-                                                                <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                            </label>
-                                                            <!-- <input  id="file-input" multiple type='file' /> -->
-                                                            <input type="file" id="file-input-header">
+                    <br>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="projectinput2"> {{ __('lang.letter_header') }}</label>
+                                <div class="container mt-3">
+                                    <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
+                                        <div class="col-12">
+                                            <div class="mt-3">
+                                                <div class="row">
+                                                    <div class="col-10 offset-1">
+                                                        <div class="variants">
+                                                            <div class='file file--upload w-100'>
+                                                                <label for='file-input-header' class="w-100">
+                                                                    <i class="fas fa-cloud-upload-alt"></i>Upload
+                                                                </label>
+                                                                <!-- <input  id="file-input" multiple type='file' /> -->
+                                                                <input type="file" id="file-input-header">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-10 offset-1">
-                                        <div class="preview-header-container">
-                                            @if (!empty($settings['letter_header']))
+                                        <div class="col-10 offset-1">
+                                            <div class="preview-header-container">
+                                                @if (!empty($settings['letter_header']))
                                                 <div class="preview">
-                                                    <img src="{{ asset("uploads/".  $settings['letter_header']) }}"
-                                                         id="img_header_footer" alt="">
-                                                    <button class="btn btn-xs btn-danger delete-btn remove_image" data-type="letter_header"><i style="font-size: 25px;"
+                                                    <img src="{{ asset(" uploads/". $settings['letter_header']) }}"
+                                                        id="img_header_footer" alt="">
+                                                    <button class="btn btn-xs btn-danger delete-btn remove_image"
+                                                        data-type="letter_header"><i style="font-size: 25px;"
                                                             class="fa fa-trash"></i></button>
 
                                                 </div>
-                                            @endif
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="projectinput2"> {{ __('lang.letter_footer') }}</label>
-                            <div class="container mt-3">
-                                <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                                    <div class="col-12">
-                                        <div class="mt-3">
-                                            <div class="row">
-                                                <div class="col-10 offset-1">
-                                                    <div class="variants">
-                                                        <div class='file file--upload w-100'>
-                                                            <label for='file-input-footer' class="w-100">
-                                                                <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                            </label>
-                                                            <input type="file" id="file-input-footer">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="projectinput2"> {{ __('lang.letter_footer') }}</label>
+                                <div class="container mt-3">
+                                    <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
+                                        <div class="col-12">
+                                            <div class="mt-3">
+                                                <div class="row">
+                                                    <div class="col-10 offset-1">
+                                                        <div class="variants">
+                                                            <div class='file file--upload w-100'>
+                                                                <label for='file-input-footer' class="w-100">
+                                                                    <i class="fas fa-cloud-upload-alt"></i>Upload
+                                                                </label>
+                                                                <input type="file" id="file-input-footer">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-10 offset-1">
-                                        <div class="preview-footer-container">
-                                            @if (!empty($settings['letter_footer']))
+                                        <div class="col-10 offset-1">
+                                            <div class="preview-footer-container">
+                                                @if (!empty($settings['letter_footer']))
                                                 <div class="preview">
-                                                <img src="{{ asset("uploads/".  $settings['letter_footer']) }}"
-                                                     id="img_letter_footer" alt="">
-                                                <button class="btn btn-xs btn-danger delete-btn remove_image" data-type="letter_footer"><i style="font-size: 25px;"
-                                                                                class="fa fa-trash"></i></button>
+                                                    <img src="{{ asset(" uploads/". $settings['letter_footer']) }}"
+                                                        id="img_letter_footer" alt="">
+                                                    <button class="btn btn-xs btn-danger delete-btn remove_image"
+                                                        data-type="letter_footer"><i style="font-size: 25px;"
+                                                            class="fa fa-trash"></i></button>
                                                 </div>
-                                            @endif
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <label for="projectinput2"> {{ __('lang.logo') }}</label>
-                            <div class="container mt-3">
-                                <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                                    <div class="col-12">
-                                        <div class="mt-3">
-                                            <div class="row">
-                                                <div class="col-10 offset-1">
-                                                    <div class="variants">
-                                                        <div class='file file--upload w-100'>
-                                                            <label for='file-input-logo' class="w-100">
-                                                                <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                            </label>
-                                                            <!-- <input  id="file-input" multiple type='file' /> -->
-                                                            <input type="file" id="file-input-logo">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="projectinput2"> {{ __('lang.logo') }}</label>
+                                <div class="container mt-3">
+                                    <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
+                                        <div class="col-12">
+                                            <div class="mt-3">
+                                                <div class="row">
+                                                    <div class="col-10 offset-1">
+                                                        <div class="variants">
+                                                            <div class='file file--upload w-100'>
+                                                                <label for='file-input-logo' class="w-100">
+                                                                    <i class="fas fa-cloud-upload-alt"></i>Upload
+                                                                </label>
+                                                                <!-- <input  id="file-input" multiple type='file' /> -->
+                                                                <input type="file" id="file-input-logo">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-10 offset-1">
-                                        <div class="preview-logo-container">
-                                          @if (!empty($settings['logo']))
-                                              <div class="preview">
-                                              <img src="{{ asset("uploads/".  $settings['logo']) }}"
-                                                   id="img_logo_footer" alt="">
-                                              <button class="btn btn-xs btn-danger delete-btn remove_image" data-type="logo"><i style="font-size: 25px;"
-                                                                                                                                         class="fa fa-trash"></i></button>
-                                              </div>
-                                          @endif
+                                        <div class="col-10 offset-1">
+                                            <div class="preview-logo-container">
+                                                @if (!empty($settings['logo']))
+                                                <div class="preview">
+                                                    <img src="{{ asset(" uploads/". $settings['logo']) }}"
+                                                        id="img_logo_footer" alt="">
+                                                    <button class="btn btn-xs btn-danger delete-btn remove_image"
+                                                        data-type="logo"><i style="font-size: 25px;"
+                                                            class="fa fa-trash"></i></button>
+                                                </div>
+                                                @endif
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            {!! Form::label('help_page_content', __('lang.help_page_content'), []) !!}
-                            {!! Form::textarea('help_page_content', !empty($settings['help_page_content']) ? $settings['help_page_content'] : null, ['class' => 'form-control', 'id' => 'help_page_content']) !!}
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                {!! Form::label('help_page_content', __('lang.help_page_content'), []) !!}
+                                {!! Form::textarea('help_page_content', !empty($settings['help_page_content']) ?
+                                $settings['help_page_content'] : null, ['class' => 'form-control', 'id' =>
+                                'help_page_content']) !!}
+                            </div>
                         </div>
                     </div>
-                </div>
-                <br>
-                <br>
-                <br>
-                <div class="col-md-12">
-                    <button id="submit-btn" class="btn btn-primary">@lang('lang.save')</button>
-                </div>
-                <div id="cropped_logo_images"></div>
-                <div id="cropped_header_images"></div>
-                <div id="cropped_footer_images"></div>
-                {!! Form::close() !!}
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="logoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="croppie-logo-modal" style="display:none">
-                        <div id="croppie-logo-container"></div>
-                        <button data-dismiss="modal" id="croppie-logo-cancel-btn" type="button" class="btn btn-secondary"><i
-                                class="fas fa-times"></i></button>
-                        <button id="croppie-logo-submit-btn" type="button" class="btn btn-primary"><i
-                                class="fas fa-crop"></i></button>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="col-md-12">
+                        <button id="submit-btn" class="btn btn-primary">@lang('lang.save')</button>
                     </div>
+                    <div id="cropped_logo_images"></div>
+                    <div id="cropped_header_images"></div>
+                    <div id="cropped_footer_images"></div>
+                    {!! Form::close() !!}
                 </div>
-
             </div>
         </div>
     </div>
-    <div class="modal fade" id="headerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="croppie-header-modal" style="display:none">
-                        <div id="croppie-header-container"></div>
-                        <button data-dismiss="modal" id="croppie-header-cancel-btn" type="button" class="btn btn-secondary"><i
-                                class="fas fa-times"></i></button>
-                        <button id="croppie-header-submit-btn" type="button" class="btn btn-primary"><i
-                                class="fas fa-crop"></i></button>
-                    </div>
-                </div>
+</section>
 
+<div class="modal fade" id="logoModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <x-modal-header>
+
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+
+            </x-modal-header>
+
+            <div class="modal-body">
+                <div id="croppie-logo-modal" style="display:none">
+                    <div id="croppie-logo-container"></div>
+                    <button data-dismiss="modal" id="croppie-logo-cancel-btn" type="button" class="btn btn-secondary"><i
+                            class="fas fa-times"></i></button>
+                    <button id="croppie-logo-submit-btn" type="button" class="btn btn-primary"><i
+                            class="fas fa-crop"></i></button>
+                </div>
             </div>
+
         </div>
     </div>
-    <div class="modal fade" id="footerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div id="croppie-footer-modal" style="display:none">
-                        <div id="croppie-footer-container"></div>
-                        <button data-dismiss="modal" id="croppie-footer-cancel-btn" type="button" class="btn btn-secondary"><i
-                                class="fas fa-times"></i></button>
-                        <button id="croppie-footer-submit-btn" type="button" class="btn btn-primary"><i
-                                class="fas fa-crop"></i></button>
-                    </div>
-                </div>
+</div>
+<div class="modal fade" id="headerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <x-modal-header>
 
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+
+            </x-modal-header>
+
+            <div class="modal-body">
+                <div id="croppie-header-modal" style="display:none">
+                    <div id="croppie-header-container"></div>
+                    <button data-dismiss="modal" id="croppie-header-cancel-btn" type="button"
+                        class="btn btn-secondary"><i class="fas fa-times"></i></button>
+                    <button id="croppie-header-submit-btn" type="button" class="btn btn-primary"><i
+                            class="fas fa-crop"></i></button>
+                </div>
             </div>
+
         </div>
     </div>
+</div>
+<div class="modal fade" id="footerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <x-modal-header>
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+
+
+            </x-modal-header>
+
+            <div class="modal-body">
+                <div id="croppie-footer-modal" style="display:none">
+                    <div id="croppie-footer-container"></div>
+                    <button data-dismiss="modal" id="croppie-footer-cancel-btn" type="button"
+                        class="btn btn-secondary"><i class="fas fa-times"></i></button>
+                    <button id="croppie-footer-submit-btn" type="button" class="btn btn-primary"><i
+                            class="fas fa-crop"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('javascript')
-    <script>
-        $('.selectpicker').selectpicker();
+<script>
+    $('.selectpicker').selectpicker();
         $(document).ready(function() {
             tinymce.init({
                 selector: "#help_page_content",
@@ -573,10 +628,10 @@
             });
 
         });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-    <script>
-        $("#submit-btn").on("click",function (e){
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<script>
+    $("#submit-btn").on("click",function (e){
             e.preventDefault();
             setTimeout(()=>{
                 getHeaderImages();
@@ -585,9 +640,9 @@
                 $("#setting_form").submit();
             },1000)
         });
-    </script>
-    <script>
-        const fileHeaderInput = document.querySelector('#file-input-header');
+</script>
+<script>
+    const fileHeaderInput = document.querySelector('#file-input-header');
         const previewHeaderContainer = document.querySelector('.preview-header-container');
         const croppieHeaderModal = document.querySelector('#croppie-header-modal');
         const croppieHeaderContainer = document.querySelector('#croppie-header-container');
@@ -722,9 +777,9 @@
             }, 300);
         }
 
-    </script>
-    <script>
-        const fileFooterInput = document.querySelector('#file-input-footer');
+</script>
+<script>
+    const fileFooterInput = document.querySelector('#file-input-footer');
         const previewFooterContainer = document.querySelector('.preview-footer-container');
         const croppieFooterModal = document.querySelector('#croppie-footer-modal');
         const croppieFooterContainer = document.querySelector('#croppie-footer-container');
@@ -859,9 +914,9 @@
             }, 300);
         }
 
-    </script>
-    <script>
-        const fileLogoInput = document.querySelector('#file-input-logo');
+</script>
+<script>
+    const fileLogoInput = document.querySelector('#file-input-logo');
         const previewLogoContainer = document.querySelector('.preview-logo-container');
         const croppieLogoModal = document.querySelector('#croppie-logo-modal');
         const croppieLogoContainer = document.querySelector('#croppie-logo-container');
@@ -996,5 +1051,5 @@
             }, 300);
         }
 
-    </script>
+</script>
 @endsection

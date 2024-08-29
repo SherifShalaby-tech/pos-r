@@ -3,13 +3,12 @@
 
         {!! Form::open(['url' => action('TutorialController@store'), 'method' => 'post', 'id' =>'tutorial_add_form',
         'files' => true ]) !!}
+        <x-modal-header>
 
-        <div class="modal-header">
 
             <h4 class="modal-title">@lang( 'lang.add_tutorial' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="form-group">
@@ -20,40 +19,40 @@
             <div class="form-group">
                 {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
                 {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ), 'required'
-                ]);
+                ])
                 !!}
             </div>
             <div class="form-group">
                 {!! Form::label('description', __( 'lang.description' )) !!}
                 {!! Form::textarea('description', null, ['class' => 'form-control', 'placeholder' => __(
                 'lang.description' )
-                ]);
+                ])
                 !!}
             </div>
             <div class="form-group">
                 {!! Form::label('link', __( 'lang.link' ) . ':*') !!}
                 {!! Form::text('link', null, ['class' => 'form-control', 'placeholder' => __( 'lang.link' ), 'required'
-                ]);
+                ])
                 !!}
             </div>
             {{-- <div class="form-group">
                 {!! Form::label('video', __( 'lang.video' ) . ':*') !!} <br>
                 {!! Form::file('video', null, ['class' => '', 'required'
-                ]);
+                ])
                 !!}
             </div>
             <div class="form-group">
                 {!! Form::label('thumbnail', __( 'lang.thumbnail' ) . ':*') !!} <br>
                 {!! Form::file('thumbnail', null, ['class' => '', 'required'
-                ]);
+                ])
                 !!}
             </div> --}}
 
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

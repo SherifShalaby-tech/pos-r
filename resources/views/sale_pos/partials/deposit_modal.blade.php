@@ -1,11 +1,12 @@
 <div class="modal fade" role="dialog" id="deposit_modal">
     <div class="modal-dialog" role="document" style="width: 75%;">
         <div class="modal-content">
-            <div class="modal-header">
+            <x-modal-header>
                 <h5 class="modal-title">@lang('lang.insurance_amount')</h5>
-                <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true"><i
-                            class="dripicons-cross"></i></span></button>
-            </div>
+
+
+            </x-modal-header>
+
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-4">
@@ -19,7 +20,7 @@
                             <label>{{trans('lang.customer')}}</label>
                             <select class="form-control" name="ItemBorrowed[customer_id]">
                                 @foreach($clients as $customer)
-                                    <option value="{{$customer->id}}">{{$customer->name}}</option>
+                                <option value="{{$customer->id}}">{{$customer->name}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -47,8 +48,10 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" data-dismiss="modal" id="deposit_submit">@lang('lang.submit')</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal">@lang('lang.close')</button>
+                        <button type="submit" class="btn btn-primary col-6" data-dismiss="modal"
+                            id="deposit_submit">@lang('lang.submit')</button>
+                        <button type="button" class="btn btn-default col-6"
+                            data-dismiss="modal">@lang('lang.close')</button>
                     </div>
                 </div>
 

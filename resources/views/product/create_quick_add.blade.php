@@ -3,18 +3,18 @@
 
         {!! Form::open(['url' => action('ProductController@store'), 'method' => 'post', 'id' => $quick_add ?
         'product-form-quick-add': 'product-form' ]) !!}
-
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.add_product' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <input type="hidden" name="active" value="1">
             <div class="row">
-                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') ==
+                'supermarket')
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('product_class_id', __('lang.class') . ' *', []) !!}
@@ -70,7 +70,8 @@
                         => __('lang.sku')]) !!}
                     </div>
                 </div>
-                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') ==
+                'supermarket')
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('multiple_units', __('lang.unit'), []) !!}
@@ -99,7 +100,8 @@
 
                     </div>
                 </div>
-                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') ==
+                'supermarket')
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('multiple_grades', __('lang.grade'), []) !!}
@@ -127,7 +129,8 @@
                         <textarea name="product_details" id="product_details" class="form-control" rows="3"></textarea>
                     </div>
                 </div>
-                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket')
+                @if(session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') ==
+                'supermarket')
                 <div class="col-md-4">
                     <div class="form-group">
                         {!! Form::label('barcode_type', __('lang.barcode_type') . ' *', []) !!}
@@ -147,10 +150,13 @@
                 @can('product_module.purchase_price.create_and_edit')
                 <div class="col-md-4">
                     <div class="form-group">
-                        {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') :
+                        {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') ==
+                        'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') :
                         __('lang.cost') . ' *', []) !!}
                         {!! Form::text('purchase_price', null, ['class' => 'form-control', 'placeholder' =>
-                        session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
+                        session('system_mode') == 'pos' || session('system_mode') == 'garments' ||
+                        session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost'),
+                        'required']) !!}
                     </div>
                 </div>
                 @endcan
@@ -312,8 +318,8 @@
 
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="submit-btn-add-product">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="button" class="btn btn-primary col-6" id="submit-btn-add-product">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

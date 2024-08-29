@@ -2,44 +2,53 @@
 @section('title', __('lang.tutorial'))
 <link href="https://vjs.zencdn.net/7.17.0/video-js.css" rel="stylesheet" />
 @section('content')
-<div class="container-fluid">
 
-    <div class="col-md-12  no-print">
-        <div class="card">
-            <div class="card-header d-flex align-items-center">
-                <a style="color: white" href="{{action('TutorialController@getTutorialsCategoryGuide')}}" class="btn btn-info ml-2"><i
-                    class="fa fa-arrow-left"></i>
-                @lang('lang.back')</a>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <table class="table table-bordered" id="tutorial_table">
-                        <thead>
-                            <tr>
-                                <th>@lang('lang.tutorial')</th>
-                                <th>@lang('lang.added_at')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($tutorialsDataArray as $item)
-                            <tr class="tr" style="cursor: pointer;"
-                                data-href="{{$item['link']}}">
-                                <td>{{$item['name']}}</td>
-                                <td>{{@format_date($item['created_at'])}}</td>
-                            </tr>
-                            @empty
-                            <tr>
-                                <td colspan="2">@lang('lang.no_item_found')</td>
-                            </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+<section class="forms pt-2">
+
+    <div class="container-fluid">
+
+        <div class="col-md-12  no-print">
+            <x-page-title>
+
+                <x-slot name="buttons">
+
+                    <a style="color: white" href="{{action('TutorialController@getTutorialsCategoryGuide')}}"
+                        class="btn btn-info ml-2"><i class="fa fa-arrow-left"></i>
+                        @lang('lang.back')</a>
+                </x-slot>
+            </x-page-title>
+
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <table class="table table-bordered" id="tutorial_table">
+                            <thead>
+                                <tr>
+                                    <th>@lang('lang.tutorial')</th>
+                                    <th>@lang('lang.added_at')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($tutorialsDataArray as $item)
+                                <tr class="tr" style="cursor: pointer;" data-href="{{$item['link']}}">
+                                    <td>{{$item['name']}}</td>
+                                    <td>{{@format_date($item['created_at'])}}</td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="2">@lang('lang.no_item_found')</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
-
             </div>
         </div>
     </div>
-</div>
+</section>
 
 <div class="modal fade video_modal no-print" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">

@@ -1,21 +1,20 @@
 @php
-    $index=$index??'';
+$index=$index??'';
 @endphp
 
 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#select_products_modal{{$index?? ''}}"
-        style="margin-top: 15px;">
+    style="margin-top: 15px;">
     @lang('lang.select_products')
 </button>
-<div class="modal fade" id="select_products_modal{{$index}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle"
-     aria-hidden="true" style="width: 100%;">
+<div class="modal fade" id="select_products_modal{{$index}}" tabindex="-1" role="dialog"
+    aria-labelledby="exampleModalLongTitle" aria-hidden="true" style="width: 100%;">
     <div class="modal-dialog modal-lg" role="document" id="select_products_modal">
         <div class="modal-content">
-            <div class="modal-header">
+            <x-modal-header>
 
                 <h4 class="modal-title">@lang( 'lang.select_products' )</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
-            </div>
+
+            </x-modal-header>
 
             <div class="modal-body">
                 <div class="col-md-12">
@@ -24,31 +23,37 @@
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        {!! Form::label('filter_product_class_id', __('lang.product_class') . ':', []) !!}
+                                        {!! Form::label('filter_product_class_id', __('lang.product_class') . ':', [])
+                                        !!}
                                         {!! Form::select('filter_product_class_id', $product_classes,
                                         request()->filter_product_class_id,
                                         ['class'
                                         => 'form-control filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_product_class_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true',
+                                        'id'=>'filter_product_class_id'.$index, 'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('filter_category_id', __('lang.category') . ':', []) !!}
-                                        {!! Form::select('filter_category_id', $categories, request()->category_id, ['class' =>
+                                        {!! Form::select('filter_category_id', $categories, request()->category_id,
+                                        ['class' =>
                                         'form-control filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_category_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_category_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         {!! Form::label('filter_sub_category_id', __('lang.sub_category') . ':', []) !!}
-                                        {!! Form::select('filter_sub_category_id', $sub_categories, request()->sub_category_id,
+                                        {!! Form::select('filter_sub_category_id', $sub_categories,
+                                        request()->sub_category_id,
                                         ['class' =>
                                         'form-control filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_sub_category_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true',
+                                        'id'=>'filter_sub_category_id'.$index, 'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -58,7 +63,8 @@
                                         {!! Form::select('filter_brand_id', $brands, request()->brand_id, ['class' =>
                                         'form-control
                                         filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_brand_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_brand_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -68,7 +74,8 @@
                                         {!! Form::select('filter_unit_id', $units, request()->unit_id, ['class' =>
                                         'form-control
                                         filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_unit_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_unit_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -78,7 +85,8 @@
                                         {!! Form::select('filter_color_id', $colors, request()->color_id, ['class' =>
                                         'form-control
                                         filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_color_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_color_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -88,7 +96,8 @@
                                         {!! Form::select('filter_size_id', $sizes, request()->size_id, ['class' =>
                                         'form-control
                                         filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_size_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_size_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -98,7 +107,8 @@
                                         {!! Form::select('filter_grade_id', $grades, request()->grade_id, ['class' =>
                                         'form-control
                                         filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_grade_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_grade_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -108,7 +118,8 @@
                                         {!! Form::select('filter_tax_id', $taxes_array, request()->tax_id, ['class' =>
                                         'form-control
                                         filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_tax_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_tax_id'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -116,19 +127,22 @@
                                     <div class="form-group">
                                         {!! Form::label('filter_store_id', __('lang.store'), []) !!}
                                         {!! Form::select('filter_store_id', $stores, request()->store_id, ['class' =>
-                                        'form-control filter_product'.$index, 'id'=>'filter_store_id'.$index, 'placeholder' =>
+                                        'form-control filter_product'.$index, 'id'=>'filter_store_id'.$index,
+                                        'placeholder' =>
                                         __('lang.all'),'data-live-search'=>"true"])
                                         !!}
                                     </div>
                                 </div>
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        {!! Form::label('filter_customer_type_id', __('lang.customer_type') . ':', []) !!}
+                                        {!! Form::label('filter_customer_type_id', __('lang.customer_type') . ':', [])
+                                        !!}
                                         {!! Form::select('filter_customer_type_id', $customer_types,
                                         request()->customer_type_id,
                                         ['class'
                                         => 'form-control filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_customer_type_id'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true',
+                                        'id'=>'filter_customer_type_id'.$index, 'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -137,7 +151,8 @@
                                         {!! Form::label('filter_created_by', __('lang.created_by') . ':', []) !!}
                                         {!! Form::select('filter_created_by', $users, request()->created_by, ['class'
                                         => 'form-control filter_product'.$index.'
-                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_created_by'.$index, 'placeholder' => __('lang.all')])
+                                        selectpicker', 'data-live-search' =>'true', 'id'=>'filter_created_by'.$index,
+                                        'placeholder' => __('lang.all')])
                                         !!}
                                     </div>
                                 </div>
@@ -202,7 +217,8 @@
                         <thead>
                             <tr>
                                 <th>@lang('lang.select')<br>
-                                    <input type="checkbox" name="product_select_all" class="product_select_all"  /></th>            
+                                    <input type="checkbox" name="product_select_all" class="product_select_all" />
+                                </th>
                                 <th>@lang('lang.image')</th>
                                 <th>@lang('lang.name')</th>
                                 <th>@lang('lang.product_code')</th>
@@ -249,8 +265,10 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" id="add-selected-btn{{$index?? ''}}">@lang( 'lang.add' )</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+                <button type="button" class="btn btn-primary col-6" id="add-selected-btn{{$index?? ''}}">@lang(
+                    'lang.add'
+                    )</button>
+                <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
             </div>
 
         </div>

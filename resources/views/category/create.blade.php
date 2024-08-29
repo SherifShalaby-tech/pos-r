@@ -19,6 +19,7 @@
         margin: 30px 0px;
         border: 1px solid #ddd;
     }
+
     .preview img {
         width: 100%;
         height: 100%;
@@ -201,53 +202,58 @@
 <div class="modal-dialog" role="document">
     <div class="modal-content">
 
-        {!! Form::open(['url' => action('CategoryController@store'), 'method' => 'post', 'id' => $quick_add ? 'quick_add_category_form' : 'category_add_form', 'files' => true]) !!}
-
-        <div class="modal-header">
-
+        {!! Form::open(['url' => action('CategoryController@store'), 'method' => 'post', 'id' => $quick_add ?
+        'quick_add_category_form' : 'category_add_form', 'files' => true]) !!}
+        <x-modal-header>
             <h4 class="modal-title">@lang( 'lang.add_category' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+
+        </x-modal-header>
+
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __('lang.name') . ':*') !!}
                 <div class="input-group my-group">
-                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'), 'required']) !!}
+                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'),
+                    'required']) !!}
                     <span class="input-group-btn">
-                        <button class="btn btn-default bg-white btn-flat translation_btn" type="button" data-type="category"><i
-                                class="dripicons-web text-primary fa-lg"></i></button>
+                        <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
+                            data-type="category"><i class="dripicons-web text-primary fa-lg"></i></button>
                     </span>
                 </div>
             </div>
             @include('layouts.partials.translation_inputs', [
-                'attribute' => 'name',
-                'translations' => [],
-                'type' => 'category',
+            'attribute' => 'name',
+            'translations' => [],
+            'type' => 'category',
             ])
             <div class="form-group">
                 {!! Form::label('description', __('lang.description') . ':') !!}
-                {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' => __('lang.description')]) !!}
+                {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' =>
+                __('lang.description')]) !!}
             </div>
             <input type="hidden" name="quick_add" value="{{ $quick_add }}">
             @if ($type == 'category')
-                <div class="form-group">
-                    <label for="product_class_id">{{ __('lang.class') }}:</label>
-                    <select class="form-control" data-live-search="true" style="width: 100%" placeholder="{{ __('lang.please_select') }}" required id="cat_product_class_id" name="product_class_id">
-                        <option value="" selected disabled>{{ __('lang.please_select') }}</option>
-                        @foreach($product_classes as $product_class_id => $product_class)
-                            <option value="{{ $product_class_id }}">{{ $product_class }}</option>
-                        @endforeach
-                    </select>
-                    <span class="text-danger hide required-class">Tis field is required</span>
-                </div>
+            <div class="form-group">
+                <label for="product_class_id">{{ __('lang.class') }}:</label>
+                <select class="form-control" data-live-search="true" style="width: 100%"
+                    placeholder="{{ __('lang.please_select') }}" required id="cat_product_class_id"
+                    name="product_class_id">
+                    <option value="" selected disabled>{{ __('lang.please_select') }}</option>
+                    @foreach($product_classes as $product_class_id => $product_class)
+                    <option value="{{ $product_class_id }}">{{ $product_class }}</option>
+                    @endforeach
+                </select>
+                <span class="text-danger hide required-class">Tis field is required</span>
+            </div>
             @endif
             @if ($type == 'sub_category')
-                <div class="form-group ">
-                    {!! Form::label('parent_id', __('lang.parent_category') . ':') !!}
-                    {!! Form::select('parent_id', $categories, false, ['class' => 'form-control', 'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select'), 'id' => 'parent_id']) !!}
-                </div>
+            <div class="form-group ">
+                {!! Form::label('parent_id', __('lang.parent_category') . ':') !!}
+                {!! Form::select('parent_id', $categories, false, ['class' => 'form-control', 'data-live-search' =>
+                'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select'), 'id' => 'parent_id']) !!}
+            </div>
             @endif
             <div class="row">
                 <div class="col-md-12">
@@ -282,31 +288,31 @@
                 </div>
 
             </div>
-{{--            @include('layouts.partials.image_crop')--}}
+            {{-- @include('layouts.partials.image_crop')--}}
         </div>
 
         <div class="modal-footer">
-            <button id="add-category-btn"  class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button id="add-category-btn" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
         <div id="cropped_add_category_images"></div>
         {!! Form::close() !!}
-    <!-- Modal -->
+        <!-- Modal -->
         <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <x-modal-header>
+
+
                         <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
+                    </x-modal-header>
+
                     <div class="modal-body">
                         <div id="croppie-category-modal" style="display:none">
                             <div id="croppie-category-container"></div>
-                            <button data-dismiss="modal" id="croppie-category-cancel-btn" type="button" class="btn btn-secondary"><i
-                                    class="fas fa-times"></i></button>
+                            <button data-dismiss="modal" id="croppie-category-cancel-btn" type="button"
+                                class="btn btn-secondary"><i class="fas fa-times"></i></button>
                             <button id="croppie-category-submit-btn" type="button" class="btn btn-primary"><i
                                     class="fas fa-crop"></i></button>
                         </div>
@@ -486,6 +492,3 @@
     }
 
 </script>
-
-
-

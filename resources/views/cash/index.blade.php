@@ -138,7 +138,7 @@
                                                         \Carbon\Carbon::parse($cash_register->created_at));
                                                         });
                                                         })
-                                                        ->sum('amount');
+                                                        ->sum('amount')
                                                         }}
                                     </td>
                                     @if(session('system_mode') == 'restaurant')

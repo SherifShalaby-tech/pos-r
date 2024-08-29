@@ -953,12 +953,12 @@
     aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <x-modal-header>
+
                 <h5 class="modal-title" id="editProductModalLabel">Modal title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+
+            </x-modal-header>
+
             <div class="modal-body">
                 <div id="croppie-edit-product-modal" style="display:none">
                     <div id="croppie-edit-product-container"></div>

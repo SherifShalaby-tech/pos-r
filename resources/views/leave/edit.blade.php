@@ -1,12 +1,12 @@
 <!-- Modal -->
 <div class="modal-dialog  modal-lg" role="document">
     <div class="modal-content">
-        <div class="modal-header">
+        <x-modal-header>
+
             <h5 class="modal-title" id="leave">@lang('lang.leave')</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+
+        </x-modal-header>
+
         {!! Form::open(['url' => action('LeaveController@update', $leave->id), 'method' => 'put', 'enctype' =>
         'multipart/form-data']) !!}
         <div class="modal-body">
@@ -15,7 +15,8 @@
                     <div class="form-group">
                         <label for="employee_id">@lang('lang.employee')</label>
                         @if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
-                        {!! Form::select('employee_id', $employees, $leave->employee_id, ['class' => 'form-control select2', 'id' =>
+                        {!! Form::select('employee_id', $employees, $leave->employee_id, ['class' => 'form-control
+                        select2', 'id' =>
                         'employee_id', 'required', 'placeholder' => 'Please Select']) !!}
                         @endif
                     </div>
@@ -35,40 +36,48 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="leave_type_id">@lang('lang.select_type_of_leave')</label>
-                        {!! Form::select('leave_type_id', $leave_types, $leave->leave_type_id, ['class' => 'form-control', 'required',
+                        {!! Form::select('leave_type_id', $leave_types, $leave->leave_type_id, ['class' =>
+                        'form-control', 'required',
                         'placeholder' => 'Please Select']) !!}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <label for="start_date">@lang('lang.start_date')</label>
-                    <input class="form-control" type="date" value="{{$leave->start_date}}" id="start_date" name="start_date" required>
+                    <input class="form-control" type="date" value="{{$leave->start_date}}" id="start_date"
+                        name="start_date" required>
                 </div>
                 <div class="col-md-4">
                     <label for="end_date">@lang('lang.end_date')</label>
-                    <input class="form-control" type="date" value="{{$leave->end_date}}" id="end_date" name="end_date" required>
+                    <input class="form-control" type="date" value="{{$leave->end_date}}" id="end_date" name="end_date"
+                        required>
                 </div>
                 <div class="col-md-4">
                     <label for="rejoining_date">@lang('lang.rejoining_date')</label>
-                    <input class="form-control" type="date" value="{{$leave->rejoining_date}}" id="rejoining_date" name="rejoining_date" required>
+                    <input class="form-control" type="date" value="{{$leave->rejoining_date}}" id="rejoining_date"
+                        name="rejoining_date" required>
                 </div>
                 <div class="col-md-4">
                     <label for="paid_or_not_paid">@lang('lang.paid_not_paid')</label>
-                    {!! Form::select('paid_or_not_paid', ['paid' => 'Paid', 'not_paid' => 'Not Paid'], $leave->paid_or_not_paid, ['class' =>
+                    {!! Form::select('paid_or_not_paid', ['paid' => 'Paid', 'not_paid' => 'Not Paid'],
+                    $leave->paid_or_not_paid, ['class' =>
                     'form-control', 'placeholder' => 'Please Select', 'id' => 'paid_or_not_paid', 'required']) !!}
                 </div>
                 <div class="col-md-4 if_paid hide">
                     <label for="amount_to_paid">@lang('lang.amount_to_paid')</label>
-                    {!! Form::text('amount_to_paid', $leave->amount_to_paid, ['class' => 'form-control', 'placeholder' =>
+                    {!! Form::text('amount_to_paid', $leave->amount_to_paid, ['class' => 'form-control', 'placeholder'
+                    =>
                     __('lang.amount_to_paid'), 'id' => 'amount_to_paid']) !!}
                 </div>
                 <div class="col-md-4 if_paid hide">
                     <label for="payment_date">@lang('lang.payment_date')</label>
-                    {!! Form::text('payment_date', $leave->payment_date, ['class' => 'form-control datepicker', 'placeholder' =>
+                    {!! Form::text('payment_date', $leave->payment_date, ['class' => 'form-control datepicker',
+                    'placeholder' =>
                     __('lang.payment_date'), 'id' => 'payment_date']) !!}
                 </div>
                 <div class="col-md-4 ">
                     <label for="status">@lang('lang.status')</label>
-                    {!! Form::select('status', ['pending' => 'Pending', 'approved' => 'Approved', 'rejected' => 'Rejected'], $leave->status, ['class' => 'form-control', 'placeholder' =>
+                    {!! Form::select('status', ['pending' => 'Pending', 'approved' => 'Approved', 'rejected' =>
+                    'Rejected'], $leave->status, ['class' => 'form-control', 'placeholder' =>
                     __('lang.status'), 'id' => 'status']) !!}
                 </div>
 
@@ -78,21 +87,22 @@
                     __('lang.upload_files'), 'id' => 'upload_files']) !!}
                 </div>
                 @if(!empty($leave->upload_files))
-                    <div class="col-md-8">
-                        <img height="300px" style="padding: 10px" src="{{asset('uploads/'.$leave->upload_files)}}" alt="">
-                    </div>
+                <div class="col-md-8">
+                    <img height="300px" style="padding: 10px" src="{{asset('uploads/'.$leave->upload_files)}}" alt="">
+                </div>
                 @endif
                 <div class="col-md-12">
                     <label for="details">@lang('lang.details')</label>
-                    {!! Form::textarea('details', $leave->details, ['class' => 'form-control', 'rows' => 3, 'placeholder' =>
+                    {!! Form::textarea('details', $leave->details, ['class' => 'form-control', 'rows' => 3,
+                    'placeholder' =>
                     __('lang.details'), 'id' => 'details']) !!}
                 </div>
 
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang('lang.save')</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary col-6">@lang('lang.save')</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">Close</button>
         </div>
         {!! Form::close() !!}
     </div>

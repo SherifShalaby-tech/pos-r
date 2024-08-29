@@ -1,5 +1,6 @@
 <!-- Button trigger modal -->
-<button  is-show="0" id="button_product_condition_tree" type="button" class="btn btn-primary" data-toggle="modal" data-target="#pciModal" style="margin-top: 30px;">
+<button is-show="0" id="button_product_condition_tree" type="button" class="btn btn-primary" data-toggle="modal"
+    data-target="#pciModal" style="margin-top: 30px;">
     @lang('lang.select_products')
 </button>
 <style>
@@ -23,24 +24,23 @@
     .pci-accordion-toggle:focus {
         text-decoration: none;
     }
-
 </style>
 <!-- Modal -->
 <div class="modal fade" id="pciModal" tabindex="-1" role="dialog" aria-labelledby="pciModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header">
+            <x-modal-header>
+
                 <h5 class="modal-title" id="pciModalLabel">@lang('lang.condition_products')</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
+
+            </x-modal-header>
+
             <div class="modal-body" id="pci_modal_body">
 
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">@lang('lang.next')</button>
+                <button type="button" class="btn btn-default   col-12" data-dismiss="modal">@lang('lang.next')</button>
             </div>
         </div>
     </div>

@@ -1,12 +1,12 @@
 <!-- Modal -->
 <div class="modal-dialog  modal-lg" role="document">
     <div class="modal-content">
-        <div class="modal-header">
+        <x-modal-header>
+
             <h5 class="modal-title" id="edit">@lang('lang.edit')</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
+
+        </x-modal-header>
+
         {!! Form::open(['url' => action('TermsAndConditionsController@update', $terms_and_condition->id), 'method' =>
         'put']) !!}
         <div class="modal-body">
@@ -29,8 +29,8 @@
             </div>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang('lang.save')</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary col-6">@lang('lang.save')</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">Close</button>
         </div>
         {!! Form::close() !!}
     </div>

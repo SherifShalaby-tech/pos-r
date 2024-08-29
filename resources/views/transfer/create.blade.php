@@ -2,17 +2,25 @@
 @section('title', __('lang.add_transfer'))
 
 @section('content')
-<section class="forms">
+<section class="forms pt-2">
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-12">
+
+                <x-page-title>
+
+                    <h4>@lang('lang.add_transfer')</h4>
+
+
+                    <x-slot name="buttons">
+
+                    </x-slot>
+                </x-page-title>
+
                 <div class="card">
-                    <div class="card-header d-flex align-items-center">
-                        <h4>@lang('lang.add_transfer')</h4>
-                    </div>
                     {!! Form::open(['url' => action('TransferController@store'), 'method' => 'post', 'id' =>
                     'add_transfer_form', 'enctype' => 'multipart/form-data' ]) !!}
-                     <input type="hidden" name="is_raw_material" id="is_raw_material" value="{{ $is_raw_material }}">
+                    <input type="hidden" name="is_raw_material" id="is_raw_material" value="{{ $is_raw_material }}">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-3">

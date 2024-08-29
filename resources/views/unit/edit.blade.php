@@ -3,19 +3,17 @@
 
         {!! Form::open(['url' => action('UnitController@update', $unit->id), 'method' => 'put', 'id' => 'unit_add_form'
         ]) !!}
-
-        <div class="modal-header">
+        <x-modal-header>
 
             <h4 class="modal-title">@lang( 'lang.edit' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="form-group">
                 {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
                 {!! Form::text('name', $unit->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
-                'required' ]);
+                'required' ])
                 !!}
             </div>
             {{-- @if(!empty($unit->is_raw_material_unit)) --}}
@@ -23,29 +21,30 @@
                 {!! Form::label('info', __( 'lang.info' ). ':') !!}
                 {!! Form::textarea('description', $unit->description, ['class' => 'form-control', 'placeholder' => __(
                 'lang.info' ),
-                'rows' => 3 ]);
+                'rows' => 3 ])
                 !!}
             </div>
             @if(session('system_mode') != 'garments')
-                 <div class="form-group">
-                    {!! Form::label('base_unit_multiplier', __( 'lang.times_of' ). ':') !!}
-                    {!! Form::text('base_unit_multiplier', @num_format($unit->base_unit_multiplier), ['class' => 'form-control',
-                    'placeholder' => __(
-                    'lang.times_of' ) ]);
-                    !!}
-                </div>
-                <div class="form-group">
-                    {!! Form::label('base_unit_id', __( 'lang.base_unit' ). ':') !!}
-                    {!! Form::select('base_unit_id', $units, $unit->base_unit_id, ['class' => 'form-control selectpicker',
-                    'placeholder'
-                    => __('lang.select_base_unit'), 'data-live-search' => 'true']) !!}
-                </div>
+            <div class="form-group">
+                {!! Form::label('base_unit_multiplier', __( 'lang.times_of' ). ':') !!}
+                {!! Form::text('base_unit_multiplier', @num_format($unit->base_unit_multiplier), ['class' =>
+                'form-control',
+                'placeholder' => __(
+                'lang.times_of' ) ])
+                !!}
+            </div>
+            <div class="form-group">
+                {!! Form::label('base_unit_id', __( 'lang.base_unit' ). ':') !!}
+                {!! Form::select('base_unit_id', $units, $unit->base_unit_id, ['class' => 'form-control selectpicker',
+                'placeholder'
+                => __('lang.select_base_unit'), 'data-live-search' => 'true']) !!}
+            </div>
             @endif
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

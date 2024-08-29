@@ -5,13 +5,11 @@
         'add_cash_out_form',
         'files' => true
         ]) !!}
+        <x-modal-header>
 
-        <div class="modal-header">
 
             <h4 class="modal-title">@lang( 'lang.add_cash_out' )</h4>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span></button>
-        </div>
+        </x-modal-header>
 
         <div class="modal-body">
             <div class="col-md-12">
@@ -20,9 +18,10 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('amount', __( 'lang.amount' ) . ':*') !!}
-                            {!! Form::text('amount', @num_format($cash_out->amount), ['class' => 'form-control', 'placeholder' =>
+                            {!! Form::text('amount', @num_format($cash_out->amount), ['class' => 'form-control',
+                            'placeholder' =>
                             __(
-                            'lang.amount' ), 'required' ]);
+                            'lang.amount' ), 'required' ])
                             !!}
                         </div>
                     </div>
@@ -47,8 +46,8 @@
         </div>
 
         <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="submit" class="btn btn-primary col-6 ">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
 
         {!! Form::close() !!}

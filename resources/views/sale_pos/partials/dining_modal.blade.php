@@ -114,20 +114,20 @@
             display: block;
         }
     }
-
 </style>
 <div role="document" class="modal-dialog modal-lg asd">
     <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span
-                    aria-hidden="true"><i class="dripicons-cross"></i></span></button>
-        </div>
+        <x-modal-header>
+
+
+        </x-modal-header>
+
         <div class="modal-body" id="dining_content">
             @include('sale_pos.partials.dining_content')
 
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">@lang(
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang(
                 'lang.close')</button>
         </div>
     </div>
