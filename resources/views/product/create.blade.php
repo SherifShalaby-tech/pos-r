@@ -63,32 +63,22 @@
                 <x-page-title>
 
                     <h4>@lang('lang.add_new_product')</h4>
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
-
-                <div class="card">
-
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('ProductController@store'), 'id' => 'product-form', 'method' =>
-                        'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        @include('product.partial.create_product_form')
-                        <div class="row">
-                            <div class="col-md-4 mt-5">
-                                <div class="form-group">
-                                    <input type="button" value="{{ trans('lang.save') }}" id="submit-btn"
-                                        class="btn btn-primary">
-                                </div>
-                            </div>
+                {!! Form::open(['url' => action('ProductController@store'), 'id' => 'product-form', 'method' =>
+                'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                @include('product.partial.create_product_form')
+                <div class="row">
+                    <div class="col-md-4 mt-5">
+                        <div class="form-group">
+                            <input type="button" value="{{ trans('lang.save') }}" id="submit-btn"
+                                class="btn btn-primary">
                         </div>
-                        <div id="cropped_images"></div>
-                        {!! Form::close() !!}
                     </div>
                 </div>
+                <div id="cropped_images"></div>
+                {!! Form::close() !!}
+
             </div>
         </div>
     </div>
@@ -382,4 +372,36 @@
         });
     });
 </script>
+
+
+<script>
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+        $('#productImage').on('show.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-up' when the content is expanded
+        $('button[data-bs-target="#productImage"] i').removeClass('fa-arrow-down').addClass(
+        'fa-arrow-up');
+        });
+
+        $('#productImage').on('hide.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-down' when the content is collapsed
+        $('button[data-bs-target="#productImage"] i').removeClass('fa-arrow-up').addClass(
+        'fa-arrow-down');
+        });
+
+
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+        $('#productRecipe').on('show.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-up' when the content is expanded
+        $('button[data-bs-target="#productRecipe"] i').removeClass('fa-arrow-down').addClass(
+        'fa-arrow-up');
+        });
+
+        $('#productRecipe').on('hide.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-down' when the content is collapsed
+        $('button[data-bs-target="#productRecipe"] i').removeClass('fa-arrow-up').addClass(
+        'fa-arrow-down');
+        });
+</script>
+
+
 @endsection

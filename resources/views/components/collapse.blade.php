@@ -2,10 +2,12 @@
 'button'=>"",
 ])
 
-<div class="w-100">
+<div class=" {{ $groupClass }}">
 
-    <button class="btn btn-primary {{ $buttonClass }}" type="button" data-bs-toggle="collapse"
-        data-bs-target="#{{ $collapseId }}" aria-expanded="false" aria-controls="{{ $collapseId }}">
+    <button class="btn text-white {{ $buttonClass }}"
+        style="background: linear-gradient(to right, var(--primary-color), var(--primary-color-hover));" type="button"
+        data-bs-toggle="collapse" data-bs-target="#{{ $collapseId }}" aria-expanded="false"
+        aria-controls="{{ $collapseId }}">
 
         {{ $button }}
 
@@ -20,7 +22,6 @@
     </div>
 
 </div>
-
 
 
 

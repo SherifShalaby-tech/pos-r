@@ -175,7 +175,7 @@ section header {
 * ==========================================================
 */
 nav.navbar {
-    background: #393836;
+    /* background: #393836; */
     padding: 0.8rem 0;
     /* Navbar Brand --------- */
     /*  Dropdowns ------------ */
@@ -198,7 +198,7 @@ nav.navbar .navbar-holder {
 nav.navbar a {
     font-size: 14px;
     color: #303030;
-    line-height: 60px;
+    /* line-height: 60px; */
     position: relative;
     padding: 0 3px;
 }
@@ -325,7 +325,7 @@ nav.navbar a.menu-btn {
 }
 
 .brand-big h1 {
-    font-weight: 300;
+    font-weight: 400;
 }
 
 @media all and (max-width: 1024px) {

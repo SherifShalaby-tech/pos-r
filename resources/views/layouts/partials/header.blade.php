@@ -3,22 +3,24 @@ $logo = App\Models\System::getProperty('logo');
 $site_title = App\Models\System::getProperty('site_title');
 $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 @endphp
-<header class="header no-print">
+<header class="header no-print py-1"
+    style="background: linear-gradient(to right, var(--primary-color), var(--primary-color-hover));">
     <nav class="navbar">
         <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
-                <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars" style="margin-top: 10px !important;">
-                    </i></a>
+                <a id="toggle-btn" href="#" class="menu-btn border-0">
+                    <img src="{{ asset('front/sidebar_icons/menu.svg') }}" alt=""></a>
                 <span class="brand-big">@if($logo)<img src="{{asset('/uploads/'.$logo)}}"
                         width="50">&nbsp;&nbsp;@endif<a href="{{url('/')}}">
-                        <h1 class="d-inline">{{$site_title}}</h1>
+                        <h1 class="d-inline text-white">{{$site_title}}</h1>
                     </a></span>
 
                 <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
                     <li class="nav-item">
                         <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true"
                             aria-expanded="false"
-                            class="nav-link dropdown-item d-flex justify-content-center align-items-center">
+                            class="nav-link dropdown-item bg-white d-flex justify-content-center align-items-center px-2"
+                            style="border-radius: 8px;height: 35px;">
                             <span style="width: 25px;height: 25px;background-color: var(--primary-color)"
                                 class="rounded-circle">
                             </span>
@@ -88,17 +90,27 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                     </span>
                                 </button>
                             </li>
-
-
                         </ul>
                     </li>
-                    <li class="nav-item">
+
+
+
+                    <li class="nav-item ">
                         <a href="{{action('SellController@create')}}" id="commercial_invoice_btn" data-toggle="tooltip"
-                            data-title="@lang('lang.add_sale')" class="btn no-print"><img
-                                src="{{asset('images/396 Commercial Invoice Icon.png')}}" alt=""
-                                style="height: 40px; width: 35px;">
+                            data-title="@lang('lang.add_sale')"
+                            class="btn no-print d-flex justify-content-center align-items-center bg-white px-2"
+                            style="border-radius: 8px;height: 35px;">
+
+
+                            <div style="width: 13px;height: 18px;" class="mb-1">
+                                <img src="{{ asset('front/images/icons Png/hed/Icon awesome-file-invoice.png') }}"
+                                    alt="@lang('lang.add_sale')" style="width: 100%;height: 100%;">
+                            </div>
+
+                            <span class="ml-2 text-bold">@lang('lang.invoice')</span>
                         </a>
                     </li>
+
                     <li class="nav-item">
                         {{-- <a target="_blank" href="{{action('ContactUsController@getUserContactUs')}}"
                             id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
@@ -106,18 +118,47 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         </a> --}}
                         <a target="_blank" href="https://api.whatsapp.com/send?phone={{$watsapp_numbers}}"
                             id="contact_us_btn" data-toggle="tooltip" data-title="@lang('lang.contact_us')"
-                            style="background-image: url('{{asset('images/watsapp.jpg')}}');background-size: 40px;"
-                            class="btn no-print">
+                            class="btn bg-white no-print d-flex justify-content-center align-items-center"
+                            style="border-radius:8px;width: 35px;height: 35px;">
+                            <img style="width: 100%" src="{{ asset('images/watsapp.jpg') }}"
+                                alt="@lang('lang.contact_us')">
                         </a>
                     </li>
-                    <li class="nav-item"><button class="btn-danger btn-sm hide" id="power_off_btn" data-toggle="tooltip"
-                            data-title="@lang('lang.shut_down')"><i class="fa fa-power-off"></i></button></li>
+
+
+                    <li class="nav-item">
+                        <button style="border-radius:8px;width: 35px;height: 35px;"
+                            class="btn hide bg-danger text-white no-print d-flex justify-content-center align-items-center"
+                            id="power_off_btn" data-toggle="tooltip" data-title="@lang('lang.shut_down')"><i
+                                class="fa fa-power-off"></i></button>
+                    </li>
+
+
+
+
                     @can('sale.pos.create_and_edit')
-                    <li class="nav-item"><a class="dropdown-item btn-pos btn-sm"
-                            href="{{action('SellPosController@create')}}"><i class="dripicons-shopping-bag"></i><span>
-                                @lang('lang.pos')</span></a></li>
+                    <li class="nav-item">
+                        <a class="d-flex justify-content-center align-items-center bg-white px-2 btn"
+                            style="border-radius: 8px;height: 35px;" href="{{action('SellPosController@create')}}">
+                            <div style="width: 26px;height: 26px;" class="mb-0">
+
+                                <img src="{{ asset('front/images/cash-machine.png') }}" alt=""
+                                    style="width: 100%;height: 100%;">
+                            </div>
+                            <span class="ml-2 text-bold">
+                                @lang('lang.pos')</span>
+                        </a>
+                    </li>
+
                     @endcan
-                    <li class="nav-item"><a id="btnFullscreen"><i class="dripicons-expand"></i></a></li>
+
+
+                    <li class="nav-item"><a id="btnFullscreen" style="border-radius:8px;width: 35px;height: 35px;"
+                            class="btn bg-white no-print d-flex justify-content-center align-items-center"><i
+                                class="dripicons-expand m-0"></i></a>
+                    </li>
+
+
                     @include('layouts.partials.notification_list')
                     @php
                     $config_languages = config('constants.langs');
@@ -128,8 +169,14 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     @endphp
                     <li class="nav-item">
                         <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-web"></i>
-                            <span>{{__('lang.language')}}</span> <i class="fa fa-angle-down"></i></a>
+                            aria-expanded="false"
+                            class="d-flex justify-content-center align-items-center bg-white px-2 btn"
+                            style="border-radius: 8px;height: 35px;">
+                            <i class="dripicons-web m-0 text-black"></i>
+                            {{-- <i class="dripicons-web"></i>
+                            <span>{{__('lang.language')}}</span>
+                            <i class="fa fa-angle-down"></i> --}}
+                        </a>
                         <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                             @foreach ($languages as $key => $lang)
                             <li>
@@ -147,8 +194,16 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     </li> --}}
                     <li class="nav-item">
                         <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true"
-                            aria-expanded="false" class="nav-link dropdown-item"><i class="dripicons-user"></i>
-                            <span>{{ucfirst(Auth::user()->name)}}</span> <i class="fa fa-angle-down"></i>
+                            aria-expanded="false"
+                            class="d-flex justify-content-center align-items-center bg-white px-2 btn"
+                            style="border-radius: 8px;height: 35px;">
+                            <div style="width: 15px;height: 18px;">
+                                <img src="{{ asset('front/images/icons Png/hed/Icon awesome-user-alt.png') }}" alt=""
+                                    style="width: 100%;height: 100%;">
+                            </div>
+                            {{-- <i class="dripicons-user"></i>
+                            <span>{{ucfirst(Auth::user()->name)}}</span>
+                            <i class="fa fa-angle-down"></i> --}}
                         </a>
                         <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                             @php

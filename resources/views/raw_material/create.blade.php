@@ -8,34 +8,25 @@
             <div class="col-md-12">
 
                 <x-page-title>
-
-
                     <h4>@lang('lang.add_new_raw_material')</h4>
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
-                <div class="card">
 
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('RawMaterialController@store'), 'id' => 'product-form', 'method'
-                        =>
-                        'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        @include('raw_material.partial.create_raw_material_form')
-                        <input type="hidden" name="active" value="1">
-                        <div class="row">
-                            <div class="col-md-4 mt-5">
-                                <div class="form-group">
-                                    <input type="button" value="{{trans('lang.submit')}}" id="submit-btn"
-                                        class="btn btn-primary">
-                                </div>
-                            </div>
+                {!! Form::open(['url' => action('RawMaterialController@store'), 'id' => 'product-form', 'method'
+                =>
+                'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                @include('raw_material.partial.create_raw_material_form')
+                <input type="hidden" name="active" value="1">
+                <div class="row">
+                    <div class="col-md-4 mt-5">
+                        <div class="form-group">
+                            <input type="button" value="{{trans('lang.submit')}}" id="submit-btn"
+                                class="btn btn-primary">
                         </div>
-                        {!! Form::close() !!}
                     </div>
                 </div>
+                {!! Form::close() !!}
+
             </div>
         </div>
     </div>

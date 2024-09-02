@@ -233,4 +233,51 @@
     .count-title:hover .icon {
         opacity: 0.8;
     }
+
+
+    .btn-partial {
+        border-radius: 0 6px 6px 0px;
+        border: 2px solid var(--primary-color);
+        box-shadow: 2px 2px 4px 0px #087e74;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .swal-button--confirm {
+        background-color: var(--primary-color) !important;
+    }
+
+    .swal-button--confirm:hover {
+        background-color: var(--primary-color-hover) !important;
+    }
+
+    .swal-button {
+        transition: 0.4s
+    }
+
+    .swal-button:focus {
+        box-shadow: 0 0 0 0 #fff, 0 0 0 0px rgba(43, 114, 165, .29)
+    }
+
+    .gap-10 {
+        gap: 10px;
+    }
+
+    .collapse_arrow {
+        background: #fff;
+        color: var(--primary-color);
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center
+    }
+
+    .product_collapse_shadow {
+        box-shadow: -2px 2px 2px 0px #087e74 !important;
+        min-width: 150px;
+    }
 </style>

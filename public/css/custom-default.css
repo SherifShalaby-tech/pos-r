@@ -692,7 +692,7 @@ nav.navbar a.menu-btn:hover {
 }
 
 nav.navbar {
-    background: #fff;
+    /* background: #fff; */
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     line-height: 60px;
     padding: 0;
