@@ -245,7 +245,8 @@
         height: 100%;
     }
 
-    .swal-button--confirm {
+    .swal-button--confirm,
+    .swal2-confirm {
         background-color: var(--primary-color) !important;
     }
 
@@ -253,11 +254,13 @@
         background-color: var(--primary-color-hover) !important;
     }
 
-    .swal-button {
+    .swal-button,
+    .swal2-confirm {
         transition: 0.4s
     }
 
-    .swal-button:focus {
+    .swal-button:focus,
+    .swal2-confirm:focus {
         box-shadow: 0 0 0 0 #fff, 0 0 0 0px rgba(43, 114, 165, .29)
     }
 

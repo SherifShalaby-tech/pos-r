@@ -45,20 +45,24 @@
     </td>
     <td>{!! Form::select('variations['.$row_id.'][unit_id]', $units, !empty($item) ? $item->unit_id: false, ['class'
         =>
-        'form-control selectpicker v_unit', 'data-live-search'=>"true", 'placeholder' => '','onchange'=>"get_unit($units_js,$row_id)" , 'id'=>'select_unit_id_'.$row_id]) !!}
+        'form-control selectpicker v_unit', 'data-live-search'=>"true", 'placeholder' =>
+        '','onchange'=>"get_unit($units_js,$row_id)" , 'id'=>'select_unit_id_'.$row_id]) !!}
     </td>
-        @if(session('system_mode') != 'garments')
-            <td>{!! Form::number('variations['.$row_id.'][number_vs_base_unit]', $number_vs_base_unit , ['class' =>
-                'form-control
-                number_vs_base_unit','id'=>'number_vs_base_unit_'.$row_id]) !!}</td>
-        @endif
+    @if(session('system_mode') != 'garments')
+    <td>{!! Form::number('variations['.$row_id.'][number_vs_base_unit]', $number_vs_base_unit , ['class' =>
+        'form-control
+        number_vs_base_unit','id'=>'number_vs_base_unit_'.$row_id]) !!}</td>
+    @endif
     {{-- @if(empty($is_service)) hide @endif --}}
-    <td  class=" default_purchase_price_td @if(empty($is_service)) hide @endif" >{!! Form::text('variations['.$row_id.'][default_purchase_price]', $product_purchase_price , ['class' =>
+    <td class=" default_purchase_price_td @if(empty($is_service)) hide @endif">{!!
+        Form::text('variations['.$row_id.'][default_purchase_price]', $product_purchase_price , ['class' =>
         'form-control
         default_purchase_price']) !!}</td>
-    <td class=" default_sell_price_td @if(empty($is_service)) hide @endif">{!! Form::text('variations['.$row_id.'][default_sell_price]', $product_sale_price,
+    <td class=" default_sell_price_td @if(empty($is_service)) hide @endif">{!!
+        Form::text('variations['.$row_id.'][default_sell_price]', $product_sale_price,
         ['class' => 'form-control default_sell_price']) !!}</td>
-    <td> <button type="button" class="btn btn-danger btn-xs remove_row mt-2"><i class="dripicons-cross"></i></button>
+    <td> <button type="button" class="btn btn-danger remove_row" style="border-radius: 50%!important;width: 35px;
+    height: 35px;"><i class="dripicons-cross"></i></button>
     </td>
 </tr>
 <tr class="variant_store_checkbox_{{$row_id}}">
@@ -91,7 +95,6 @@
         <input type="text" class="form-control store_prices" style="width: 200px;"
             name="variations[{{$row_id}}][variant_stores][{{$store->id}}][price]"
             value="@if(!empty($variant_store)){{$variant_store->price}}@endif">
-
     </td>
 </tr>
 @endforeach

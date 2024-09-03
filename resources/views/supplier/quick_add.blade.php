@@ -1,4 +1,4 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog" style="min-width: 80%" role="document">
     <div class="modal-content">
 
         {!! Form::open(['url' => action('SupplierController@store'), 'id' => $quick_add ? 'quick_add_supplier_form' :

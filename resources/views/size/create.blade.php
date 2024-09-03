@@ -9,18 +9,35 @@
         </x-modal-header>
 
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ), 'required'
-                ])
-                !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-6 px-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __( 'lang.name' ) ,[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
+                    'required'
+                    ])
+                    !!}
+                </div>
             </div>
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
-            <div class="form-group">
-                {!! Form::label('size_code', __( 'lang.size_code' ) . ':*') !!}
-                {!! Form::text('size_code', null, ['class' => 'form-control', 'placeholder' => __( 'lang.size_code' )])
-                !!}
+            <div class="col-md-6 px-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('size_code', __( 'lang.size_code' ),[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+
+                    </div>
+                    {!! Form::text('size_code', null, ['class' => 'form-control', 'placeholder' => __( 'lang.size_code'
+                    )])
+                    !!}
+                </div>
             </div>
         </div>
 

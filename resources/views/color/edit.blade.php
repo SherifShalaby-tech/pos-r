@@ -6,23 +6,36 @@
 
         <x-modal-header>
 
-
             <h4 class="modal-title">@lang( 'lang.edit' )</h4>
         </x-modal-header>
 
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
-                {!! Form::text('name', $color->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
-                'required' ])
-                !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-6 px-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __( 'lang.name' ) ,[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    {!! Form::text('name', $color->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
+                    'required' ])
+                    !!}
+                </div>
             </div>
-            <div class="form-group">
-                {!! Form::label('color_hex', __( 'lang.color_hex' ) . ':*') !!}
-                {!! Form::text('color_hex', $color->color_hex, ['class' => 'form-control', 'placeholder' => __(
-                'lang.color_hex' ) ])
-                !!}
+            <div class="col-md-6 px-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('color_hex', __( 'lang.color_hex' ) ,[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    {!! Form::text('color_hex', $color->color_hex, ['class' => 'form-control', 'placeholder' => __(
+                    'lang.color_hex' ) ])
+                    !!}
+                </div>
             </div>
         </div>
 

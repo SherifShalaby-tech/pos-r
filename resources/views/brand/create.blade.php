@@ -114,17 +114,17 @@
     }
 
     .file--upload>label {
-        color: hsl(204, 86%, 53%);
-        border-color: hsl(204, 86%, 53%);
+        color: var(--primary-color);
+        border: 2px dashed var(--primary-color);
     }
 
     .file--upload>label:hover {
-        border-color: hsl(204, 86%, 53%);
-        background-color: hsl(204, 86%, 96%);
+        border-color: var(--primary-color-hover);
+        border: 2px dashed var(--primary-color-hover);
     }
 
     .file--upload>label:active {
-        background-color: hsl(204, 86%, 91%);
+        background-color: hsl(0, 0%, 89%);
     }
 
     .file--uploading>label {
@@ -209,48 +209,63 @@
             <h4 class="modal-title">@lang( 'lang.add_brand' )</h4>
         </x-modal-header>
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
-                {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ), 'required'
-                ])
-                !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __( 'lang.name' ),[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
+                    'required'
+                    ])
+                    !!}
+                </div>
             </div>
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
             {{-- @include('layouts.partials.image_crop')--}}
-            <div class="form-group">
-                <label for="projectinput2"> {{ __('categories.image') }}</label>
-                <div class="container mt-3">
-                    <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
+            <div class="col-md-12">
+
+                <div class="form-group">
+                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                        for="projectinput2">
+                        {{ __('lang.image') }}</label>
+
+                    <div class="row ">
                         <div class="col-12">
-                            <div class="mt-3">
-                                <div class="row">
-                                    <div class="col-10 offset-1">
-                                        <div class="variants">
-                                            <div class='file file--upload w-100'>
-                                                <label for='file-input-brand' class="w-100">
-                                                    <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                </label>
-                                                <input type="file" id="file-input-brand">
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="variants">
+                                <div class='file file--upload w-100'>
+                                    <label for='file-input-brand' class="w-100">
+                                        <i class="fas fa-cloud-upload-alt"></i>Upload
+                                    </label>
+                                    <input type="file" id="file-input-brand">
                                 </div>
                             </div>
+
+
                         </div>
-                        <div class="col-10 offset-1">
-                            <div class="preview-brand-container"></div>
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="preview-brand-container d-flex justify-content-center"></div>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
+
+
         <div id="cropped_brand_images"></div>
         <div class="modal-footer">
             <button id="submit-create-brand-btn" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
             <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
         </div>
+
+
         {!! Form::close() !!}
+
+
         <div class="modal fade" id="brandModal" tabindex="-1" role="dialog" aria-labelledby="brandModalLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">

@@ -15,19 +15,23 @@
     <td>
         <p class="hide info_text text-red"></p>
         <div class="col-md-6">
-            <label for="" class="unit_label">{{!empty($consumption_product->unit) ? $consumption_product->unit->name : false}}</label>
+            <label for="" class="unit_label">{{!empty($consumption_product->unit) ? $consumption_product->unit->name :
+                false}}</label>
         </div>
         {!! Form::select('consumption_details['.$row_id.'][unit_id]', $raw_material_units,
-        !empty($consumption_product) ? $consumption_product->unit_id : false, ['class' => 'selectpicker form-control hide
+        !empty($consumption_product) ? $consumption_product->unit_id : false, ['class' => 'selectpicker form-control
+        hide
         raw_material_unit_id', 'data-live-search'=>"true", 'placeholder' => __('lang.please_select')]) !!}
     </td>
     <td> <label for="" class="cost_label"></label></td>
-    <td><button type="button" class="btn btn-xs btn-danger remove_row remove_raw_material_btn"><i class="fa fa-times"></i></button></td>
+    <td><button type="button" class="btn btn-danger remove_row remove_raw_material_btn" style="border-radius: 50%!important;width: 35px;
+    height: 35px;"><i class="fa fa-times"></i></button></td>
     @if(!empty(!empty($consumption_product)))
     @php
-        $this_raw_material = App\Models\Product::find($consumption_product->raw_material_id);
+    $this_raw_material = App\Models\Product::find($consumption_product->raw_material_id);
     @endphp
-    <input type="hidden" name="raw_material_price" class="raw_material_price" value="{{$this_raw_material->purchase_price??0}}">
+    <input type="hidden" name="raw_material_price" class="raw_material_price"
+        value="{{$this_raw_material->purchase_price??0}}">
     @else
     <input type="hidden" name="raw_material_price" class="raw_material_price" value="0">
     @endif

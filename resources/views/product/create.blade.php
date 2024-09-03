@@ -401,6 +401,43 @@
         $('button[data-bs-target="#productRecipe"] i').removeClass('fa-arrow-up').addClass(
         'fa-arrow-down');
         });
+
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+        $('#productRawMaterial').on('show.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-up' when the content is expanded
+        $('button[data-bs-target="#productRawMaterial"] i').removeClass('fa-arrow-down').addClass(
+        'fa-arrow-up');
+        });
+
+        $('#productRawMaterial').on('hide.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-down' when the content is collapsed
+        $('button[data-bs-target="#productRawMaterial"] i').removeClass('fa-arrow-up').addClass(
+        'fa-arrow-down');
+        });
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+        $('#productSelling').on('show.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-up' when the content is expanded
+        $('button[data-bs-target="#productSelling"] i').removeClass('fa-arrow-down').addClass(
+        'fa-arrow-up');
+        });
+
+        $('#productSelling').on('hide.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-down' when the content is collapsed
+        $('button[data-bs-target="#productSelling"] i').removeClass('fa-arrow-up').addClass(
+        'fa-arrow-down');
+        });
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+        $('#productPurchase').on('show.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-up' when the content is expanded
+        $('button[data-bs-target="#productPurchase"] i').removeClass('fa-arrow-down').addClass(
+        'fa-arrow-up');
+        });
+
+        $('#productPurchase').on('hide.bs.collapse', function() {
+        // Change the arrow icon to 'chevron-down' when the content is collapsed
+        $('button[data-bs-target="#productPurchase"] i').removeClass('fa-arrow-up').addClass(
+        'fa-arrow-down');
+        });
 </script>
 
 

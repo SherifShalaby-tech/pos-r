@@ -114,17 +114,17 @@
     }
 
     .file--upload>label {
-        color: hsl(204, 86%, 53%);
-        border-color: hsl(204, 86%, 53%);
+        color: var(--primary-color);
+        border: 2px dashed var(--primary-color);
     }
 
     .file--upload>label:hover {
-        border-color: hsl(204, 86%, 53%);
-        background-color: hsl(204, 86%, 96%);
+        border-color: var(--primary-color-hover);
+        border: 2px dashed var(--primary-color-hover);
     }
 
     .file--upload>label:active {
-        background-color: hsl(204, 86%, 91%);
+        background-color: hsl(0, 0%, 89%);
     }
 
     .file--uploading>label {
@@ -210,36 +210,41 @@
 
 
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
-                {!! Form::text('name', $brand->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
-                'required' ])
-                !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __( 'lang.name' ) ,[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    {!! Form::text('name', $brand->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
+                    'required' ])
+                    !!}
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="projectinput2"> {{ __('categories.image') }}</label>
-                <div class="container mt-3">
-                    <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
+            <div class="col-md-12">
+
+                <div class="form-group">
+                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                        for="projectinput2"> {{ __('categories.image') }}</label>
+
+                    <div class="row">
                         <div class="col-12">
-                            <div class="mt-3">
-                                <div class="row">
-                                    <div class="col-10 offset-1">
-                                        <div class="variants">
-                                            <div class='file file--upload w-100'>
-                                                <label for='file-input-edit-brand' class="w-100">
-                                                    <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                </label>
-                                                <input type="file" id="file-input-edit-brand">
-                                            </div>
-                                        </div>
-                                    </div>
+                            <div class="variants">
+                                <div class='file file--upload w-100'>
+                                    <label for='file-input-edit-brand' class="w-100">
+                                        <i class="fas fa-cloud-upload-alt"></i>Upload
+                                    </label>
+                                    <input type="file" id="file-input-edit-brand">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-10 offset-1">
-                            <div class="preview-edit-brand-container">
+
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="preview-edit-brand-container d-flex justify-content-center">
                                 @if($brand)
                                 <div id="preview{{ $brand->id }}" class="preview">
                                     @if (!empty($brand->getFirstMediaUrl('brand')))
@@ -252,54 +257,55 @@
                                 @endif
                             </div>
                         </div>
+
                     </div>
                 </div>
+                {{-- @include('layouts.partials.image_crop', ['image_url' => $brand->getFirstMediaUrl('brand') ??
+                null])--}}
             </div>
-            {{-- @include('layouts.partials.image_crop', ['image_url' => $brand->getFirstMediaUrl('brand') ?? null])--}}
-        </div>
-        <div id="cropped_edit_brand_images"></div>
-        <div class="modal-footer">
-            <button id="submit-edit-brand-btn" class="btn btn-primary  col-6  ">@lang( 'lang.update' )</button>
-            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
-        </div>
+            <div id="cropped_edit_brand_images"></div>
+            <div class="modal-footer">
+                <button id="submit-edit-brand-btn" class="btn btn-primary  col-6  ">@lang( 'lang.update' )</button>
+                <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
+            </div>
 
-        {!! Form::close() !!}
-        <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog" aria-labelledby="editBrandModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
+            {!! Form::close() !!}
+            <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog"
+                aria-labelledby="editBrandModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
 
-                    <x-modal-header>
+                        <x-modal-header>
 
-                        <h5 class="modal-title" id="editBrandModalLabel">Modal title</h5>
+                            <h5 class="modal-title" id="editBrandModalLabel">Modal title</h5>
 
-                    </x-modal-header>
+                        </x-modal-header>
 
-                    <div class="modal-body">
-                        <div id="croppie-modal-brand-edit" style="display:none">
-                            <div id="croppie-container-brand-edit"></div>
-                            <button data-dismiss="modal" id="croppie-cancel-btn-brand-edit" type="button"
-                                class="btn btn-secondary"><i class="fas fa-times"></i></button>
-                            <button id="croppie-submit-btn-brand-edit" type="button" class="btn btn-primary"><i
-                                    class="fas fa-crop"></i></button>
+                        <div class="modal-body">
+                            <div id="croppie-modal-brand-edit" style="display:none">
+                                <div id="croppie-container-brand-edit"></div>
+                                <button data-dismiss="modal" id="croppie-cancel-btn-brand-edit" type="button"
+                                    class="btn btn-secondary"><i class="fas fa-times"></i></button>
+                                <button id="croppie-submit-btn-brand-edit" type="button" class="btn btn-primary"><i
+                                        class="fas fa-crop"></i></button>
+                            </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
             </div>
-        </div>
 
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
 
 
-<script>
-    $('#brand_category_id').selectpicker('render')
-</script>
+    <script>
+        $('#brand_category_id').selectpicker('render')
+    </script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-<script>
-    $("#submit-edit-brand-btn").on("click",function (e){
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+    <script>
+        $("#submit-edit-brand-btn").on("click",function (e){
         e.preventDefault();
         getEditBrandImages();
         setTimeout(()=>{
@@ -442,4 +448,4 @@
         }, 300);
     }
 
-</script>
+    </script>

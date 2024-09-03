@@ -217,30 +217,26 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
     <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
         <div class="col-md-12 ">
-            <div class="container mt-3">
-                <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                    <div class="col-12">
-                        <div class="mt-3">
-                            <div class="row">
-                                <div class="col-10 offset-1">
-                                    <div class="variants">
-                                        <div class='file file--upload w-100'>
-                                            <label for='file-input' class="w-100">
-                                                <i class="fas fa-cloud-upload-alt"></i>Upload
-                                            </label>
-                                            <!-- <input  id="file-input" multiple type='file' /> -->
-                                            <input type="file" id="file-input">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="variants">
+                        <div class='file file--upload w-100'>
+                            <label for='file-input' class="w-100">
+                                <i class="fas fa-cloud-upload-alt"></i>Upload
+                            </label>
+                            <!-- <input  id="file-input" multiple type='file' /> -->
+                            <input type="file" id="file-input">
                         </div>
-                    </div>
-                    <div class="col-10 offset-1">
-                        <div class="preview-container"></div>
                     </div>
                 </div>
             </div>
+
+            <div class="col-12 d-flex justify-content-center">
+                <div class="preview-container"></div>
+            </div>
+
         </div>
     </div>
 
@@ -319,40 +315,48 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
             </div>
         </div> --}}
         <div class="col-md-12">
-            <table class="table table-bordered" id="consumption_table">
+            <table class="table text-center table-bordered" id="consumption_table">
                 <thead>
                     <tr>
                         <th style="width: 30%;">@lang('lang.raw_materials')</th>
                         <th style="width: 30%;">@lang('lang.used_amount')</th>
                         <th style="width: 30%;">@lang('lang.unit')</th>
                         <th style="width: 30%;">@lang('lang.cost')</th>
-                        <th style="width: 10%;"><button class="btn btn-xs btn-success add_raw_material_row"
-                                type="button"><i class="fa fa-plus"></i></button></th>
+                        <th style="width: 10%;"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @include('product.partial.raw_material_row', ['row_id' => 0])
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-primary col-md-1 add_raw_material_row" type="button"><i
+                        class="fa fa-plus"></i></button>
+            </div>
             <input type="hidden" name="raw_material_row_index" id="raw_material_row_index" value="1">
         </div>
-        <div class="col-md-12"><strong>@lang('lang.product_extension')</strong></div>
+        <div class="col-md-12 text-primary @if (app()->isLocale('ar')) text-right @else text-left @endif">
+            <strong>@lang('lang.product_extension')</strong>
+        </div>
 
         <div class="col-md-12">
-            <table class="table table-bordered" id="extensions_table">
+            <table class="table text-center table-bordered" id="extensions_table">
                 <thead>
                     <tr>
                         <th style="width: 30%;">@lang('lang.extension')</th>
                         <th style="width: 30%;">@lang('lang.sell_price')</th>
 
-                        <th style="width: 10%;"><button class="btn btn-xs btn-success add_extension_row"
-                                type="button"><i class="fa fa-plus"></i></button></th>
+                        <th style="width: 10%;"></th>
                     </tr>
                 </thead>
                 <tbody>
                     @include('product.partial.extension_row', ['row_id' => 0])
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-primary col-md-1 add_extension_row" type="button"><i
+                        class="fa fa-plus"></i></button>
+            </div>
             <input type="hidden" name="extension_row_index" id="extension_row_index" value="1">
         </div>
     </div>
@@ -375,44 +379,13 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
 
     <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
-        <div class="col-md-4">
+
+
+        <div class="col-md-4 mb-2 px-5">
             <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input depends_on" type="radio" name="depends_on" id="selling_price_depends"
-                        value="1">
-                    <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على سعر
-                        الشراء</label>
-                    <div class="form-group selling_price_depends_div hide">
-                        <label>سعر البيع يزيد عن سعر الشراء بــمبلغ</label>
-                        <select class="form-control mb-2" name="selling_price_depends_type">
-                            <option value="rate">نسبة</option>
-                            <option value="amount">مبلغ</option>
-                        </select>
-                        <input type="number" class="form-control" name="selling_price_depends" value="">
-
-                    </div>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input depends_on" type="radio" name="depends_on"
-                        id="purchase_price_depends" value="2">
-                    <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد على سعر
-                        البيع</label>
-                    <div class="form-group purchase_price_depends_div hide">
-                        <label>سعر الشراء يقل عن سعر البيع بــمبلغ</label>
-                        <select class="form-control mb-2" name="purchase_price_depends_type">
-                            <option value="rate">نسبة</option>
-                            <option value="amount">مبلغ</option>
-                        </select>
-                        <input type="number" class="form-control" name="purchase_price_depends" value="">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="form-group">
-                {!! Form::label('barcode_type', __('lang.barcode_type'), []) !!}
+                {!! Form::label('barcode_type', __('lang.barcode_type'), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::select('barcode_type', ['C128' => 'Code 128', 'C39' => 'Code 39', 'UPCA' => 'UPC-A',
                 'UPCE' =>
                 'UPC-E', 'EAN8' => 'EAN-8', 'EAN13' => 'EAN-13'], !empty($recent_product) ?
@@ -421,29 +394,33 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
             </div>
         </div>
 
-        <div class="col-md-4 alert_quantity hide">
+        <div class="col-md-4 mb-2 px-5 alert_quantity hide">
             <div class="form-group">
-                {!! Form::label('alert_quantity', __('lang.alert_quantity'), []) !!}
+                {!! Form::label('alert_quantity', __('lang.alert_quantity'), ['class' => app()->isLocale('ar') ? 'mb-1
+                label-ar' : 'mb-1 label-en']) !!}
                 {!! Form::text('alert_quantity', !empty($recent_product) ?
                 @num_format($recent_product->alert_quantity) : 3,
                 ['class' => 'form-control', 'placeholder' => __('lang.alert_quantity')]) !!}
             </div>
         </div>
 
-        <div class="col-md-4 other_cost">
+        <div class="col-md-4 mb-2 px-5 other_cost">
             <div class="form-group">
-                {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
+                {!! Form::label('other_cost', __('lang.other_cost'), ['class' => app()->isLocale('ar') ? 'mb-1 label-ar'
+                : 'mb-1 label-en']) !!}
                 {!! Form::text('other_cost', !empty($recent_product) ? @num_format($recent_product->other_cost) :
                 null,
                 ['class' => 'clear_input_form form-control', 'placeholder' => __('lang.other_cost')]) !!}
             </div>
         </div>
         @can('product_module.purchase_price.create_and_edit')
-        <div class="col-md-4 supplier_div">
+        <div class="col-md-4 mb-2 px-5 supplier_div">
             <div class="form-group">
                 {!! Form::label('purchase_price', session('system_mode') == 'pos' || session('system_mode') ==
                 'garments' ||
-                session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', [])
+                session('system_mode') == 'supermarket' ? __('lang.purchase_price') : __('lang.cost') . ' *', [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ])
                 !!}
                 {!! Form::text('purchase_price', !empty($recent_product) ?
                 @num_format($recent_product->purchase_price) :
@@ -456,17 +433,24 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
         </div>
         @endcan
 
-        <div class="col-md-4 supplier_div">
+        <div class="col-md-4 mb-2 px-5 supplier_div">
             <div class="form-group">
-                {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
+                <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    {!! Form::label('sell_price', __('lang.sell_price') , [
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    <span class="text-danger">*</span>
+                </div>
                 {!! Form::text('sell_price', !empty($recent_product) ? @num_format($recent_product->sell_price) :
                 null,
                 ['class' => 'clear_input_form form-control', 'placeholder' => __('lang.sell_price'), 'required'])
                 !!}
             </div>
         </div>
-        <div class="col-md-4">
-            {!! Form::label('tax_id', __('lang.tax'), []) !!}
+        <div class="col-md-4 mb-2 px-5">
+            {!! Form::label('tax_id', __('lang.tax'), [
+            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+            ]) !!}
             <div class="input-group my-group">
                 {!! Form::select('tax_id', $taxes, !empty($recent_product) ? $recent_product->tax_id : false,
                 ['class' =>
@@ -474,17 +458,19 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
                 'placeholder' => __('lang.please_select')]) !!}
                 <span class="input-group-btn">
                     @can('product_module.tax.create')
-                    <button class="btn-modal btn bg-white btn-flat"
+                    <button class="btn-modal btn btn-partial btn-primary btn-flat"
                         data-href="{{ action('TaxController@create') }}?quick_add=1&type=product_tax"
-                        data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                        data-container=".view_modal"><i class="fa fa-plus-circle text-white fa-lg"></i></button>
                     @endcan
                 </span>
             </div>
             <div class="error-msg text-red"></div>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-4 mb-2 px-5">
             <div class="form-group">
-                {!! Form::label('tax_method', __('lang.tax_method'), []) !!}
+                {!! Form::label('tax_method', __('lang.tax_method'), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::select('tax_method', ['inclusive' => __('lang.inclusive'), 'exclusive' =>
                 __('lang.exclusive')],
                 !empty($recent_product) ? $recent_product->tax_method : false, ['class' => 'clear_input_form
@@ -494,6 +480,47 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
             </div>
         </div>
 
+        <div class="col-md-8 mb-2 px-5">
+            <div class="form-group d-flex">
+
+                <div class="form-check col-md-6 px-5">
+                    <input class="form-check-input depends_on" type="radio" name="depends_on" id="selling_price_depends"
+                        value="1">
+                    <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على سعر
+                        الشراء</label>
+                    <div class="form-group selling_price_depends_div mt-2 hide">
+                        <label
+                            class="text-primary @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif">سعر
+                            البيع
+                            يزيد عن سعر الشراء بــمبلغ</label>
+                        <select class="form-control mb-2" name="selling_price_depends_type">
+                            <option value="rate">نسبة</option>
+                            <option value="amount">مبلغ</option>
+                        </select>
+                        <input type="number" class="form-control" name="selling_price_depends" value="">
+
+                    </div>
+                </div>
+
+                <div class="form-check col-md-6 px-5">
+                    <input class="form-check-input depends_on" type="radio" name="depends_on"
+                        id="purchase_price_depends" value="2">
+                    <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد على سعر
+                        البيع</label>
+                    <div class="form-group purchase_price_depends_div mt-2 hide">
+                        <label
+                            class="text-primary @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif">سعر
+                            الشراء يقل عن سعر البيع بــمبلغ</label>
+                        <select class="form-control mb-2" name="purchase_price_depends_type">
+                            <option value="rate">نسبة</option>
+                            <option value="amount">مبلغ</option>
+                        </select>
+                        <input type="number" class="form-control" name="purchase_price_depends" value="">
+
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="clearfix"></div>
     </div>
@@ -526,14 +553,17 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
                         <th style="width: 20%;">@lang('lang.discount_end_date')</th>
                         <th style="width: 20%;">@lang('lang.customer_type') <i class="dripicons-question"
                                 data-toggle="tooltip" title="@lang('lang.discount_customer_info')"></i></th>
-                        <th style="width: 5%;"><button class="btn btn-xs btn-success add_discount_row" type="button"><i
-                                    class="fa fa-plus"></i></button></th>
+                        <th style="width: 5%;"></th>
                     </tr>
                 </thead>
                 <tbody>
                     {{-- @include('product.partial.raw_discount', ['row_id' => 0]) --}}
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-primary col-md-1 add_discount_row" type="button"><i
+                        class="fa fa-plus"></i></button>
+            </div>
             <input type="hidden" name="raw_discount_index" id="raw_discount_index" value="1">
         </div>
 
@@ -544,6 +574,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
         {{-- <div class="col-md-12">
             <strong>@lang('lang.printers')</strong>
         </div> --}}
+
         <div class="panel-group" id="accordion" style="margin-bottom: 20px">
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -645,14 +676,18 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
                             @lang('lang.purchase_price')</th>
                         <th class="sell_price_th @if(empty($is_service)) hide @endif">@lang('lang.sell_price')
                         </th>
-                        <th><button type="button" class="btn btn-success btn-xs add_row mt-2"><i
-                                    class="dripicons-plus"></i></button></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
 
                 </tbody>
             </table>
+
+            <div class="d-flex justify-content-center">
+                <button type="button" class="btn btn-primary col-md-1 add_row "><i class="dripicons-plus"></i></button>
+
+            </div>
         </div>
         <input type="hidden" name="row_id" id="row_id" value="0">
     </div>

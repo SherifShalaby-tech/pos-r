@@ -155,17 +155,17 @@
         }
 
         .file--upload>label {
-            color: hsl(204, 86%, 53%);
-            border-color: hsl(204, 86%, 53%);
+            color: var(--primary-color);
+            border: 2px dashed var(--primary-color);
         }
 
         .file--upload>label:hover {
-            border-color: hsl(204, 86%, 53%);
-            background-color: hsl(204, 86%, 96%);
+            border-color: var(--primary-color-hover);
+            border: 2px dashed var(--primary-color-hover);
         }
 
         .file--upload>label:active {
-            background-color: hsl(204, 86%, 91%);
+            background-color: hsl(0, 0%, 89%);
         }
 
         .file--uploading>label {

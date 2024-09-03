@@ -115,17 +115,17 @@
     }
 
     .file--upload>label {
-        color: hsl(204, 86%, 53%);
-        border-color: hsl(204, 86%, 53%);
+        color: var(--primary-color);
+        border: 2px dashed var(--primary-color);
     }
 
     .file--upload>label:hover {
-        border-color: hsl(204, 86%, 53%);
-        background-color: hsl(204, 86%, 96%);
+        border-color: var(--primary-color-hover);
+        border: 2px dashed var(--primary-color-hover);
     }
 
     .file--upload>label:active {
-        background-color: hsl(204, 86%, 91%);
+        background-color: hsl(0, 0%, 89%);
     }
 
     .file--uploading>label {
@@ -217,71 +217,95 @@
         </x-modal-header>
 
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __('lang.name') . ':*') !!}
-                <div class="input-group my-group">
-                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'),
-                    'required']) !!}
-                    <span class="input-group-btn">
-                        <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
-                            data-type="product_class"><i class="dripicons-web text-primary fa-lg"></i></button>
-                    </span>
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-4">
+
+                <div class="form-group">
+
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __('lang.name'),[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    <div class="input-group my-group">
+                        {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'),
+                        'required']) !!}
+                        <span class="input-group-btn">
+                            <button class="btn-primary btn-flat py-1 btn-partial translation_btn" type="button"
+                                style="border-radius: 0 6px 6px 0px;border: 2px solid var(--primary-color);"
+                                data-type="product_class"><i class="dripicons-web text-white fa-lg"></i></button>
+                        </span>
+                    </div>
+                </div>
+                @include('layouts.partials.translation_inputs', [
+                'attribute' => 'name',
+                'translations' => [],
+                'type' => 'product_class',
+                ])
+                <input type="hidden" name="quick_add" value="{{ $quick_add }}">
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {!! Form::label('description', __('lang.description') ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' =>
+                    __('lang.description')]) !!}
                 </div>
             </div>
-            @include('layouts.partials.translation_inputs', [
-            'attribute' => 'name',
-            'translations' => [],
-            'type' => 'product_class',
-            ])
-            <input type="hidden" name="quick_add" value="{{ $quick_add }}">
-            <div class="form-group">
-                {!! Form::label('description', __('lang.description') . ':') !!}
-                {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' =>
-                __('lang.description')]) !!}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('sort', __('lang.sort'),[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    {!! Form::number('sort', 1, ['class' => 'form-control', 'placeholder' => __('lang.sort'),
+                    'required'])
+                    !!}
+                </div>
             </div>
-            <div class="form-group">
-                {!! Form::label('sort', __('lang.sort') . ':*') !!}
-                {!! Form::number('sort', 1, ['class' => 'form-control', 'placeholder' => __('lang.sort'), 'required'])
-                !!}
-            </div>
-            <div class="form-group">
-                <div class="i-checks">
-                    <input id="status" name="status" type="checkbox" checked value="1" class="form-control-custom">
-                    <label for="status"><strong>
-                            @lang('lang.active')
-                        </strong></label>
+            <div class="col-md-12 d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+
+                <div class="form-group">
+                    <div class="i-checks">
+                        <input id="status" name="status" type="checkbox" checked value="1" class="form-control-custom">
+                        <label for="status"><strong>
+                                @lang('lang.active')
+                            </strong></label>
+                    </div>
                 </div>
             </div>
             {{-- @include('layouts.partials.image_crop')--}}
-            <div class="row">
+            <div class="row col-md-12">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="projectinput2"> {{ __('categories.image') }}</label>
-                        <div class="container mt-3">
-                            <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                                <div class="col-12">
-                                    <div class="mt-3">
-                                        <div class="row">
-                                            <div class="col-10 offset-1">
-                                                <div class="variants">
-                                                    <div class='file file--upload w-100'>
-                                                        <label for='file-class-input' class="w-100">
-                                                            <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                        </label>
-                                                        <!-- <input  id="file-input" multiple type='file' /> -->
-                                                        <input type="file" id="file-class-input">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="projectinput2"> {{ __('lang.image') }}</label>
+
+
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="variants">
+                                    <div class='file file--upload w-100'>
+                                        <label for='file-class-input' class="w-100">
+                                            <i class="fas fa-cloud-upload-alt"></i>Upload
+                                        </label>
+                                        <!-- <input  id="file-input" multiple type='file' /> -->
+                                        <input type="file" id="file-class-input">
                                     </div>
-                                </div>
-                                <div class="col-10 offset-1">
-                                    <div class="preview-class-container"></div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-12 d-flex justify-content-center">
+                            <div class="preview-class-container d-flex justify-content-center"></div>
+                        </div>
+
+
                         {{-- <input type="file" id="projectinput2" --}} {{-- class="form-control img" name="image"
                             accept="image/*" />--}}
                         {{-- <img src="{{ asset('images/logo.png') }}" alt="" class="img-thumbnail img-preview "
@@ -297,7 +321,8 @@
 
         <div class="modal-footer">
             <button id="submit-btn" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
-            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close'
+                )</button>
         </div>
         <div id="cropped_product_class_images"></div>
         {!! Form::close() !!}
