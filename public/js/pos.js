@@ -179,7 +179,7 @@ $(document).on("change", "input[name=restaurant_filter]", function () {
     } else if ($(this).val() === "promotions") {
         $(".sale_promo_filter").prop("checked", true);
         $(".package_sale_promo_filter").prop("checked", false);
-    }else if ($(this).val() === "package_promotions") {
+    } else if ($(this).val() === "package_promotions") {
         $(".sale_promo_filter").prop("checked", false);
         $(".package_sale_promo_filter").prop("checked", true);
     } else {
@@ -241,7 +241,7 @@ $(document).ready(function () {
         $("#search_product")
             .autocomplete({
                 source: function (request, response) {
-                                        $.getJSON(
+                    $.getJSON(
                         "/pos/get-products",
                         { store_id: $("#store_id").val(), term: request.term },
                         response
@@ -280,13 +280,13 @@ $(document).ready(function () {
                     if (!ui.item.is_service) {
                         if (ui.item.qty_available > 0) {
                             $(this).val(null);
-                            if(ui.item.batch_number!==null){
+                            if (ui.item.batch_number !== null) {
                                 get_label_product_search_row(
                                     ui.item.product_id,
                                     ui.item.variation_id,
                                     ui.item.add_stock_lines_id
                                 );
-                            }else{
+                            } else {
                                 get_label_product_search_row(
                                     ui.item.product_id,
                                     ui.item.variation_id,
@@ -308,29 +308,29 @@ $(document).ready(function () {
                 },
                 messages: {
                     noResults: "",
-                    results: function () {},
+                    results: function () { },
                 },
             })
             .autocomplete("instance")._renderItem = function (ul, item) {
-            var string = "";
-            if (item.is_service == 0 && item.qty_available <= 0) {
-                string +=
-                    '<li class="ui-state-disabled">' +
-                    item.text +
-                    " (" +
-                    LANG.out_of_stock +
-                    ") </li>";
-            } else {
-                if (item.batch_number == null) {
-                    string += item.text;
+                var string = "";
+                if (item.is_service == 0 && item.qty_available <= 0) {
+                    string +=
+                        '<li class="ui-state-disabled">' +
+                        item.text +
+                        " (" +
+                        LANG.out_of_stock +
+                        ") </li>";
                 } else {
-                    string += item.text + "  " + item.batch_number;
+                    if (item.batch_number == null) {
+                        string += item.text;
+                    } else {
+                        string += item.text + "  " + item.batch_number;
+                    }
                 }
-            }
-            return $("<li>")
-                .append("<div>" + string + "</div>")
-                .appendTo(ul);
-        };
+                return $("<li>")
+                    .append("<div>" + string + "</div>")
+                    .appendTo(ul);
+            };
     }
 });
 
@@ -402,7 +402,7 @@ function get_label_product_search_row(
         });
 
     if (add_via_ajax) {
-                var store_id = $("#store_id").val();
+        var store_id = $("#store_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
         var store_pos_id = $("#store_pos_id").val();
@@ -434,8 +434,8 @@ function get_label_product_search_row(
                 table_id: table_id,
                 check_pay: check_pay,
                 enable_checkbox: enable_checkbox,
-                is_edit:($("#is_edit").length === 0)?0:$("#is_edit").val(),
-                transaction_id:($("#transaction_id").length === 0)?0:$("#transaction_id").val(),
+                is_edit: ($("#is_edit").length === 0) ? 0 : $("#is_edit").val(),
+                transaction_id: ($("#transaction_id").length === 0) ? 0 : $("#transaction_id").val(),
             },
             success: function (result) {
                 if (!result.success) {
@@ -518,7 +518,7 @@ function get_label_product_row(
         });
 
     if (add_via_ajax) {
-                var store_id = $("#store_id").val();
+        var store_id = $("#store_id").val();
         var store_pos_id = $("#store_pos_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
@@ -527,7 +527,7 @@ function get_label_product_row(
             row_count = edit_row_count;
         } else {
             var row_count = parseInt($("#row_count").val());
-                        $("#row_count").val(row_count + 1);
+            $("#row_count").val(row_count + 1);
         }
         // var extensions =null;
         $.ajax({
@@ -2237,6 +2237,16 @@ customer_sales_table = $("#customer_sales_table").DataTable({
             .wrap("<form>")
             .parent()
             .attr("autocomplete", "off");
+
+        // Move elements into the .top-controls div after DataTable initializes
+        $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+        $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+        $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+        $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+        $('.bottom-controls').append($('.dataTables_info'));
+
     },
     ajax: {
         url: "/pos/get-recent-transactions",
@@ -2261,14 +2271,14 @@ customer_sales_table = $("#customer_sales_table").DataTable({
         { data: "canceled_by", name: "canceled_by" },
         { data: "action", name: "action" },
     ],
-    createdRow: function (row, data, dataIndex) {},
+    createdRow: function (row, data, dataIndex) { },
     footerCallback: function (row, data, start, end, display) {
         var intVal = function (i) {
             return typeof i === "string"
                 ? i.replace(/[\$,]/g, "") * 1
                 : typeof i === "number"
-                ? i
-                : 0;
+                    ? i
+                    : 0;
         };
 
         this.api()
@@ -2322,6 +2332,21 @@ draft_table = $("#draft_table").DataTable({
             .wrap("<form>")
             .parent()
             .attr("autocomplete", "off");
+
+
+
+
+        // Move elements into the .top-controls div after DataTable initializes
+        $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+        $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+        $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+        $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+        $('.bottom-controls').append($('.dataTables_info'));
+
+
+
     },
     ajax: {
         url: "/pos/get-draft-transactions",
@@ -2350,14 +2375,14 @@ draft_table = $("#draft_table").DataTable({
         { data: "deliveryman_name", name: "deliveryman.employee_name" },
         { data: "action", name: "action" },
     ],
-    createdRow: function (row, data, dataIndex) {},
+    createdRow: function (row, data, dataIndex) { },
     footerCallback: function (row, data, start, end, display) {
         var intVal = function (i) {
             return typeof i === "string"
                 ? i.replace(/[\$,]/g, "") * 1
                 : typeof i === "number"
-                ? i
-                : 0;
+                    ? i
+                    : 0;
         };
 
         this.api()
@@ -2409,6 +2434,17 @@ online_order_table = $("#online_order_table").DataTable({
             .wrap("<form>")
             .parent()
             .attr("autocomplete", "off");
+
+
+        // Move elements into the .top-controls div after DataTable initializes
+        $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+        $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+        $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+        $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+        $('.bottom-controls').append($('.dataTables_info'));
+
     },
     ajax: {
         url: "/pos/get-online-order-transactions",
@@ -2435,14 +2471,14 @@ online_order_table = $("#online_order_table").DataTable({
         { data: "deliveryman_name", name: "deliveryman_name" },
         { data: "action", name: "action" },
     ],
-    createdRow: function (row, data, dataIndex) {},
+    createdRow: function (row, data, dataIndex) { },
     footerCallback: function (row, data, start, end, display) {
         var intVal = function (i) {
             return typeof i === "string"
                 ? i.replace(/[\$,]/g, "") * 1
                 : typeof i === "number"
-                ? i
-                : 0;
+                    ? i
+                    : 0;
         };
 
         this.api()
@@ -2542,6 +2578,17 @@ function get_recent_transactions() {
                 .wrap("<form>")
                 .parent()
                 .attr("autocomplete", "off");
+
+
+            // Move elements into the .top-controls div after DataTable initializes
+            $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+            $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+            $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+            $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+            $('.bottom-controls').append($('.dataTables_info'));
+
         },
         ajax: {
             url: "/pos/get-recent-transactions",
@@ -2580,14 +2627,14 @@ function get_recent_transactions() {
             { data: "canceled_by", name: "canceled_by_user.name" },
             { data: "action", name: "action" },
         ],
-        createdRow: function (row, data, dataIndex) {},
+        createdRow: function (row, data, dataIndex) { },
         footerCallback: function (row, data, start, end, display) {
             var intVal = function (i) {
                 return typeof i === "string"
                     ? i.replace(/[\$,]/g, "") * 1
                     : typeof i === "number"
-                    ? i
-                    : 0;
+                        ? i
+                        : 0;
             };
 
             this.api()
@@ -2623,23 +2670,17 @@ function get_recent_transactions() {
                     });
                     var footer_html = "";
                     $.each(currency_obj, function (key, value) {
-                        footer_html += `<h6 class="currency_total currency_total_${
-                            value.currency_id
-                        }" data-currency_id="${
-                            value.currency_id
-                        }" data-is_default="${
-                            value.is_default
-                        }" data-conversion_rate="${
+                        footer_html += `<h6 class="currency_total currency_total_${value.currency_id
+                            }" data-currency_id="${value.currency_id
+                            }" data-is_default="${value.is_default
+                            }" data-conversion_rate="${value.conversion_rate
+                            }" data-base_conversion="${currency_total[value.currency_id] *
                             value.conversion_rate
-                        }" data-base_conversion="${
-                            currency_total[value.currency_id] *
-                            value.conversion_rate
-                        }" data-orig_value="${
-                            currency_total[value.currency_id]
-                        }">${__currency_trans_from_en(
-                            currency_total[value.currency_id],
-                            false
-                        )}</h6>`;
+                            }" data-orig_value="${currency_total[value.currency_id]
+                            }">${__currency_trans_from_en(
+                                currency_total[value.currency_id],
+                                false
+                            )}</h6>`;
                     });
                     $(column.footer()).html(footer_html);
                 });
@@ -3152,7 +3193,7 @@ $(document).ready(function () {
                 $("input#weighing_scale_barcode").val(sCode);
                 $("button#weighing_scale_submit").trigger("click");
             },
-            onScanError: function (oDebug) {},
+            onScanError: function (oDebug) { },
             minLength: 2,
             onKeyDetect: function (iKeyCode) {
                 // output all potentially relevant key events - great for debugging!

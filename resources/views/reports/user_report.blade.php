@@ -13,40 +13,53 @@
 
                 <h4 class="print-title">@lang('lang.user_report')</h4>
 
-                <x-slot name="buttons">
-
-                </x-slot>
             </x-page-title>
 
 
+            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
 
-            <div class="card">
-
-                <form action="">
-                    <div class="col-md-12">
-                        <div class="row">
+                <x-slot name="button">
+                    {{-- @lang('lang.filter') --}}
+                    <div style="width: 20px">
+                        <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                    </div>
+                </x-slot>
+                <div class="col-md-12">
+                    <form action="">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control']) !!}
+                                    {!! Form::label('start_date', __('lang.start_date'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
+                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control'])
+                                    !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    {!! Form::label('start_time', __('lang.start_time'), []) !!}
+                                    {!! Form::label('start_time', __('lang.start_time'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('start_time', request()->start_time, ['class' => 'form-control
                                     time_picker sale_filter']) !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    {!! Form::label('end_date', __('lang.end_date'), []) !!}
+                                    {!! Form::label('end_date', __('lang.end_date'), ['class' =>
+                                    app()->isLocale('ar') ?
+                                    'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('end_date', request()->end_date, ['class' => 'form-control']) !!}
                                 </div>
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    {!! Form::label('end_time', __('lang.end_time'), []) !!}
+                                    {!! Form::label('end_time', __('lang.end_time'), ['class' =>
+                                    app()->isLocale('ar') ?
+                                    'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('end_time', request()->end_time, ['class' => 'form-control
                                     time_picker
                                     sale_filter']) !!}
@@ -54,26 +67,34 @@
                             </div>
 
 
-                            <div class="col-md-3">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    {!! Form::label('user_id', __('lang.user'), []) !!}
+                                    {!! Form::label('user_id', __('lang.user'), ['class' => app()->isLocale('ar') ?
+                                    'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('user_id', $users, request()->user_id, ['class' =>
                                     'form-control', 'placeholder' => __('lang.all'),'data-live-search'=>"true"]) !!}
                                 </div>
                             </div>
 
-                            <div class="col-md-3">
-                                <br>
-                                <button type="submit" class="btn btn-success mt-2">@lang('lang.filter')</button>
+                            <div class="col-md-2 d-flex justify-content-center align-items-end mb-11px">
+
+                                <button type="submit" class="btn btn-primary w-100">@lang('lang.filter')</button>
+                            </div>
+                            <div class="col-md-2 d-flex justify-content-center align-items-end mb-11px">
                                 <a href="{{action('ReportController@getUserReport')}}"
-                                    class="btn btn-danger mt-2 ml-2">@lang('lang.clear_filter')</a>
+                                    class="btn btn-danger w-100">@lang('lang.clear_filter')</a>
                             </div>
                         </div>
-                    </div>
-                </form>
-                <div class="card-body">
-                    <div class="col-md-12">
-                        <ul class="nav nav-tabs ml-4 mt-3" role="tablist">
+                    </form>
+                </div>
+
+            </x-collapse>
+
+            <div class="col-md-12 px-0">
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <ul class="nav nav-tabs" role="tablist">
                             <li class="nav-item">
                                 <a class="nav-link active" href="#store-sale" role="tab"
                                     data-toggle="tab">@lang('lang.sale')</a>
@@ -95,7 +116,10 @@
                                     data-toggle="tab">@lang('lang.expense')</a>
                             </li>
                         </ul>
-
+                    </div>
+                </div>
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade show active" id="store-sale">
                                 <div class="table-responsive">
@@ -476,7 +500,8 @@
                                             <tr>
                                                 <td>{{@format_date($return->transaction_date)}}</td>
                                                 <td>{{$return->invoice_no}}</td>
-                                                <td>@if(!empty($return->customer)){{$return->customer->name}}@endif</td>
+                                                <td>@if(!empty($return->customer)){{$return->customer->name}}@endif
+                                                </td>
                                                 <td>
                                                     @foreach ($return->transaction_sell_lines as $line)
                                                     @if($line->quantity_returned == 0)
@@ -488,7 +513,8 @@
 
                                                 </td>
                                                 <td>{{@num_format($return->final_total)}}</td>
-                                                <td>{{@num_format($return->transaction_payments->sum('amount'))}}</td>
+                                                <td>{{@num_format($return->transaction_payments->sum('amount'))}}
+                                                </td>
                                                 <td>{{@num_format($return->final_total -
                                                     $return->transaction_payments->sum('amount'))}}
                                                 </td>
@@ -633,6 +659,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>

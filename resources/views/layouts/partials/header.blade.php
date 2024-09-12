@@ -9,7 +9,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
         <div class="container-fluid">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
                 <a id="toggle-btn" href="#" class="menu-btn border-0">
-                    <img src="{{ asset('front/sidebar_icons/menu.svg') }}" alt=""></a>
+                    <img src="{{ asset('front/white-menu.png') }}" alt=""></a>
                 <span class="brand-big">@if($logo)<img src="{{asset('/uploads/'.$logo)}}"
                         width="50">&nbsp;&nbsp;@endif<a href="{{url('/')}}">
                         <h1 class="d-inline text-white">{{$site_title}}</h1>

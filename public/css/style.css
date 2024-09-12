@@ -2,7 +2,7 @@
     width: 100px;
 }
 
-.logo-container > img {
+.logo-container>img {
     width: 100%;
 }
 
@@ -31,11 +31,11 @@
     min-height: 80px;
 }
 
-div.has-error > input {
+div.has-error>input {
     border: 1px solid #dc3545;
 }
 
-div.has-error > .form-text {
+div.has-error>.form-text {
     color: #dc3545;
 }
 
@@ -66,6 +66,7 @@ div.has-error > .form-text {
     .modal-xl {
         width: 100% !important;
     }
+
     .swal-overlay {
         display: none !important;
     }
@@ -74,6 +75,7 @@ div.has-error > .form-text {
         display: none !important;
     }
 }
+
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -85,6 +87,7 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
+
 .accordion-inner .product_row {
     margin-left: 10px;
     margin-right: 10px;
@@ -146,40 +149,51 @@ input[type="number"] {
 .img-container img {
     width: 100%;
 }
+
 .dataTables_filter input {
     border: 1px solid #17b948f1 !important;
 }
+
 .dataTables_processing {
     color: red !important;
     border: 1px solid red !important;
     top: 0% !important;
     margin-top: 100px !important;
 }
+
 .table-responsive {
     position: relative;
 }
+
 .disabled {
     pointer-events: none;
 }
+
 .footer_currency {
     cursor: pointer;
 }
+
 .currency_total_th {
     cursor: pointer;
 }
+
 .currency_total_td {
     cursor: pointer;
 }
+
 .table_totals {
     cursor: pointer;
 }
+
 .text-green {
     color: #34cea7;
 }
+
 .dz-progress {
     /* progress bar covers file name */
     display: none !important;
 }
+
 button.send_to_branch {
     /* position: absolute; */
     display: none;
@@ -189,12 +203,4 @@ button.send_to_branch {
     box-shadow: none !important;
     padding: 10px !important;
     background-color: #000000a1 !important;
-}
-a.delete_all {
-    /* position: absolute; */
-    float: right !important;
-    margin: 5px 10px !important;
-    border-color: #ffffff !important;
-    box-shadow: none !important;
-    padding: 10px !important;
 }

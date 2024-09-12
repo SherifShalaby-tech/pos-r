@@ -38,18 +38,23 @@ use Illuminate\Support\Facades\Cache;
             </x-slot>
         </x-page-title>
 
+        <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
 
+            <x-slot name="button">
+                {{-- @lang('lang.filter') --}}
+                <div style="width: 20px">
+                    <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                </div>
+            </x-slot>
 
-
-
-        <div class="card mt-3">
             <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-3">
+                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
                             {!! Form::label('product_class_id', session('system_mode') == 'restaurant' ?
                             __('lang.category')
-                            : __('lang.product_class') . ':', []) !!}
+                            : __('lang.product_class') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('product_class_id', $product_classes, request()->product_class_id, [
                             'class' => 'form-control filter_product
                             selectpicker',
@@ -59,9 +64,10 @@ use Illuminate\Support\Facades\Cache;
                         </div>
                     </div>
                     @if (session('system_mode') != 'restaurant')
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('category_id', __('lang.category') . ':', []) !!}
+                            {!! Form::label('category_id', __('lang.category') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('category_id', $categories, request()->category_id, [
                             'class' => 'form-control filter_product
                             selectpicker',
@@ -70,9 +76,11 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('sub_category_id', __('lang.sub_category') . ':', []) !!}
+                            {!! Form::label('sub_category_id', __('lang.sub_category') , ['class' =>
+                            app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('sub_category_id', $sub_categories, request()->sub_category_id, [
                             'class' => 'form-control filter_product
                             selectpicker',
@@ -81,9 +89,10 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('brand_id', __('lang.brand') . ':', []) !!}
+                            {!! Form::label('brand_id', __('lang.brand') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('brand_id', $brands, request()->brand_id, [
                             'class' => 'form-control
                             filter_product
@@ -94,9 +103,10 @@ use Illuminate\Support\Facades\Cache;
                         </div>
                     </div>
                     @endif
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('supplier_id', __('lang.supplier') . ':', []) !!}
+                            {!! Form::label('supplier_id', __('lang.supplier') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('supplier_id', $suppliers, request()->supplier_id, [
                             'class' => 'form-control
                             filter_product
@@ -106,9 +116,10 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('unit_id', __('lang.unit') . ':', []) !!}
+                            {!! Form::label('unit_id', __('lang.unit') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('unit_id', $units, request()->unit_id, [
                             'class' => 'form-control
                             filter_product
@@ -119,9 +130,10 @@ use Illuminate\Support\Facades\Cache;
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('size_id', __('lang.size') . ':', []) !!}
+                            {!! Form::label('size_id', __('lang.size') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('size_id', $sizes, request()->size_id, [
                             'class' => 'form-control
                             filter_product
@@ -132,9 +144,10 @@ use Illuminate\Support\Facades\Cache;
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('tax_id', __('lang.tax') . ':', []) !!}
+                            {!! Form::label('tax_id', __('lang.tax') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('tax_id', $taxes, request()->tax_id, [
                             'class' => 'form-control
                             filter_product
@@ -144,16 +157,19 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('store_id', __('lang.store'), []) !!}
+                            {!! Form::label('store_id', __('lang.store'), ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control
                             filter_product', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('customer_type_id', __('lang.customer_type') . ':', []) !!}
+                            {!! Form::label('customer_type_id', __('lang.customer_type') , ['class' =>
+                            app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('customer_type_id', $customer_types, request()->customer_type_id, [
                             'class' => 'form-control filter_product
                             selectpicker',
@@ -162,9 +178,10 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('created_by', __('lang.created_by') . ':', []) !!}
+                            {!! Form::label('created_by', __('lang.created_by') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('created_by', $users, request()->created_by, [
                             'class' => 'form-control filter_product
                             selectpicker',
@@ -173,9 +190,10 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('active', __('lang.active') . ':', []) !!}
+                            {!! Form::label('active', __('lang.active') , ['class' => app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('active', [0 => __('lang.no'), 1 => __('lang.yes')], request()->active, [
                             'class' => 'form-control filter_product
                             selectpicker',
@@ -184,27 +202,44 @@ use Illuminate\Support\Facades\Cache;
                             ]) !!}
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            {{-- <label>
-                                Don't show zero stocks
-                            </label> --}}
-                            {!! Form::label('show_zero_stocks',"Don't show zero stocks" . ':') !!}
-                            {!! Form::checkbox('show_zero_stocks', 1, false, ['class' => ' form-control
+
+                    <div class="col-md-2 px-2 d-flex justify-content-center align-items-end mb-11px">
+                        <button class="btn w-100 btn-danger clear_filters">@lang('lang.clear_filters')</button>
+                    </div>
+                    <div class="col-md-2 px-2 d-flex justify-content-center align-items-end mb-11px">
+                        <a data-href="{{ action('ProductController@multiDeleteRow') }}" id="delete_all"
+                            data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
+                            class="btn btn-danger text-white w-100 delete_all"><i class="fa fa-trash"></i>
+                            @lang('lang.delete_all')</a>
+                    </div>
+
+                    <div class="col-md-3 px-2 d-flex justify-content-end align-items-center">
+                        <div class="form-group toggle-pill-color d-flex flex-row mb-0 align-items-center justify-content-center"
+                            style="gap: 10px">
+                            {{-- {!! Form::label('show_zero_stocks',"Don't show zero stocks" ) !!} --}}
+                            {!! Form::checkbox('show_zero_stocks', 1, false, ['class' => '
                             show_zero_stocks','data-live-search' => 'true',
+                            'id' => 'show_zero_stocks'
                             ], request()->show_zero_stocks ? true : false) !!}
 
-
+                            <label class="mb-0" for="show_zero_stocks">
+                            </label>
+                            <span>Don't show zero stocks</span>
                         </div>
                     </div>
+
                     <input type="hidden" name="product_id" id="product_id" value="">
-                    <div class="col-md-3">
-                        <button class="btn btn-danger mt-4 clear_filters">@lang('lang.clear_filters')</button>
+
+                    <div class="col-md-2 px-2 d-flex justify-content-center align-items-center">
+                        <button type="button" class="badge badge-pill badge-primary column-toggle send_to_branch"
+                            id="send_to_branch">@lang('lang.send_to_branch')</button>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
+
+        </x-collapse>
+
+        {{-- <div class="row">
             <div class="col-md-12">
                 <button type="button" value="1"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.image')</button>
@@ -268,88 +303,95 @@ use Illuminate\Support\Facades\Cache;
                 <button type="button" value="22"
                     class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
             </div>
+        </div> --}}
+
+
+
+
+        <div
+            class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+
         </div>
 
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4">
 
-    </div>
-    <div class="table-responsive">
+                <div class="table-responsive">
+                    <table id="product_table" class="table" style="width: auto;margin-top: 5px !important;">
+                        <thead>
+                            <tr>
+                                @if(env('ENABLE_POS_Branch',false))
+                                <th>@lang('lang.select')</th>
+                                @endif
+                                <th>@lang('lang.select_to_delete')<br>
+                                    <input type="checkbox" name="product_delete_all" class="product_delete_all" />
+                                </th>
 
-        <button type="button" class="badge badge-pill badge-primary column-toggle send_to_branch"
-            id="send_to_branch">@lang('lang.send_to_branch')</button>
+                                <th>@lang('lang.image')</th>
+                                <th>@lang('lang.name')</th>
+                                <th>@lang('lang.product_code')</th>
+                                <th>
+                                    @lang('lang.category')
 
-        <a data-href="{{ action('ProductController@multiDeleteRow') }}" id="delete_all"
-            data-check_password="{{ action('UserController@checkPassword', Auth::user()->id) }}"
-            class="btn btn-danger text-white delete_all"><i class="fa fa-trash"></i>
-            @lang('lang.delete_all')</a>
+                                </th>
+                                <th>@lang('lang.purchase_history')</th>
+                                <th>@lang('lang.batch_number')</th>
+                                <th>@lang('lang.selling_price')</th>
+                                <th>@lang('lang.tax')</th>
+                                <th>@lang('lang.unit')</th>
+                                <th>@lang('lang.size')</th>
+                                <th class="sum">@lang('lang.current_stock')</th>
+                                <th class="sum">@lang('lang.current_stock_value')</th>
+                                <th>@lang('lang.customer_type')</th>
+                                <th>@lang('lang.expiry_date')</th>
+                                <th>@lang('lang.manufacturing_date')</th>
+                                <th>@lang('lang.discount')</th>
+                                @can('product_module.purchase_price.view')
+                                <th>@lang('lang.purchase_price')</th>
+                                @endcan
+                                <th>@lang('lang.supplier')</th>
+                                <th>@lang('lang.active')</th>
+                                <th>@lang('lang.created_by')</th>
+                                <th>@lang('lang.date_of_creation')</th>
+                                <th>@lang('lang.edited_by')</th>
+                                <th>@lang('lang.edited_at')</th>
+                                <th class="notexport">@lang('lang.action')</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th style="text-align: right">@lang('lang.total')</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-        <table id="product_table" class="table" style="width: auto">
-            <thead>
-                <tr>
-                    @if(env('ENABLE_POS_Branch',false))
-                    <th>@lang('lang.select')</th>
-                    @endif
-                    <th>@lang('lang.select_to_delete')<br>
-                        <input type="checkbox" name="product_delete_all" class="product_delete_all" />
-                    </th>
-
-                    <th>@lang('lang.image')</th>
-                    <th>@lang('lang.name')</th>
-                    <th>@lang('lang.product_code')</th>
-                    <th>
-                        @lang('lang.category')
-
-                    </th>
-                    <th>@lang('lang.purchase_history')</th>
-                    <th>@lang('lang.batch_number')</th>
-                    <th>@lang('lang.selling_price')</th>
-                    <th>@lang('lang.tax')</th>
-                    <th>@lang('lang.unit')</th>
-                    <th>@lang('lang.size')</th>
-                    <th class="sum">@lang('lang.current_stock')</th>
-                    <th class="sum">@lang('lang.current_stock_value')</th>
-                    <th>@lang('lang.customer_type')</th>
-                    <th>@lang('lang.expiry_date')</th>
-                    <th>@lang('lang.manufacturing_date')</th>
-                    <th>@lang('lang.discount')</th>
-                    @can('product_module.purchase_price.view')
-                    <th>@lang('lang.purchase_price')</th>
-                    @endcan
-                    <th>@lang('lang.supplier')</th>
-                    <th>@lang('lang.active')</th>
-                    <th>@lang('lang.created_by')</th>
-                    <th>@lang('lang.date_of_creation')</th>
-                    <th>@lang('lang.edited_by')</th>
-                    <th>@lang('lang.edited_at')</th>
-                    <th class="notexport">@lang('lang.action')</th>
-                </tr>
-            </thead>
-            <tbody>
-
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <th style="text-align: right">@lang('lang.total')</th>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </tfoot>
-        </table>
+        <div
+            class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+            <!-- Pagination and other controls can go here -->
+        </div>
     </div>
 </section>
 
@@ -708,8 +750,22 @@ use Illuminate\Support\Facades\Cache;
                                     __currency_trans_from_en(sum, false)
                                 );
                             }
+
                         });
+
                 },
+
+                initComplete: function(settings, json) {
+                // Move elements into the .top-controls div after DataTable initializes
+                $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+                $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+                $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+                $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+                $('.bottom-controls').append($('.dataTables_info'));
+                }
+
             });
             $('#product_table').on('change', '.product_delete_all', function() {
                 var isChecked = $(this).prop('checked');

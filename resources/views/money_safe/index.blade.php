@@ -7,7 +7,7 @@
 
     <div class="container-fluid">
 
-        <div class="col-md-12  no-print">
+        <div class="col-md-12 px-0 no-print">
 
             <x-page-title>
                 <h4 class="print-title">@lang('lang.money_safe')</h4>
@@ -15,15 +15,19 @@
                 <x-slot name="buttons">
                     @can('safe_module.money_safe.create_and_edit')
                     <a style="color: white" data-href="{{ action('MoneySafeController@create') }}"
-                        data-container=".view_modal" class="btn btn-modal btn-info"><i class="dripicons-plus"></i>
+                        data-container=".view_modal" class="btn btn-modal btn-primary"><i class="dripicons-plus"></i>
                         @lang('lang.add_money_safe')</a>
                     @endcan
 
                 </x-slot>
             </x-page-title>
 
-            <div class="card">
-                <div class="card-body">
+            <div
+                class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+
+            </div>
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
                     <div class="table-responsive">
                         <table class="table" id="money_safe_table">
                             <thead>
@@ -55,6 +59,10 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div
+                class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+                <!-- Pagination and other controls can go here -->
             </div>
         </div>
     </div>
@@ -189,6 +197,16 @@
                             );
                         });
                 },
+                initComplete: function (settings, json) {
+                // Move elements into the .top-controls div after DataTable initializes
+                $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+                $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+                $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+                $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+                $('.bottom-controls').append($('.dataTables_info'));
+                }
             });
             $(document).on('change', '.sale_filter', function() {
                 money_safe_table.ajax.reload();

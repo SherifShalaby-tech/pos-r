@@ -204,8 +204,17 @@
         background-color: #dfe6e9;
     }
 
+    ::-webkit-scrollbar:horizontal {
+        height: 8px;
+    }
+
     ::-webkit-scrollbar-thumb {
         background-color: var(--primary-color);
+        border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: var(--primary-color-hover);
         border-radius: 3px;
     }
 
@@ -282,5 +291,102 @@
     .product_collapse_shadow {
         box-shadow: -2px 2px 2px 0px #087e74 !important;
         min-width: 150px;
+    }
+
+    .top-controls,
+    .bottom-controls {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        padding: 10px 0;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, .125);
+        background-color: #ffffff;
+        box-shadow: 0 0 35px 0 rgba(154, 161, 171, 0.15);
+    }
+
+    .dataTables_length label {
+        display: flex;
+        align-items: center;
+        margin: 0%;
+        flex-direction: row-reverse;
+        gap: 5px;
+    }
+
+    .dataTables_filter label {
+        display: flex;
+        align-items: center;
+        margin: 0%;
+        flex-direction: row-reverse;
+        gap: 5px;
+    }
+
+    .table-responsive div {
+        padding: 0 !important
+    }
+
+    .collapse-btn,
+    .collapse-btn:active {
+        background: linear-gradient(to right, var(--primary-color), var(--primary-color-hover)) !important;
+    }
+
+    .pagination {
+        margin: 0 !important
+    }
+
+    /* toggle-pill-color */
+    .toggle-pill-color input[type="checkbox"] {
+        display: none;
+    }
+
+    .toggle-pill-color input[type="checkbox"]+label {
+        display: block;
+        position: relative;
+        width: 3em;
+        height: 1.6em;
+
+        border-radius: 1em;
+        background: #e84d4d;
+        box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-transition: background 0.1s ease-in-out;
+        transition: background 0.1s ease-in-out;
+    }
+
+    .toggle-pill-color input[type="checkbox"]+label:before {
+        content: "";
+        display: block;
+        width: 1.2em;
+        height: 1.2em;
+        border-radius: 1em;
+        background: #fff;
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        left: 0.2em;
+        top: 0.2em;
+        -webkit-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .toggle-pill-color input[type="checkbox"]:checked+label {
+        background: #47cf73;
+    }
+
+    .toggle-pill-color input[type="checkbox"]:checked+label:before {
+        box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.2);
+        left: 1.6em;
+    }
+
+    /* toggle-pill-color end */
+    .mb-11px {
+        margin-bottom: 11px;
+    }
+
+    .dataTables_empty {
+        color: var(--primary-color)
     }
 </style>

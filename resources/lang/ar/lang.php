@@ -1502,5 +1502,6 @@ return [
     'add_raw_material' => "اضافه مادة اولية",
     'discount_info' => "معلومات الخصم",
     'more_info' => "معلومات اخرى",
+    'filter' => "فلتر",
 
 ];

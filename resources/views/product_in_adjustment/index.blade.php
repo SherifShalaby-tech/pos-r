@@ -4,19 +4,20 @@
 @section('content')
 <section class="forms pt-2">
     <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-12">
 
-                <x-page-title>
+        <x-page-title>
 
-                    <h4 class="print-title">@lang('lang.product_in_adjustment')</h4>
+            <h4 class="print-title">@lang('lang.product_in_adjustment')</h4>
 
-                    <x-slot name="buttons">
+        </x-page-title>
 
-                    </x-slot>
-                </x-page-title>
+        <div
+            class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
 
-                <div class="card">
+        </div>
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4">
+                <div class="table-responsive">
                     <table class="table dataTable">
                         <thead>
                             <tr>
@@ -81,6 +82,12 @@
                 </div>
             </div>
         </div>
+        <div
+            class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+            <!-- Pagination and other controls can go here -->
+        </div>
+
+
     </div>
 </section>
 @endsection

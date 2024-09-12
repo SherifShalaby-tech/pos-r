@@ -1328,10 +1328,10 @@ button {
     position: relative;
 }
 
-.login-page .copyrights,
+/* .login-page .copyrights,
 .register-page .copyrights {
     margin-top: 65px;
-}
+} */
 
 .login-page .copyrights p,
 .register-page .copyrights p {

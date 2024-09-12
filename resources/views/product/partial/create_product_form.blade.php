@@ -205,7 +205,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
 
 
-<x-collapse collapse-id="productImage" button-class="d-flex mb-1 justify-content-between flex-row-reverse
+<x-collapse collapse-id="productImage" button-class="collapse-btn d-flex mb-1 justify-content-between flex-row-reverse
     align-items-center gap-10 product_collapse_shadow" group-class="d-flex mb-2 align-items-end flex-column">
     <x-slot name="button">
         @lang('lang.add_product_image')
@@ -245,7 +245,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
 
 
-<x-collapse collapse-id="productRecipe" button-class="d-flex mb-1 justify-content-between flex-row-reverse
+<x-collapse collapse-id="productRecipe" button-class="collapse-btn d-flex mb-1 justify-content-between flex-row-reverse
     align-items-center gap-10 product_collapse_shadow" group-class="d-flex mb-2 align-items-end flex-column">
     <x-slot name="button">
         {{ __('lang.recipe') }}
@@ -278,7 +278,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
 
 
-<x-collapse collapse-id="productRawMaterial" button-class="d-flex mb-1 justify-content-between flex-row-reverse
+<x-collapse collapse-id="productRawMaterial" button-class="collapse-btn d-flex mb-1 justify-content-between flex-row-reverse
     align-items-center gap-10 product_collapse_shadow" group-class="d-flex mb-2 align-items-end flex-column">
     <x-slot name="button">
         {{ __('lang.add_raw_material') }}
@@ -368,7 +368,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
 
 
-<x-collapse collapse-id="productSelling" button-class="d-flex mb-1 justify-content-between flex-row-reverse
+<x-collapse collapse-id="productSelling" button-class="collapse-btn d-flex mb-1 justify-content-between flex-row-reverse
     align-items-center gap-10 product_collapse_shadow" group-class="d-flex mb-2 align-items-end flex-column">
     <x-slot name="button">
         {{ __('lang.discount_info') }}
@@ -529,7 +529,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
 
 
 
-<x-collapse collapse-id="productPurchase" button-class="d-flex mb-1 justify-content-between flex-row-reverse
+<x-collapse collapse-id="productPurchase" button-class="collapse-btn d-flex mb-1 justify-content-between flex-row-reverse
     align-items-center gap-10 product_collapse_shadow" group-class="d-flex mb-2 align-items-end flex-column">
     <x-slot name="button">
         {{ __('lang.more_info') }}

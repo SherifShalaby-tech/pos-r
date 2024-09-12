@@ -5,21 +5,19 @@
 <section class="forms pt-2">
 
     <div class="container-fluid">
-        <div class="col-md-12  no-print">
+        <div class="col-md-12 px-0 no-print">
             <x-page-title>
-
-
-
                 <h4 class="print-title">@lang('lang.sms')</h4>
-                <x-slot name="buttons">
 
-                </x-slot>
             </x-page-title>
 
+            <div
+                class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
 
-            <div class="card">
+            </div>
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
 
-                <div class="card-body">
                     <div class="table-responsive">
                         <table id="store_table" class="table dataTable">
                             <thead>
@@ -63,9 +61,16 @@
                     </div>
                 </div>
             </div>
+
+            <div
+                class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+                <!-- Pagination and other controls can go here -->
+            </div>
         </div>
-        @endsection
+    </div>
+</section>
+@endsection
 
-        @section('javascript')
+@section('javascript')
 
-        @endsection
+@endsection

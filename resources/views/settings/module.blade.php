@@ -16,13 +16,12 @@
 
                 </x-slot>
             </x-page-title>
-            <div class="card">
-
-                <div class="card-body">
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
                     {!! Form::open(['url' => action('SettingController@updateModuleSettings'), 'method' => 'post',
                     'enctype' =>
                     'multipart/form-data']) !!}
-                    <div class="row">
+                    <div class="row justify-content-center" style="column-gap: 25px">
                         @foreach ($modules as $key => $name)
                         @if(session('system_mode') != 'restaurant' && session('system_mode') != 'garments' &&
                         session('system_mode') != 'pos')
@@ -30,12 +29,20 @@
                         @continue
                         @endif
                         @endif
-                        <div class="col-md-4">
-                            <div class="i-checks">
+                        <div class="col-md-2 card mb-2 px-2 py-3">
+                            <div
+                                class=" toggle-pill-color d-flex justify-content-center align-items-center flex-column">
                                 <input id="{{$loop->index}}" name="module_settings[{{$key}}]" type="checkbox" @if(
                                     !empty($module_settings[$key]) ) checked @endif value="1"
                                     class="form-control-custom">
-                                <label for="{{$loop->index}}"><strong>{{__('lang.'.$key)}}</strong></label>
+                                <label for="{{$loop->index}}"></label>
+                                <span class="text-center py-2 d-flex justify-content-center align-items-center">
+                                    <strong>
+
+                                        {{__('lang.'.$key)}}
+                                    </strong>
+
+                                </span>
                             </div>
 
                         </div>

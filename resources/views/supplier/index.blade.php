@@ -4,28 +4,29 @@
 @section('content')
 
 <section class="forms pt-2">
-
     <div class="container-fluid">
-        <div class="col-md-12  no-print">
+        <div class="col-md-12 px-0 no-print">
+
             <x-page-title>
-
-
                 <h4 class="print-title">@lang('lang.suppliers')</h4>
-
-                <x-slot name="buttons">
-
-                </x-slot>
             </x-page-title>
 
+            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
 
-            <div class="card">
-
-                <div class="card-body">
+                <x-slot name="button">
+                    {{-- @lang('lang.filter') --}}
+                    <div style="width: 20px">
+                        <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                    </div>
+                </x-slot>
+                <div class="col-md-12">
                     <form action="">
-                        <div class="row">
-                            <div class="col-md-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('supplier_category_id', __('lang.category') . ':*') !!}
+                                    {!! Form::label('supplier_category_id', __('lang.category') . '*',[
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('supplier_category_id', $supplier_categories,
                                     request()->supplier_category_id, ['class' => 'selectpicker form-control',
                                     'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' =>
@@ -33,14 +34,25 @@
 
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary mt-4 ml-2">@lang('lang.filter')</button>
+                            <div class="col-md-2 d-flex justify-content-center align-items-end mb-11px">
+                                <button type="submit" class="btn btn-primary w-100">@lang('lang.filter')</button>
+                            </div>
+
+                            <div class="col-md-2 d-flex justify-content-center align-items-end mb-11px">
                                 <a href="{{ action('SupplierController@index') }}"
-                                    class="btn btn-danger mt-4 ml-2 clear_filter">@lang('lang.clear_filter')</a>
+                                    class="btn btn-danger w-100 clear_filter">@lang('lang.clear_filter')</a>
                             </div>
                         </div>
                     </form>
+                </div>
+            </x-collapse>
 
+            <div
+                class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+
+            </div>
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
                     <div class="table-responsive">
                         <table id="store_table" class="table dataTable">
                             <thead>
@@ -175,6 +187,10 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div
+                class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+                <!-- Pagination and other controls can go here -->
             </div>
         </div>
     </div>

@@ -1,13 +1,19 @@
 <div class="row">
-    <br>
+
+
     <div class="col-md-12">
-        <div class="filter-checkbox card" style="margin: 0px;">
-            @if (session('system_mode') != 'restaurant')
-            <div class="card-header" style="padding: 5px 20px; color: var(--primary-color)">
-                <i class="fa fa-filter"></i> @lang('lang.filter')
-            </div>
-            @endif
-            <div class="card-body" style="padding: 5px 20px">
+        <x-collapse collapse-id="Filter">
+            <x-slot name="button">
+                @if (session('system_mode') != 'restaurant')
+                <div class="card-header" style="padding: 5px 20px; color: var(--primary-color)">
+                    <i class="fa fa-filter"></i> @lang('lang.filter')
+                </div>
+                @endif
+            </x-slot>
+
+
+
+            <div class="filter-checkbox" style="margin: 0px;">
                 <div class="row">
                     @if (session('system_mode') != 'restaurant')
                     <div class="col-md-4">
@@ -112,8 +118,12 @@
                     @endif
                 </div>
             </div>
-        </div>
+
+
+        </x-collapse>
     </div>
+
+
 
 
     <div class="col-md-12">

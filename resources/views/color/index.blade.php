@@ -13,14 +13,17 @@
                 <x-slot name="buttons">
                     @can('product_module.color.create_and_edit')
                     <a style="color: white" data-href="{{action('ColorController@create')}}"
-                        data-container=".view_modal" class="btn btn-modal btn-info"><i class="dripicons-plus"></i>
+                        data-container=".view_modal" class="btn btn-modal btn-primary"><i class="dripicons-plus"></i>
                         @lang('lang.add_color')</a>
                     @endcan
                 </x-slot>
             </x-page-title>
-            <div class="card">
+            <div
+                class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
 
-                <div class="card-body">
+            </div>
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
                     <div class="table-responsive">
                         <table id="store_table" class="table dataTable">
                             <thead>
@@ -73,6 +76,10 @@
                         </table>
                     </div>
                 </div>
+            </div>
+            <div
+                class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+                <!-- Pagination and other controls can go here -->
             </div>
         </div>
     </div>

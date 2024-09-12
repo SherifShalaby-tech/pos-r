@@ -5,133 +5,64 @@
 
 @section('content')
 <section class="forms pt-2">
-
     <div class="container-fluid">
-        <div class="col-md-12">
 
-            <x-page-title>
+        <x-page-title>
 
-
-
-                <h4 class="print-title">@lang('lang.supplier_services')</h4>
-                <x-slot name="buttons">
-
-                </x-slot>
-            </x-page-title>
+            <h4 class="print-title">@lang('lang.supplier_services')</h4>
+        </x-page-title>
 
 
-            <div class="card">
+        <div
+            class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
 
-                <div class="card-body">
-                    <form action="">
-                        <div class="row">
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('store_id', __('lang.store'), []) !!}
-                                    {!! Form::select('store_id', $stores, request()->store_id, ['class' => 'form-control
-                                    filters', 'placeholder' => __('lang.all'), 'data-live-search' => 'true']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('supplier_id', __('lang.supplier'), []) !!}
-                                    {!! Form::select('supplier_id', $suppliers, request()->supplier_id, ['class' =>
-                                    'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' =>
-                                    'true']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('created_by', __('lang.added_by'), []) !!}
-                                    {!! Form::select('created_by', $users, request()->created_by, ['class' =>
-                                    'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' =>
-                                    'true']) !!}
-                                </div>
-                            </div>
-
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('product_id', __('lang.product'), []) !!}
-                                    {!! Form::select('product_id', $products, request()->product_id, ['class' =>
-                                    'form-control filters', 'placeholder' => __('lang.all'), 'data-live-search' =>
-                                    'true']) !!}
-                                </div>
-                            </div>
-
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control
-                                    sale_filter', 'id' => 'start_date']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    {!! Form::label('start_time', __('lang.start_time'), []) !!}
-                                    {!! Form::text('start_time', null, ['class' => 'form-control time_picker
-                                    sale_filter']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control
-                                    sale_filter', 'id' => 'end_date']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    {!! Form::label('end_time', __('lang.end_time'), []) !!}
-                                    {!! Form::text('end_time', null, ['class' => 'form-control time_picker
-                                    sale_filter']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="button"
-                                    class="btn btn-danger clear_filters mt-2 ml-2">@lang('lang.clear_filter')</button>
-                            </div>
-                        </div>
-                    </form>
+        </div>
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4">
+                <div class="table-responsive">
+                    <table class="table" id="supplier_service_table">
+                        <thead>
+                            <tr>
+                                <th>@lang('lang.date_and_time')</th>
+                                <th>@lang('lang.supplier')</th>
+                                <th>@lang('lang.cashier')</th>
+                                <th class="currencies">@lang('lang.paying_currency')</th>
+                                <th class="sum">@lang('lang.value')</th>
+                                <th class="sum">@lang('lang.paid_amount')</th>
+                                <th class="sum">@lang('lang.pending_amount')</th>
+                                <th>@lang('lang.due_date')</th>
+                                <th>@lang('lang.notes')</th>
+                                <th>@lang('lang.files')</th>
+                                <th class="notexport">@lang('lang.action')</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th class="table_totals" style="text-align: right">@lang('lang.total')</th>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 </div>
             </div>
         </div>
-
-        <div class="table-responsive">
-            <table class="table" id="supplier_service_table">
-                <thead>
-                    <tr>
-                        <th>@lang('lang.date_and_time')</th>
-                        <th>@lang('lang.supplier')</th>
-                        <th>@lang('lang.cashier')</th>
-                        <th class="currencies">@lang('lang.paying_currency')</th>
-                        <th class="sum">@lang('lang.value')</th>
-                        <th class="sum">@lang('lang.paid_amount')</th>
-                        <th class="sum">@lang('lang.pending_amount')</th>
-                        <th>@lang('lang.due_date')</th>
-                        <th>@lang('lang.notes')</th>
-                        <th>@lang('lang.files')</th>
-                        <th class="notexport">@lang('lang.action')</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <th class="table_totals" style="text-align: right">@lang('lang.total')</th>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div
+            class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+            <!-- Pagination and other controls can go here -->
         </div>
+
     </div>
+
 </section>
 @endsection
 
@@ -280,6 +211,16 @@
                             );
                         });
                 },
+                initComplete: function (settings, json) {
+                // Move elements into the .top-controls div after DataTable initializes
+                $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+                $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+                $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+                $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+                $('.bottom-controls').append($('.dataTables_info'));
+                }
             });
             $(document).on('click', '.filters', function() {
                 supplier_service_table.ajax.reload();

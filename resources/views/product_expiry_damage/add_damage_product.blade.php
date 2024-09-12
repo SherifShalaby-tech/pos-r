@@ -2,9 +2,9 @@
 @section('title', __('lang.product'))
 
 @section('content')
-    <div class="table-responsive">
-        <table id="product_table" class="table" style="width: auto">
-            <thead>
+<div class="table-responsive">
+    <table id="product_table" class="table" style="width: auto">
+        <thead>
             <tr class="input-row">
                 <th></th>
                 <th></th>
@@ -18,25 +18,24 @@
                 <th>@lang('lang.avg_purchase_price')</th>
                 <th>@lang('lang.value_of_removed_stock')</th>
             </tr>
-            </thead>
-            <tbody>
+        </thead>
+        <tbody>
 
-            </tbody>
+        </tbody>
 
-        </table>
-    </div>
-    <input hidden value="" name="total_shortage_value" id="total_shortage_value">
-    <button style="margin-left: 25px" data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}" class="btn btn-primary check_pass">Save</button>
-    <a style="margin-left: 25px" id="cancel_btn" class="btn btn-danger text-white ">Cancel</a>
+    </table>
+</div>
+<input hidden value="" name="total_shortage_value" id="total_shortage_value">
+<button style="margin-left: 25px" data-check_password="{{ action('UserController@checkAdminPassword',2 ) }}"
+    class="btn btn-primary check_pass">Save</button>
+<a style="margin-left: 25px" id="cancel_btn" class="btn btn-danger text-white ">Cancel</a>
 
-    {{-- </form> --}}
+{{-- </form> --}}
 @endsection
 
 @section('javascript')
-    <script>
-
-
-        $(document).ready(function() {
+<script>
+    $(document).ready(function() {
             var currentUrl = window.location.href;
             let productId = currentUrl.match(/product_id=(\d+)/)[1];
             $("#cancel_btn").on("click",function(){
@@ -158,7 +157,16 @@
                     createdRow: function(row, data, dataIndex) {
 
                     },
+                    initComplete: function (settings, json) {
+                    // Move elements into the .top-controls div after DataTable initializes
+                    $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+                    $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+                    $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
 
+
+                    $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+                    $('.bottom-controls').append($('.dataTables_info'));
+                    }
                 });
 
         });
@@ -326,5 +334,5 @@
 
 
 
-    </script>
+</script>
 @endsection

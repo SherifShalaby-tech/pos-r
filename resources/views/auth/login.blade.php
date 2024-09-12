@@ -12,9 +12,9 @@ $languages[$key] = $value['full_name'];
 $version_number = App\Models\System::getProperty('version_number');
 $version_update_datatime = App\Models\System::getProperty('version_update_date');
 @endphp
-<div class="app app-login p-0">
+<div class="app app-login p-0" style="height: 100vh">
     <div class="row g-0 app-auth-wrapper">
-        <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
+        <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center pt-5 px-5">
             <div class="d-flex flex-column align-content-end">
                 <div class="app-auth-body mx-auto">
                     <div class="app-auth-branding mb-4"><a class="app-logo" href="">
@@ -83,6 +83,21 @@ $version_update_datatime = App\Models\System::getProperty('version_update_date')
                                 <button type="submit"
                                     class="btn btn-primary w-100 theme-btn mx-auto">{{trans('lang.login')}}</button>
                             </div>
+                            <footer class="">
+                                <div class="container text-center py-3">
+                                    <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+                                    <div class="copyrights text-center">
+                                        <p>&copy; {{App\Models\System::getProperty('site_title')}} | <span
+                                                class="">@lang('lang.developed_by')
+                                                <a target="_blank"
+                                                    href="http://sherifshalaby.tech">sherifshalaby.tech</a></span>
+                                        </p>
+                                        <p>
+                                            <a href="mailto:info@sherifshalaby.tech">info@sherifshalaby.tech</a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </footer>
                         </form>
 
 
@@ -92,20 +107,6 @@ $version_update_datatime = App\Models\System::getProperty('version_update_date')
                 </div>
                 <!--//auth-body-->
 
-                <footer class="app-auth-footer">
-                    <div class="container text-center py-3">
-                        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-                        <div class="copyrights text-center">
-                            <p>&copy; {{App\Models\System::getProperty('site_title')}} | <span
-                                    class="">@lang('lang.developed_by')
-                                    <a target="_blank" href="http://sherifshalaby.tech">sherifshalaby.tech</a></span>
-                            </p>
-                            <p>
-                                <a href="mailto:info@sherifshalaby.tech">info@sherifshalaby.tech</a>
-                            </p>
-                        </div>
-                    </div>
-                </footer>
                 <!--//app-auth-footer-->
             </div>
             <!--//flex-column-->

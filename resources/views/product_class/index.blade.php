@@ -7,19 +7,33 @@
 
     <div class="container-fluid">
 
-        <div class="col-md-12  no-print">
-            <div class="card">
-                <div class="card-header d-flex align-items-center">
-                    <h4 class="print-title">@lang('lang.product_classes')</h4>
-                </div>
-                <div class="card-header d-flex align-items-center">
+        <div class="col-md-12 px-0 no-print">
+            <x-page-title>
+
+
+                <h4 class="print-title">@lang('lang.product_classes')</h4>
+
+                <x-slot name="buttons">
+
                     @can('product_module.product_class.create_and_edit')
                     <a style="color: white" data-href="{{ action('ProductClassController@create') }}"
-                        data-container=".view_modal" class="btn btn-modal btn-info"><i class="dripicons-plus"></i>
+                        data-container=".view_modal" class="btn btn-modal btn-primary"><i class="dripicons-plus"></i>
                         @lang('lang.add')</a>
                     @endcan
-                </div>
-                <div class="card-body">
+                </x-slot>
+            </x-page-title>
+
+
+
+
+
+
+            <div
+                class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+
+            </div>
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
                     <div class="table-responsive">
                         <table id="store_table" class="table dataTable">
                             <thead>
@@ -92,7 +106,12 @@
                 </div>
             </div>
         </div>
+        <div
+            class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+            <!-- Pagination and other controls can go here -->
+        </div>
     </div>
+
 </section>
 @endsection
 

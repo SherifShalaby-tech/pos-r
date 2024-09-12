@@ -82,7 +82,8 @@ input.input-material~label.active {
 }
 
 input.form-control-custom:checked+label::before {
-    background: var(--primary-color) !important;
+    /* background: var(--primary-color) !important; */
+    background: white;
 }
 
 .login-page .logo span,
@@ -755,9 +756,9 @@ nav.navbar .nav-item li.notifications a i {
     color: var(--primary-color);
 }
 
-.dataTables_wrapper {
+/* .dataTables_wrapper {
     margin-top: 30px;
-}
+} */
 
 .dataTables_filter,
 .dataTables_length,
@@ -794,32 +795,32 @@ nav.navbar .nav-item li.notifications a i {
 
 .buttons-pdf {
     background: var(--primary-color);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .buttons-csv {
     background: var(--primary-color);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .buttons-copy {
     background: var(--primary-color);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .buttons-print {
     background: var(--primary-color);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .buttons-delete {
     background: var(--primary-color);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .buttons-collection {
     background: var(--primary-color);
-    border: none;
+    border: 1px solid var(--primary-color);
 }
 
 .dataTables_info,

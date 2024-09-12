@@ -25,7 +25,7 @@ $(document).ready(function () {
         language: __language,
         format: "yyyy-mm-dd",
         todayHighlight: true,
-        
+
     });
     $("input[name='end_date']").datepicker({
         language: __language,
@@ -73,7 +73,7 @@ function __currency_trans_from_en(
     if (!isNaN(input) && input > 0) {
         new_input = Math.round(input * Math.pow(10, __quantity_precision)) / Math.pow(10, __quantity_precision);
         precision = (new_input % 1 !== 0) ? new_input.toString().split('.')[1].length : 2;
-    }else{
+    } else {
         precision = 2;
     }
     return accounting.formatMoney(
@@ -202,7 +202,7 @@ function __print_receipt(section_id = null) {
         // // Set the printer name for the print dialog
         // window.document.title = printerName;
 
-    // Trigger the print dialog
+        // Trigger the print dialog
         window.print();
         if ($("#edit_pos_form").length > 0) {
             setTimeout(() => {
@@ -262,11 +262,11 @@ if (language == "en") {
 } else {
     dt_lang_url = base_path + "/js/datatables_lang/en.json";
 }
-var print_title="";
-if($('.print-title').length){
-    print_title=$('.print-title').text();
-}else{
-    print_title=$('title').text();
+var print_title = "";
+if ($('.print-title').length) {
+    print_title = $('.print-title').text();
+} else {
+    print_title = $('title').text();
 }
 var buttons = [
     {
@@ -301,23 +301,24 @@ var buttons = [
 
         },
     },
-    { text: 'pdf' , action: function () {
+    {
+        text: 'pdf', action: function () {
 
             // var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 
             // data = document.getElementById("sales_table").innerHTML;
             data = document.getElementsByClassName("dataTable")[0].innerHTML;
             // Done but error 414 request url is too larg solved by changing get to post
-           let title= $('title').text()
-            $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')} });
+            let title = $('title').text()
+            $.ajaxSetup({ headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') } });
             // var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
             $.ajax({
                 url: "/pdf",
                 type: 'post',
                 // dataType: "json",
-                data: { 'data':data ,'title': title},
+                data: { 'data': data, 'title': title },
                 xhrFields: { responseType: 'blob' },
-                success: function(response, status, xhr) {
+                success: function (response, status, xhr) {
 
                     var filename = "";
                     var disposition = xhr.getResponseHeader('Content-Disposition');
@@ -361,13 +362,13 @@ var buttons = [
                         console.log(ex);
                     }
 
-                },error: function (xhr, status, error)
-                { console.log(xhr.responseText); },
+                }, error: function (xhr, status, error) { console.log(xhr.responseText); },
             });
         }
-        ,exportOptions: {
+        , exportOptions: {
             columns: ":visible:not(.notexport)",
-        } },
+        }
+    },
     // {
     //     extend: "pdfHtml5",
     //     footer: true,
@@ -382,7 +383,7 @@ var buttons = [
         footer: true,
         charset: 'UTF-8',
         bom: true,
-        title:$('title').text(),
+        title: $('title').text(),
         exportOptions: {
             columns: ":visible:not(.notexport)",
         },
@@ -392,55 +393,55 @@ var buttons = [
         columns: ":gt(0)",
     },
 ];
-if($('.print-title-hint').text()=="product_report"){
-    var button= [
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print"></i>',
-                charset: 'UTF-8',
-                bom: true,
-                footer: true,
-                title: print_title,
-                exportOptions: {
-                    columns: [0, 7, 8 , 9]
-                }
+if ($('.print-title-hint').text() == "product_report") {
+    var button = [
+        {
+            extend: 'print',
+            text: '<i class="fas fa-print"></i>',
+            charset: 'UTF-8',
+            bom: true,
+            footer: true,
+            title: print_title,
+            exportOptions: {
+                columns: [0, 7, 8, 9]
             }
-        ];
+        }
+    ];
     buttons.push(button);
-    }
-    if($('.print-title-hint').text()=="sale_report"){
-        var button= [
-                {
-                    extend: 'print',
-                    text: '<i class="fas fa-print"></i>',
-                    charset: 'UTF-8',
-                    bom: true,
-                    footer: true,
-                    title: print_title,
-                    exportOptions: {
-                        columns: [0, 1, 3 , 10,12]
-                    }
-                }
-            ];
-        buttons.push(button);
-    }
+}
+if ($('.print-title-hint').text() == "sale_report") {
+    var button = [
+        {
+            extend: 'print',
+            text: '<i class="fas fa-print"></i>',
+            charset: 'UTF-8',
+            bom: true,
+            footer: true,
+            title: print_title,
+            exportOptions: {
+                columns: [0, 1, 3, 10, 12]
+            }
+        }
+    ];
+    buttons.push(button);
+}
 
-    if($('.print-title-hint').text()=="recent_transactions"){
-        var button= [
-                {
-                    extend: 'print',
-                    text: '<i class="fas fa-print"></i>',
-                    charset: 'UTF-8',
-                    bom: true,
-                    footer: true,
-                    title: print_title,
-                    exportOptions: {
-                        columns: [1,3,5,8]
-                    }
-                }
-            ];
-        buttons.push(button);
-    }
+if ($('.print-title-hint').text() == "recent_transactions") {
+    var button = [
+        {
+            extend: 'print',
+            text: '<i class="fas fa-print"></i>',
+            charset: 'UTF-8',
+            bom: true,
+            footer: true,
+            title: print_title,
+            exportOptions: {
+                columns: [1, 3, 5, 8]
+            }
+        }
+    ];
+    buttons.push(button);
+}
 var datatable_params = {
     lengthChange: true,
     paging: true,
@@ -468,6 +469,14 @@ var datatable_params = {
             .wrap("<form>")
             .parent()
             .attr("autocomplete", "off");
+        // Move elements into the .top-controls div after DataTable initializes
+        $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+        $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+        $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+        $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+        $('.bottom-controls').append($('.dataTables_info'));
     },
     dom: "lBfrtip",
     stateSave: true,
@@ -477,8 +486,8 @@ var datatable_params = {
             return typeof i === "string"
                 ? i.replace(/[\$,]/g, "") * 1
                 : typeof i === "number"
-                ? i
-                : 0;
+                    ? i
+                    : 0;
         };
 
         this.api()
