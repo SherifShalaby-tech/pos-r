@@ -2,8 +2,8 @@
 @section('title', __('lang.invoice_no'))
 
 @section('content')
-<section class="forms pt-2">
-    <div class="container-fluid">
+<section class="forms py-2">
+    <div class="container-fluid px-2">
         <div class="col-md-12 print-only">
             @include('layouts.partials.print_header')
         </div>

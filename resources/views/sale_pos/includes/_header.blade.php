@@ -1,6 +1,6 @@
 <header class="header pb-0">
     <nav class="navbar">
-        <div class="container-fluid">
+        <div class="container-fluid px-2">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
                 <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars">
                     </i></a>

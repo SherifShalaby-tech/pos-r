@@ -7,7 +7,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
 @endphp
 @section('content')
 @if (!empty($module_settings['dashboard']))
-<div class="container-fluid">
+<div class="container-fluid px-2">
     <div class="row">
         <div class="col-md-12 mt-1">
             <div class="brand-text">
@@ -73,7 +73,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
     </div>
 </div>
 @if (strtolower(session('user.job_title')) != 'deliveryman')
-<div class="container-fluid">
+<div class="container-fluid px-2">
     @if(auth()->user()->can('superadmin') || auth()->user()->is_admin)
     <div class="d-flex justify-content-between">
 
@@ -186,7 +186,7 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
 </div>
 
 
-<div class="container-fluid mt-2" id="chart_and_table_section">
+<div class="container-fluid px-2 mt-2" id="chart_and_table_section">
     {{-- @include('home.partials.chart_and_table') --}}
 </div>
 @endif

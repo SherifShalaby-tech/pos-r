@@ -263,49 +263,50 @@
                 {{-- @include('layouts.partials.image_crop', ['image_url' => $brand->getFirstMediaUrl('brand') ??
                 null])--}}
             </div>
-            <div id="cropped_edit_brand_images"></div>
-            <div class="modal-footer">
-                <button id="submit-edit-brand-btn" class="btn btn-primary  col-6  ">@lang( 'lang.update' )</button>
-                <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
-            </div>
+        </div>
+        <div id="cropped_edit_brand_images"></div>
+        <div class="modal-footer">
+            <button id="submit-edit-brand-btn" class="btn btn-primary  col-6  ">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
+        </div>
 
-            {!! Form::close() !!}
-            <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog"
-                aria-labelledby="editBrandModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
+        {!! Form::close() !!}
+        <div class="modal fade" id="editBrandModal" tabindex="-1" role="dialog" aria-labelledby="editBrandModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
 
-                        <x-modal-header>
+                    <x-modal-header>
 
-                            <h5 class="modal-title" id="editBrandModalLabel">Modal title</h5>
+                        <h5 class="modal-title" id="editBrandModalLabel">Modal title</h5>
 
-                        </x-modal-header>
+                    </x-modal-header>
 
-                        <div class="modal-body">
-                            <div id="croppie-modal-brand-edit" style="display:none">
-                                <div id="croppie-container-brand-edit"></div>
-                                <button data-dismiss="modal" id="croppie-cancel-btn-brand-edit" type="button"
-                                    class="btn btn-secondary"><i class="fas fa-times"></i></button>
-                                <button id="croppie-submit-btn-brand-edit" type="button" class="btn btn-primary"><i
-                                        class="fas fa-crop"></i></button>
-                            </div>
+                    <div class="modal-body">
+                        <div id="croppie-modal-brand-edit" style="display:none">
+                            <div id="croppie-container-brand-edit"></div>
+                            <button data-dismiss="modal" id="croppie-cancel-btn-brand-edit" type="button"
+                                class="btn btn-secondary"><i class="fas fa-times"></i></button>
+                            <button id="croppie-submit-btn-brand-edit" type="button" class="btn btn-primary"><i
+                                    class="fas fa-crop"></i></button>
                         </div>
-
                     </div>
+
                 </div>
             </div>
+        </div>
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
 
 
-    <script>
-        $('#brand_category_id').selectpicker('render')
-    </script>
+<script>
+    $('#brand_category_id').selectpicker('render')
+</script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-    <script>
-        $("#submit-edit-brand-btn").on("click",function (e){
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<script>
+    $("#submit-edit-brand-btn").on("click",function (e){
         e.preventDefault();
         getEditBrandImages();
         setTimeout(()=>{
@@ -448,4 +449,4 @@
         }, 300);
     }
 
-    </script>
+</script>

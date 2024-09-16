@@ -3,9 +3,9 @@
 
 @section('content')
 
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid no-print">
+    <div class="container-fluid px-2 no-print">
 
         <x-page-title>
 

@@ -3,7 +3,7 @@
 
 @section('content')
 <section class="forms">
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
         <div class="col-md-12 print-only">
             @include('layouts.partials.print_header')
         </div>
@@ -35,12 +35,14 @@
                             </div>
                             <div class="col-md-6">
                                 {!! Form::label('approved', __('lang.approved'), []) !!}:
-                                <b>@if(!empty($transfer->approved_at)) {{@format_date($transfer->approved_at)}} @endif - {{$transfer->approved_by_user->name}}</b>
+                                <b>@if(!empty($transfer->approved_at)) {{@format_date($transfer->approved_at)}} @endif -
+                                    {{$transfer->approved_by_user->name}}</b>
                             </div>
 
                             <div class="col-md-6">
                                 {!! Form::label('receiver_store', __('lang.received'), []) !!}:
-                                <b>@if(!empty($transfer->received_at)) {{@format_date($transfer->received_at)}} @endif - {{$transfer->received_by_user->name}}</b>
+                                <b>@if(!empty($transfer->received_at)) {{@format_date($transfer->received_at)}} @endif -
+                                    {{$transfer->received_by_user->name}}</b>
                             </div>
                         </div>
                         <br>

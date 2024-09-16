@@ -3,10 +3,10 @@
 
 @section('content')
 
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid">
-        <div class="col-md-12  no-print">
+    <div class="container-fluid px-2">
+        <div class="col-md-12 px-0 no-print">
             <x-page-title>
 
                 @if($_SERVER["QUERY_STRING"]=="type=quotation")
@@ -67,54 +67,57 @@
             </div>
             <div class="card mt-1 mb-0">
                 <div class="card-body py-2 px-4">
-                    <table class="table dataTable">
-                        <thead>
-                            <tr>
-                                <th>@lang('lang.name')</th>
-                                <th>@lang('lang.description')</th>
-                                <th>@lang('lang.name_of_creator')</th>
-                                <th class="notexport">@lang('lang.action')</th>
-                            </tr>
-                        </thead>
+                    <div class="table-responsive">
 
-                        <tbody>
-                            @foreach ($terms_and_conditions as $terms_and_condition)
-                            <tr>
-                                <td>
-                                    {{$terms_and_condition->name}}
-                                </td>
-                                <td>
-                                    {!! $terms_and_condition->description !!}
-                                </td>
-                                <td>
-                                    {{$terms_and_condition->created_by}}
-                                </td>
-                                <td>
+                        <table class="table dataTable">
+                            <thead>
+                                <tr>
+                                    <th>@lang('lang.name')</th>
+                                    <th>@lang('lang.description')</th>
+                                    <th>@lang('lang.name_of_creator')</th>
+                                    <th class="notexport">@lang('lang.action')</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($terms_and_conditions as $terms_and_condition)
+                                <tr>
+                                    <td>
+                                        {{$terms_and_condition->name}}
+                                    </td>
+                                    <td>
+                                        {!! $terms_and_condition->description !!}
+                                    </td>
+                                    <td>
+                                        {{$terms_and_condition->created_by}}
+                                    </td>
+                                    <td>
 
 
-                                    @can('settings.terms_and_conditions.view')
-                                    <a data-href="{{action('TermsAndConditionsController@show', $terms_and_condition->id)}}"
-                                        data-container=".view_modal"
-                                        class="btn btn-danger btn-modal text-white show_terms_and_condition"><i
-                                            class="fa fa-eye"></i></a>
-                                    @endcan
-                                    @can('settings.terms_and_conditions.create_and_edit')
-                                    <a data-href="{{action('TermsAndConditionsController@edit', $terms_and_condition->id)}}"
-                                        data-container=".view_modal"
-                                        class="btn btn-danger btn-modal text-white edit_terms_and_condition"><i
-                                            class="fa fa-pencil-square-o"></i></a>
-                                    @endcan
-                                    @can('settings.terms_and_conditions.delete')
-                                    <a data-href="{{action('TermsAndConditionsController@destroy', $terms_and_condition->id)}}"
-                                        data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"
-                                        class="btn btn-danger text-white delete_item"><i class="fa fa-trash"></i></a>
-                                    @endcan
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-
+                                        @can('settings.terms_and_conditions.view')
+                                        <a data-href="{{action('TermsAndConditionsController@show', $terms_and_condition->id)}}"
+                                            data-container=".view_modal"
+                                            class="btn btn-warning btn-modal text-white show_terms_and_condition"><i
+                                                class="fa fa-eye"></i></a>
+                                        @endcan
+                                        @can('settings.terms_and_conditions.create_and_edit')
+                                        <a data-href="{{action('TermsAndConditionsController@edit', $terms_and_condition->id)}}"
+                                            data-container=".view_modal"
+                                            class="btn btn-primary btn-modal text-white edit_terms_and_condition"><i
+                                                class="fa fa-pencil-square-o"></i></a>
+                                        @endcan
+                                        @can('settings.terms_and_conditions.delete')
+                                        <a data-href="{{action('TermsAndConditionsController@destroy', $terms_and_condition->id)}}"
+                                            data-check_password="{{action('UserController@checkPassword', Auth::user()->id)}}"
+                                            class="btn btn-danger text-white delete_item"><i
+                                                class="fa fa-trash"></i></a>
+                                        @endcan
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

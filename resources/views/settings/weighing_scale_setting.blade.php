@@ -3,39 +3,38 @@
 
 @section('content')
 
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid">
-        <div class="col-md-12  no-print">
+    <div class="container-fluid px-2">
+        <div class="col-md-12 px-0 no-print">
 
             <x-page-title>
-
-
                 <h4>@lang('lang.weighing_scale_setting')</h4>
-
-                <x-slot name="buttons">
-
-                </x-slot>
             </x-page-title>
             <div class="card">
-
                 <div class="card-body">
                     {!! Form::open(['url' => action('SettingController@postWeighingScaleSetting'), 'method' => 'post',
                     'enctype'
                     =>
                     'multipart/form-data']) !!}
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <div class="i-checks" style="margin-top: 30px;">
+                    <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        <div class="col-sm-3 d-flex justify-content-center align-items-center">
+                            <div
+                                class=" toggle-pill-color d-flex justify-content-center align-items-center flex-column">
                                 <input id="enable" name="weighing_scale_setting[enable]" type="checkbox" @if(
                                     !empty($weighing_scale_setting['enable']) ) checked @endif value="1"
                                     class="form-control-custom">
-                                <label for="enable"><strong>{{__('lang.enable')}}</strong></label>
+                                <label for="enable"></label>
+                                <span>
+                                    <strong>{{__('lang.enable')}}</strong>
+                                </span>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('label_prefix', __('lang.weighing_barcode_prefix') . ':') !!}
+                                {!! Form::label('label_prefix', __('lang.weighing_barcode_prefix'),[
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ] ) !!}
                                 {!! Form::text('weighing_scale_setting[label_prefix]',
                                 isset($weighing_scale_setting['label_prefix']) ? $weighing_scale_setting['label_prefix']
                                 : null,
@@ -45,7 +44,9 @@
 
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('product_sku_length', __('lang.weighing_product_sku_length') . ':') !!}
+                                {!! Form::label('product_sku_length', __('lang.weighing_product_sku_length'),[
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ] ) !!}
 
                                 {!! Form::select('weighing_scale_setting[product_sku_length]', [1,2,3,4,5,6,7,8,9],
                                 isset($weighing_scale_setting['product_sku_length']) ?
@@ -57,7 +58,9 @@
 
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('qty_length', __('lang.weighing_qty_integer_part_length') . ':') !!}
+                                {!! Form::label('qty_length', __('lang.weighing_qty_integer_part_length'),[
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ]) !!}
 
                                 {!! Form::select('weighing_scale_setting[qty_length]', [1,2,3,4,5],
                                 isset($weighing_scale_setting['qty_length']) ? $weighing_scale_setting['qty_length'] :
@@ -69,8 +72,9 @@
 
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('qty_length_decimal', __('lang.weighing_qty_fractional_part_length') .
-                                ':') !!}
+                                {!! Form::label('qty_length_decimal', __('lang.weighing_qty_fractional_part_length') ,[
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ]) !!}
                                 {!! Form::select('weighing_scale_setting[qty_length_decimal]', [1,2,3,4],
                                 isset($weighing_scale_setting['qty_length_decimal']) ?
                                 $weighing_scale_setting['qty_length_decimal'] : 2, ['class' => 'form-control select2',
@@ -80,7 +84,9 @@
                         </div>
                         <div class="col-sm-3">
                             <div class="form-group">
-                                {!! Form::label('last_digits_type', __('lang.last_digits_type') . ':') !!}
+                                {!! Form::label('last_digits_type', __('lang.last_digits_type') ,[
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ]) !!}
                                 {!! Form::select('weighing_scale_setting[last_digits_type]', ['price' =>
                                 __('lang.price'),
                                 'quantity' => __('lang.quantity')],

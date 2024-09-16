@@ -3,9 +3,9 @@
 
 @section('content')
 
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid no-print">
+    <div class="container-fluid px-2 no-print">
 
         <x-page-title>
             <h4 class="print-title">@lang('lang.list_of_redeemed_point_by_transactions')</h4>

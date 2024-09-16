@@ -1,5 +1,5 @@
 <section class="forms">
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
         <div class="col-md-12 print-only">
             @include('layouts.partials.print_header')
         </div>

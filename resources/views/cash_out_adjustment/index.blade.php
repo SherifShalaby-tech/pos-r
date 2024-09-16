@@ -2,8 +2,8 @@
 @section('title', __('lang.cash_out_adjustment'))
 
 @section('content')
-<section class="forms pt-2">
-    <div class="container-fluid">
+<section class="forms py-2">
+    <div class="container-fluid px-2">
 
         <x-page-title>
             <h4>@lang('lang.cash_out_adjustment')</h4>

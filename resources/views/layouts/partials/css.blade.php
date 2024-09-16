@@ -68,7 +68,7 @@
     }
 
     .text-red {
-        color: maroon !important;
+        color: #dc3545 !important;
     }
 
     .hide {
@@ -388,5 +388,11 @@
 
     .dataTables_empty {
         color: var(--primary-color)
+    }
+
+    .divider {
+        height: 0.5px;
+        background: rgba(0, 0, 0, 0.15);
+
     }
 </style>

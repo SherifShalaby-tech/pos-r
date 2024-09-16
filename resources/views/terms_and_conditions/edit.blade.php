@@ -10,17 +10,19 @@
         {!! Form::open(['url' => action('TermsAndConditionsController@update', $terms_and_condition->id), 'method' =>
         'put']) !!}
         <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                <div class="col-md-4">
                     <div class="form-group">
-                        <label for="name">@lang('lang.name')</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="name">@lang('lang.name')</label>
                         <input type="text" class="form-control" name="name" id="name"
                             value="{{$terms_and_condition->name}}" required>
                     </div>
                 </div>
                 <div class="col-md-12">
                     <div class="form-group">
-                        <label for="name">@lang('lang.description')</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="name">@lang('lang.description')</label>
                         <textarea name="description" id="description" rows="4"
                             class="form-control">{{$terms_and_condition->description}}</textarea>
                     </div>

@@ -18,8 +18,8 @@ $transaction_payment = $recent_stock->transaction_payments->first();
 }
 }
 @endphp
-<section class="forms pt-2">
-    <div class="container-fluid">
+<section class="forms py-2">
+    <div class="container-fluid px-2">
         <div class="row">
             <div class="col-md-12">
 

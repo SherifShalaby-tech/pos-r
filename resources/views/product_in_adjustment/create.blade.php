@@ -4,7 +4,7 @@
 @section('content')
 {{-- <form id="product_form" method="POST" action="{{route('add_product_adjustment')}}"> --}}
     {{-- @csrf --}}
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
         <div class="card mt-3">
             <div class="col-md-12">
                 <div class="row">

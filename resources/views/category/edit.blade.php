@@ -123,17 +123,17 @@
     }
 
     .file--upload>label {
-        color: hsl(204, 86%, 53%);
-        border-color: hsl(204, 86%, 53%);
+        color: var(--primary-color);
+        border: 2px dashed var(--primary-color);
     }
 
     .file--upload>label:hover {
-        border-color: hsl(204, 86%, 53%);
-        background-color: hsl(204, 86%, 96%);
+        border-color: var(--primary-color-hover);
+        border: 2px dashed var(--primary-color-hover);
     }
 
     .file--upload>label:active {
-        background-color: hsl(204, 86%, 91%);
+        background-color: hsl(0, 0%, 89%);
     }
 
     .file--uploading>label {
@@ -221,124 +221,138 @@
 
 
         <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __('lang.name') . ':*') !!}
-                <div class="input-group my-group">
-                    {!! Form::text('name', $category->name, ['class' => 'form-control', 'placeholder' =>
-                    __('lang.name'), 'required']) !!}
-                    <span class="input-group-btn">
-                        <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
-                            data-type="category"><i class="dripicons-web text-primary fa-lg"></i></button>
-                    </span>
-                </div>
-            </div>
-            @include('layouts.partials.translation_inputs', [
-            'attribute' => 'name',
-            'translations' => $category->translations,
-            'type' => 'category',
-            ])
-            <div class="form-group">
-                {!! Form::label('description', __('lang.description') . ':') !!}
-                {!! Form::text('description', $category->description, ['class' => 'form-control', 'placeholder' =>
-                __('lang.description')]) !!}
-            </div>
-            @if ($type=='category')
-            <div class="form-group">
-                {!! Form::label('product_class_id', __('lang.class') . ':') !!}
-                {!! Form::select('product_class_id', $product_classes, $category->product_class_id, ['class' =>
-                'form-control', 'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' =>
-                __('lang.please_select')]) !!}
-            </div>
-            @endif
-            @if ($type=='sub_category' )
-            <div class="form-group ">
-                {!! Form::label('parent_id', __('lang.parent_category') . ':') !!}
-                {!! Form::select('parent_id', $categories, $category->parent_id, ['class' => 'form-control',
-                'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select')]) !!}
-            </div>
-            @endif
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label for="projectinput2">{{ __('lang.image') }}</label>
-                    {{-- <input type="file" id="projectinput2" class="form-control img" name="image"
-                        accept="image/*" />--}}
-                    <div class="container mt-3">
-                        <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                            <div class="col-12">
-                                <div class="mt-3">
-                                    <div class="row">
-                                        <div class="col-10 offset-1">
-                                            <div class="variants">
-                                                <div class='file file--upload w-100'>
-                                                    <label for='file-input-edit' class="w-100">
-                                                        <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                    </label>
-                                                    <!-- <input  id="file-input" multiple type='file' /> -->
-                                                    <input type="file" id="file-input-edit">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
 
-                            <div class="col-10 offset-1">
-                                <div class="preview-edit-container">
-                                    @if($category)
-                                    <div id="preview{{ $category->id }}" class="preview">
-                                        @if (!empty($category->getFirstMediaUrl('category')))
-                                        <img src="{{ $category->getFirstMediaUrl('category') }}"
-                                            id="img{{  $category->id }}" alt="">
-                                        @else
-                                        <img src="{{ asset('/uploads/'.session('logo')) }}" alt=""
-                                            id="img{{  $category->id }}">
-                                        @endif
-                                    </div>
-                                    @endif
+
+                <div class="form-group col-md-4">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __('lang.name') ,[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    <div class="input-group my-group">
+                        {!! Form::text('name', $category->name, ['class' => 'form-control', 'placeholder' =>
+                        __('lang.name'), 'required']) !!}
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary btn-flat py-1 btn-partial translation_btn" type="button"
+                                data-type="category"><i class="dripicons-web text-white fa-lg"></i></button>
+                        </span>
+                    </div>
+                </div>
+                @include('layouts.partials.translation_inputs', [
+                'attribute' => 'name',
+                'translations' => $category->translations,
+                'type' => 'category',
+                ])
+                <div class="form-group col-md-4">
+                    {!! Form::label('description', __('lang.description') ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::text('description', $category->description, ['class' => 'form-control', 'placeholder' =>
+                    __('lang.description')]) !!}
+                </div>
+                @if ($type=='category')
+                <div class="form-group col-md-4">
+                    {!! Form::label('product_class_id', __('lang.class') ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::select('product_class_id', $product_classes, $category->product_class_id, ['class' =>
+                    'form-control', 'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' =>
+                    __('lang.please_select')]) !!}
+                </div>
+                @endif
+                @if ($type=='sub_category' )
+                <div class="form-group col-md-4">
+                    {!! Form::label('parent_id', __('lang.parent_category') ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::select('parent_id', $categories, $category->parent_id, ['class' => 'form-control',
+                    'data-live-search' => 'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select')])
+                    !!}
+                </div>
+                @endif
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="projectinput2">{{ __('lang.image') }}</label>
+                        {{-- <input type="file" id="projectinput2" class="form-control img" name="image"
+                            accept="image/*" />--}}
+
+                        <div class="col-12 ">
+                            <div class="variants">
+                                <div class='file file--upload w-100'>
+                                    <label for='file-input-edit' class="w-100">
+                                        <i class="fas fa-cloud-upload-alt"></i>Upload
+                                    </label>
+                                    <!-- <input  id="file-input" multiple type='file' /> -->
+                                    <input type="file" id="file-input-edit">
                                 </div>
                             </div>
                         </div>
+
+
+                        <div class="col-12 d-flex justify-content-center align-items-center ">
+                            <div class="preview-edit-container">
+                                @if($category)
+                                <div id="preview{{ $category->id }}" class="preview">
+                                    @if (!empty($category->getFirstMediaUrl('category')))
+                                    <img src="{{ $category->getFirstMediaUrl('category') }}"
+                                        id="img{{  $category->id }}" alt="">
+                                    @else
+                                    <img src="{{ asset('/uploads/'.session('logo')) }}" alt=""
+                                        id="img{{  $category->id }}">
+                                    @endif
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-            </div>
-            <div id="cropped_images"></div>
-            <div class="modal-footer">
-                <button id="sub-button-form" class="btn btn-primary col-6">@lang( 'lang.update' )</button>
-                <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
-            </div>
-
-            {!! Form::close() !!}
-
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-
-    <div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imagesModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <x-modal-header>
-
-                    <h5 class="modal-title" id="imagesModalLabel">Modal title</h5>
-
-                </x-modal-header>
-
-                <div class="modal-body">
-                    <div id="croppie-modal-edit" style="display:none">
-                        <div id="croppie-container-edit"></div>
-                        <button data-dismiss="modal" id="croppie-cancel-btn-edit" type="button"
-                            class="btn btn-secondary"><i class="fas fa-times"></i></button>
-                        <button id="croppie-submit-btn-edit" type="button" class="btn btn-primary"><i
-                                class="fas fa-crop"></i></button>
-                    </div>
-                </div>
-
             </div>
         </div>
-    </div>
+        <div id="cropped_images"></div>
+        <div class="modal-footer">
+            <button id="sub-button-form" class="btn btn-primary col-6">@lang( 'lang.update' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close'
+                )</button>
+        </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-    <script>
-        $("#sub-button-form").click(function (e) {
+        {!! Form::close() !!}
+
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+
+<div class="modal fade" id="imagesModal" tabindex="-1" role="dialog" aria-labelledby="imagesModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <x-modal-header>
+
+                <h5 class="modal-title" id="imagesModalLabel">Modal title</h5>
+
+            </x-modal-header>
+
+            <div class="modal-body">
+                <div id="croppie-modal-edit" style="display:none">
+                    <div id="croppie-container-edit"></div>
+                    <button data-dismiss="modal" id="croppie-cancel-btn-edit" type="button" class="btn btn-secondary"><i
+                            class="fas fa-times"></i></button>
+                    <button id="croppie-submit-btn-edit" type="button" class="btn btn-primary"><i
+                            class="fas fa-crop"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+<script>
+    $("#sub-button-form").click(function (e) {
         e.preventDefault();
         getImages()
         setTimeout(() => {
@@ -475,4 +489,4 @@
             return images
         }, 300);
     }
-    </script>
+</script>

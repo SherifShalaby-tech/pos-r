@@ -3,9 +3,9 @@
 
 @section('content')
 
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
 
 
         <x-page-title>
@@ -105,12 +105,12 @@
                     </table>
                 </div>
             </div>
-            </div>
-            <div
-                class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
-                <!-- Pagination and other controls can go here -->
-            </div>
-            </div>
+        </div>
+        <div
+            class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+            <!-- Pagination and other controls can go here -->
+        </div>
+    </div>
 </section>
 @endsection
 

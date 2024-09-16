@@ -34,10 +34,10 @@
 </style>
 @endsection
 @section('content')
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid">
-        <div class="col-md-12  no-print">
+    <div class="container-fluid px-2">
+        <div class="col-md-12 px-0 no-print">
 
             <x-page-title>
 
@@ -130,111 +130,111 @@
 
 
 
-             <div class="card mt-1 mb-0">
-            <div class="card-body py-2 px-4">
-<div class="table-responsive">
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
+                    <div class="table-responsive">
 
-                    <table class="table table-bordered"
-                        style="border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
-                        <thead>
-                            @php
-                            $next_year = $year + 1;
-                            $pre_year = $year - 1;
-                            @endphp
-                            <tr>
-                                <th></th>
-                                <th><a href="{{url('report/get-monthly-sale-report?year='.$pre_year)}}"><i
-                                            class="fa fa-arrow-left"></i> {{trans('lang.previous')}}</a></th>
-                                <th colspan="10" class="text-center">{{$year}}</th>
-                                <th><a href="{{url('report/get-monthly-sale-report?year='.$next_year)}}">{{trans('lang.next')}}
-                                        <i class="fa fa-arrow-right"></i></a></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td></td>
-                                <td><strong>@lang('lang.January')</strong></td>
-                                <td><strong>@lang('lang.February')</strong></td>
-                                <td><strong>@lang('lang.March')</strong></td>
-                                <td><strong>@lang('lang.April')</strong></td>
-                                <td><strong>@lang('lang.May')</strong></td>
-                                <td><strong>@lang('lang.June')</strong></td>
-                                <td><strong>@lang('lang.July')</strong></td>
-                                <td><strong>@lang('lang.August')</strong></td>
-                                <td><strong>@lang('lang.September')</strong></td>
-                                <td><strong>@lang('lang.October')</strong></td>
-                                <td><strong>@lang('lang.November')</strong></td>
-                                <td><strong>@lang('lang.December')</strong></td>
-                            </tr>
-                            <tr class="sale-row">
-                                <td>
-                                    <h5>@lang('lang.sales')</h5>
-                                </td>
-                                @foreach($total_discount_sell as $key => $discount)
-                                <td>
-                                    @if($discount > 0)
-                                    <strong>{{trans("lang.product_discount")}}</strong><br>
-                                    <span>{{@num_format($discount)}}</span><br><br>
-                                    @endif
-                                    @if($total_tax_sell[$key] > 0)
-                                    <strong>{{trans("lang.product_tax")}}</strong><br>
-                                    <span>{{isset($total_tax_sell)?@num_format($total_tax_sell[$key]):0}}</span><br><br>
-                                    @endif
-                                    @if($shipping_cost_sell[$key] > 0)
-                                    <strong>{{trans("lang.delivery_cost")}}</strong><br>
-                                    <span>{{@num_format($shipping_cost_sell[$key])}}</span><br><br>
-                                    @endif
-                                    @if($total_sell[$key] > 0)
-                                    <strong>{{trans("lang.grand_total")}}</strong><br>
-                                    <span>{{@num_format($total_sell[$key])}}</span><br>
-                                    @endif
-                                </td>
-                                @endforeach
-                            </tr>
+                        <table class="table table-bordered"
+                            style="border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
+                            <thead>
+                                @php
+                                $next_year = $year + 1;
+                                $pre_year = $year - 1;
+                                @endphp
+                                <tr>
+                                    <th></th>
+                                    <th><a href="{{url('report/get-monthly-sale-report?year='.$pre_year)}}"><i
+                                                class="fa fa-arrow-left"></i> {{trans('lang.previous')}}</a></th>
+                                    <th colspan="10" class="text-center">{{$year}}</th>
+                                    <th><a href="{{url('report/get-monthly-sale-report?year='.$next_year)}}">{{trans('lang.next')}}
+                                            <i class="fa fa-arrow-right"></i></a></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td><strong>@lang('lang.January')</strong></td>
+                                    <td><strong>@lang('lang.February')</strong></td>
+                                    <td><strong>@lang('lang.March')</strong></td>
+                                    <td><strong>@lang('lang.April')</strong></td>
+                                    <td><strong>@lang('lang.May')</strong></td>
+                                    <td><strong>@lang('lang.June')</strong></td>
+                                    <td><strong>@lang('lang.July')</strong></td>
+                                    <td><strong>@lang('lang.August')</strong></td>
+                                    <td><strong>@lang('lang.September')</strong></td>
+                                    <td><strong>@lang('lang.October')</strong></td>
+                                    <td><strong>@lang('lang.November')</strong></td>
+                                    <td><strong>@lang('lang.December')</strong></td>
+                                </tr>
+                                <tr class="sale-row">
+                                    <td>
+                                        <h5>@lang('lang.sales')</h5>
+                                    </td>
+                                    @foreach($total_discount_sell as $key => $discount)
+                                    <td>
+                                        @if($discount > 0)
+                                        <strong>{{trans("lang.product_discount")}}</strong><br>
+                                        <span>{{@num_format($discount)}}</span><br><br>
+                                        @endif
+                                        @if($total_tax_sell[$key] > 0)
+                                        <strong>{{trans("lang.product_tax")}}</strong><br>
+                                        <span>{{isset($total_tax_sell)?@num_format($total_tax_sell[$key]):0}}</span><br><br>
+                                        @endif
+                                        @if($shipping_cost_sell[$key] > 0)
+                                        <strong>{{trans("lang.delivery_cost")}}</strong><br>
+                                        <span>{{@num_format($shipping_cost_sell[$key])}}</span><br><br>
+                                        @endif
+                                        @if($total_sell[$key] > 0)
+                                        <strong>{{trans("lang.grand_total")}}</strong><br>
+                                        <span>{{@num_format($total_sell[$key])}}</span><br>
+                                        @endif
+                                    </td>
+                                    @endforeach
+                                </tr>
 
-                            <tr class="purchase-row">
-                                <td>
-                                    <h5>@lang('lang.purchases')</h5>
-                                </td>
-                                @foreach($total_discount_addstock as $key => $discount)
-                                <td>
-                                    @if($discount > 0)
-                                    <strong>{{trans("lang.product_discount")}}</strong><br>
-                                    <span>{{@num_format($discount)}}</span><br><br>
-                                    @endif
-                                    @if($total_tax_addstock[$key] > 0)
-                                    <strong>{{trans("lang.product_tax")}}</strong><br>
-                                    <span>{{@num_format($total_tax_addstock[$key])}}</span><br><br>
-                                    @endif
-                                    @if($shipping_cost_addstock[$key] > 0)
-                                    <strong>{{trans("lang.delivery_cost")}}</strong><br>
-                                    <span>{{@num_format($shipping_cost_addstock[$key])}}</span><br><br>
-                                    @endif
-                                    @if($total_addstock[$key] > 0)
-                                    <strong>{{trans("lang.grand_total")}}</strong><br>
-                                    <span>{{@num_format($total_addstock[$key])}}</span><br>
-                                    {{-- <span>{{@num_format($total_p[$key])}}</span><br> --}}
-                                    @endif
-                                </td>
-                                @endforeach
-                            </tr>
-                            <tr>
-                                <td></td>
-                                @foreach($total_net_profit as $key => $net_profit)
-                                <td>
-                                    <strong>{{trans("lang.wins")}}</strong><br>
-                                    <strong>{{@num_format($net_profit)}}</strong>
-                                </td>
-                                @endforeach
-                            </tr>
-                        </tbody>
-                    </table>
-                    </table>
-                </div>
-                </div>
+                                <tr class="purchase-row">
+                                    <td>
+                                        <h5>@lang('lang.purchases')</h5>
+                                    </td>
+                                    @foreach($total_discount_addstock as $key => $discount)
+                                    <td>
+                                        @if($discount > 0)
+                                        <strong>{{trans("lang.product_discount")}}</strong><br>
+                                        <span>{{@num_format($discount)}}</span><br><br>
+                                        @endif
+                                        @if($total_tax_addstock[$key] > 0)
+                                        <strong>{{trans("lang.product_tax")}}</strong><br>
+                                        <span>{{@num_format($total_tax_addstock[$key])}}</span><br><br>
+                                        @endif
+                                        @if($shipping_cost_addstock[$key] > 0)
+                                        <strong>{{trans("lang.delivery_cost")}}</strong><br>
+                                        <span>{{@num_format($shipping_cost_addstock[$key])}}</span><br><br>
+                                        @endif
+                                        @if($total_addstock[$key] > 0)
+                                        <strong>{{trans("lang.grand_total")}}</strong><br>
+                                        <span>{{@num_format($total_addstock[$key])}}</span><br>
+                                        {{-- <span>{{@num_format($total_p[$key])}}</span><br> --}}
+                                        @endif
+                                    </td>
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    @foreach($total_net_profit as $key => $net_profit)
+                                    <td>
+                                        <strong>{{trans("lang.wins")}}</strong><br>
+                                        <strong>{{@num_format($net_profit)}}</strong>
+                                    </td>
+                                    @endforeach
+                                </tr>
+                            </tbody>
+                        </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+    </div>
 
 </section>
 @endsection

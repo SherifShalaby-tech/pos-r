@@ -6,7 +6,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 <header class="header no-print py-1"
     style="background: linear-gradient(to right, var(--primary-color), var(--primary-color-hover));">
     <nav class="navbar">
-        <div class="container-fluid">
+        <div class="container-fluid px-2">
             <div class="navbar-holder d-flex align-items-center justify-content-between">
                 <a id="toggle-btn" href="#" class="menu-btn border-0">
                     <img src="{{ asset('front/white-menu.png') }}" alt=""></a>

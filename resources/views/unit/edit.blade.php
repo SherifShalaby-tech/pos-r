@@ -24,18 +24,7 @@
                 </div>
             </div>
             {{-- @if(!empty($unit->is_raw_material_unit)) --}}
-            <div class="col-md-12">
-                <div class="form-group">
-                    {!! Form::label('info', __( 'lang.info' ),[
-                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
-                    ]) !!}
-                    {!! Form::textarea('description', $unit->description, ['class' => 'form-control', 'placeholder' =>
-                    __(
-                    'lang.info' ),
-                    'rows' => 3 ])
-                    !!}
-                </div>
-            </div>
+
             @if(session('system_mode') != 'garments')
             <div class="col-md-4">
                 <div class="form-group">
@@ -61,16 +50,29 @@
                 </div>
             </div>
             @endif
-
-            <div class="modal-footer">
-                <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
-                <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
+            <div class="col-md-12">
+                <div class="form-group">
+                    {!! Form::label('info', __( 'lang.info' ),[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::textarea('description', $unit->description, ['class' => 'form-control', 'placeholder' =>
+                    __(
+                    'lang.info' ),
+                    'rows' => 3 ])
+                    !!}
+                </div>
             </div>
+        </div>
 
-            {!! Form::close() !!}
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-primary col-6">@lang( 'lang.save' )</button>
+            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang( 'lang.close' )</button>
+        </div>
 
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-    <script>
-        $('.selectpicker').selectpicker('render');
-    </script>
+        {!! Form::close() !!}
+
+    </div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+<script>
+    $('.selectpicker').selectpicker('render');
+</script>

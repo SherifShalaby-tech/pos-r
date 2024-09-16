@@ -1,48 +1,48 @@
 @extends('layouts.app')
 @section('title', __('lang.my_transactions'))
 @section('content')
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid">
-        <div class="col-md-12  no-print">
-            <x-page-title>
+	<div class="container-fluid px-2">
+		<div class="col-md-12 px-0 no-print">
+			<x-page-title>
 
-                <h4>@lang('lang.my_transactions')</h4>
-
-
-                <x-slot name="buttons">
-
-                </x-slot>
-            </x-page-title>
+				<h4>@lang('lang.my_transactions')</h4>
 
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="col-md-12">
-                        <div class="table-responsive mt-3">
-                            <table class="table table-bordered"
-                                style="border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
-                                <thead>
-                                    <tr>
-                                        <th><a href="{{url('my-transactions/'.$prev_year.'/'.$prev_month)}}"><i
-                                                    class="fa fa-arrow-left"></i> @lang('lang.previous')</a></th>
-                                        <th colspan="5" class="text-center">
-                                            {{date("F", strtotime($year.'-'.$month.'-01')).' ' .$year}}</th>
-                                        <th><a href="{{url('my-transactions/'.$next_year.'/'.$next_month)}}">@lang('lang.next')
-                                                <i class="fa fa-arrow-right"></i></a></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>@lang('lang.sunday')</strong></td>
-                                        <td><strong>@lang('lang.monday')</strong></td>
-                                        <td><strong>@lang('lang.tuesday')</strong></td>
-                                        <td><strong>@lang('lang.wednesday')</strong></td>
-                                        <td><strong>@lang('lang.thursday')</strong></td>
-                                        <td><strong>@lang('lang.friday')</strong></td>
-                                        <td><strong>@lang('lang.saturday')</strong></td>
-                                    </tr>
-                                    <?php
+				<x-slot name="buttons">
+
+				</x-slot>
+			</x-page-title>
+
+
+			<div class="card">
+				<div class="card-body">
+					<div class="col-md-12">
+						<div class="table-responsive mt-3">
+							<table class="table table-bordered"
+								style="border-top: 1px solid #dee2e6; border-bottom: 1px solid #dee2e6;">
+								<thead>
+									<tr>
+										<th><a href="{{url('my-transactions/'.$prev_year.'/'.$prev_month)}}"><i
+													class="fa fa-arrow-left"></i> @lang('lang.previous')</a></th>
+										<th colspan="5" class="text-center">
+											{{date("F", strtotime($year.'-'.$month.'-01')).' ' .$year}}</th>
+										<th><a href="{{url('my-transactions/'.$next_year.'/'.$next_month)}}">@lang('lang.next')
+												<i class="fa fa-arrow-right"></i></a></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td><strong>@lang('lang.sunday')</strong></td>
+										<td><strong>@lang('lang.monday')</strong></td>
+										<td><strong>@lang('lang.tuesday')</strong></td>
+										<td><strong>@lang('lang.wednesday')</strong></td>
+										<td><strong>@lang('lang.thursday')</strong></td>
+										<td><strong>@lang('lang.friday')</strong></td>
+										<td><strong>@lang('lang.saturday')</strong></td>
+									</tr>
+									<?php
 			    	$i = 1;
 			    	$flag = 0;
 			    	while ($i <= $number_of_day) {
@@ -114,14 +114,14 @@
 			    	    echo '</tr>';
 			    	}
 			    ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </section>
 
 <script type="text/javascript">

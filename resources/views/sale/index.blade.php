@@ -3,7 +3,7 @@
 
 @section('content')
 <section class="forms pos-section no-print">
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
 
 
         <x-page-title>

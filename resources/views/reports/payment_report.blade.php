@@ -2,10 +2,10 @@
 @section('title', __('lang.payment_report'))
 
 @section('content')
-<section class="forms pt-2">
+<section class="forms py-2">
 
-    <div class="container-fluid">
-        <div class="col-md-12  no-print">
+    <div class="container-fluid px-2">
+        <div class="col-md-12 px-0 no-print">
 
             <x-page-title>
                 <h4 class="print-title">@lang('lang.payment_report')</h4>

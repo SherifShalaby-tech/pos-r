@@ -10,9 +10,14 @@
 
         </x-modal-header>
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
+            <div class="form-group col-md-6">
+                <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    {!! Form::label('name', __( 'lang.name' ) ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    <span class="text-danger">*</span>
+                </div>
                 {!! Form::text('name', $supplier_category->name, ['class' => 'form-control', 'placeholder' => __(
                 'lang.name' ),
                 'required' ])

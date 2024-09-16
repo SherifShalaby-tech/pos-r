@@ -9,45 +9,62 @@
         </x-modal-header>
 
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="form-group col-md-4">
+                <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    {!! Form::label('name', __( 'lang.name' ) ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    <span class="text-danger">*</span>
+                </div>
                 {!! Form::text('name', $store->name, ['class' => 'form-control', 'placeholder' => __( 'lang.name' ),
                 'required' ])
                 !!}
             </div>
-            <div class="form-group">
-                {!! Form::label('location', __( 'lang.location' )) !!}
+            <div class="form-group col-md-4">
+                {!! Form::label('location', __( 'lang.location' ), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('location', $store->location, ['class' => 'form-control', 'placeholder' => __(
                 'lang.location' ) ])
                 !!}
             </div>
-            <div class="form-group">
-                {!! Form::label('phone_number', __( 'lang.phone_number' )) !!}
+            <div class="form-group col-md-4">
+                {!! Form::label('phone_number', __( 'lang.phone_number' ), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('phone_number', $store->phone_number, ['class' => 'form-control', 'placeholder' => __(
                 'lang.phone_number' ) ])
                 !!}
             </div>
-            <div class="form-group">
-                {!! Form::label('email', __( 'lang.email' )) !!}
+            <div class="form-group col-md-4">
+                {!! Form::label('email', __( 'lang.email' ), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::email('email', $store->email, ['class' => 'form-control', 'placeholder' => __( 'lang.email' )
                 ])
                 !!}
             </div>
-            <div class="form-group">
-                {!! Form::label('manager_name', __( 'lang.manager_name' )) !!}
+            <div class="form-group col-md-4">
+                {!! Form::label('manager_name', __( 'lang.manager_name' ), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('manager_name', $store->manager_name, ['class' => 'form-control', 'placeholder' => __(
                 'lang.manager_name' ) ])
                 !!}
             </div>
-            <div class="form-group">
-                {!! Form::label('manager_mobile_number', __( 'lang.manager_mobile_number' )) !!}
+            <div class="form-group col-md-4">
+                {!! Form::label('manager_mobile_number', __( 'lang.manager_mobile_number' ), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('manager_mobile_number', $store->manager_mobile_number, ['class' => 'form-control',
                 'placeholder' => __( 'lang.manager_mobile_number' ) ])
                 !!}
             </div>
-            <div class="form-group">
-                {!! Form::label('details', __( 'lang.details' )) !!}
+            <div class="form-group col-md-12">
+                {!! Form::label('details', __( 'lang.details' ), [
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::textarea('details', $store->details, ['class' => 'form-control', 'placeholder' => __(
                 'lang.details' ), 'rows' => '3' ])
                 !!}

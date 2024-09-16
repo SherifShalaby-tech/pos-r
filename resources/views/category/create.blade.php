@@ -114,17 +114,17 @@
     }
 
     .file--upload>label {
-        color: hsl(204, 86%, 53%);
-        border-color: hsl(204, 86%, 53%);
+        color: var(--primary-color);
+        border: 2px dashed var(--primary-color);
     }
 
     .file--upload>label:hover {
-        border-color: hsl(204, 86%, 53%);
-        background-color: hsl(204, 86%, 96%);
+        border-color: var(--primary-color-hover);
+        border: 2px dashed var(--primary-color-hover);
     }
 
     .file--upload>label:active {
-        background-color: hsl(204, 86%, 91%);
+        background-color: hsl(0, 0%, 89%);
     }
 
     .file--uploading>label {
@@ -212,78 +212,89 @@
 
 
         <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __('lang.name') . ':*') !!}
-                <div class="input-group my-group">
-                    {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'),
-                    'required']) !!}
-                    <span class="input-group-btn">
-                        <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
-                            data-type="category"><i class="dripicons-web text-primary fa-lg"></i></button>
-                    </span>
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+
+
+                <div class="form-group col-md-4">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        {!! Form::label('name', __('lang.name') , [
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                        <span class="text-danger">*</span>
+                    </div>
+                    <div class="input-group my-group">
+                        {!! Form::text('name', null, ['class' => 'form-control', 'placeholder' => __('lang.name'),
+                        'required']) !!}
+                        <span class="input-group-btn">
+                            <button class="btn btn-primary btn-flat py-1 btn-partial translation_btn" type="button"
+                                data-type="category"><i class="dripicons-web text-white fa-lg"></i></button>
+                        </span>
+                    </div>
                 </div>
+                @include('layouts.partials.translation_inputs', [
+                'attribute' => 'name',
+                'translations' => [],
+                'type' => 'category',
+                ])
+                <div class="form-group col-md-4">
+                    {!! Form::label('description', __('lang.description') , [
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' =>
+                    __('lang.description')]) !!}
+                </div>
+                <input type="hidden" name="quick_add" value="{{ $quick_add }}">
+                @if ($type == 'category')
+                <div class="form-group col-md-4">
+                    <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="product_class_id">{{ __('lang.class') }}</label>
+                        <span class="text-danger">*</span>
+                    </div>
+                    <select class="form-control" data-live-search="true" style="width: 100%"
+                        placeholder="{{ __('lang.please_select') }}" required id="cat_product_class_id"
+                        name="product_class_id">
+                        <option value="" selected disabled>{{ __('lang.please_select') }}</option>
+                        @foreach($product_classes as $product_class_id => $product_class)
+                        <option value="{{ $product_class_id }}">{{ $product_class }}</option>
+                        @endforeach
+                    </select>
+                    <span class="text-danger hide required-class">Tis field is required</span>
+                </div>
+                @endif
+                @if ($type == 'sub_category')
+                <div class="form-group col-md-4">
+                    {!! Form::label('parent_id', __('lang.parent_category') ,[
+                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                    ]) !!}
+                    {!! Form::select('parent_id', $categories, false, ['class' => 'form-control', 'data-live-search' =>
+                    'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select'), 'id' => 'parent_id'])
+                    !!}
+                </div>
+                @endif
             </div>
-            @include('layouts.partials.translation_inputs', [
-            'attribute' => 'name',
-            'translations' => [],
-            'type' => 'category',
-            ])
-            <div class="form-group">
-                {!! Form::label('description', __('lang.description') . ':') !!}
-                {!! Form::text('description', null, ['class' => 'form-control', 'placeholder' =>
-                __('lang.description')]) !!}
-            </div>
-            <input type="hidden" name="quick_add" value="{{ $quick_add }}">
-            @if ($type == 'category')
-            <div class="form-group">
-                <label for="product_class_id">{{ __('lang.class') }}:</label>
-                <select class="form-control" data-live-search="true" style="width: 100%"
-                    placeholder="{{ __('lang.please_select') }}" required id="cat_product_class_id"
-                    name="product_class_id">
-                    <option value="" selected disabled>{{ __('lang.please_select') }}</option>
-                    @foreach($product_classes as $product_class_id => $product_class)
-                    <option value="{{ $product_class_id }}">{{ $product_class }}</option>
-                    @endforeach
-                </select>
-                <span class="text-danger hide required-class">Tis field is required</span>
-            </div>
-            @endif
-            @if ($type == 'sub_category')
-            <div class="form-group ">
-                {!! Form::label('parent_id', __('lang.parent_category') . ':') !!}
-                {!! Form::select('parent_id', $categories, false, ['class' => 'form-control', 'data-live-search' =>
-                'true', 'style' => 'width: 100%', 'placeholder' => __('lang.please_select'), 'id' => 'parent_id']) !!}
-            </div>
-            @endif
-            <div class="row">
+            <div class="row ">
                 <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="file-input-category"> {{ __('lang.image') }}</label>
-                        <div class="container mt-3">
-                            <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
-                                <div class="col-12">
-                                    <div class="mt-3">
-                                        <div class="row">
-                                            <div class="col-10 offset-1">
-                                                <div class="variants">
-                                                    <div class='file file--upload w-100'>
-                                                        <label for='file-input-category' class="w-100">
-                                                            <i class="fas fa-cloud-upload-alt"></i>Upload
-                                                        </label>
-                                                        <!-- <input  id="file-input" multiple type='file' /> -->
-                                                        <input type="file" id="file-input-category">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-10 offset-1">
-                                    <div class="preview-category-container"></div>
+                    <div class="form-group ">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="file-input-category"> {{ __('lang.image') }}</label>
+                        <div class="col-12">
+                            <div class="variants">
+                                <div class='file file--upload w-100'>
+                                    <label for='file-input-category' class="w-100 mb-0">
+                                        <i class="fas fa-cloud-upload-alt"></i>Upload
+                                    </label>
+                                    <!-- <input  id="file-input" multiple type='file' /> -->
+                                    <input type="file" id="file-input-category">
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-12 d-flex justify-content-center align-items-center">
+                            <div class="preview-category-container"></div>
+                        </div>
                     </div>
+
 
                 </div>
 

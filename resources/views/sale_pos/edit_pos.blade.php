@@ -24,7 +24,7 @@
 $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 @endphp
 <section class="forms pos-section no-print">
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
 
         <div class="row">
             <audio id="mysoundclip1" preload="auto">
@@ -608,7 +608,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                 <!-- navbar-->
                 <header class="header">
                     <nav class="navbar">
-                        <div class="container-fluid">
+                        <div class="container-fluid px-2">
                             <div class="navbar-holder d-flex align-items-center justify-content-between">
                                 <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars">
                                     </i></a>

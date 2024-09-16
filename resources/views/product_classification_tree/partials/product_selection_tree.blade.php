@@ -43,7 +43,7 @@ $product_selected = !empty($pct_data['product_selected']) ? $pct_data['product_s
             </x-modal-header>
 
             <div class="modal-body" id="pct_modal_body">
-                <div class="col-md-12  no-print">
+                <div class="col-md-12 px-0 no-print">
                     <div class="card">
                         <div class="card-header align-items-center">
                             <div class="row">

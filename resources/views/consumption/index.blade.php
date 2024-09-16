@@ -2,10 +2,10 @@
 @section('title', __('lang.list_view_the_consumption_of_raw_material'))
 
 @section('content')
-<section class="forms pt-2">
+<section class="forms py-2">
 
 
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
         <x-page-title>
 
             <h4 class="print-title">@lang('lang.list_view_the_consumption_of_raw_material')</h4>

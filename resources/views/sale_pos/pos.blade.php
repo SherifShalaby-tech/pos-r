@@ -24,7 +24,7 @@
 $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 @endphp
 <section class="forms pos-section no-print">
-    <div class="container-fluid px-0">
+    <div class="container-fluid px-2 px-0">
 
         <div class="d-flex">
             <audio id="mysoundclip1" preload="auto">

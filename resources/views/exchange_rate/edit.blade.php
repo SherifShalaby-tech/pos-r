@@ -11,28 +11,47 @@
 
 
         <div class="modal-body">
-            <div class="row">
-                <div class="col-md-4">
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                <div class="col-md-6">
                     <div class="form-group">
-                        {!! Form::label('store_id', __('lang.store') . ':*') !!}
+                        <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            {!! Form::label('store_id', __('lang.store'),[
+                            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                            ] ) !!}
+                            <span class="text-danger">*</span>
+                        </div>
                         {!! Form::select('store_id', $stores, $exchange_rate->store_id, ['class' => 'form-control
                         selectpicker', 'data-live-search' => 'true', 'id' => 'store_id', 'placeholder' =>
                         __('lang.please_select'), 'required']) !!}
                     </div>
                 </div>
             </div>
-            <div class="row">
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                 <div class="col-md-4">
                     <div class="form-group">
-                        {!! Form::label('received_currency_id', __('lang.received_currency') . ':*') !!}
-                        {!! Form::select('received_currency_id', $currencies_excl, $exchange_rate->received_currency_id,
+                        <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            {!! Form::label('received_currency_id', __('lang.received_currency'),[
+                            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                            ] ) !!}
+                            <span class="text-danger">*</span>
+                        </div>
+                        {!! Form::select('received_currency_id', $currencies_excl,
+                        $exchange_rate->received_currency_id,
                         ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'id' =>
                         'received_currency_id', 'placeholder' => __('lang.please_select'), 'required']) !!}
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        {!! Form::label('conversion_rate', __('lang.enter_the_rate') . ':*') !!}
+                        <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            {!! Form::label('conversion_rate', __('lang.enter_the_rate'),[
+                            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                            ] ) !!}
+                            <span class="text-danger">*</span>
+                        </div>
                         {!! Form::text('conversion_rate',
                         number_format($exchange_rate->conversion_rate,env('Conversion_Rate',4)) , ['class' =>
                         'form-control', 'placeholder' => __('lang.enter_the_rate'), 'required']) !!}
@@ -40,17 +59,25 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        {!! Form::label('default_currency_id', __('lang.default_currency') . ':*') !!}
-                        {!! Form::select('default_currency_id', $currencies_all, $exchange_rate->default_currency_id,
+                        <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            {!! Form::label('default_currency_id', __('lang.default_currency'),[
+                            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                            ] ) !!}
+                            <span class="text-danger">*</span>
+                        </div>
+                        {!! Form::select('default_currency_id', $currencies_all,
+                        $exchange_rate->default_currency_id,
                         ['class' => 'form-control selectpicker', 'data-live-search' => 'true', 'id' =>
                         'default_currency_id', 'placeholder' => __('lang.please_select'), 'required']) !!}
                     </div>
                 </div>
-            </div>
-            <div class="row">
+
                 <div class="col-md-4">
                     <div class="form-group">
-                        {!! Form::label('expiry_date', __('lang.expiry_date')) !!}
+                        {!! Form::label('expiry_date', __('lang.expiry_date'),[
+                        'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
                         {!! Form::date('expiry_date', $exchange_rate->expiry_date, ['class' => 'form-control',
                         'placeholder' => __('lang.expiry_date')]) !!}
                     </div>

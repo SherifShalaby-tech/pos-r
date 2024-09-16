@@ -2,10 +2,10 @@
 @section('title', __('lang.expense'))
 
 @section('content')
-<section class="forms pt-2">
+<section class="forms py-2">
 
 
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
         <div class="row">
             <div class="col-md-12">
 
