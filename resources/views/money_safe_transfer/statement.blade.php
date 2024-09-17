@@ -9,30 +9,51 @@
 
         <div class="col-md-12 px-0 no-print">
 
-            <div class="card">
-                <div class="card-body">
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                    {!! Form::text('start_date', request()->start_date, ['class' => 'form-control
-                                    sale_filter']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="form-group">
-                                    {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                    {!! Form::text('end_date', request()->end_date, ['class' => 'form-control
-                                    sale_filter']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="button"
-                                    class="btn btn-danger mt-4 ml-2 clear_filter">@lang('lang.clear_filter')</button>
+            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
+
+                <x-slot name="button">
+                    {{-- @lang('lang.filter') --}}
+                    <div style="width: 20px">
+                        <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                    </div>
+                </x-slot>
+                <div class="col-md-12">
+                    <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                {!! Form::label('start_date', __('lang.start_date'), [
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                ]) !!}
+                                {!! Form::text('start_date', request()->start_date, ['class' => 'form-control
+                                sale_filter']) !!}
                             </div>
                         </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                {!! Form::label('end_date', __('lang.end_date'), [
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                ]) !!}
+                                {!! Form::text('end_date', request()->end_date, ['class' => 'form-control
+                                sale_filter']) !!}
+                            </div>
+                        </div>
+                        <div class="col-md-3 d-flex justify-content-center align-items-end mb-11px">
+                            <button type="button"
+                                class="btn btn-danger w-100 clear_filter">@lang('lang.clear_filter')</button>
+                        </div>
                     </div>
+                </div>
+            </x-collapse>
+
+            <div
+                class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+
+            </div>
+            <div class="card mt-1 mb-0">
+                <div class="card-body py-2 px-4">
+
                     <div class="table-responsive">
                         <table class="table" id="safe_statement_table">
                             <thead>
@@ -67,8 +88,13 @@
                     </div>
                 </div>
             </div>
+            <div
+                class="bottom-controls mt-1 p-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
+                <!-- Pagination and other controls can go here -->
+            </div>
         </div>
     </div>
+
 </section>
 @endsection
 
@@ -213,4 +239,5 @@
             });
         })
 </script>
+
 @endsection

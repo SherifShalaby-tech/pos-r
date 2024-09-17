@@ -13,17 +13,19 @@
         @csrf
         <input type="hidden" name="id" value="{{$printer->id}}">
         <div class="modal-body">
-            <div class="row">
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="name">@lang('lang.name')</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="name">@lang('lang.name')</label>
                         <input type="text" class="form-control" value="{{$printer->name}}" name="name" id="name"
                             required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="products">{{trans('lang.products')}}</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="products">{{trans('lang.products')}}</label>
                         <div class="input-group my-group">
                             <select id="products" data-live-search="true" class="selectpicker form-control"
                                 name="products[]" multiple>
@@ -40,7 +42,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="stores">{{trans('lang.stores')}}</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="stores">{{trans('lang.stores')}}</label>
                         <div class="input-group my-group">
                             <select id="store_id" class="selectpicker form-control" name="store_id" required>
                                 <option value="">please select</option>
@@ -58,7 +61,8 @@
 
                 <div class="col-md-4">
                     <div class="form-group">
-                        <label for="is_active">{{trans('lang.status')}}</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="is_active">{{trans('lang.status')}}</label>
                         <div class="input-group my-group">
                             <select id="is_active" class="form-control" name="is_active">
                                 <option {{$printer->is_active == true ? 'selected' : ''}}

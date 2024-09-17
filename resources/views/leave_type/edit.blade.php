@@ -9,17 +9,19 @@
 
         {!! Form::open(['url' => action('LeaveTypeController@update', $leave_type->id), 'method' => 'put']) !!}
         <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label for="name">@lang('lang.type_name')</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="name">@lang('lang.type_name')</label>
                         <input type="text" class="form-control" value="{{$leave_type->name}}" name="name" id="name"
                             required>
                     </div>
                 </div>
-                <div class="col-md-12">
+                <div class="col-md-6">
                     <div class="form-group">
-                        <label for="number_of_days_per_year">@lang('lang.number_of_days_per_year')</label>
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="number_of_days_per_year">@lang('lang.number_of_days_per_year')</label>
                         <input type="text" class="form-control" value="{{$leave_type->number_of_days_per_year}}"
                             name="number_of_days_per_year" id="number_of_days_per_year">
                     </div>
