@@ -8,19 +8,17 @@
             <div class="col-md-12">
                 <x-page-title>
 
-
                     <h4>@lang('lang.add_supplier')</h4>
 
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
-
-                <div class="card">
-
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <p class="italic mb-0"><small>@lang('lang.required_fields_info')</small></p>
+                    </div>
+                </div>
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
                         {!! Form::open(['url' => action('SupplierController@store'), 'id' => 'supplier-form', 'method'
                         => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
 

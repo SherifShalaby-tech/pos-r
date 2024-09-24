@@ -395,4 +395,18 @@
         background: rgba(0, 0, 0, 0.15);
 
     }
+
+    tfoot {
+        color: var(--primary-color)
+    }
+
+    .remove-rounded {
+        border-radius: 50% !important;
+        width: 35px;
+        height: 35px;
+    }
+
+    .gap-20px {
+        gap: 20px
+    }
 </style>

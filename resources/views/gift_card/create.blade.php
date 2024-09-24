@@ -9,9 +9,12 @@
 
         </x-modal-header>
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('card_number', __( 'lang.card_number' ) . ':*') !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-4">
+                {!! Form::label('card_number', __( 'lang.card_number' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                ]) !!}
                 <div class="input-group">
                     {!! Form::text('card_number', $code, ['class' => 'form-control', 'placeholder' => __(
                     'lang.card_number' ), 'required' ])
@@ -23,15 +26,21 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                {!! Form::label('amount', __( 'lang.amount' ) . ':*') !!}
+            <div class="col-md-4">
+                {!! Form::label('amount', __( 'lang.amount' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                ]) !!}
                 {!! Form::text('amount', null, ['class' => 'form-control', 'placeholder' => __( 'lang.amount' ),
                 'required' ])
                 !!}
             </div>
 
-            <div class="form-group">
-                {!! Form::label('expiry_date', __( 'lang.expiry_date' ) . ':*') !!}
+            <div class="col-md-4">
+                {!! Form::label('expiry_date', __( 'lang.expiry_date' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                ]) !!}
                 {!! Form::text('expiry_date', null, ['class' => 'form-control datepicker', 'placeholder' => __(
                 'lang.expiry_date' )])
                 !!}

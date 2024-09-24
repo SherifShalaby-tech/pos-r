@@ -19,10 +19,12 @@
                     'sms_form', 'files' => true
                     ]) !!}
                     <div class="col-md-12">
-                        <div class="row">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('store_id', __('lang.store'), []) !!}
+                                    {!! Form::label('store_id', __('lang.store'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('store_id', $stores, $cash_in_adjustment->store_id, ['class' =>
                                     'form-control
                                     selectpicker', 'id' => 'store_id' ,'placeholder' =>
@@ -31,7 +33,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('user_id', __('lang.cashier'), []) !!}
+                                    {!! Form::label('user_id', __('lang.cashier'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('user_id', $users, $cash_in_adjustment->user_id, ['class' =>
                                     'form-control
                                     selectpicker', 'id' => 'user_id' ,'placeholder' =>
@@ -40,7 +44,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('current_cash', __('lang.current_cash'), []) !!}
+                                    {!! Form::label('current_cash', __('lang.current_cash'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('current_cash', @num_format($cash_in_adjustment->current_cash),
                                     ['class' => 'form-control', 'id' => 'current_cash' ,'placeholder' =>
                                     __('lang.current_cash'), 'readonly']) !!}
@@ -48,7 +54,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('amount', __('lang.amount'), []) !!}
+                                    {!! Form::label('amount', __('lang.amount'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('amount', @num_format($cash_in_adjustment->amount), ['class' =>
                                     'form-control', 'id' => 'amount' ,'placeholder' =>
                                     __('lang.amount')]) !!}
@@ -56,7 +64,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('discrepancy', __('lang.discrepancy'), []) !!}
+                                    {!! Form::label('discrepancy', __('lang.discrepancy'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('discrepancy', @num_format($cash_in_adjustment->discrepancy),
                                     ['class' => 'form-control', 'id' => 'discrepancy' ,'placeholder' =>
                                     __('lang.discrepancy')]) !!}

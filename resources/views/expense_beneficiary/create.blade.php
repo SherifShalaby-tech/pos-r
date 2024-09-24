@@ -13,9 +13,7 @@
 
 
                     <h4>@lang('lang.add_expense_beneficiary')</h4>
-                    <x-slot name="buttons">
 
-                    </x-slot>
                 </x-page-title>
 
 
@@ -29,10 +27,12 @@
                                 'post'])
                                 !!}
 
-                                <div class="row">
+                                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="expense_category_id">@lang('lang.expense_category')</label>
+                                            <label
+                                                class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                                for="expense_category_id">@lang('lang.expense_category')</label>
                                             {!! Form::select('expense_category_id', $expense_categories, null,
                                             ['class' =>
                                             'form-control', 'required', 'placeholder' => __('lang.please_select')])
@@ -41,7 +41,9 @@
                                     </div>
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            <label for="name">@lang('lang.beneficiary_name')</label>
+                                            <label
+                                                class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                                for="name">@lang('lang.beneficiary_name')</label>
                                             <input type="text" class="form-control" name="name" id="name" required>
                                         </div>
                                     </div>

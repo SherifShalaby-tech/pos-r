@@ -8,8 +8,6 @@
         <div class="row">
             <div class="col-md-12">
 
-
-
                 <x-page-title>
 
                     <h4>@lang('lang.purchase_return')</h4>

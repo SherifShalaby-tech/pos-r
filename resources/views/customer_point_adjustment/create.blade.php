@@ -21,10 +21,12 @@
                     'sms_form', 'files' => true
                     ]) !!}
                     <div class="col-md-12">
-                        <div class="row">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('store_id', __('lang.store'), []) !!}
+                                    {!! Form::label('store_id', __('lang.store'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('store_id', $stores, false, ['class' => 'form-control
                                     selectpicker', 'id' => 'store_id' ,'placeholder' =>
                                     __('lang.please_select'), 'required']) !!}
@@ -32,7 +34,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('customer_id', __('lang.customer'), []) !!}
+                                    {!! Form::label('customer_id', __('lang.customer'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('customer_id', $customers, !empty(request()->customer_id) ?
                                     request()->customer_id : false, ['class' => 'form-control
                                     selectpicker', 'id' => 'customer_id', 'data-live-search' => "true", 'placeholder' =>
@@ -41,7 +45,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('current_balance', __('lang.current_balance'), []) !!}
+                                    {!! Form::label('current_balance', __('lang.current_balance'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('current_balance', null, ['class' => 'form-control', 'id' =>
                                     'current_balance' ,'placeholder' =>
                                     __('lang.current_balance'), 'readonly']) !!}
@@ -49,7 +55,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('add_new_balance', __('lang.add_new_balance'), []) !!}
+                                    {!! Form::label('add_new_balance', __('lang.add_new_balance'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('add_new_balance', null, ['class' => 'form-control', 'id' =>
                                     'add_new_balance' ,'placeholder' =>
                                     __('lang.add_new_balance')]) !!}
@@ -57,14 +65,18 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('new_balance', __('lang.new_balance'), []) !!}
+                                    {!! Form::label('new_balance', __('lang.new_balance'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('new_balance', null, ['class' => 'form-control', 'id' =>
                                     'new_balance' ,'placeholder' =>
                                     __('lang.new_balance')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                {!! Form::label('notes', __('lang.notes'), []) !!}
+                                {!! Form::label('notes', __('lang.notes'), [
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ]) !!}
                                 {!! Form::textarea('notes', null, ['class' => 'form-control', 'rows' => 3]) !!}
                             </div>
 

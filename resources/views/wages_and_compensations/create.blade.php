@@ -12,22 +12,18 @@
 
                     <h4>@lang('lang.wages_and_compensations')</h4>
 
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
 
-                <div class="card">
-
-                    <div class="card-body">
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
                         {!! Form::open(['url' => action('WagesAndCompensationController@store'), 'method' => 'post',
                         'enctype' => 'multipart/form-data']) !!}
-                        <div class="row">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="employee_id">@lang('lang.employee')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="employee_id">@lang('lang.employee')</label>
                                     {!! Form::select('employee_id', $employees, request()->employee_id, ['class' =>
                                     'form-control selectpicker calculate_salary', 'data-live-search' => 'true',
                                     'placeholder' => __('lang.please_select'), 'id' => 'employee_id']) !!}
@@ -35,7 +31,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="payment_type">@lang('lang.payment_type')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="payment_type">@lang('lang.payment_type')</label>
                                     {!! Form::select('payment_type', $payment_types, request()->payment_type, ['class'
                                     =>
                                     'form-control selectpicker calculate_salary', 'data-live-search' => 'true',
@@ -44,7 +41,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="other_payment">@lang('lang.other_payment')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="other_payment">@lang('lang.other_payment')</label>
                                     {!! Form::text('other_payment', null, ['class' => 'form-control', 'placeholder' =>
                                     __('lang.other_payment'), 'id' => 'other_payment']) !!}
                                 </div>
@@ -52,7 +50,8 @@
 
                             <div class="col-md-4 account_period">
                                 <div class="form-group">
-                                    <label for="account_period">@lang('lang.account_period')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="account_period">@lang('lang.account_period')</label>
                                     {!! Form::month('account_period', null, ['class' => 'form-control', 'placeholder' =>
                                     __('lang.account_period'), 'id' => 'account_period']) !!}
                                 </div>
@@ -63,6 +62,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label
+                                                class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
                                                 for="acount_period_start_date">@lang('lang.acount_period_start_date')</label>
                                             {!! Form::text('acount_period_start_date', null, ['class' => 'form-control
                                             datepicker calculate_salary', 'placeholder' =>
@@ -73,6 +73,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label
+                                                class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
                                                 for="acount_period_end_date">@lang('lang.acount_period_end_date')</label>
                                             {!! Form::text('acount_period_end_date', null, ['class' => 'form-control
                                             datepicker calculate_salary', 'placeholder' =>
@@ -83,14 +84,16 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="deductibles">@lang('lang.deductibles')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="deductibles">@lang('lang.deductibles')</label>
                                     {!! Form::text('deductibles', null, ['class' => 'form-control', 'placeholder' =>
                                     __('lang.deductibles'), 'id' => 'deductibles']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="reasons_of_deductibles">@lang('lang.reasons_of_deductibles')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="reasons_of_deductibles">@lang('lang.reasons_of_deductibles')</label>
                                     {!! Form::text('reasons_of_deductibles', null, ['class' => 'form-control', 'rows' =>
                                     3,
                                     'placeholder' => __('lang.reasons_of_deductibles')]) !!}
@@ -98,7 +101,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="net_amount">@lang('lang.net_amount')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="net_amount">@lang('lang.net_amount')</label>
                                     {!! Form::text('net_amount', null, ['class' => 'form-control', 'placeholder' =>
                                     __('lang.net_amount'), 'id' => 'net_amount']) !!}
                                 </div>
@@ -106,7 +110,8 @@
                             <input type="hidden" name="amount" id="amount">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="payment_date">@lang('lang.payment_date')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="payment_date">@lang('lang.payment_date')</label>
                                     {!! Form::text('payment_date', @format_date(date('Y-m-d')), ['class' =>
                                     'form-control
                                     datepicker', 'placeholder' => __('lang.payment_date')]) !!}
@@ -114,7 +119,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('source_type', __('lang.source_type'), []) !!} <br>
+                                    {!! Form::label('source_type', __('lang.source_type'), [ 'class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' => __('lang.pos'),
                                     'store' => __('lang.store'), 'safe' => __('lang.safe')], 'user', ['class' =>
                                     'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
@@ -123,7 +130,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
+                                    {!! Form::label('source_of_payment', __('lang.source_of_payment'), [ 'class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('source_id', $users, null, ['class' => 'selectpicker form-control',
                                     'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder' =>
                                     __('lang.please_select'), 'id' => 'source_id', 'required']) !!}
@@ -132,14 +141,16 @@
 
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    <label for="upload_files">@lang('lang.upload_files')</label> <br>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="upload_files">@lang('lang.upload_files')</label>
                                     {!! Form::file('upload_files', null, ['class' => 'form-control', 'placeholder' =>
                                     __('lang.upload_files')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <label for="notes">@lang('lang.notes')</label>
+                                    <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                        for="notes">@lang('lang.notes')</label>
                                     {!! Form::textarea('notes', null, ['class' => 'form-control', 'rows' => 3,
                                     'placeholder'
                                     => __('lang.notes')]) !!}

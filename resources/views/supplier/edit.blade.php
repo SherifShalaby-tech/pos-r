@@ -10,10 +10,6 @@
 
                     <h4>@lang('lang.edit_supplier')</h4>
 
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
 

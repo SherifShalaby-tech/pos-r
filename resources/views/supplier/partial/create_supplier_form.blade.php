@@ -1,6 +1,4 @@
-<div class="row row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
-
-
+<div class="row  @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
     <div class="col-md-4 px-5">
         <div class="form-group">
             {!! Form::label('supplier_category_id', __('lang.category') ,[
@@ -13,9 +11,9 @@
                 @if (!$quick_add)
                 <span class="input-group-btn">
                     @can('product_module.product_class.create_and_edit')
-                    <button class="btn-modal btn btn-default bg-white btn-flat"
+                    <button class="btn-modal btn btn-primary btn-partial btn-flat"
                         data-href="{{ action('SupplierCategoryController@create') }}?quick_add=1"
-                        data-container=".view_modal"><i class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                        data-container=".view_modal"><i class="fa fa-plus-circle text-white fa-lg"></i></button>
                     @endcan
                 </span>
                 @endif

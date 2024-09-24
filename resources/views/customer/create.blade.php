@@ -8,33 +8,33 @@
 
                 <x-page-title>
                     <h4>@lang('lang.add_customer')</h4>
-                    <x-slot name="buttons">
 
-                    </x-slot>
                 </x-page-title>
 
 
-                <div class="card">
-
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('CustomerController@store'), 'id' => 'customer-form', 'method'
-                        => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-
-                        @include('customer.partial.create_customer_form')
-
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="submit" value="{{ trans('lang.save') }}" id="submit-btn"
-                                        class="btn btn-primary">
-                                </div>
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
+                <div class="card mt-1 mb-0">
+                    <div
+                        class="card-body py-2 px-4 row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        <p class="italic mb-0"><small>@lang('lang.required_fields_info')</small></p>
                     </div>
                 </div>
+
+                {!! Form::open(['url' => action('CustomerController@store'), 'id' => 'customer-form', 'method'
+                => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+
+                @include('customer.partial.create_customer_form')
+
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="submit" value="{{ trans('lang.save') }}" id="submit-btn"
+                                class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
+
             </div>
         </div>
     </div>
@@ -160,5 +160,32 @@
             language: '{{ session('language') }}',
             todayHighlight: true,
         });
+</script>
+
+<script>
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+    $('#importantDates').on('show.bs.collapse', function() {
+    // Change the arrow icon to 'chevron-up' when the content is expanded
+    $('button[data-bs-target="#importantDates"] i').removeClass('fa-arrow-down').addClass(
+    'fa-arrow-up');
+    });
+
+    $('#importantDates').on('hide.bs.collapse', function() {
+    // Change the arrow icon to 'chevron-down' when the content is collapsed
+    $('button[data-bs-target="#importantDates"] i').removeClass('fa-arrow-up').addClass(
+    'fa-arrow-down');
+    });
+    // Add an event listener for the 'show.bs.collapse' and 'hide.bs.collapse' events
+    $('#refferal').on('show.bs.collapse', function() {
+    // Change the arrow icon to 'chevron-up' when the content is expanded
+    $('button[data-bs-target="#refferal"] i').removeClass('fa-arrow-down').addClass(
+    'fa-arrow-up');
+    });
+
+    $('#refferal').on('hide.bs.collapse', function() {
+    // Change the arrow icon to 'chevron-down' when the content is collapsed
+    $('button[data-bs-target="#refferal"] i').removeClass('fa-arrow-up').addClass(
+    'fa-arrow-down');
+    });
 </script>
 @endsection

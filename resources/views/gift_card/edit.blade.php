@@ -10,9 +10,11 @@
 
         </x-modal-header>
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('card_number', __( 'lang.card_number' ) . ':*') !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-3">
+                {!! Form::label('card_number', __( 'lang.card_number' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 <div class="input-group">
                     {!! Form::text('card_number', $gift_card->card_number, ['class' => 'form-control', 'placeholder' =>
                     __(
@@ -25,24 +27,30 @@
                 </div>
             </div>
 
-            <div class="form-group">
-                {!! Form::label('amount', __( 'lang.amount' ) . ':*') !!}
+            <div class="col-md-3">
+                {!! Form::label('amount', __( 'lang.amount' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('amount', @num_format($gift_card->amount), ['class' => 'form-control', 'placeholder' =>
                 __( 'lang.amount' ),
                 'required' ])
                 !!}
             </div>
 
-            <div class="form-group">
-                {!! Form::label('balance', __( 'lang.balance' ) . ':*') !!}
+            <div class="col-md-3">
+                {!! Form::label('balance', __( 'lang.balance' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('balance', @num_format($gift_card->balance), ['class' => 'form-control', 'placeholder' =>
                 __( 'lang.balance' ),
                 'required' ])
                 !!}
             </div>
 
-            <div class="form-group">
-                {!! Form::label('expiry_date', __( 'lang.expiry_date' ) . ':*') !!}
+            <div class="col-md-3">
+                {!! Form::label('expiry_date', __( 'lang.expiry_date' ) . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 {!! Form::text('expiry_date', !empty($gift_card->expiry_date) ? @format_date($gift_card->expiry_date) :
                 null, ['class' => 'form-control datepicker', 'placeholder' => __(
                 'lang.expiry_date' )])

@@ -23,10 +23,12 @@
                     'sms_form', 'files' => true
                     ]) !!}
                     <div class="col-md-12">
-                        <div class="row">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('store_id', __('lang.store'), []) !!}
+                                    {!! Form::label('store_id', __('lang.store'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('store_id', $stores, $customer_balance_adjustment->store_id,
                                     ['class' =>
                                     'form-control
@@ -36,7 +38,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('user_id', __('lang.cashier'), []) !!}
+                                    {!! Form::label('user_id', __('lang.cashier'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('user_id', $users, $customer_balance_adjustment->user_id, ['class'
                                     =>
                                     'form-control
@@ -46,7 +50,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('customer_id', __('lang.customer'), []) !!}
+                                    {!! Form::label('customer_id', __('lang.customer'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('customer_id', $customers,
                                     $customer_balance_adjustment->customer_id, ['class' => 'form-control
                                     selectpicker', 'id' => 'customer_id', 'data-live-search' => "true", 'placeholder' =>
@@ -55,7 +61,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('current_balance', __('lang.current_balance'), []) !!}
+                                    {!! Form::label('current_balance', __('lang.current_balance'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('current_balance',
                                     @num_format($customer_balance_adjustment->current_balance), ['class' =>
                                     'form-control', 'id' =>
@@ -65,7 +73,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('add_new_balance', __('lang.add_new_balance'), []) !!}
+                                    {!! Form::label('add_new_balance', __('lang.add_new_balance'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('add_new_balance',
                                     @num_format($customer_balance_adjustment->add_new_balance), ['class' =>
                                     'form-control', 'id' =>
@@ -75,7 +85,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('new_balance', __('lang.new_balance'), []) !!}
+                                    {!! Form::label('new_balance', __('lang.new_balance'), [
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('new_balance',
                                     @num_format($customer_balance_adjustment->new_balance), ['class' => 'form-control',
                                     'id' =>
@@ -84,7 +96,9 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                {!! Form::label('notes', __('lang.notes'), []) !!}
+                                {!! Form::label('notes', __('lang.notes'), [
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                ]) !!}
                                 {!! Form::textarea('notes', $customer_balance_adjustment->notes, ['class' =>
                                 'form-control', 'rows' => 3]) !!}
                             </div>

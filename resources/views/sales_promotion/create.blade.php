@@ -3,203 +3,263 @@
 @section('content')
 <section class="forms py-2">
     <div class="container-fluid px-2">
-        <div class="row">
-            <div class="col-md-12">
-                <x-page-title>
 
+        <x-page-title>
+            <h4>@lang('lang.add_sales_promotion_formal_discount')</h4>
+        </x-page-title>
+        {!! Form::open(['url' => action('SalesPromotionController@store'), 'id' => 'customer-type-form',
+        'method' => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
 
-                    <h4>@lang('lang.add_sales_promotion_formal_discount')</h4>
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
-                </x-page-title>
-
-                <div class="card">
-
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('SalesPromotionController@store'), 'id' => 'customer-type-form',
-                        'method' => 'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    {!! Form::label('name', __('lang.name') . ':*') !!}
-                                    {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
-                                </div>
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4 row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                <p class="italic mb-0"><small>@lang('lang.required_fields_info')</small></p>
+            </div>
+        </div>
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4">
+                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                                {!! Form::label('name', __('lang.name')) !!}
+                                <span class="text-danger">*</span>
                             </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    {!! Form::label('store_ids', __('lang.store') . ':*') !!}
-                                    {!! Form::select('store_ids[]', $stores, false, ['class' => 'selectpicker
-                                    form-control', 'data-live-search' => 'true', 'data-actions-box' => 'true',
-                                    'multiple', 'required', 'id' => 'store_ids']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    {!! Form::label('customer_type_ids', __('lang.customer_type') . ':*') !!}
-                                    {!! Form::select('customer_type_ids[]', $customer_types, false, ['class' =>
-                                    'selectpicker form-control', 'data-live-search' => 'true', 'data-actions-box' =>
-                                    'true', 'multiple', 'required',]) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('type', __('lang.type') . ':*') !!}
-                                    {!! Form::select('type', ['item_discount' => __('lang.item_discount'),
-                                    'package_promotion' => __('lang.package_promotion')], false, ['class' =>
-                                    'selectpicker form-control', 'data-live-search' => 'true', 'placeholder' =>
-                                    __('lang.please_select'), 'required',]) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="col-md-6">
-                                    @include(
-                                    'quotation.partial.product_selection'
-                                    )
-                                </div>
-                            </div>
-                            <div class="col-md-6 product_condition_div hide">
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <div class="i-checks" style="margin-top: 30px">
-                                                <input id="product_condition" name="product_condition" type="checkbox"
-                                                    value="1" class="form-control-custom">
-                                                <label
-                                                    for="product_condition"><strong>@lang('lang.product_condition')</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6 hide" id="product_condition_selection">
-                                        @include('quotation.partial.product_selection',['index'=>'_condition'])
-                                    </div>
-                                    <div class="col-md-12  ">
-                                        <table class="table hide" id="sale_promotion_table_condition">
-                                            <thead class="bg-success" style="color: white">
-                                                <tr>
-                                                    <th>@lang('lang.name')</th>
-                                                    <th>@lang('lang.name')</th>
-                                                    <th>@lang('lang.name')</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 product_details_div mt-1 mb-5">
-                                <table class="table" id="sale_promotion_table">
-                                    <thead class="bg-success" style="color: white">
-                                        <tr>
-                                            <th>@lang('lang.image')</th>
-                                            <th>@lang('lang.name')</th>
-                                            <th>@lang('lang.sku')</th>
-                                            <th class="sum">@lang('lang.purchase_price')</th>
-                                            <th class="sum">@lang('lang.sell_price')</th>
-                                            <th>@lang('lang.stock')</th>
-                                            <th>@lang('lang.expiry_date')</th>
-                                            <th>@lang('lang.date_of_purchase')</th>
-                                            <th class="qty_hide hide">@lang('lang.qty')</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                    <tfoot>
-                                        <tr>
-                                            <th colspan="3" style="text-align: right">@lang('lang.total')</th>
-                                            <td class="footer_purchase_price_total"></td>
-                                            <td class="footer_sell_price_total"></td>
-                                            <td></td>
-                                        </tr>
-                                    </tfoot>
-                                    <input type="hidden" name="actual_sell_price" id="actual_sell_price" value="0">
-                                </table>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <div class="i-checks">
-                                        <input id="purchase_condition" name="purchase_condition" type="checkbox"
-                                            value="1" class="form-control-custom">
-                                        <label
-                                            for="purchase_condition"><strong>@lang('lang.purchase_condition')</strong></label>
-                                    </div>
-                                    {!! Form::text('purchase_condition_amount', 0, ['class' => 'form-control']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('discount_type', __('lang.discount_type') . ':*') !!}
-                                    {!! Form::select('discount_type', ['fixed' => 'Fixed', 'percentage' =>
-                                    'Percentage'], false, ['class' => 'form-control selecpicker', 'required',
-                                    'placeholder' => __('lang.please_select')]) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('discount_value', __('lang.discount') . ':*') !!}
-                                    {!! Form::text('discount_value', 0, ['class' => 'form-control', 'required']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <label for="" style="margin-top: 40px;" class="new_price hide">@lang('lang.new_price'):
-                                    <span class="new_price_span">{{ @num_format(0) }}</span></label>
-                            </div>
-                            <div class="col-md-1">
-                                <br>
-                                <span class="i-checks">
-                                    <input id="is_discount_permenant" name="is_discount_permenant" type="checkbox"
-                                        checked class="form-control-custom">
-                                    <label for="is_discount_permenant"><strong>
-                                            @lang('lang.permenant')
-
-                                        </strong></label>
-                                </span>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('start_date', __('lang.start_date') . ':') !!}
-                                    {!! Form::text('start_date', null, ['class' => 'form-control datepicker start_date',
-                                    'required','disabled']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    {!! Form::label('end_date', __('lang.end_date') . ':') !!}
-                                    {!! Form::text('end_date', null, ['class' => 'form-control datepicker end_date',
-                                    'required' ,'disabled']) !!}
-                                </div>
-                            </div>
-                            <div class="col-md-4 mt-5">
-                                <div class="form-group">
-                                    <div class="i-checks">
-                                        <input id="generate_barcode" name="generate_barcode" type="checkbox" value="1"
-                                            class="form-control-custom">
-                                        <label
-                                            for="generate_barcode"><strong>@lang('lang.generate_barcode')</strong></label>
-                                    </div>
-                                </div>
-                            </div>
+                            {!! Form::text('name', null, ['class' => 'form-control', 'required']) !!}
                         </div>
-                        <br>
-                        <input type="hidden" name="is_edit_page" id="is_edit_page" value="0">
-
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="submit" value="{{ trans('lang.submit') }}" id="submit-btn"
-                                        class="btn btn-primary">
-                                </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                                {!! Form::label('store_ids', __('lang.store')) !!}
+                                <span class="text-danger">*</span>
                             </div>
+                            {!! Form::select('store_ids[]', $stores, false, ['class' => 'selectpicker
+                            form-control', 'data-live-search' => 'true', 'data-actions-box' => 'true',
+                            'multiple', 'required', 'id' => 'store_ids']) !!}
                         </div>
-                        {!! Form::close() !!}
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                                {!! Form::label('customer_type_ids', __('lang.customer_type') ) !!}
+                                <span class="text-danger">*</span>
+                            </div>
+                            {!! Form::select('customer_type_ids[]', $customer_types, false, ['class' =>
+                            'selectpicker form-control', 'data-live-search' => 'true', 'data-actions-box' =>
+                            'true', 'multiple', 'required',]) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                                {!! Form::label('type', __('lang.type')) !!}
+                                <span class="text-danger">*</span>
+                            </div>
+                            {!! Form::select('type', ['item_discount' => __('lang.item_discount'),
+                            'package_promotion' => __('lang.package_promotion')], false, ['class' =>
+                            'selectpicker form-control', 'data-live-search' => 'true', 'placeholder' =>
+                            __('lang.please_select'), 'required',]) !!}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4">
+
+                <div class="col-md-12 mb-2 d-flex justify-content-center">
+                    <div class="col-md-3">
+                        @include(
+                        'quotation.partial.product_selection'
+                        )
+                    </div>
+                </div>
+
+                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                    <div class="col-md-12 px-0 product_details_div ">
+                        <table class="table table-bordered" id="sale_promotion_table">
+                            <thead class="bg-primary text-white">
+                                <tr>
+                                    <th>@lang('lang.image')</th>
+                                    <th>@lang('lang.name')</th>
+                                    <th>@lang('lang.sku')</th>
+                                    <th class="sum">@lang('lang.purchase_price')</th>
+                                    <th class="sum">@lang('lang.sell_price')</th>
+                                    <th>@lang('lang.stock')</th>
+                                    <th>@lang('lang.expiry_date')</th>
+                                    <th>@lang('lang.date_of_purchase')</th>
+                                    <th class="qty_hide hide">@lang('lang.qty')</th>
+                                    <th class=""></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" style="text-align: right">@lang('lang.total')</th>
+                                    <td class="footer_purchase_price_total"></td>
+                                    <td class="footer_sell_price_total"></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                            <input type="hidden" name="actual_sell_price" id="actual_sell_price" value="0">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="col-md-12 product_condition_div hide">
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <div class="i-checks toggle-pill-color">
+                                        <input id="product_condition" name="product_condition" type="checkbox" value="1"
+                                            class="form-control-custom">
+                                        <label for="product_condition"></label>
+                                        <span>
+                                            <strong>@lang('lang.product_condition')</strong>
+                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 hide" id="product_condition_selection">
+                                @include('quotation.partial.product_selection',['index'=>'_condition'])
+                            </div>
+
+                            <div class="col-md-8 mx-auto  ">
+                                <table class="table hide" id="sale_promotion_table_condition">
+                                    <thead class="bg-primary" style="color: white">
+                                        <tr>
+                                            <th>@lang('lang.name')</th>
+                                            <th>@lang('lang.name')</th>
+                                            {{-- <th>@lang('lang.name')</th> --}}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card mt-1 mb-0">
+            <div class="card-body py-2 px-4">
+                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+
+
+                    <div class="col-md-2 px-5 d-flex justify-content-center align-items-center">
+
+                        <div class="i-checks toggle-pill-color d-flex align-items-center flex-column">
+                            <input id="purchase_condition" name="purchase_condition" type="checkbox" value="1"
+                                class="form-control-custom">
+                            <label for="purchase_condition"></label>
+                            <span>
+                                <strong>@lang('lang.purchase_condition')</strong>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 px-5">
+                        <div class="form-group">
+                            <label for=""></label>
+                            {!! Form::text('purchase_condition_amount', 0, ['class' => 'form-control']) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 px-5">
+                        <div class="form-group">
+                            <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                                {!! Form::label('discount_type', __('lang.discount_type') ) !!}
+                                <span class="text-danger">*</span>
+                            </div>
+                            {!! Form::select('discount_type', ['fixed' => 'Fixed', 'percentage' =>
+                            'Percentage'], false, ['class' => 'form-control selecpicker', 'required',
+                            'placeholder' => __('lang.please_select')]) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-3 px-5">
+                        <div class="form-group">
+                            <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                                {!! Form::label('discount_value', __('lang.discount') ) !!}
+                                <span class="text-danger">*</span>
+                            </div>
+                            {!! Form::text('discount_value', 0, ['class' => 'form-control', 'required']) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-md-2 px-5 d-flex justify-content-center align-items-center">
+
+                        <span class="i-checks toggle-pill-color d-flex align-items-center flex-column">
+                            <input id="is_discount_permenant" name="is_discount_permenant" type="checkbox" checked
+                                class="form-control-custom">
+                            <label for="is_discount_permenant"></label>
+                            <span>
+                                <strong>
+                                    @lang('lang.permenant') </strong>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="col-md-3 px-5">
+                        <div class="form-group">
+                            {!! Form::label('start_date', __('lang.start_date'),[
+                            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                            ]) !!}
+                            {!! Form::text('start_date', null, ['class' => 'form-control datepicker
+                            start_date',
+                            'required','disabled']) !!}
+                        </div>
+                    </div>
+                    <div class="col-md-3 px-5">
+                        <div class="form-group">
+                            {!! Form::label('end_date', __('lang.end_date'),[
+                            'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                            ]) !!}
+                            {!! Form::text('end_date', null, ['class' => 'form-control datepicker end_date',
+                            'required' ,'disabled']) !!}
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 px-5 d-flex justify-content-center align-items-center">
+
+                        <div class="i-checks toggle-pill-color d-flex align-items-center flex-column">
+                            <input id="generate_barcode" name="generate_barcode" type="checkbox" value="1"
+                                class="form-control-custom">
+                            <label for="generate_barcode"></label>
+                            <span><strong>@lang('lang.generate_barcode')</strong></span>
+                        </div>
+
+                    </div>
+                    <div class="col-md-2">
+                        <label for="" style="margin-top: 40px;" class="new_price hide">@lang('lang.new_price'):
+                            <span class="new_price_span">{{ @num_format(0) }}</span></label>
+                    </div>
+                </div>
+
+                <input type="hidden" name="is_edit_page" id="is_edit_page" value="0">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="submit" value="{{ trans('lang.submit') }}" id="submit-btn"
+                                class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {!! Form::close() !!}
     </div>
+
 </section>
 @endsection
 
@@ -305,16 +365,16 @@
                 fnDrawCallback: function (oSettings) {
                     __currency_convert_recursively($("#product_table"));
                 },
-                initComplete: function (settings, json) {
-                // Move elements into the .top-controls div after DataTable initializes
-                $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
-                $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
-                $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+                // initComplete: function (settings, json) {
+                // // Move elements into the .top-controls div after DataTable initializes
+                // $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+                // $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+                // $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
 
 
-                $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
-                $('.bottom-controls').append($('.dataTables_info'));
-                }
+                // $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+                // $('.bottom-controls').append($('.dataTables_info'));
+                // }
             });
         });
 
@@ -503,6 +563,16 @@
                 fnDrawCallback: function (oSettings) {
                     __currency_convert_recursively($("#product_table_condition"));
                 },
+                // initComplete: function (settings, json) {
+                // // Move elements into the .top-controls div after DataTable initializes
+                // $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0 justify-content-center'));
+                // $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap justify-content-center'));
+                // $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+                // $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+                // $('.bottom-controls').append($('.dataTables_info'));
+                // }
             });
         });
         $(document).on("click", ".clear_filters_condition", function () {

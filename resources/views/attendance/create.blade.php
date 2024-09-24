@@ -18,16 +18,16 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-12">
-                                <br>
+
                                 {!! Form::open(['url' => action('AttendanceController@store'), 'method' => 'post']) !!}
                                 <input type="hidden" name="index" id="index" value="0">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <button type="button" class="btn btn-primary add_row" id="add_row">+
+                                <div class="row justify-content-center mb-3">
+                                    <div class="col-md-3">
+                                        <button type="button" class="btn w-100 btn-primary add_row" id="add_row">+
                                             @lang('lang.add_row')</button>
                                     </div>
                                 </div>
-                                <br>
+
                                 <table class="table" id="attendance_table">
                                     <thead>
                                         <tr>

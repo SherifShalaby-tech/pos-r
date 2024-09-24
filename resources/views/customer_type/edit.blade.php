@@ -12,18 +12,26 @@
 
 
                 </x-page-title>
-                <div class="card">
 
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('CustomerTypeController@update', $customer_type->id), 'id' =>
-                        'customer-type-form',
-                        'method' =>
-                        'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        <div class="row">
+
+                <div class="card mt-1 mb-0">
+                    <div
+                        class="card-body py-2 px-4 row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                        <p class="italic mb-0"><small>@lang('lang.required_fields_info')</small></p>
+                    </div>
+                </div>
+                {!! Form::open(['url' => action('CustomerTypeController@update', $customer_type->id), 'id' =>
+                'customer-type-form',
+                'method' =>
+                'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('name', __( 'lang.name' ) . ':*') !!}
+                                    {!! Form::label('name', __( 'lang.name' ) . '*',[
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::text('name', $customer_type->name, ['class' => 'form-control',
                                     'placeholder' => __(
                                     'lang.name' ), 'required' ])
@@ -32,28 +40,24 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('store', __( 'lang.store' ) . ':*') !!}
+                                    {!! Form::label('store', __( 'lang.store' ) . '*',[
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('stores[]', $stores,
                                     $customer_type->customer_type_store->pluck('store_id'), ['class' => 'selectpicker
                                     form-control', 'data-live-search' => "true", 'multiple', 'required']) !!}
                                 </div>
                             </div>
                         </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <input type="submit" value="{{trans('lang.submit')}}" id="submit-btn"
-                                        class="btn btn-primary">
-                                </div>
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
+
+                        <input type="submit" value="{{trans('lang.submit')}}" id="submit-btn" class="btn btn-primary">
                     </div>
                 </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
+
 </section>
 @endsection
 
