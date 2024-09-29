@@ -12,20 +12,31 @@
 
                 </x-page-title>
 
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
 
-                <div class="card">
+                        <p class="italic mb-0 @if (app()->isLocale('ar')) text-right @else text-left @endif">
+                            <small>@lang('lang.required_fields_info')</small>
+                        </p>
 
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('ConsumptionController@update', $consumption->id), 'id' =>
-                        'consumption-form',
-                        'method'
-                        =>
-                        'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        <div class="row">
+                    </div>
+                </div>
+                {!! Form::open(['url' => action('ConsumptionController@update', $consumption->id), 'id' =>
+                'consumption-form',
+                'method'
+                =>
+                'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div
+                            class="row justify-content-start @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('store_id', __('lang.store'). ':*', []) !!}
+                                    {!! Form::label('store_id', __('lang.store'). ':*', [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                    ]) !!}
                                     {!! Form::select('store_id', $stores,
                                     $consumption->store_id, ['class' => 'selectpicker form-control',
                                     'data-live-search'=>"true",
@@ -36,7 +47,11 @@
                             <div
                                 class="col-md-3 @if(!auth()->user()->can('raw_material_module.add_consumption_for_others.create_and_edit')) hide @endif">
                                 <div class="form-group">
-                                    {!! Form::label('created_by', __('lang.chef'). ':*', []) !!}
+                                    {!! Form::label('created_by', __('lang.chef'). ':*', [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                    ]) !!}
                                     {!! Form::select('created_by', $chefs,
                                     $consumption->created_by, ['class' => 'selectpicker form-control',
                                     'data-live-search'=>"true",
@@ -45,34 +60,41 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                {!! Form::label('date_and_time', __('lang.date_and_time'), []) !!}
+                                {!! Form::label('date_and_time', __('lang.date_and_time'), [
+
+                                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                ]) !!}
                                 <input type="datetime-local" id="date_and_time" name="date_and_time"
                                     value="@if(!empty($consumption->transaction_id)){{\Carbon\Carbon::parse($consumption->date_and_time)->format('Y-m-d\TH:i')}}@else{{$consumption->date_and_time}}@endif"
                                     class="form-control">
 
                             </div>
                         </div>
-                        <br>
-                        <br>
-                        <table class="table table-bordered" id="consumption_table">
-                            <thead>
-                                <tr>
-                                    <td style="width: 20%;">@lang('lang.raw_material')</td>
-                                    <td style="width: 20%;">@lang('lang.products')</td>
-                                    <td style="width: 20%;">@lang('lang.quantity')</td>
-                                    <td style="width: 20%;">@lang('lang.unit')</td>
-                                    {{-- <td style="width: 20%;"><button type="button"
-                                            class="btn btn-xs btn-success add_row"><i class="fa fa-plus"></i></button>
-                                    </td> --}}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @include('consumption.partial.consumption_row', ['row_id' => 0, 'consumption' =>
-                                $consumption])
-                            </tbody>
-                        </table>
+                        <div class="card mt-1 mb-0">
+                            <div class="card-body py-2 px-4">
 
+                                <table class="table table-bordered" id="consumption_table">
+                                    <thead>
+                                        <tr>
+                                            <td style="width: 20%;">@lang('lang.raw_material')</td>
+                                            <td style="width: 20%;">@lang('lang.products')</td>
+                                            <td style="width: 20%;">@lang('lang.quantity')</td>
+                                            <td style="width: 20%;">@lang('lang.unit')</td>
+                                            {{-- <td style="width: 20%;"><button type="button"
+                                                    class="btn btn-xs btn-success add_row"><i
+                                                        class="fa fa-plus"></i></button>
+                                            </td> --}}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @include('consumption.partial.consumption_row', ['row_id' => 0, 'consumption' =>
+                                        $consumption])
+                                    </tbody>
+                                </table>
 
+                            </div>
+                        </div>
 
                         <input type="hidden" name="active" value="1">
                         <input type="hidden" name="row_id" id="row_id" value="1">

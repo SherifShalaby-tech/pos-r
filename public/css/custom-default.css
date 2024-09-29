@@ -1216,17 +1216,17 @@ div.has-error>.form-text {
 }
 
 .totals .totals-title {
-    color: #7d7d7d;
+    /* color: #7d7d7d; */
     display: inline-block;
-    width: 100px;
+    /* width: 100px; */
 }
 
 .payment-options {
-    background-color: #fff;
-    bottom: 0;
-    left: 0;
-    padding: 0 10px;
-    position: fixed;
+    /* background-color: #fff; */
+    /* bottom: 0; */
+    /* left: 0; */
+    /* padding: 0 10px; */
+    /* position: fixed; */
     z-index: 999;
 }
 

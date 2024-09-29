@@ -8,15 +8,17 @@
 
         </x-modal-header>
 
-        <div class="modal-body">
-            <div class="form-group">
-                {!! Form::label('name', __('lang.name') . ':*') !!}
+        <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+            <div class="form-group col-md-6">
+                {!! Form::label('name', __('lang.name') . '*',[
+                'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                ]) !!}
                 <div class="input-group my-group">
                     {!! Form::text('name', $manufacturer->name, ['class' => 'form-control', 'placeholder' =>
                     __('lang.name'), 'required']) !!}
                     <span class="input-group-btn">
-                        <button class="btn btn-default bg-white btn-flat translation_btn" type="button"
-                            data-type="manufacturer"><i class="dripicons-web text-primary fa-lg"></i></button>
+                        <button class="btn  btn-primary btn-partial btn-flat translation_btn" type="button"
+                            data-type="manufacturer"><i class="dripicons-web text-white fa-lg"></i></button>
                     </span>
                 </div>
             </div>

@@ -18,7 +18,7 @@ $earlier_notifications = App\Models\Notification::where('user_id', Auth::user()-
     date('Y-m-d'))->orderBy('created_at', 'desc')->with(['created_by_user', 'product',
     'transaction'])->limit(10)->get();
     @endphp
-    <li class="nav-item" id="notification-icon">
+    <li class="nav-item ml-1" id="notification-icon">
         <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-ite notification-list dropdown-item  d-flex justify-content-center align-items-center"
             style="color: black;background-color: white; font-size: 15px;width: 35px;height: 35px; border-radius: 8px;padding: 3px">

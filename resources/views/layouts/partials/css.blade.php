@@ -382,6 +382,62 @@
     }
 
     /* toggle-pill-color end */
+
+
+
+
+    /* toggle-pill-color-pos */
+    .toggle-pill-color-pos input[type="checkbox"] {
+        display: none;
+    }
+
+    .toggle-pill-color-pos input[type="checkbox"]+label {
+        display: block;
+        position: relative;
+        width: 2em;
+        height: 1.2em;
+
+        border-radius: 1em;
+        background: #e84d4d;
+        box-shadow: inset 0px 0px 5px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        -webkit-transition: background 0.1s ease-in-out;
+        transition: background 0.1s ease-in-out;
+    }
+
+    .toggle-pill-color-pos input[type="checkbox"]+label:before {
+        content: "";
+        display: block;
+        width: 0.7em;
+        height: 0.7em;
+        border-radius: 1em;
+        background: #fff;
+        box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.2);
+        position: absolute;
+        left: 0.2em;
+        top: 0.2em;
+        -webkit-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .toggle-pill-color-pos input[type="checkbox"]:checked+label {
+        background: #47cf73;
+    }
+
+    .toggle-pill-color-pos input[type="checkbox"]:checked+label:before {
+        box-shadow: -2px 0px 5px rgba(0, 0, 0, 0.2);
+        left: 1.1em;
+    }
+
+    .toggle-pos-label {
+        font-size: 0.75rem;
+        font-weight: 500
+    }
+
+    /* toggle-pill-color end */
     .mb-11px {
         margin-bottom: 11px;
     }

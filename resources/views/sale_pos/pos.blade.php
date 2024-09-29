@@ -16,6 +16,67 @@
         height: 140%;
         accent-color: var(--primary-color);
     }
+
+    /* Styling for the Offcanvas */
+    .offcanvas {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 300px;
+        height: 100%;
+        background-color: #f8f9fa;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.5);
+        transition: right 0.3s ease;
+        z-index: 1050;
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .offcanvas.open {
+        right: 0;
+    }
+
+    /* Backdrop */
+    .offcanvas-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+        display: none;
+    }
+
+    .offcanvas-backdrop.show {
+        display: block;
+    }
+
+    /* Toggle and Close Buttons */
+    .offcanvas-toggle {
+        padding: 10px 20px;
+        cursor: pointer;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        font-size: 16px;
+    }
+
+    .offcanvas-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+        background: none;
+        border: none;
+        color: black;
+
+    }
+
+    body.offcanvas-open {
+        overflow: hidden;
+    }
 </style>
 
 @endsection
@@ -24,7 +85,7 @@
 $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 @endphp
 <section class="forms pos-section no-print">
-    <div class="container-fluid px-2 px-0">
+    <div class="container-fluid px-0">
 
         <div class="d-flex">
             <audio id="mysoundclip1" preload="auto">
@@ -40,10 +101,11 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                 </source>
             </audio>
 
-            <div class="@if (session('system_mode') == 'pos') col-md-7 @else col-md-6 @endif">
-                {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class'
-                => 'pos-form', 'id' => 'add_pos_form']) !!}
-                <div class="card">
+
+            {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class'
+            => 'pos-form d-flex', 'id' => 'add_pos_form']) !!}
+            <div class="px-1 @if (session('system_mode') == 'pos') col-md-10 @else col-md-6 @endif">
+                <div class="card m-0">
 
                     <input type="hidden" name="default_customer_id" id="default_customer_id"
                         value="@if (!empty($walk_in_customer)) {{ $walk_in_customer->id }} @endif">
@@ -57,56 +119,75 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
 
                         <div class="col-md-12 main_settings">
-                            <div class="row table_room_hide">
-                                <div class="col-md-3">
-                                    {!! Form::label('customer_id', __('lang.customer'), [
-                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
-                                    ]) !!}
-                                    <div class="input-group my-group">
-                                        {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
-                                        $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
-                                        'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
-                                        'customer_id', 'required']) !!}
-                                        <span class="input-group-btn">
-                                            @can('customer_module.customer.create_and_edit')
-                                            <a class="btn-modal btn-primary btn btn-partial"
-                                                data-href="{{ action('CustomerController@create') }}?quick_add=1"
-                                                data-container=".view_modal"><i
-                                                    class="fa fa-plus-circle text-white fa-lg"></i></a>
-                                            @endcan
-                                        </span>
+                            <div class="d-flex justify-content-between align-items-end">
+
+                                <div class="d-flex col-md-8 align-items-end px-0 table_room_hide" style="gap: 10px">
+
+                                    <div class="col-md-3 px-0">
+                                        {!! Form::label('customer_id', __('lang.customer'), [
+                                        'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
+                                        ]) !!}
+                                        <div class="input-group my-group">
+                                            {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
+                                            $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
+                                            'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
+                                            'customer_id', 'required']) !!}
+                                            <span class="input-group-btn">
+                                                @can('customer_module.customer.create_and_edit')
+                                                <a class="btn-modal btn-primary btn btn-partial"
+                                                    data-href="{{ action('CustomerController@create') }}?quick_add=1"
+                                                    data-container=".view_modal"><i
+                                                        class="fa fa-plus-circle text-white fa-lg"></i></a>
+                                                @endcan
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class=" d-flex justify-content-between align-items-center" style="gap: 10px">
+
+                                        <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
+                                            style="padding: 5px;min-width: 100px;">
+                                            <label class="text-center text-primary w-100 px-3 bg-white rounded"
+                                                style="font-weight:600" for="
+                                                customer_type_name">@lang('lang.customer_type')</label>
+                                            <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                class="customer_type_name"></span>
+                                        </div>
+
+                                        <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
+                                            style="padding: 5px;min-width: 100px;">
+                                            <label class="text-center text-primary w-100 px-3 bg-white rounded"
+                                                style="font-weight:600"
+                                                for="customer_balance">@lang('lang.balance')</label>
+                                            <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                class="customer_balance">{{ @num_format(0) }}</span>
+                                        </div>
+
+                                        <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
+                                            style="padding: 5px;min-width: 100px;">
+                                            <label class="text-center text-primary w-100 px-3 bg-white rounded"
+                                                style="font-weight:600" for="points">@lang('lang.points')</label>
+
+                                            <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                class="points"><span class="customer_points_span">{{ @num_format(0)
+                                                    }}</span></span>
+                                            <span class="staff_note small"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="px-0">
+                                        @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
+                                        <button type="button" class="btn btn-danger mt-4" data-toggle="modal"
+                                            data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
+                                        @endif
+
+                                        <button type="button" class="btn btn-primary mt-4" data-toggle="modal"
+                                            data-target="#contact_details_modal">@lang('lang.details')</button>
                                     </div>
                                 </div>
-                                <div class="col-md-2 d-flex justify-content-center align-items-center">
-                                    <label for="customer_type_name" class="mt-3">@lang('lang.customer_type'):
-                                        <span class="customer_type_name"></span></label>
-                                </div>
-                                <div class="col-md-2">
-                                    <label for="customer_balance"
-                                        style="margin-top: 30px; margin-bottom: 0px;">@lang('lang.balance'):
-                                        <span class="customer_balance">{{ @num_format(0) }}</span></label>
-                                    <label for="points" style="margin: 0px;">@lang('lang.points'):
-                                        <span class="points"><span class="customer_points_span">{{ @num_format(0)
-                                                }}</span></span></label>
-                                    <br>
-                                    <span class="staff_note small"></span>
-                                </div>
-                                @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
-                                <div class="col-md-2">
-                                    <button type="button" class="btn btn-danger mt-4" data-toggle="modal"
-                                        data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
-                                </div>
-                                @endif
 
-                                <div class="col-md-1 px-0">
-                                    <button type="button" class="btn btn-primary mt-4" data-toggle="modal"
-                                        data-target="#contact_details_modal">@lang('lang.details')</button>
-                                </div>
-                                <div class="col-md-2">
-                                </div>
+                                @include('sale_pos.includes._search-product')
                             </div>
-
-
                             <div class="row table_room_show hide">
                                 <div class="col-md-4">
                                     <div class=""
@@ -153,7 +234,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                             </div>
 
 
-                            @include('sale_pos.includes._search-product')
+
 
                             @include('sale_pos.includes._product-table')
 
@@ -218,11 +299,9 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     </div>
 
 
-
-
-
                     <div class="payment-amount table_room_hide">
-                        <h2>{{ __('lang.grand_total') }} <span class="final_total_span">0.00</span></h2>
+                        <h2 class="bg-primary text-white">{{ __('lang.grand_total') }} <span
+                                class="final_total_span">0.00</span></h2>
                     </div>
                     @php
                     $default_invoice_toc = App\Models\System::getProperty('invoice_terms_and_conditions');
@@ -240,38 +319,57 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     @include('sale_pos.includes._terms')
 
 
-                    @include('sale_pos.includes._payment-options')
 
                 </div>
-
-
-
-                @include('sale_pos.partials.payment_modal')
-                @include('sale_pos.partials.deposit_modal')
-                @include('sale_pos.partials.discount_modal')
-
-                {{-- @include('sale_pos.partials.tax_modal') --}}
-                @include('sale_pos.partials.delivery_cost_modal')
-                @include('sale_pos.partials.coupon_modal')
-                @include('sale_pos.partials.contact_details_modal')
-                @include('sale_pos.partials.weighing_scale_modal')
-                @include('sale_pos.partials.non_identifiable_item_modal')
-                @include('sale_pos.partials.customer_sizes_modal')
-                @include('sale_pos.partials.sale_note')
-
-                {!! Form::close() !!}
             </div>
 
-            <!-- product list -->
+
+
             <div
-                class="@if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') col-md-5 @else col-md-6 @endif">
+                class="card m-0 px-1 @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') col-md-2 @else col-md-6 @endif">
                 <!-- navbar-->
 
                 @include('sale_pos.includes._header')
 
+                @include('sale_pos.includes._payment-options')
 
-                @include('sale_pos.partials.right_side')
+
+                <div id="offcanvas" class="offcanvas">
+                    <button id="offcanvas-close" type="button" class="offcanvas-close">×</button>
+                    <h2>Products</h2>
+
+                    @include('sale_pos.partials.right_side')
+                </div>
+
+
+
+
+
             </div>
+
+
+
+
+
+
+            @include('sale_pos.partials.payment_modal')
+            @include('sale_pos.partials.deposit_modal')
+            @include('sale_pos.partials.discount_modal')
+
+            {{-- @include('sale_pos.partials.tax_modal') --}}
+            @include('sale_pos.partials.delivery_cost_modal')
+            @include('sale_pos.partials.coupon_modal')
+            @include('sale_pos.partials.contact_details_modal')
+            @include('sale_pos.partials.weighing_scale_modal')
+            @include('sale_pos.partials.non_identifiable_item_modal')
+            @include('sale_pos.partials.customer_sizes_modal')
+            @include('sale_pos.partials.sale_note')
+
+            {!! Form::close() !!}
+
+
+            <!-- product list -->
+
 
             <!-- recent transaction modal -->
             @include('sale_pos.includes._recent-transaction')
@@ -450,5 +548,32 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
             }
         });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+    const offcanvasToggle = document.getElementById('offcanvas-toggle');
+    const offcanvasClose = document.getElementById('offcanvas-close');
+    const offcanvas = document.getElementById('offcanvas');
+    const backdrop = document.getElementById('offcanvas-backdrop');
+
+    offcanvasToggle.addEventListener('click', function() {
+    offcanvas.classList.add('open');
+    // backdrop.classList.add('show');
+    document.body.classList.add('offcanvas-open');
+    });
+
+    offcanvasClose.addEventListener('click', function() {
+    offcanvas.classList.remove('open');
+    // backdrop.classList.remove('show');
+    document.body.classList.remove('offcanvas-open');
+    });
+
+    backdrop.addEventListener('click', function() {
+    offcanvas.classList.remove('open');
+    // backdrop.classList.remove('show');
+    document.body.classList.remove('offcanvas-open');
+    });
+    });
 </script>
 @endsection

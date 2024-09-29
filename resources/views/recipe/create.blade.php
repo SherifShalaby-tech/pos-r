@@ -10,41 +10,49 @@
                 <x-page-title>
 
                     <h4>@lang('lang.add_new_recipe')</h4>
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
 
-                <div class="card">
-
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('RecipeController@store'), 'id' => 'product-form', 'method'
-                        =>
-                        'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        @include('recipe.partial.create_form')
-                        <input type="hidden" name="active" value="1">
-                        <input type="hidden" name="is_used" value="0">
-                        <div class="row">
-                            <div class="col-md-12 mt-3 d-flex">
-                                <div class="form-group m-1">
-                                    <input type="button" value="{{trans('lang.submit')}}" id="submit-btn"
-                                        class="btn btn-primary">
-                                </div>
-                                @can('raw_material_module.production.create_and_edit')
-
-                                <div class="form-group  m-1">
-                                    <input type="button" value="{{trans('lang.use now')}}" id="submit-btn-use"
-                                        class="btn btn-outline-warning">
-                                </div>
-                                @endcan
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <p class="italic mb-0 @if (app()->isLocale('ar')) text-right @else text-left @endif">
+                            <small>@lang('lang.required_fields_info')</small>
+                        </p>
                     </div>
                 </div>
+
+                {!! Form::open(['url' => action('RecipeController@store'), 'id' => 'product-form', 'method'
+                =>
+                'POST', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
+
+
+                @include('recipe.partial.create_form')
+
+
+                <input type="hidden" name="active" value="1">
+                <input type="hidden" name="is_used" value="0">
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <div class="form-group mx-1">
+                                <input type="button" value="{{trans('lang.submit')}}" id="submit-btn"
+                                    class="btn btn-primary">
+                            </div>
+                            @can('raw_material_module.production.create_and_edit')
+
+                            <div class="form-group  mx-1">
+                                <input type="button" value="{{trans('lang.use now')}}" id="submit-btn-use"
+                                    class="btn btn-outline-warning">
+                            </div>
+                            @endcan
+                        </div>
+                    </div>
+                </div>
+
+
+                {!! Form::close() !!}
+
             </div>
         </div>
     </div>

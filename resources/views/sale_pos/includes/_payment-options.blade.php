@@ -1,4 +1,4 @@
-<div class="payment-options row justify-content-center p-3 table_room_hide"
+<div class="payment-options d-flex flex-column justify-content-center p-2 table_room_hide"
     style="gap:10px; width: @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') 100%; @else 50%; @endif">
     {{-- <div class="">
         <button data-method="card" style="background: #0984e3" type="button" class="btn btn-custom payment-btn"
@@ -76,7 +76,7 @@
             @lang('lang.use_the_balance')</button>
     </div> --}}
     <div class="">
-        <button type="button" class="btn btn-danger" id="cancel-btn" onclick="return confirmCancel()"><i
+        <button type="button" class="btn w-100 btn-danger" id="cancel-btn" onclick="return confirmCancel()"><i
                 class="fa fa-close"></i>
             @lang('lang.cancel')</button>
     </div>

@@ -10,22 +10,22 @@
                 <x-page-title>
                     <h4>@lang('lang.purchase_order')</h4>
 
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
 
-                <div class="card">
+                {!! Form::open(['url' => action('PurchaseOrderController@store'), 'method' => 'post', 'id' =>
+                'purchase_order_form']) !!}
 
-                    {!! Form::open(['url' => action('PurchaseOrderController@store'), 'method' => 'post', 'id' =>
-                    'purchase_order_form']) !!}
-                    <div class="card-body">
-                        <div class="row">
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('store_id', __('lang.store'). ':*', []) !!}
+                                    {!! Form::label('store_id', __('lang.store'). '*', [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                    ]) !!}
                                     {!! Form::select('store_id', $stores,
                                     session('user.store_id'), ['class' => 'selectpicker form-control',
                                     'data-live-search'=>"true",
@@ -35,7 +35,11 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('supplier_id', __('lang.supplier'). ':*', []) !!}
+                                    {!! Form::label('supplier_id', __('lang.supplier'). '*', [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                    ]) !!}
                                     {!! Form::select('supplier_id', $suppliers,
                                     null, ['class' => 'selectpicker form-control',
                                     'data-live-search'=>"true", 'required',
@@ -45,7 +49,10 @@
 
                             {{-- <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('status', __('lang.status'). ':*', []) !!}
+                                    {!! Form::label('status', __('lang.status'). '*', [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                                    ]) !!}
                                     {!! Form::select('status', ['received' => 'Received', 'pending' => 'Pending'],
                                     'received', ['class' => 'selectpicker form-control',
                                     'data-live-search'=>"true", 'required',
@@ -54,17 +61,30 @@
                             </div> --}}
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('po_no', __('lang.po_no'). ':*', []) !!}
+                                    {!! Form::label('po_no', __('lang.po_no'). '*', [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                    ]) !!}
                                     {!! Form::text('po_no', $po_no, ['class' => 'form-control','required', 'readonly',
                                     'placeholder' => __('lang.po_no')]) !!}
                                 </div>
                             </div>
 
                         </div>
-                        <br>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-8 offset-md-2">
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div
+                            class="row align-items-center justify-content-center @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <div class="col-md-2 mb-2">
+                                @include(
+                                'quotation.partial.product_selection'
+                                )
+                            </div>
+                            <div class="col-md-12">
                                 <div class="search-box input-group">
                                     <button type="button" class="btn btn-secondary btn-lg" id="search_button"><i
                                             class="fa fa-search"></i></button>
@@ -76,15 +96,14 @@
                                         data-container=".view_modal"><i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                @include(
-                                'quotation.partial.product_selection'
-                                )
-                            </div>
                         </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-10 offset-md-1">
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <div class="col-md-12">
                                 <table class="table table-bordered table-striped table-condensed" id="product_table">
                                     <thead>
                                         <tr>
@@ -105,48 +124,68 @@
                                 </table>
                             </div>
                         </div>
-                        <br>
-                        <div class="col-md-12">
-                            <div class="col-md-3 offset-md-8 text-right">
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <div class="col-md-12 text-primary text-center">
                                 <h3> @lang('lang.total'): <span class="final_total_span"></span> </h3>
                                 <input type="hidden" name="final_total" id="final_total" value="0">
                             </div>
                         </div>
-                        <br>
-                        <div class="row">
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    {!! Form::label('details', __('lang.details'), []) !!}
+                                    {!! Form::label('details', __('lang.details'), [
+
+                                    'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+
+                                    ]) !!}
                                     {!! Form::textarea('details', null, ['class' => 'form-control', 'rows' => 3]) !!}
                                 </div>
                             </div>
                         </div>
-
-
                     </div>
-
-                    <div class="col-sm-12">
-                        <button type="submit" name="submit" id="print" style="margin: 10px" value="print"
-                            class="btn btn-primary pull-right btn-flat submit">@lang( 'lang.print' )</button>
-                        @can('purchase_order.send_to_supplier.create_and_edit')
-                        <button type="button" id="send_to_supplier" style="margin: 10px" disabled
-                            class="btn btn-warning pull-right btn-flat submit" data-toggle="modal"
-                            data-target="#supplier_modal">@lang(
-                            'lang.send_to_supplier' )</button>
-                        @endcan
-                        @can('purchase_order.send_to_admin.create_and_edit')
-                        <button type="submit" name="submit" id="send_to_admin" style="margin: 10px" value="sent_admin"
-                            class="btn btn-primary pull-right btn-flat submit">@lang(
-                            'lang.send_to_admin' )</button>
-                        @endcan
-                        <a href="{{action('PurchaseOrderController@create')}}" style="margin: 10px" value="cancel"
-                            class="btn btn-danger pull-right btn-flat">@lang( 'lang.cancel' )</a>
-                        <div class="modal fade supplier_modal" id="supplier_modal" role="dialog" aria-hidden="true">
-                        </div>
-
-                    </div>
-                    {!! Form::close() !!}
                 </div>
+
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <div class="col-sm-12">
+                                <button type="submit" name="submit" id="print" value="print"
+                                    class="mx-2 btn btn-primary pull-right btn-flat submit">@lang( 'lang.print'
+                                    )</button>
+                                @can('purchase_order.send_to_supplier.create_and_edit')
+                                <button type="button" id="send_to_supplier" disabled
+                                    class="mx-2 btn btn-warning pull-right btn-flat submit" data-toggle="modal"
+                                    data-target="#supplier_modal">@lang(
+                                    'lang.send_to_supplier' )</button>
+                                @endcan
+                                @can('purchase_order.send_to_admin.create_and_edit')
+                                <button type="submit" name="submit" id="send_to_admin" value="sent_admin"
+                                    class="mx-2 btn btn-primary pull-right btn-flat submit">@lang(
+                                    'lang.send_to_admin' )</button>
+                                @endcan
+                                <a href="{{action('PurchaseOrderController@create')}}" value="cancel"
+                                    class="mx-2 btn btn-danger pull-right btn-flat">@lang( 'lang.cancel' )</a>
+                                <div class="modal fade supplier_modal" id="supplier_modal" role="dialog"
+                                    aria-hidden="true">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {!! Form::close() !!}
+
             </div>
         </div>
     </div>

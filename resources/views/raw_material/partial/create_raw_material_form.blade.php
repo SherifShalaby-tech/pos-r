@@ -181,7 +181,7 @@ $recent_product = App\Models\Product::where('is_raw_material', 1)->orderBy('crea
     </div>
 </div>
 
-<x-collapse collapse-id="productImage" button-class="d-flex mb-1 justify-content-between flex-row-reverse
+<x-collapse collapse-id="productImage" button-class="d-flex btn-primary mb-1 justify-content-between flex-row-reverse
     align-items-center gap-10 product_collapse_shadow" group-class="d-flex mb-2 align-items-end flex-column">
     <x-slot name="button">
         @lang('lang.product_details')
