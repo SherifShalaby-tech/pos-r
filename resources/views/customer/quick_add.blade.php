@@ -1,4 +1,4 @@
-<div class="modal-dialog" role="document">
+<div class="modal-dialog" role="document" style="max-width: 90%">
     <div class="modal-content">
 
         {!! Form::open(['url' => action('CustomerController@store'), 'method' => 'post', 'id' => $quick_add ?

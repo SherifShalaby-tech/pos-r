@@ -1,7 +1,7 @@
 <div id="onlineOrderTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
     class="modal text-left">
 
-    <div class="modal-dialog" role="document" style="width: 65%">
+    <div class="modal-dialog" role="document" style="max-width: 95%!important;">
         <div class="modal-content">
             <x-modal-header>
                 <h4 class="modal-title">@lang('lang.online_order_transactions')</h4>

@@ -104,7 +104,7 @@
 
 
                         <div class="card mt-1 mb-0 col-md-12 px-0">
-                            <div class="card-body d-flex justify-content-center p-1" style="gap: 20px">
+                            <div class="card-body d-flex justify-content-center p-1" style="gap: 70px">
 
                                 <div
                                     class=" px-0 toggle-pill-color-pos d-flex justify-content-center align-items-center flex-column">

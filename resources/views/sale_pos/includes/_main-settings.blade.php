@@ -71,7 +71,8 @@
 
         <div class="col-md-3 d-flex justify-content-between align-items-end">
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#delivery-cost-modal"><i
-                    class="fas fa-motorcycle"></i></button>
+                    class="fas fa-motorcycle"></i>
+            </button>
 
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deposit_modal"
                 data-toggle="tooltip" title="@lang('lang.insurance_amount')">

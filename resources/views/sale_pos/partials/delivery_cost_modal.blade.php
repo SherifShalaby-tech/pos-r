@@ -1,36 +1,55 @@
 <!-- shipping_cost modal -->
 <div id="delivery-cost-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
     class="modal fade text-left">
-    <div role="document" class="modal-dialog">
+    <div role="document" class="modal-dialog modal-lg">
         <div class="modal-content">
+
             <x-modal-header>
-
-
                 <h5 class="modal-title">{{ __('lang.delivery') }}</h5>
             </x-modal-header>
 
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-6">
+            <div class="modal-body p-0">
+                <div class="d-flex flex-wrap">
+                    <div class="col-md-6 px-5">
                         <div class="form-group">
-                            <label for="customer_name">@lang('lang.customer_name'): <span
-                                    class="customer_name"></span></label>
+                            <label
+                                class="d-flex flex-row-reverse  @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                for="customer_name">
+                                <span>
+                                    @lang('lang.customer_name')
+                                </span> :
+                                <span class="customer_name"></span></label>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-6 px-5">
                         <div class="form-group">
-                            <label for="address">@lang('lang.address'): <span class="customer_address"></span></label>
+                            <label
+                                class="d-flex flex-row-reverse @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                for="address">
+                                <span>
+                                    @lang('lang.address')
+                                </span> : <span class="customer_address"></span></label>
                         </div>
                     </div>
-                    <div class="col-md-6">
+
+                    <div class="col-md-6 px-5">
                         <div class="form-group">
-                            <label for="due" style="color: red;">@lang('lang.due'): <span
-                                    class="customer_due"></span></label>
+                            <label
+                                class="d-flex flex-row-reverse @if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                                for="due" style="color: red;">
+                                <span>
+                                    @lang('lang.due')
+                                </span>
+                                :
+                                <span class="customer_due"></span></label>
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
-                    <div class="col-md-6">
-                        <label for="delivery_zone_id">@lang('lang.delivery_zone'):</label>
+
+                    <div class="col-md-6 px-5"></div>
+
+                    <div class="col-md-6 px-5">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="delivery_zone_id">@lang('lang.delivery_zone')</label>
                         <div class="form-group">
                             <select class="form-control selectpicker" name="delivery_zone_id" id="delivery_zone_id"
                                 data-live-search="true">
@@ -48,9 +67,12 @@
                                 value="@if (!empty($transaction->manual_delivery_zone)) {{ $transaction->manual_delivery_zone }} @endif">
                         </div>
                     </div>
-                    <div class="col-md-6"></div>
-                    <div class="col-md-6">
-                        <label for="deliveryman_id">@lang('lang.deliveryman'):</label>
+
+                    <div class="col-md-6 px-5"></div>
+
+                    <div class="col-md-6 px-5">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="deliveryman_id">@lang('lang.deliveryman')</label>
                         <div class="form-group">
                             <select class="form-control selectpicker" name="deliveryman_id" id="deliveryman_id"
                                 data-live-search="true">
@@ -64,8 +86,10 @@
                         <input type="hidden" name="deliveryman_id_hidden" id="deliveryman_id_hidden"
                             value="@if (!empty($transaction)) {{ $transaction->deliveryman_id }} @endif">
                     </div>
-                    <div class="col-md-6">
-                        <label for="delivery_cost">@lang('lang.delivery_cost'):</label>
+
+                    <div class="col-md-6 px-5">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="delivery_cost">@lang('lang.delivery_cost')</label>
                         @if (auth()->user()->can('settings.delivery_zone_cost.create_and_edit'))
                         {!! Form::text('delivery_cost', !empty($transaction) ? $transaction->delivery_cost : null,
                         ['class' => 'form-control', 'id' => 'delivery_cost']) !!}
@@ -74,32 +98,47 @@
                         ['class' => 'form-control', 'id' => 'delivery_cost', 'readonly' => true]) !!}
                         @endif
                     </div>
-                    <div class="col-md-6">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" class="delivery_cost_paid_by_customer"
-                                name="delivery_cost_paid_by_customer" @if (!empty($transaction) &&
-                                $transaction->delivery_cost_paid_by_customer == 0) @else checked @endif value="1"
-                            id="delivery_cost_paid_by_customer">
+
+
+                    <div
+                        class="col-md-6 px-5 toggle-pill-color d-flex justify-content-center align-items-center flex-column">
+                        <input type="checkbox" class="delivery_cost_paid_by_customer"
+                            name="delivery_cost_paid_by_customer" @if (!empty($transaction) &&
+                            $transaction->delivery_cost_paid_by_customer == 0) @else checked @endif value="1"
+                        id="delivery_cost_paid_by_customer">
+                        <label class="checkbox-inline " for="delivery_cost_paid_by_customer">
+                        </label>
+                        <span>
                             @lang('lang.delivery_cost_paid_by_customer')
-                        </label>
+                        </span>
                     </div>
-                    <div class="col-md-6">
-                        <label class="checkbox-inline">
-                            <input type="checkbox" class="delivery_cost_given_to_deliveryman"
-                                name="delivery_cost_given_to_deliveryman" @if (!empty($transaction) &&
-                                $transaction->delivery_cost_given_to_deliveryman == 1) checked @endif value="1"
-                            id="delivery_cost_given_to_deliveryman">
+
+                    <div
+                        class="col-md-6 px-5 toggle-pill-color d-flex justify-content-center align-items-center flex-column">
+                        <input type="checkbox" class="delivery_cost_given_to_deliveryman"
+                            name="delivery_cost_given_to_deliveryman" @if (!empty($transaction) &&
+                            $transaction->delivery_cost_given_to_deliveryman == 1) checked @endif value="1"
+                        id="delivery_cost_given_to_deliveryman">
+                        <label class="checkbox-inline " for="delivery_cost_given_to_deliveryman">
+
+                        </label>
+                        <span>
                             @lang('lang.delivery_cost_given_to_deliveryman')
-                        </label>
+                        </span>
                     </div>
-                    <div class="col-md-12">
-                        <label for="delivery_address">@lang('lang.delivery_address'):</label>
+
+
+                    <div class="col-md-12 px-5 mb-2">
+                        <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
+                            for="delivery_address">@lang('lang.delivery_address')</label>
                         {!! Form::textarea('delivery_address', !empty($transaction->delivery_address) ?
                         $transaction->delivery_address : null, ['class' => 'form-control delivery_address', 'rows' =>
                         2]) !!}
                     </div>
+
+
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer p-0">
                     <button type="button" id="delivery_cost_btn" name="delivery_cost_btn" class="btn btn-primary col-12"
                         data-dismiss="modal">{{ __('lang.submit') }}</button>
                 </div>

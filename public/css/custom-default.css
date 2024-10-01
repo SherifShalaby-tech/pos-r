@@ -1086,11 +1086,11 @@ section.pos-section {
     padding: 15px;
 }
 
-@media all and (min-width: 576px) {
+/* @media all and (min-width: 576px) {
     .modal-dialog {
         max-width: 800px;
     }
-}
+} */
 
 .checkbox input[type="checkbox"] {
     display: none;

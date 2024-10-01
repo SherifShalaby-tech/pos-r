@@ -104,6 +104,7 @@
 </div>
 
 
+@if (empty($quick_add))
 <x-collapse collapse-id="importantDates" button-class="d-flex btn-primary align-items-center gap-20px"
     group-class="my-1 d-flex flex-column align-items-end" body-class="py-1 gap-2">
 
@@ -114,7 +115,6 @@
         <h3 class="mb-0">@lang('lang.important_dates')</h3>
     </x-slot>
 
-    @if (empty($quick_add))
     <div class="col-md-12 row justify-content-center align-items-center mb-1 @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif"
         style="gap:25px">
         <button type="button" class="add_date btn btn-primary "><i class="fa fa-plus"></i></button>
@@ -137,8 +137,8 @@
         </div>
     </div>
     <input type="hidden" name="important_date_index" id="important_date_index" value="0">
-    @endif
 </x-collapse>
+@endif
 
 <input type="hidden" name="quick_add" value="{{ $quick_add }}">
 

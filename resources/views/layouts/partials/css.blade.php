@@ -465,4 +465,9 @@
     .gap-20px {
         gap: 20px
     }
+
+    hr {
+        margin-bottom: 0.5rem !important;
+        margin-top: 0.5rem !important;
+    }
 </style>

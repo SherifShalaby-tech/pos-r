@@ -1,7 +1,7 @@
 <!-- customer_details modal -->
 <div id="contact_details_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
     class="modal fade text-left">
-    <div role="document" class="modal-dialog">
+    <div role="document" class="modal-dialog" style="max-width: 95%;">
         <div class="modal-content">
             <x-modal-header>
 
@@ -10,7 +10,8 @@
             </x-modal-header>
 
             <div class="modal-body">
-                <div class="row">
+                <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+
                     <div class="col-md-4">
                         <b>@lang('lang.name'):</b> <span class="customer_name_span"></span>
                     </div>
@@ -30,6 +31,7 @@
                         <input type="hidden" name="customer_points_value" id="customer_points_value"
                             class="customer_points_value" value="0">
                     </div>
+
                     <div class="col-md-4">
                         <b>@lang('lang.total_redeemable_value'):</b> <span
                             class="customer_total_redeemable_span"></span>
@@ -39,37 +41,37 @@
                         <input type="hidden" name="rp_redeemed_value" id="rp_redeemed_value" class="rp_redeemed_value"
                             value="0">
                     </div>
+
+
                     <input type="hidden" name="is_redeem_points" id="is_redeem_points" value="0">
                 </div>
+
+
+
+
                 <div class="row">
-                    <div class="col-md-12">
-                        <button type="button" class="btn btn-primary redeem_btn pull-right" id="redeem_btn" disabled>{{
-                            __('lang.redeem') }}</button>
+                    <div class="col-md-4">
+                        <label for="customer_address">@lang('lang.address')</label>
+                        {!! Form::textarea('customer_address', null, ['class' => 'form-control', 'rows' => 3, 'id'
+                        => 'customer_address']) !!}
                     </div>
-                </div>
-                <div class="col-md-12 mb-5">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label for="customer_address">@lang('lang.address')</label>
-                            {!! Form::textarea('customer_address', null, ['class' => 'form-control', 'rows' => 3, 'id'
-                            => 'customer_address']) !!}
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" class="btn btn-primary" style="margin-top: 30px;"
-                                id="update_customer_address">@lang('lang.update_address')</button>
-                        </div>
-                        <div class="col-md-3">
-                            <button type="button" data-href="" class="btn btn-primary btn-modal text-white"
-                                data-container=".view_modal" style="margin-top: 30px;"
-                                id="pay_customer_due_btn">@lang('lang.pay_customer_due')</button>
-                        </div>
+                    <div class="col-md-8 d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-primary redeem_btn" id="redeem_btn" disabled>{{
+                            __('lang.redeem') }}</button>
+                        <button type="button" class="btn btn-primary"
+                            id="update_customer_address">@lang('lang.update_address')</button>
+
+                        <button type="button" data-href="" class="btn btn-primary btn-modal text-white"
+                            data-container=".view_modal"
+                            id="pay_customer_due_btn">@lang('lang.pay_customer_due')</button>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
                         <h4>@lang('lang.sales')</h4>
-                        <div class="table-responsive">
+
+                        <div class="table-responsive" style="max-height: 90vh;">
                             <table id="customer_sales_table" class="table">
                                 <thead>
                                     <tr>
@@ -100,7 +102,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default col-6 " data-dismiss="modal">{{ __('lang.close')
+                <button type="button" class="btn btn-default col-12 " data-dismiss="modal">{{ __('lang.close')
                     }}</button>
             </div>
         </div>
