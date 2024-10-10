@@ -1,5 +1,5 @@
 <div class="col-12 totals table_room_hide" style="border-top: 2px solid #e4e6fc; padding-top: 10px;">
-    <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif justify-content-between align-items-center"
+    <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif justify-content-start align-items-center"
         style="gap: 8px">
 
         <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
@@ -60,7 +60,7 @@
         </div>
 
 
-        <div class="col-sm-3">
+        <div class="">
             @if(auth()->user()->can('sp_module.sales_promotion.view')
             || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
             || auth()->user()->can('sp_module.sales_promotion.delete'))

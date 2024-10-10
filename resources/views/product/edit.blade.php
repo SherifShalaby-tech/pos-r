@@ -224,9 +224,9 @@
                         <div class="row">
                             <div class="col-md-3">
                                 <div class="i-checks">
-                                    <input id="is_service" name="is_service" type="checkbox" @if
-                                        (!empty($product->is_service)) checked @endif value="@if($product->is_service)1
-                                    @else 0 @endif"
+                                    <input @if (!empty($product->is_service)) checked @endif
+                                    value="@if($product->is_service)1
+                                    @else 0 @endif" id="is_service" name="is_service" type="checkbox"
                                     class="form-control-custom">
                                     <label for="is_service"><strong>
                                             @if (session('system_mode') == 'restaurant')
@@ -250,9 +250,8 @@
 
                             <div class="col-md-3">
                                 <div class="i-checks">
-                                    <input id="have_weight" name="have_weight" type="checkbox" @if
-                                        (!empty($product->have_weight)) checked @endif value="1"
-                                    class="form-control-custom">
+                                    <input @if (!empty($product->have_weight)) checked @endif value="1"
+                                    class="form-control-custom" id="have_weight" name="have_weight" type="checkbox">
                                     <label for="have_weight"><strong>
                                             @lang('lang.have_weight')
                                         </strong></label>
@@ -520,9 +519,8 @@
                             session('system_mode') == 'pos')
                             <div class="col-md-4">
                                 <div class="i-checks">
-                                    <input id="automatic_consumption" name="automatic_consumption" type="checkbox" @if
-                                        (!empty($product) && $product->automatic_consumption == 1) checked @endif
-                                    value="1"
+                                    <input @if (!empty($product) && $product->automatic_consumption == 1) checked @endif
+                                    value="1" id="automatic_consumption" name="automatic_consumption" type="checkbox"
                                     class="form-control-custom">
                                     <label
                                         for="automatic_consumption"><strong>@lang('lang.automatic_consumption')</strong></label>
@@ -540,9 +538,9 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="i-checks">
-                                    <input id="buy_from_supplier" name="buy_from_supplier" type="checkbox" @if
-                                        ($product->buy_from_supplier == 1) checked @endif value="1"
-                                    class="form-control-custom">
+                                    <input @if ($product->buy_from_supplier == 1) checked @endif value="1"
+                                    class="form-control-custom" id="buy_from_supplier" name="buy_from_supplier"
+                                    type="checkbox">
                                     <label
                                         for="buy_from_supplier"><strong>@lang('lang.buy_from_supplier')</strong></label>
                                 </div>
@@ -598,8 +596,7 @@
                                         where('variation_id', $first_variation->id)->get();
                                         @endphp
                                         @foreach ($extension_products as $extension_product)
-                                        @include('product.partial.extension_row', [
-                                        'row_id' => $loop->index,
+                                        @include('product.partial.extension_row', [ 'row_id' => $loop->index,
                                         'extension_product' => $extension_product,
                                         ])
                                         @endforeach
@@ -826,9 +823,9 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="i-checks">
-                                    <input id="show_to_customer" name="show_to_customer" type="checkbox" @if
-                                        ($product->show_to_customer) checked @endif value="1"
-                                    class="form-control-custom">
+                                    <input @if ($product->show_to_customer) checked @endif value="1"
+                                    class="form-control-custom" id="show_to_customer" name="show_to_customer"
+                                    type="checkbox">
                                     <label
                                         for="show_to_customer"><strong>@lang('lang.show_to_customer')</strong></label>
                                 </div>
@@ -850,9 +847,10 @@
 
                             <div class="col-md-12" style="margin-top: 10px">
                                 <div class="i-checks">
-                                    <input id="different_prices_for_stores" name="different_prices_for_stores" @if
-                                        ($product->different_prices_for_stores) checked @endif type="checkbox" value="1"
-                                    class="form-control-custom">
+                                    <input @if ($product->different_prices_for_stores) checked @endif type="checkbox"
+                                    value="1"
+                                    class="form-control-custom" id="different_prices_for_stores"
+                                    name="different_prices_for_stores">
                                     <label
                                         for="different_prices_for_stores"><strong>@lang('lang.different_prices_for_stores')</strong></label>
                                 </div>

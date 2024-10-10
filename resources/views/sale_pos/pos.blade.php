@@ -177,11 +177,12 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
                                     <div class="px-0">
                                         @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
-                                        <button type="button" class="btn btn-danger mt-4" data-toggle="modal"
+                                        <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-0 mt-xl-4"
+                                            data-toggle="modal"
                                             data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
                                         @endif
 
-                                        <button type="button" class="btn btn-primary mt-4" data-toggle="modal"
+                                        <button type="button" class="btn btn-primary w-100 mt-xl-4" data-toggle="modal"
                                             data-target="#contact_details_modal">@lang('lang.details')</button>
                                     </div>
                                 </div>
