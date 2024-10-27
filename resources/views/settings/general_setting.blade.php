@@ -234,6 +234,10 @@
                         {!! Form::label('developed_by', __('lang.developed_by'), []) !!}
                         {!! Form::text('developed_by', null, ['class' => 'form-control']) !!}
                     </div>
+                    <div class="col-md-3 ">
+                        {!! Form::label('ticketـnumberـstart', __('lang.ticketـnumberـstart'), []) !!}
+                        {!! Form::number('ticketـnumberـstart', !empty($settings['ticketـnumberـstart']) ? $settings['ticketـnumberـstart'] : 1, ['class' => 'form-control']) !!}
+                    </div>
                     <div class="col-md-3">
                         {!! Form::label('time_format', __('lang.time_format'), []) !!}
                         {!! Form::select('time_format', ['12' => '12 hours', '24' => '24 hours'], !empty($settings['time_format']) ? $settings['time_format'] : null, ['class' => 'form-control selectpicker', 'data-live-search' => 'true']) !!}
