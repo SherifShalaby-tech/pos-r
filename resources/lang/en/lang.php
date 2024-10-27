@@ -1498,4 +1498,6 @@ return [
     'date_of_purchase_of_the_expired_stock_removed' => 'date_of_purchase_of_the_expired_stock_removed',
 
     'deleted_by' => 'Deleted By',
+    'ticketـnumberـstart'=>'Ticket number start',
+
 ];
