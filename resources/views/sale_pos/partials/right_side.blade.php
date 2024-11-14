@@ -223,7 +223,7 @@
 
 
                         @if (session('system_mode') == 'restaurant')
-                        <div class="col-md-12 filter-btn-div">
+                        <div class="col-md-12 px-0 filter-btn-div">
                             <div class="btn-group btn-group-toggle ml-2 btn-group-custom" data-toggle="buttons">
                                 <label class="btn btn-primary active filter-btn">
                                     <input type="radio" checked autocomplete="off" name="restaurant_filter"

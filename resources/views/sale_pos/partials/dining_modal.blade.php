@@ -127,7 +127,7 @@
 
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default col-6" data-dismiss="modal">@lang(
+            <button type="button" class="btn btn-default col-12" data-dismiss="modal">@lang(
                 'lang.close')</button>
         </div>
     </div>

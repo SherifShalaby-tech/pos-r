@@ -104,7 +104,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
             {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class'
             => 'pos-form d-flex', 'id' => 'add_pos_form']) !!}
-            <div class="px-1 @if (session('system_mode') == 'pos') col-md-10 @else col-md-6 @endif">
+            <div class="px-1  col-md-10 ">
                 <div class="card m-0">
 
                     <input type="hidden" name="default_customer_id" id="default_customer_id"
@@ -177,61 +177,66 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
                                     <div class="px-0">
                                         @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
-                                        <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-0 mt-xl-4"
+                                        <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-1 w-100"
                                             data-toggle="modal"
                                             data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
                                         @endif
 
-                                        <button type="button" class="btn btn-primary w-100 mt-xl-4" data-toggle="modal"
+                                        <button type="button" class="btn btn-primary w-100" data-toggle="modal"
                                             data-target="#contact_details_modal">@lang('lang.details')</button>
                                     </div>
                                 </div>
 
                                 @include('sale_pos.includes._search-product')
-                            </div>
-                            <div class="row table_room_show hide">
-                                <div class="col-md-4">
-                                    <div class=""
-                                        style="padding: 5px 5px; background:#0082ce; color: #fff; font-size: 20px; font-weight: bold; text-align: center; border-radius: 5px;">
-                                        <span class="room_name"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <input type="hidden" id="room_id" name="dining_room_id" />
-                                    <label for=""
-                                        style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
-                                        <span class="table_name"></span></label>
-                                    <div class="form-check tables_status">
-                                        {{-- @if($status_array)
-                                        @foreach($status_array as $status)
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input table_status" type="radio" name="order"
-                                                id="{{$status->order}}" value="{{$status->order}}" checked>
-                                            <label class="form-check-label"
-                                                for="{{$status->order}}">{{$status->order}}</label>
-                                        </div>
-                                        @endforeach
-                                        @endif --}}
 
+
+
+                                <div class="row table_room_show hide col-md-8">
+                                    <div class="col-md-3 d-flex justify-content-center align-items-center">
+                                        <div class="w-100"
+                                            style="padding: 5px 5px; background:#0082ce; color: #fff; font-size: 20px; font-weight: bold; text-align: center; border-radius: 5px;">
+                                            <span class="room_name"></span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="input-group my-group">
-                                        {!! Form::select('service_fee_id', $service_fees, null, ['class' =>
-                                        'form-control', 'placeholder' => __('lang.select_service'), 'id' =>
-                                        'service_fee_id']) !!}
+
+                                    <div class="col-md-3 d-flex flex-column">
+                                        <input type="hidden" id="room_id" name="dining_room_id" />
+                                        <label for=""
+                                            style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
+                                            <span class="table_name"></span></label>
+                                        <div class="form-check tables_status">
+                                            {{-- @if($status_array)
+                                            @foreach($status_array as $status)
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input table_status" type="radio" name="order"
+                                                    id="{{$status->order}}" value="{{$status->order}}" checked>
+                                                <label class="form-check-label"
+                                                    for="{{$status->order}}">{{$status->order}}</label>
+                                            </div>
+                                            @endforeach
+                                            @endif --}}
+
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="col-md-2">
-                                    <div class="input-group my-group">
-                                        {!! Form::select('merge_table_id', $tables, null, ['class' =>
-                                        'form-control', 'placeholder' => __('lang.select_merge_table'), 'id' =>
-                                        'table_merge_id']) !!}
+                                    <div class="col-md-3">
+                                        <div class="input-group my-group">
+                                            {!! Form::select('service_fee_id', $service_fees, null, ['class' =>
+                                            'form-control', 'placeholder' => __('lang.select_service'), 'id' =>
+                                            'service_fee_id']) !!}
+                                        </div>
                                     </div>
+                                    <div class="col-md-3">
+                                        <div class="input-group my-group">
+                                            {!! Form::select('merge_table_id', $tables, null, ['class' =>
+                                            'form-control', 'placeholder' => __('lang.select_merge_table'), 'id' =>
+                                            'table_merge_id']) !!}
+                                        </div>
+                                    </div>
+                                    <input type="hidden" name="service_fee_id_hidden" id="service_fee_id_hidden"
+                                        value="">
+                                    <input type="hidden" name="service_fee_rate" id="service_fee_rate" value="0">
+                                    <input type="hidden" name="service_fee_value" id="service_fee_value" value="0">
                                 </div>
-                                <input type="hidden" name="service_fee_id_hidden" id="service_fee_id_hidden" value="">
-                                <input type="hidden" name="service_fee_rate" id="service_fee_rate" value="0">
-                                <input type="hidden" name="service_fee_value" id="service_fee_value" value="0">
                             </div>
 
 
@@ -250,47 +255,46 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                             <div class="col-md-12 table_room_show hide"
                                 style="border-top: 2px solid #e4e6fc; margin-top: 10px;">
                                 <div class="row">
-                                    <div class="col-md-8"></div>
-                                    <div class="col-md-4">
-                                        <div class="row">
+
+                                    <div class="col-md-12 row justify-content-center align-items-center">
+                                        <div class="row col-md-3 justify-content-center align-items-center">
                                             <b>@lang('lang.total'): <span class="subtotal">0.00</span></b>
                                         </div>
-                                        <div class="row">
+                                        <div class="row col-md-3 justify-content-center align-items-center">
                                             <b>@lang('lang.discount'): <span class="discount_span">0.00</span></b>
                                         </div>
-                                        <div class="row">
+                                        <div class="row col-md-3 justify-content-center align-items-center">
                                             <b>@lang('lang.service'): <span class="service_value_span">0.00</span></b>
                                         </div>
-                                        <div class="row">
+                                        <div class="row col-md-3 justify-content-center align-items-center">
                                             <b>@lang('lang.grand_total'): <span class="final_total_span">0.00</span></b>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row pt-4">
-                                    <div class="col-md-8">
-                                        <div class="row">
+                                <div class="row pt-2">
+                                    <div class="col-md-12">
+                                        <div class="row justify-content-center">
                                             <button type="button" name="action" value="print" id="dining_table_print"
-                                                class="btn mr-2 text-white"
-                                                style="background: orange;">@lang('lang.print')</button>
+                                                class="btn py-2 col-md-2 mr-2 btn-primary text-white">@lang('lang.print')</button>
                                             <button type="button" name="action" value="save" id="dining_table_save"
-                                                class="btn mr-2 text-white btn-success">@lang('lang.save')</button>
-                                            <button data-method="cash" style="background: #0082ce" type="button"
-                                                class="btn mr-2 payment-btn text-white" data-toggle="modal"
-                                                data-target="#add-payment" data-backdrop="static" data-keyboard="false"
-                                                id="cash-btn">@lang('lang.pay_and_close')</button>
+                                                class="btn py-2 col-md-2 mr-2 text-white btn-primary">@lang('lang.save')</button>
+                                            <button data-method="cash" type="button"
+                                                class="btn py-2 col-md-2 mr-2 btn-primary payment-btn text-white"
+                                                data-toggle="modal" data-target="#add-payment" data-backdrop="static"
+                                                data-keyboard="false" id="cash-btn">@lang('lang.pay_and_close')</button>
                                             @if(auth()->user()->can('sp_module.sales_promotion.view')
                                             || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
                                             || auth()->user()->can('sp_module.sales_promotion.delete'))
-                                            <button style="background-color: #d63031" type="button"
-                                                class="btn mr-2 btn-md payment-btn text-white" data-toggle="modal"
+                                            <button type="button"
+                                                class="btn py-2 col-md-2 mr-2 btn-md btn-primary payment-btn text-white"
+                                                data-toggle="modal"
                                                 data-target="#discount_modal">@lang('lang.random_discount')</button>
                                             @endif
+
+                                            <button type="button" class="btn py-2 col-md-2 btn-danger text-white"
+                                                id="cancel-btn" onclick="return confirmCancel()">
+                                                @lang('lang.cancel')</button>
                                         </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <button style="background-color: #ff0000;" type="button" class="btn text-white"
-                                            id="cancel-btn" onclick="return confirmCancel()">
-                                            @lang('lang.cancel')</button>
                                     </div>
                                 </div>
                             </div>
@@ -326,8 +330,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
 
 
-            <div
-                class="card m-0 px-1 @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') col-md-2 @else col-md-6 @endif">
+            <div class="card m-0 px-1  col-md-2 ">
                 <!-- navbar-->
 
                 @include('sale_pos.includes._header')

@@ -81,16 +81,7 @@
 
             <button type="button" class="btn btn-danger" id="print_and_draft"><i class="dripicons-print"></i></button>
 
-            @if (session('system_mode') == 'restaurant')
-            <button type="button" style="padding: 0px !important;" data-toggle="modal" data-target="#dining_model" {{--
-                data-href="/dining-room/get-dining-modal/0/0/0/0" data-container="#dining_model" --}}
-                class="btn btn-modal pull-right mt-4 dining-btn">
-                <span class="badge badge-danger table-badge">0</span>
-                <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
-                    style="width: 40px; height: 33px; margin-top: 7px;"></button>
-            @endif
 
-            <button id="offcanvas-toggle" type="button" class="offcanvas-toggle btn btn-primary py-2">Products</button>
         </div>
 
         <input type="hidden" id="print_and_draft_hidden" name="print_and_draft_hidden" value="">
