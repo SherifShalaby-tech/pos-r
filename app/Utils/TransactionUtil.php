@@ -1751,10 +1751,22 @@ class TransactionUtil extends Util
      */
     public function getTicketNumber($number = 1)
     {
-        $ticket_count = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))
+         $sticketـnumberـstart = System::where('key','ticketـnumberـstart')->first();
+        if($sticketـnumberـstart && $number == 1){
+            $number=$sticketـnumberـstart->value > 0?$sticketـnumberـstart->value:1;
+            $ticket_count = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))
             ->where('type', 'sell')
+            ->where('ticket_number','>=', $number)
             ->orderBy('created_at', 'desc')
             ->count();
+            
+        }else{
+            $ticket_count = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))
+            ->where('type', 'sell')
+            ->where('ticket_number','>=', $number)
+            ->orderBy('created_at', 'desc')
+            ->count();
+        }
         $ticket_number = $ticket_count + $number;
 
         $ticket_exist = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))

@@ -20,9 +20,7 @@ $transaction_payment = $recent_stock->transaction_payments->first();
 @endphp
 <section class="forms py-2">
     <div class="container-fluid px-2">
-        <div class="row
-@if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif
-">
+        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
             <div class="col-md-12">
 
 
@@ -69,9 +67,7 @@ $transaction_payment = $recent_stock->transaction_payments->first();
 
                 <div class="card mt-1 mb-0">
                     <div class="card-body py-2 px-4">
-                        <div class="row
-@if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif
-">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('store_id', __('lang.store') . '*', [
@@ -167,9 +163,7 @@ $transaction_payment = $recent_stock->transaction_payments->first();
 
                 <div class="card mt-1 mb-0">
                     <div class="card-body py-2 px-4">
-                        <div class="row
-@if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif
-">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
                             <div class="col-md-12">
                                 <div class="search-box input-group">
                                     <button type="button" class="btn btn-secondary btn-lg" id="search_button"><i
@@ -177,7 +171,7 @@ $transaction_payment = $recent_stock->transaction_payments->first();
                                     <input type="text" name="search_product" id="search_product"
                                         placeholder="@lang('lang.enter_product_name_to_print_labels')"
                                         class="form-control ui-autocomplete-input" autocomplete="off">
-                                    <button type="button" class="btn btn-success btn-lg btn-modal"
+                                    <button type="button" class="btn btn-primary btn-lg btn-modal"
                                         data-href="{{ action('ProductController@create') }}?quick_add=1"
                                         data-container=".view_modal"><i class="fa fa-plus"></i></button>
                                 </div>
@@ -185,6 +179,7 @@ $transaction_payment = $recent_stock->transaction_payments->first();
                         </div>
                     </div>
                 </div>
+
                 <div class="card mt-1 mb-0">
                     <div class="card-body py-2 px-4">
                         <div class="row justify-content-center">
@@ -246,9 +241,7 @@ $transaction_payment = $recent_stock->transaction_payments->first();
 
                 <div class="card mt-1 mb-0">
                     <div class="card-body py-2 px-4">
-                        <div class="row
-@if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif
-">
+                        <div class="row  @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('files', __('lang.files'), [
@@ -410,7 +403,6 @@ $transaction_payment = $recent_stock->transaction_payments->first();
                 <div class="col-sm-12">
                     <button type="submit" name="submit" id="submit-save" value="save"
                         class="btn btn-primary pull-right btn-flat submit">@lang( 'lang.save' )</button>
-
                 </div>
 
             </div>

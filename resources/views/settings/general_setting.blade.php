@@ -252,6 +252,13 @@
                             ]) !!}
                             {!! Form::text('developed_by', null, ['class' => 'form-control']) !!}
                         </div>
+
+                        <div class="col-md-3 ">
+                            {!! Form::label('ticketـnumberـstart', __('lang.ticketـnumberـstart'), []) !!}
+                            {!! Form::number('ticketـnumberـstart', !empty($settings['ticketـnumberـstart']) ?
+                            $settings['ticketـnumberـstart']
+                            : 1, ['class' => 'form-control']) !!}
+                        </div>
                         <div class="col-md-3 mb-2">
                             {!! Form::label('time_format', __('lang.time_format'), ['class' => app()->isLocale('ar') ?
                             'mb-1 label-ar' : 'mb-1 label-en'

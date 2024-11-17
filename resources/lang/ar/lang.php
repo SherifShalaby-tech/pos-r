@@ -1503,5 +1503,6 @@ return [
     'discount_info' => "معلومات الخصم",
     'more_info' => "معلومات اخرى",
     'filter' => "فلتر",
+    'ticketـnumberـstart' => 'بداية رقم التذكرة',
 
 ];

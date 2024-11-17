@@ -4,23 +4,25 @@
 @section('content')
 <section class="forms py-2">
     <div class="container-fluid px-2">
-        <div class="row">
+        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
             <div class="col-md-12">
 
                 <x-page-title>
                     <h4>@lang('lang.edit_stock')</h4>
                 </x-page-title>
 
-                <div class="card">
-                    {!! Form::open(['url' => action('AddStockController@update', $add_stock->id), 'method' => 'put',
-                    'id' => 'edit_stock_form', 'enctype' => 'multipart/form-data']) !!}
-                    <input type="hidden" name="row_count" id="row_count"
-                        value="{{ $add_stock->add_stock_lines->count() }}">
-                    <input type="hidden" name="is_add_stock" id="is_add_stock" value="1">
-                    <input type="hidden" name="is_raw_material" id="is_raw_material"
-                        value="{{ $add_stock->is_raw_material }}">
-                    <div class="card-body">
-                        <div class="row">
+
+                {!! Form::open(['url' => action('AddStockController@update', $add_stock->id), 'method' => 'put',
+                'id' => 'edit_stock_form', 'enctype' => 'multipart/form-data']) !!}
+                <input type="hidden" name="row_count" id="row_count" value="{{ $add_stock->add_stock_lines->count() }}">
+                <input type="hidden" name="is_add_stock" id="is_add_stock" value="1">
+                <input type="hidden" name="is_raw_material" id="is_raw_material"
+                    value="{{ $add_stock->is_raw_material }}">
+
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row  @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
                             <div class="col-md-3">
                                 <div class="form-group">
                                     {!! Form::label('store_id', __('lang.store') . ':*', []) !!}
@@ -39,7 +41,8 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('po_no', __('lang.po_no'), []) !!} <i class="dripicons-question"
+                                    {!! Form::label('po_no', __('lang.po_no'), ['class' => app()->isLocale('ar') ? 'mb-1
+                                    label-ar' : 'mb-1 label-en']) !!} <i class="dripicons-question"
                                         data-toggle="tooltip" title="@lang('lang.po_no_add_stock_info')"></i>
                                     {!! Form::select('po_no', $po_nos, $add_stock->purchase_order_id, ['class' =>
                                     'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
@@ -70,30 +73,37 @@
                             </div>
 
                         </div>
-                        <br>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-8 offset-md-1">
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row  @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
+                            <div class="col-md-12">
                                 <div class="search-box input-group">
-                                    <button type="button" class="btn btn-secondary btn-lg" id="search_button"><i
+                                    <button type="button" class="btn btn-primary btn-lg" id="search_button"><i
                                             class="fa fa-search"></i></button>
                                     <input type="text" name="search_product" id="search_product"
                                         placeholder="@lang('lang.enter_product_name_to_print_labels')"
                                         class="form-control ui-autocomplete-input" autocomplete="off">
-                                    <button type="button" class="btn btn-success btn-lg btn-modal"
+                                    <button type="button" class="btn btn-primary btn-lg btn-modal"
                                         data-href="{{ action('ProductController@create') }}?quick_add=1"
                                         data-container=".view_modal"><i class="fa fa-plus"></i></button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row  justify-content-center ">
                             <div class="col-md-2">
                                 @include(
                                 'quotation.partial.product_selection'
                                 )
                             </div>
-                        </div>
-                        <br>
-                        <div class="row">
-                            <div class="col-md-10 offset-md-1">
+                            <div class="col-md-12">
                                 <table class="table table-bordered table-striped table-condensed" id="product_table">
                                     <thead>
                                         <tr>
@@ -142,7 +152,7 @@
                                             <td>
                                                 <input type="text"
                                                     class="form-control quantity  quantity_{{$loop->index}}"
-                                                    min="{{!empty($product->product->units) && $product->product->units->pluck('name')[0]==("
+                                                    min="{{count($product->product->units) >0 && $product->product->units->pluck('name')[0]==("
                                                     piece"||"Piece"||"قطعة" || "قطعه" || "" )?1:0.00001}}"
                                                     name="add_stock_lines[{{$loop->index}}][quantity]" required
                                                     value="@if(isset($product->quantity)){{preg_match('/\.\d*[1-9]+/', (string)$product->quantity) ? $product->quantity : @num_format($product->quantity)}}@else{{1}}@endif"
@@ -259,27 +269,32 @@
                                         </tr>
                                         <tr class="hide bounce_details_td_{{$loop->index}}">
                                             <td>
-                                                {!! Form::label('', __('lang.batch_number'), []) !!} <br>
+                                                {!! Form::label('', __('lang.batch_number'), ['class' =>
+                                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                                 {!!Form::text('add_stock_lines['.$loop->index.'][bounce_batch_number]',
                                                 null, ['class' => 'form-control']) !!}
                                             </td>
-                                            <td> {!! Form::label('', __('lang.manufacturing_date'), []) !!}<br>
+                                            <td> {!! Form::label('', __('lang.manufacturing_date'), ['class' =>
+                                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                                 {!!
                                                 Form::text('add_stock_lines['.$loop->index.'][bounce_manufacturing_date]',
                                                 null, ['class' => 'form-control datepicker',
                                                 'readonly']) !!}
                                             </td>
-                                            <td> {!! Form::label('', __('lang.expiry_date'), []) !!}<br>
+                                            <td> {!! Form::label('', __('lang.expiry_date'), ['class' =>
+                                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                                 {!! Form::text('add_stock_lines['.$loop->index.'][bounce_expiry_date]',
                                                 null, ['class' => 'form-control datepicker expiry_date',
                                                 'readonly']) !!}
                                             </td>
-                                            <td> {!! Form::label('', __('lang.days_before_the_expiry_date'), []) !!}<br>
+                                            <td> {!! Form::label('', __('lang.days_before_the_expiry_date'), ['class' =>
+                                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                                 {!!
                                                 Form::text('add_stock_lines['.$loop->index.'][bounce_expiry_warning]',
                                                 null, ['class' => 'form-control days_before_the_expiry_date']) !!}
                                             </td>
-                                            <td> {!! Form::label('', __('lang.convert_status_expire'), []) !!}<br>
+                                            <td> {!! Form::label('', __('lang.convert_status_expire'), ['class' =>
+                                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                                 {!!
                                                 Form::text('add_stock_lines['.$loop->index.'][bounce_convert_status_expire]',
                                                 null, ['class' => 'form-control']) !!}
@@ -291,77 +306,97 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-md-12 text-center">
-                            <h4>@lang('lang.items_count'): <span class="items_count_span" style="margin-right: 15px;">{{
-                                    $add_stock->add_stock_lines->count() }}</span>
-                                @lang('lang.items_quantity'): <span class="items_quantity_span"
-                                    style="margin-right: 15px;">{{ $add_stock->add_stock_lines->sum('quantity')
-                                    }}</span>
-                            </h4>
-                        </div>
-                        <br>
-                        <div class="col-md-12">
-                            <div class="col-md-3 offset-md-8 text-right">
-                                <h3> @lang('lang.total'): <span class="final_total_span">{{
-                                        @num_format($add_stock->final_total) }}</span>
-                                </h3>
-                                <input type="hidden" name="final_total" id="final_total"
-                                    value="{{ $add_stock->final_total }}">
-                                <input type="hidden" name="grand_total" id="grand_total"
-                                    value="{{ $add_stock->grand_total }}">
-                            </div>
-                        </div>
-                        <br>
-                        <div class="row">
+                    </div>
+                </div>
+
+
+                <div class="col-md-12 text-center">
+                    <h4>@lang('lang.items_count'): <span class="items_count_span" style="margin-right: 15px;">{{
+                            $add_stock->add_stock_lines->count() }}</span>
+                        @lang('lang.items_quantity'): <span class="items_quantity_span" style="margin-right: 15px;">{{
+                            $add_stock->add_stock_lines->sum('quantity')
+                            }}</span>
+                    </h4>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-3 offset-md-8 text-right">
+                        <h3> @lang('lang.total'): <span class="final_total_span">{{
+                                @num_format($add_stock->final_total) }}</span>
+                        </h3>
+                        <input type="hidden" name="final_total" id="final_total" value="{{ $add_stock->final_total }}">
+                        <input type="hidden" name="grand_total" id="grand_total" value="{{ $add_stock->grand_total }}">
+                    </div>
+                </div>
+
+                <div class="card mt-1 mb-0">
+                    <div class="card-body py-2 px-4">
+                        <div class="row  @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif ">
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('files', __('lang.files'), []) !!} <br>
+                                    {!! Form::label('files', __('lang.files'), ['class' => app()->isLocale('ar') ? 'mb-1
+                                    label-ar' : 'mb-1 label-en']) !!}
                                     <input type="file" name="files[]" id="files" multiple>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('invoice_no', __('lang.invoice_no'), []) !!} <br>
-                                    {!! Form::text('invoice_no', $add_stock->invoice_no, ['class' => 'form-control',
+                                    {!! Form::label('invoice_no', __('lang.invoice_no'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::text('invoice_no', $add_stock->invoice_no, ['class' =>
+                                    'form-control',
                                     'placeholder' => __('lang.invoice_no')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('other_expenses', __('lang.other_expenses'), []) !!} <br>
-                                    {!! Form::text('other_expenses', @num_format($add_stock->other_expenses), ['class'
+                                    {!! Form::label('other_expenses', __('lang.other_expenses'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::text('other_expenses', @num_format($add_stock->other_expenses),
+                                    ['class'
                                     => 'form-control', 'placeholder' => __('lang.other_expenses'), 'id' =>
                                     'other_expenses']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('discount_amount', __('lang.discount'), []) !!} <br>
-                                    {!! Form::text('discount_amount', @num_format($add_stock->discount_amount), ['class'
-                                    => 'form-control', 'placeholder' => __('lang.discount'), 'id' => 'discount_amount'])
+                                    {!! Form::label('discount_amount', __('lang.discount'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::text('discount_amount', @num_format($add_stock->discount_amount),
+                                    ['class'
+                                    => 'form-control', 'placeholder' => __('lang.discount'), 'id' =>
+                                    'discount_amount'])
                                     !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('other_payments', __('lang.other_payments'), []) !!} <br>
-                                    {!! Form::text('other_payments', @num_format($add_stock->other_payments), ['class'
+                                    {!! Form::label('other_payments', __('lang.other_payments'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::text('other_payments', @num_format($add_stock->other_payments),
+                                    ['class'
                                     => 'form-control', 'placeholder' => __('lang.other_payments'), 'id' =>
                                     'other_payments']) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('source_type', __('lang.source_type'), []) !!} <br>
-                                    {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' => __('lang.pos'),
-                                    'store' => __('lang.store'), 'safe' => __('lang.safe')], $add_stock->source_type,
-                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'required',
+                                    {!! Form::label('source_type', __('lang.source_type'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::select('source_type', ['user' => __('lang.user'), 'pos' =>
+                                    __('lang.pos'),
+                                    'store' => __('lang.store'), 'safe' => __('lang.safe')],
+                                    $add_stock->source_type,
+                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true',
+                                    'required',
                                     'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('source_of_payment', __('lang.source_of_payment'), []) !!} <br>
+                                    {!! Form::label('source_of_payment', __('lang.source_of_payment'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+
                                     <select name="source_id" id="source_id" class="selectpicker form-control"
                                         data-live-search="true" style="width: 80%" required>
                                         @foreach ($users as $key => $val)
@@ -372,16 +407,20 @@
                                         @endif
                                         @endforeach
                                     </select>
-                                    {{-- {!! Form::select('source_id', $users, $add_stock->source_id, ['class' =>
-                                    'selectpicker form-control', 'data-live-search' => 'true', 'required', 'style' =>
-                                    'width: 80%', 'placeholder' => __('lang.please_select'), 'id' => 'source_id',
+                                    {{-- {!! Form::select('source_id', $users, $add_stock->source_id, ['class'
+                                    =>
+                                    'selectpicker form-control', 'data-live-search' => 'true', 'required',
+                                    'style' =>
+                                    'width: 80%', 'placeholder' => __('lang.please_select'), 'id' =>
+                                    'source_id',
                                     'required']) !!} --}}
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    {!! Form::label('transaction_date', __('lang.date') . ':*', []) !!} <br>
-                                    {!! Form::text('transaction_date', @format_date($add_stock->transaction_date),
+                                    {!! Form::label('transaction_date', __('lang.date') . ':*', []) !!}
+                                    {!! Form::text('transaction_date',
+                                    @format_date($add_stock->transaction_date),
                                     ['class' => 'form-control datepicker', 'required', 'placeholder' =>
                                     __('lang.date')]) !!}
                                 </div>
@@ -402,7 +441,7 @@
                             @endphp
                             <div class="col-md-3 payment_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('amount', __('lang.amount') . ':*', []) !!} <br>
+                                    {!! Form::label('amount', __('lang.amount') . ':*', []) !!}
                                     {!! Form::text('amount', !empty($transaction_payment) ?
                                     @num_format($transaction_payment->amount) : 0, ['class' => 'form-control',
                                     'placeholder' => __('lang.amount')]) !!}
@@ -413,49 +452,57 @@
                             <div class="col-md-3 payment_fields hide">
                                 <div class="form-group">
                                     {!! Form::label('method', __('lang.payment_type') . ':*', []) !!}
-                                    {!! Form::select('method', $payment_type_array, !empty($transaction_payment) ?
-                                    $transaction_payment->method : null, ['class' => 'selectpicker form-control',
-                                    'data-live-search' => 'true', 'required', 'style' => 'width: 80%', 'placeholder' =>
+                                    {!! Form::select('method', $payment_type_array, !empty($transaction_payment)
+                                    ?
+                                    $transaction_payment->method : null, ['class' => 'selectpicker
+                                    form-control',
+                                    'data-live-search' => 'true', 'required', 'style' => 'width: 80%',
+                                    'placeholder' =>
                                     __('lang.please_select')]) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-3 payment_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('paid_on', __('lang.payment_date') . ':', []) !!} <br>
+                                    {!! Form::label('paid_on', __('lang.payment_date') . ':', []) !!}
                                     {!! Form::text('paid_on', !empty($transaction_payment) ?
-                                    @format_date($transaction_payment->paid_on) : @format_date(date('Y-m-d')), ['class'
+                                    @format_date($transaction_payment->paid_on) : @format_date(date('Y-m-d')),
+                                    ['class'
                                     => 'form-control datepicker', 'placeholder' => __('lang.payment_date')]) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-3 payment_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('upload_documents', __('lang.upload_documents') . ':', []) !!} <br>
+                                    {!! Form::label('upload_documents', __('lang.upload_documents') . ':', [])
+                                    !!}
                                     <input type="file" name="upload_documents[]" id="upload_documents" multiple>
                                 </div>
                             </div>
                             <div class="col-md-3 not_cash_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('ref_number', __('lang.ref_number') . ':', []) !!} <br>
+                                    {!! Form::label('ref_number', __('lang.ref_number') . ':', []) !!}
                                     {!! Form::text('ref_number', !empty($transaction_payment) ?
-                                    $transaction_payment->ref_number : null, ['class' => 'form-control not_cash',
+                                    $transaction_payment->ref_number : null, ['class' => 'form-control
+                                    not_cash',
                                     'placeholder' => __('lang.ref_number')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-3 not_cash_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('bank_deposit_date', __('lang.bank_deposit_date') . ':', []) !!}
-                                    <br>
+                                    {!! Form::label('bank_deposit_date', __('lang.bank_deposit_date') . ':', [])
+                                    !!}
+
                                     {!! Form::text('bank_deposit_date', !empty($transaction_payment) ?
-                                    @format_date($transaction_payment->bank_deposit_date) : @format_date(date('Y-m-d')),
+                                    @format_date($transaction_payment->bank_deposit_date) :
+                                    @format_date(date('Y-m-d')),
                                     ['class' => 'form-control not_cash datepicker', 'placeholder' =>
                                     __('lang.bank_deposit_date')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-3 not_cash_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('bank_name', __('lang.bank_name') . ':', []) !!} <br>
+                                    {!! Form::label('bank_name', __('lang.bank_name') . ':', []) !!}
                                     {!! Form::text('bank_name', !empty($transaction_payment) ?
                                     $transaction_payment->bank_name : null, ['class' => 'form-control not_cash',
                                     'placeholder' => __('lang.bank_name')]) !!}
@@ -471,41 +518,45 @@
 
                             <div class="col-md-3 due_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('due_date', __('lang.due_date') . ':', []) !!} <br>
+                                    {!! Form::label('due_date', __('lang.due_date') . ':', []) !!}
                                     {!! Form::text('due_date', !empty($add_stock->due_date) ?
-                                    @format_date($add_stock->due_date) : null, ['class' => 'form-control datepicker',
+                                    @format_date($add_stock->due_date) : null, ['class' => 'form-control
+                                    datepicker',
                                     'placeholder' => __('lang.due_date')]) !!}
                                 </div>
                             </div>
 
                             <div class="col-md-3 due_fields hide">
                                 <div class="form-group">
-                                    {!! Form::label('notify_before_days', __('lang.notify_before_days') . ':', []) !!}
-                                    <br>
-                                    {!! Form::text('notify_before_days', $add_stock->notify_before_days, ['class' =>
+                                    {!! Form::label('notify_before_days', __('lang.notify_before_days') . ':',
+                                    []) !!}
+
+                                    {!! Form::text('notify_before_days', $add_stock->notify_before_days,
+                                    ['class' =>
                                     'form-control', 'placeholder' => __('lang.notify_before_days')]) !!}
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    {!! Form::label('notes', __('lang.notes') . ':', []) !!} <br>
-                                    {!! Form::textarea('notes', $add_stock->notes, ['class' => 'form-control', 'rows' =>
+                                    {!! Form::label('notes', __('lang.notes') . ':', []) !!}
+                                    {!! Form::textarea('notes', $add_stock->notes, ['class' => 'form-control',
+                                    'rows' =>
                                     3]) !!}
                                 </div>
                             </div>
 
                         </div>
-
-
                     </div>
-
-                    <div class="col-sm-12">
-                        <button type="btn" name="submit" id="submit-edit-save" style="margin: 10px" value="save"
-                            class="btn btn-primary pull-right btn-flat submit">@lang( 'lang.save' )</button>
-
-                    </div>
-                    {!! Form::close() !!}
                 </div>
+
+
+
+                <div class="col-sm-12">
+                    <button type="btn" name="submit" id="submit-edit-save" style="margin: 10px" value="save"
+                        class="btn btn-primary pull-right btn-flat submit">@lang(
+                        'lang.save' )</button>
+                </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>

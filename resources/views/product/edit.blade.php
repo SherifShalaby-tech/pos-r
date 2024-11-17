@@ -207,21 +207,21 @@
 
                 <x-page-title>
                     <h4>@lang('lang.edit_product')</h4>
-
-
-                    <x-slot name="buttons">
-
-                    </x-slot>
                 </x-page-title>
 
-
-                <div class="card">
-
-                    <div class="card-body">
-                        <p class="italic"><small>@lang('lang.required_fields_info')</small></p>
-                        {!! Form::open(['url' => action('ProductController@update', $product->id), 'id' =>
-                        'product-edit-form', 'method' => 'PUT', 'class' => '', 'enctype' => 'multipart/form-data']) !!}
-                        <div class="row">
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+                            <p class="italic mb-0"><small>@lang('lang.required_fields_info')</small></p>
+                        </div>
+                    </div>
+                </div>
+                {!! Form::open(['url' => action('ProductController@update', $product->id), 'id' =>
+                'product-edit-form', 'method' => 'PUT', 'class' => '', 'enctype' => 'multipart/form-data'])
+                !!}
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-3">
                                 <div class="i-checks">
                                     <input @if (!empty($product->is_service)) checked @endif
@@ -257,10 +257,16 @@
                                         </strong></label>
                                 </div>
                             </div>
-
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group supplier_div @if (empty($product->is_service)) hide @endif">
-                                    {!! Form::label('supplier_id', __('lang.supplier'), []) !!}
+                                    {!! Form::label('supplier_id', __('lang.supplier'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     <div class="input-group my-group">
                                         {!! Form::select('supplier_id', $suppliers, !empty($product->supplier) ?
                                         $product->supplier->id : false, ['class' => 'selectpicker form-control',
@@ -268,10 +274,10 @@
                                         __('lang.please_select')]) !!}
                                         <span class="input-group-btn">
                                             @can('supplier_module.supplier.create_and_edit')
-                                            <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                            <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                                 data-href="{{ action('SupplierController@create') }}?quick_add=1"
                                                 data-container=".view_modal"><i
-                                                    class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                    class="fa fa-plus-circle text-white fa-lg"></i></button>
                                             @endcan
                                         </span>
                                     </div>
@@ -280,20 +286,24 @@
 
                             <div class="col-md-4">
                                 @if (session('system_mode') == 'restaurant')
-                                {!! Form::label('product_class_id', __('lang.category') . ' *', []) !!}
+                                {!! Form::label('product_class_id', __('lang.category') . ' *', ['class' =>
+                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 @else
-                                {!! Form::label('product_class_id', __('lang.class') . ' *', []) !!}
+                                {!! Form::label('product_class_id', __('lang.class') . ' *', ['class' =>
+                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 @endif
                                 <div class="input-group my-group">
-                                    {!! Form::select('product_class_id', $product_classes, $product->product_class_id,
-                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' =>
+                                    {!! Form::select('product_class_id', $product_classes,
+                                    $product->product_class_id,
+                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style'
+                                    =>
                                     'width: 80%', 'placeholder' => __('lang.please_select'), 'required']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.product_class.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('ProductClassController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
@@ -302,51 +312,58 @@
                             @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' ||
                             session('system_mode') == 'supermarket')
                             <div class="col-md-4">
-                                {!! Form::label('category_id', __('lang.category') . ' *', []) !!}
+                                {!! Form::label('category_id', __('lang.category') . ' *', ['class' =>
+                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
                                     {!! Form::select('category_id', $categories, $product->category_id, ['class' =>
-                                    'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
+                                    'selectpicker form-control', 'data-live-search' => 'true', 'style' => 'width:
+                                    80%',
                                     'placeholder' => __('lang.please_select'), 'required']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.category.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('CategoryController@create') }}?quick_add=1&type=category"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
                                 <div class="error-msg text-red"></div>
                             </div>
                             <div class="col-md-4">
-                                {!! Form::label('sub_category_id', __('lang.sub_category') . ' *', []) !!}
+                                {!! Form::label('sub_category_id', __('lang.sub_category') . ' *', ['class' =>
+                                app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
                                     {!! Form::select('sub_category_id', $sub_categories, $product->sub_category_id,
-                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style' =>
+                                    ['class' => 'selectpicker form-control', 'data-live-search' => 'true', 'style'
+                                    =>
                                     'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.sub_category.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('CategoryController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
                                 <div class="error-msg text-red"></div>
                             </div>
                             <div class="col-md-4">
-                                {!! Form::label('brand_id', __('lang.brand') . ' *', []) !!}
+                                {!! Form::label('brand_id', __('lang.brand') . ' *', ['class' => app()->isLocale('ar') ?
+                                'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('brand_id', $brands, $product->brand_id, ['class' => 'selectpicker
-                                    form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder'
+                                    {!! Form::select('brand_id', $brands, $product->brand_id, ['class' =>
+                                    'selectpicker
+                                    form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
+                                    'placeholder'
                                     => __('lang.please_select'), 'required']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.brand.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('BrandController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
@@ -355,15 +372,16 @@
                             @endif
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('name', __('lang.name') . ' *', []) !!}
+                                    {!! Form::label('name', __('lang.name') . ' *', ['class' => app()->isLocale('ar') ?
+                                    'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     <div class="input-group my-group">
-                                        {!! Form::text('name', $product->name, ['class' => 'form-control', 'required',
+                                        {!! Form::text('name', $product->name, ['class' => 'form-control',
+                                        'required',
                                         'placeholder' => __('lang.name')]) !!}
                                         <span class="input-group-btn">
-                                            <button type="button"
-                                                class="btn btn-default bg-white btn-flat translation_btn" type="button"
-                                                data-type="product"><i
-                                                    class="dripicons-web text-primary fa-lg"></i></button>
+                                            <button type="button" class="btn btn-primary btn-flat translation_btn"
+                                                type="button" data-type="product"><i
+                                                    class="dripicons-web text-white fa-lg"></i></button>
                                         </span>
                                     </div>
                                 </div>
@@ -375,7 +393,8 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('sku', __('lang.sku') . ' *', []) !!}
+                                    {!! Form::label('sku', __('lang.sku') . ' *', ['class' => app()->isLocale('ar') ?
+                                    'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     {!! Form::text('sku', $product->sku, ['class' => 'form-control', 'required',
                                     'placeholder' => __('lang.sku')]) !!}
                                 </div>
@@ -383,52 +402,61 @@
                             @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' ||
                             session('system_mode') == 'supermarket')
                             <div class="col-md-4">
-                                {!! Form::label('multiple_units', __('lang.unit'), []) !!}
+                                {!! Form::label('multiple_units', __('lang.unit'), ['class' => app()->isLocale('ar') ?
+                                'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('multiple_units[]', $units, $product->multiple_units, ['class' =>
+                                    {!! Form::select('multiple_units[]', $units, $product->multiple_units, ['class'
+                                    =>
                                     'selectpicker form-control', 'data-live-search' => 'true', 'disabled' =>
-                                    $product->type == 'variable' ? true : false, 'style' => 'width: 80%', 'multiple',
+                                    $product->type == 'variable' ? true : false, 'style' => 'width: 80%',
+                                    'multiple',
                                     'id' => 'multiple_units']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.unit.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('UnitController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                {!! Form::label('multiple_colors', __('lang.color'), []) !!}
+                                {!! Form::label('multiple_colors', __('lang.color'), ['class' => app()->isLocale('ar') ?
+                                'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('multiple_colors[]', $colors, $product->multiple_colors, ['class'
-                                    => 'selectpicker form-control', 'data-live-search' => 'true', 'disabled' => false,
+                                    {!! Form::select('multiple_colors[]', $colors, $product->multiple_colors,
+                                    ['class'
+                                    => 'selectpicker form-control', 'data-live-search' => 'true', 'disabled' =>
+                                    false,
                                     'style' => 'width: 80%', 'multiple', 'id' => 'multiple_colors']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.color.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('ColorController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
                             </div>
                             @endif
                             <div class="col-md-4">
-                                {!! Form::label('multiple_sizes', __('lang.size'), []) !!}
+                                {!! Form::label('multiple_sizes', __('lang.size'), ['class' => app()->isLocale('ar') ?
+                                'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('multiple_sizes[]', $sizes, $product->multiple_sizes, ['class' =>
+                                    {!! Form::select('multiple_sizes[]', $sizes, $product->multiple_sizes, ['class'
+                                    =>
                                     'selectpicker form-control', 'data-live-search' => 'true', 'disabled' =>
-                                    $product->type == 'variable' ? true : false, 'style' => 'width: 80%', 'multiple',
+                                    $product->type == 'variable' ? true : false, 'style' => 'width: 80%',
+                                    'multiple',
                                     'id' => 'multiple_sizes']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.size.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('SizeController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
@@ -436,24 +464,32 @@
                             @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' ||
                             session('system_mode') == 'supermarket')
                             <div class="col-md-4">
-                                {!! Form::label('multiple_grades', __('lang.grade'), []) !!}
+                                {!! Form::label('multiple_grades', __('lang.grade'), ['class' => app()->isLocale('ar') ?
+                                'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
-                                    {!! Form::select('multiple_grades[]', $grades, $product->multiple_grades, ['class'
+                                    {!! Form::select('multiple_grades[]', $grades, $product->multiple_grades,
+                                    ['class'
                                     => 'selectpicker form-control', 'data-live-search' => 'true', 'disabled' =>
-                                    $product->type == 'variable' ? true : false, 'style' => 'width: 80%', 'multiple',
+                                    $product->type == 'variable' ? true : false, 'style' => 'width: 80%',
+                                    'multiple',
                                     'id' => 'multiple_grades']) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.grade.create_and_edit')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('GradeController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
                             </div>
                             @endif
-
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-12 " style="margin-top: 10px;">
                                 <div class="container mt-3">
                                     <div class="row mx-0" style="border: 1px solid #ddd;padding: 30px 0px;">
@@ -495,11 +531,18 @@
 
 
                             </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-12">
                                 <div class="form-group">
                                     @if (session('system_mode') == 'restaurant')
-                                    {!! Form::label('recipe', __('lang.recipe'), []) !!}
+                                    {!! Form::label('recipe', __('lang.recipe'), ['class' => app()->isLocale('ar') ?
+                                    'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     @else
                                     <label>@lang('lang.product_details')</label>
                                     @endif
@@ -519,8 +562,10 @@
                             session('system_mode') == 'pos')
                             <div class="col-md-4">
                                 <div class="i-checks">
-                                    <input @if (!empty($product) && $product->automatic_consumption == 1) checked @endif
-                                    value="1" id="automatic_consumption" name="automatic_consumption" type="checkbox"
+                                    <input @if (!empty($product) && $product->automatic_consumption == 1) checked
+                                    @endif
+                                    value="1" id="automatic_consumption" name="automatic_consumption"
+                                    type="checkbox"
                                     class="form-control-custom">
                                     <label
                                         for="automatic_consumption"><strong>@lang('lang.automatic_consumption')</strong></label>
@@ -529,7 +574,8 @@
                             <div class="col-md-4">
                                 <div class="i-checks">
                                     <input id="price_based_on_raw_material" name="price_based_on_raw_material"
-                                        type="checkbox" @if ($product->price_based_on_raw_material == 1) checked @endif
+                                        type="checkbox" @if ($product->price_based_on_raw_material == 1) checked
+                                    @endif
                                     value="1"
                                     class="form-control-custom">
                                     <label
@@ -575,6 +621,12 @@
                                 <input type="hidden" name="raw_material_row_index" id="raw_material_row_index"
                                     value="@if (!empty($consumption_products) && $consumption_products->count() > 0) {{ $consumption_products->count() }}@else{{ 0 }} @endif">
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-12"><strong>@lang('lang.product_extension')</strong></div>
                             <div class="col-md-12">
 
@@ -605,12 +657,19 @@
                                 </table>
                                 <input type="hidden" name="extension_row_index" id="extension_row_index" value="1">
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <div class="form-check">
                                         <input class="form-check-input depends_on" type="radio" name="depends_on"
                                             id="selling_price_depends" value="1">
-                                        <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد على
+                                        <label class="form-check-label" for="selling_price_depends">سعر البيع يعتمد
+                                            على
                                             سعر الشراء</label>
                                         <div class="form-group selling_price_depends_div hide">
                                             <label>سعر البيع يزيد عن سعر الشراء بــمبلغ</label>
@@ -626,7 +685,8 @@
                                     <div class="form-check">
                                         <input class="form-check-input depends_on" type="radio" name="depends_on"
                                             id="purchase_price_depends" value="2">
-                                        <label class="form-check-label" for="purchase_price_depends">سعر الشراء يعتمد
+                                        <label class="form-check-label" for="purchase_price_depends">سعر الشراء
+                                            يعتمد
                                             على سعر البيع</label>
                                         <div class="form-group purchase_price_depends_div hide">
                                             <label>سعر الشراء يقل عن سعر البيع بــمبلغ</label>
@@ -647,15 +707,18 @@
                             session('system_mode') == 'supermarket')
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('barcode_type', __('lang.barcode_type') . ' *', []) !!}
-                                    {!! Form::select('barcode_type', ['C128' => 'Code 128', 'C39' => 'Code 39', 'UPCA'
+                                    {!! Form::label('barcode_type', __('lang.barcode_type') . ' *', ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::select('barcode_type', ['C128' => 'Code 128', 'C39' => 'Code 39',
+                                    'UPCA'
                                     => 'UPC-A', 'UPCE' => 'UPC-E', 'EAN8' => 'EAN-8', 'EAN13' => 'EAN-13'],
                                     $product->barcode_type, ['class' => 'form-control', 'required']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('alert_quantity', __('lang.alert_quantity') . ' *', []) !!}
+                                    {!! Form::label('alert_quantity', __('lang.alert_quantity') . ' *', ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     {!! Form::text('alert_quantity', $product->alert_quantity, ['class' =>
                                     'form-control', 'placeholder' => __('lang.alert_quantity')]) !!}
                                 </div>
@@ -663,7 +726,8 @@
                             @endif
                             <div class="col-md-4">
                                 <div class="form-group">
-                                    {!! Form::label('other_cost', __('lang.other_cost'), []) !!}
+                                    {!! Form::label('other_cost', __('lang.other_cost'), ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     {!! Form::text('other_cost', @num_format($product->other_cost), ['class' =>
                                     'form-control', 'placeholder' => __('lang.other_cost')]) !!}
                                 </div>
@@ -672,34 +736,41 @@
                             <div class="col-md-4 supplier_div @if (empty($product->is_service)) hide @endif">
                                 <div class="form-group">
                                     {!! Form::label('purchase_price', session('system_mode') == 'pos' ||
-                                    session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ?
-                                    __('lang.purchase_price') : __('lang.cost') . ' *', []) !!}
-                                    {!! Form::text('purchase_price', @num_format($product->purchase_price), ['class' =>
+                                    session('system_mode') == 'garments' || session('system_mode') == 'supermarket'
+                                    ?
+                                    __('lang.purchase_price') : __('lang.cost') . ' *', ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                    {!! Form::text('purchase_price', @num_format($product->purchase_price), ['class'
+                                    =>
                                     'form-control', 'placeholder' => session('system_mode') == 'pos' ||
-                                    session('system_mode') == 'garments' || session('system_mode') == 'supermarket' ?
+                                    session('system_mode') == 'garments' || session('system_mode') == 'supermarket'
+                                    ?
                                     __('lang.purchase_price') : __('lang.cost'), 'required']) !!}
                                 </div>
                             </div>
                             @endcan
                             <div class="col-md-4 supplier_div @if (empty($product->is_service)) hide @endif">
                                 <div class="form-group">
-                                    {!! Form::label('sell_price', __('lang.sell_price') . ' *', []) !!}
+                                    {!! Form::label('sell_price', __('lang.sell_price') . ' *', ['class' =>
+                                    app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en']) !!}
                                     {!! Form::text('sell_price', @num_format($product->sell_price), ['class' =>
                                     'form-control', 'placeholder' => __('lang.sell_price'), 'required']) !!}
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                {!! Form::label('tax_id', __('lang.tax'), []) !!}
+                                {!! Form::label('tax_id', __('lang.tax'), ['class' => app()->isLocale('ar') ? 'mb-1
+                                label-ar' : 'mb-1 label-en']) !!}
                                 <div class="input-group my-group">
                                     {!! Form::select('tax_id', $taxes, $product->tax_id, ['class' => 'selectpicker
-                                    form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder'
+                                    form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
+                                    'placeholder'
                                     => __('lang.please_select')]) !!}
                                     <span class="input-group-btn">
                                         @can('product_module.tax.create')
-                                        <button type="button" class="btn-modal btn btn-default bg-white btn-flat"
+                                        <button type="button" class="btn-modal btn btn-partial btn-primary btn-flat"
                                             data-href="{{ action('TaxController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i
-                                                class="fa fa-plus-circle text-primary fa-lg"></i></button>
+                                                class="fa fa-plus-circle text-white fa-lg"></i></button>
                                         @endcan
                                     </span>
                                 </div>
@@ -708,15 +779,23 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     {!! Form::label('tax_method', __('lang.tax_method'), []) !!}
-                                    {!! Form::select('tax_method', ['inclusive' => __('lang.inclusive'), 'exclusive' =>
+                                    {!! Form::select('tax_method', ['inclusive' => __('lang.inclusive'), 'exclusive'
+                                    =>
                                     __('lang.exclusive')], $product->tax_method, ['class' => 'selectpicker
-                                    form-control', 'data-live-search' => 'true', 'style' => 'width: 80%', 'placeholder'
+                                    form-control', 'data-live-search' => 'true', 'style' => 'width: 80%',
+                                    'placeholder'
                                     => __('lang.please_select')]) !!}
                                 </div>
                             </div>
-                            <br>
-                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="clearfix"></div>
+
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-12">
                                 <table class="table table-bordered" id="consumption_table_discount">
                                     <thead>
@@ -830,11 +909,18 @@
                                         for="show_to_customer"><strong>@lang('lang.show_to_customer')</strong></label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
 
+                <div class="card mb-1">
+                    <div class="card-body py-1 mb-1">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                             <div class="col-md-12 show_to_customer_type_div">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        {!! Form::label('show_to_customer_types', __('lang.show_to_customer_types'), [])
+                                        {!! Form::label('show_to_customer_types', __('lang.show_to_customer_types'),
+                                        [])
                                         !!}
                                         <i class="dripicons-question" data-toggle="tooltip"
                                             title="@lang('lang.show_to_customer_types_info')"></i>
@@ -847,7 +933,8 @@
 
                             <div class="col-md-12" style="margin-top: 10px">
                                 <div class="i-checks">
-                                    <input @if ($product->different_prices_for_stores) checked @endif type="checkbox"
+                                    <input @if ($product->different_prices_for_stores) checked @endif
+                                    type="checkbox"
                                     value="1"
                                     class="form-control-custom" id="different_prices_for_stores"
                                     name="different_prices_for_stores">
@@ -930,21 +1017,24 @@
                             </div>
                             <input type="hidden" name="row_id" id="row_id" value="{{ $product->variations->count() }}">
                         </div>
-                        <div id="cropped_edit_product_images"></div>
-                        <div class="row">
-                            <div class="col-md-4 mt-5">
-                                <div class="form-group">
-                                    <input type="button" id="submit-btn" value="{{ trans('lang.save') }}"
-                                        class="btn btn-primary">
-                                </div>
-                            </div>
-                        </div>
-                        {!! Form::close() !!}
                     </div>
                 </div>
+
+
+                <div id="cropped_edit_product_images"></div>
+                <div class="row">
+                    <div class="col-md-4 mt-5">
+                        <div class="form-group">
+                            <input type="button" id="submit-btn" value="{{ trans('lang.save') }}"
+                                class="btn btn-primary">
+                        </div>
+                    </div>
+                </div>
+                {!! Form::close() !!}
             </div>
         </div>
     </div>
+
 </section>
 
 <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-labelledby="editProductModalLabel"
