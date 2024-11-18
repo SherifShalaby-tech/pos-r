@@ -1,5 +1,5 @@
 <div class="payment-options d-flex flex-wrap justify-content-start flex-row-reverse pb-2 table_room_hide"
-    style="gap:10px; width: @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') 100%; @else 50%; @endif">
+    style="gap:10px;">
     {{-- <div class="">
         <button data-method="card" style="background: #0984e3" type="button" class="btn btn-custom payment-btn"
             data-toggle="modal" data-target="#add-payment" id="credit-card-btn"><i class="fa fa-credit-card"></i>

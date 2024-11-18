@@ -127,7 +127,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                         <div class="d-flex flex-column">
                                             <div class="text-primary border d-flex justify-content-between align-items-center rounded"
                                                 style="padding: 3px;min-width: 100px;">
-                                                <label class=" mb-0 text-primary w-100 px-1 bg-white rounded"
+                                                <label class=" mb-0 text-primary p-1 bg-white rounded"
                                                     style="font-weight:600" for="
                                                 customer_type_name">@lang('lang.customer_type'):</label>
                                                 <span style="font-size: 12px !important;font-weight: 600 !important;"

@@ -10,7 +10,7 @@
                         </label>
                     </th>
                     <th
-                        style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
+                        style="width: @if (session('system_mode') != 'restaurant') 12% @else 15% @endif; font-size: 12px !important;">
                         @lang('lang.product')</th>
                     <th
                         style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
@@ -19,16 +19,16 @@
                         style="width: @if (session('system_mode') != 'restaurant') 12% @else 12% @endif; font-size: 12px !important;">
                         @lang('lang.price')</th>
                     <th
-                        style="width: @if (session('system_mode') != 'restaurant') 9% @else 8% @endif; font-size: 12px !important;">
+                        style="width: @if (session('system_mode') != 'restaurant') 9% @else 9% @endif; font-size: 12px !important;">
                         @lang('lang.extension')</th>
                     <th
                         style="width: @if (session('system_mode') != 'restaurant') 11% @else 12% @endif; font-size: 12px !important;">
                         @lang('lang.discount')</th>
                     <th
-                        style="width: @if (session('system_mode') != 'restaurant') 11% @else 13% @endif; font-size: 12px !important;">
+                        style="width: @if (session('system_mode') != 'restaurant') 10% @else 10% @endif; font-size: 12px !important;">
                         @lang('lang.category_discount')</th>
                     <th
-                        style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
+                        style="width: @if (session('system_mode') != 'restaurant') 12% @else 12% @endif; font-size: 12px !important;">
                         @lang('lang.sub_total')</th>
                     @if (session('system_mode') != 'restaurant')
                     <th
