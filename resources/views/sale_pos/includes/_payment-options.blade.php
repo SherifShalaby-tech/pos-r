@@ -1,4 +1,4 @@
-<div class="payment-options d-flex flex-column justify-content-center p-2 table_room_hide"
+<div class="payment-options d-flex flex-wrap justify-content-start flex-row-reverse pb-2 table_room_hide"
     style="gap:10px; width: @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') 100%; @else 50%; @endif">
     {{-- <div class="">
         <button data-method="card" style="background: #0984e3" type="button" class="btn btn-custom payment-btn"
@@ -89,5 +89,21 @@
         <button style="background-color: var(--primary-color);" type="button" class="btn btn-custom"
             id="bank-transfer-btn">
             @lang('lang.bank_transfer')</button>
+    </div>
+
+    <div class="payment-amount table_room_hide bg-primary text-white " style="position: absolute;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0 10px;
+    width: 200px">
+        <span class="">{{ __('lang.grand_total') }}
+        </span>
+        <span class="final_total_span">0.00</span>
     </div>
 </div>

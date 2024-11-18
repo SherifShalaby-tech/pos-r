@@ -1,17 +1,16 @@
-<div class="d-flex col-md-4 px-1 flex-column align-items-center">
+<div class="d-flex col-md-6 px-1 flex-column align-items-center">
 
-    <div class="col-md-12 my-1 d-flex" style="gap: 7px">
+    <div class="col-md-12 px-0 my-1 d-flex" style="gap: 7px">
         @if (session('system_mode') == 'restaurant')
         <button type=" button" style="padding: 0px !important;" data-toggle="modal" data-target="#dining_model" {{--
             data-href="/dining-room/get-dining-modal/0/0/0/0" data-container="#dining_model" --}}
-            class="btn btn-modal pull-right col-md-6 dining-btn">
+            class="btn btn-modal pull-right col-md-6 mx-auto dining-btn">
             <span class="badge badge-danger table-badge">0</span>
             <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
                 style="width: 40px; height: 33px; margin-top: 7px;"></button>
         @endif
 
-        <button id="offcanvas-toggle" type="button"
-            class="offcanvas-toggle col-md-6 btn btn-primary py-2">Products</button>
+
     </div>
     <div class="col-md-12 px-0">
         <div class="search-box input-group">

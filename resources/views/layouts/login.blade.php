@@ -29,8 +29,8 @@ $site_title = App\Models\System::getProperty('site_title');
         }
 
         :root {
-            --primary-color: #4f46e5;
-            --primary-color-hover: #362ebd;
+            --primary-color: rgb(96 165 250);
+            --primary-color-hover: rgb(59 130 246);
         }
 
         ..text-primary {

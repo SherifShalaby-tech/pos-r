@@ -695,7 +695,6 @@ nav.navbar a.menu-btn:hover {
 nav.navbar {
     /* background: #fff; */
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    line-height: 60px;
     padding: 0;
 }
 
@@ -1202,11 +1201,7 @@ div.has-error>.form-text {
     border-bottom: none;
 }
 
-.payment-amount {
-    background-color: #d6deff;
-    margin-top: 10px;
-    text-align: center;
-}
+
 
 .payment-amount h2 {
     color: var(--primary-color);

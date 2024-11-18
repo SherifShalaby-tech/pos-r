@@ -9,14 +9,15 @@
 
                         <li class="nav-item ml-1 ">
                             <a id="toggle-btn" href="#" class="menu-btn border-0 bg-primary"><img
-                                    src="{{ asset('front/white-menu.png') }}" alt=""></a>
+                                    style="width: 25px;height: 25px;" src="{{ asset('front/white-menu.png') }}"
+                                    alt=""></a>
                         </li>
 
                         <li class="nav-item ml-1 ">
                             <a href="{{ action('SellController@create') }}" id="commercial_invoice_btn"
                                 data-toggle="tooltip" data-title="@lang('lang.add_sale')" class="btn no-print"><img
                                     src="{{ asset('images/396 Commercial Invoice Icon.png') }}" alt=""
-                                    style="height: 30px;">
+                                    style="height: 20px;">
                             </a>
                         </li>
                         <li class="nav-item ml-1 ">

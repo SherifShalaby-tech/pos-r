@@ -82,7 +82,7 @@
                                                 </span>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mb-2 btn-add-payment">
+                                        <div class="col-md-6 mb-2 p-0 btn-add-payment">
                                             <button type="button" id="add_payment_row"
                                                 class="btn btn-primary btn-block">
                                                 @lang('lang.add_payment_row')</button>

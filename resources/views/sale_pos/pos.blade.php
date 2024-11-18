@@ -104,7 +104,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
             {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class'
             => 'pos-form d-flex', 'id' => 'add_pos_form']) !!}
-            <div class="px-1  col-md-10 ">
+            <div class="px-1  col-md-8 ">
                 <div class="card m-0">
 
                     <input type="hidden" name="default_customer_id" id="default_customer_id"
@@ -121,57 +121,64 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         <div class="col-md-12 main_settings">
                             <div class="d-flex justify-content-between align-items-end">
 
-                                <div class="d-flex col-md-8 align-items-end px-0 table_room_hide" style="gap: 10px">
+                                <div class="d-flex col-md-6 align-items-end px-0 table_room_hide" style="gap: 10px">
 
-                                    <div class="col-md-3 px-0">
-                                        {!! Form::label('customer_id', __('lang.customer'), [
-                                        'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
-                                        ]) !!}
-                                        <div class="input-group my-group">
-                                            {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
-                                            $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
-                                            'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
-                                            'customer_id', 'required']) !!}
-                                            <span class="input-group-btn">
-                                                @can('customer_module.customer.create_and_edit')
-                                                <a class="btn-modal btn-primary btn btn-partial"
-                                                    data-href="{{ action('CustomerController@create') }}?quick_add=1"
-                                                    data-container=".view_modal"><i
-                                                        class="fa fa-plus-circle text-white fa-lg"></i></a>
-                                                @endcan
-                                            </span>
+                                    <div class="col-md-5 px-0">
+                                        <div class="d-flex flex-column">
+                                            <div class="text-primary border d-flex justify-content-between align-items-center rounded"
+                                                style="padding: 3px;min-width: 100px;">
+                                                <label class=" mb-0 text-primary w-100 px-1 bg-white rounded"
+                                                    style="font-weight:600" for="
+                                                customer_type_name">@lang('lang.customer_type'):</label>
+                                                <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                    class="customer_type_name"></span>
+                                            </div>
+
+
+                                            {!! Form::label('customer_id', __('lang.customer'), [
+                                            'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
+                                            ]) !!}
+                                            <div class="input-group my-group">
+                                                {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
+                                                $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
+                                                'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
+                                                'customer_id', 'required']) !!}
+                                                <span class="input-group-btn">
+                                                    @can('customer_module.customer.create_and_edit')
+                                                    <a class="btn-modal btn-primary btn btn-partial"
+                                                        data-href="{{ action('CustomerController@create') }}?quick_add=1"
+                                                        data-container=".view_modal"><i
+                                                            class="fa fa-plus-circle text-white fa-lg"></i></a>
+                                                    @endcan
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class=" d-flex justify-content-between align-items-center" style="gap: 10px">
 
-                                        <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
-                                            style="padding: 5px;min-width: 100px;">
-                                            <label class="text-center text-primary w-100 px-3 bg-white rounded"
-                                                style="font-weight:600" for="
-                                                customer_type_name">@lang('lang.customer_type')</label>
-                                            <span style="font-size: 12px !important;font-weight: 600 !important;"
-                                                class="customer_type_name"></span>
-                                        </div>
 
-                                        <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
-                                            style="padding: 5px;min-width: 100px;">
-                                            <label class="text-center text-primary w-100 px-3 bg-white rounded"
-                                                style="font-weight:600"
-                                                for="customer_balance">@lang('lang.balance')</label>
-                                            <span style="font-size: 12px !important;font-weight: 600 !important;"
-                                                class="customer_balance">{{ @num_format(0) }}</span>
-                                        </div>
+                                        <div class="d-flex flex-column" style="gap: 3px;margin-top:2px">
 
-                                        <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
-                                            style="padding: 5px;min-width: 100px;">
-                                            <label class="text-center text-primary w-100 px-3 bg-white rounded"
-                                                style="font-weight:600" for="points">@lang('lang.points')</label>
+                                            <div class="text-primary border d-flex flex-column justify-content-center align-items-center rounded"
+                                                style="padding: 3px;min-width: 70px;">
+                                                <label class="text-center text-primary w-100 mb-0 px-3 bg-white rounded"
+                                                    style="font-weight:600"
+                                                    for="customer_balance">@lang('lang.balance')</label>
+                                                <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                    class="customer_balance">{{ @num_format(0) }}</span>
+                                            </div>
 
-                                            <span style="font-size: 12px !important;font-weight: 600 !important;"
-                                                class="points"><span class="customer_points_span">{{ @num_format(0)
-                                                    }}</span></span>
-                                            <span class="staff_note small"></span>
+                                            <div class="text-primary border d-flex flex-column justify-content-center align-items-center rounded"
+                                                style="padding: 3px;min-width: 70px;">
+                                                <label class="text-center text-primary w-100 mb-0 px-3 bg-white rounded"
+                                                    style="font-weight:600" for="points">@lang('lang.points')</label>
+
+                                                <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                    class="points"><span class="customer_points_span">{{ @num_format(0)
+                                                        }}</span></span>
+                                                <span class="staff_note small"></span>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -248,8 +255,15 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                             @include('sale_pos.includes._hidden-inputs')
 
 
-                            @include('sale_pos.includes._totals')
+                            <div class="d-flex flex-row-reverse" style="border-top: 2px solid #e4e6fc;">
 
+                                @include('sale_pos.includes._totals')
+
+                                @include('sale_pos.includes._terms')
+                            </div>
+
+
+                            @include('sale_pos.includes._payment-options')
 
 
                             <div class="col-md-12 table_room_show hide"
@@ -304,10 +318,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     </div>
 
 
-                    <div class="payment-amount table_room_hide">
-                        <h2 class="bg-primary text-white">{{ __('lang.grand_total') }} <span
-                                class="final_total_span">0.00</span></h2>
-                    </div>
+
                     @php
                     $default_invoice_toc = App\Models\System::getProperty('invoice_terms_and_conditions');
                     if (!empty($default_invoice_toc)) {
@@ -321,7 +332,6 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
 
 
-                    @include('sale_pos.includes._terms')
 
 
 
@@ -330,22 +340,14 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
 
 
-            <div class="card m-0 px-1  col-md-2 ">
+            <div class="card m-0 px-1  col-md-4 ">
                 <!-- navbar-->
 
                 @include('sale_pos.includes._header')
 
-                @include('sale_pos.includes._payment-options')
 
 
-                <div id="offcanvas" class="offcanvas">
-                    <button id="offcanvas-close" type="button" class="offcanvas-close">×</button>
-                    <h2>Products</h2>
-
-                    @include('sale_pos.partials.right_side')
-                </div>
-
-
+                @include('sale_pos.partials.right_side')
 
 
 

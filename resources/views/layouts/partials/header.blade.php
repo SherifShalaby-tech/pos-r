@@ -28,67 +28,45 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
                             <li class="d-flex" style="gap: 5px">
                                 <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#2563eb' , '#1d4ed8')">
-                                    <span style="width: 25px;height: 25px;background-color: #2563eb"
+                                    onclick="changePrimaryColor('rgb(96 165 250)' , 'rgb(59 130 246)')">
+                                    <span style="width: 25px;height: 25px;background-color: rgb(96 165 250)"
                                         class="rounded-circle">
                                     </span>
                                 </button>
                                 <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#16a34a' , '#15803d')">
-                                    <span style="width: 25px;height: 25px;background-color: #16a34a"
+                                    onclick="changePrimaryColor('rgb(52 211 153)' , 'rgb(16 185 129)')">
+                                    <span style="width: 25px;height: 25px;background-color: rgb(52 211 153)"
                                         class="rounded-circle">
                                     </span>
                                 </button>
                                 <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#ea580c','#c2410c')">
-                                    <span style="width: 25px;height: 25px;background-color: #ea580c"
-                                        class="rounded-circle">
-                                    </span>
-                                </button>
-                                <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#ec4899' , '#be185d')">
-                                    <span style="width: 25px;height: 25px;background-color: #ec4899"
+                                    onclick="changePrimaryColor('rgb(45 212 191)','rgb(20 184 166)')">
+                                    <span style="width: 25px;height: 25px;background-color: rgb(45 212 191)"
                                         class="rounded-circle">
                                     </span>
                                 </button>
 
                                 <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#dc2626','#b91c1c')">
-                                    <span style="width: 25px;height: 25px;background-color: #dc2626"
+                                    onclick="changePrimaryColor('rgb(56 189 248)','rgb(14 165 233)')">
+                                    <span style="width: 25px;height: 25px;background-color: rgb(56 189 248)"
                                         class="rounded-circle">
                                     </span>
                                 </button>
 
                                 <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#0284c7','#0369a1')">
-                                    <span style="width: 25px;height: 25px;background-color: #0284c7"
+                                    onclick="changePrimaryColor('rgb(129 140 248)','rgb(99 102 241)')">
+                                    <span style="width: 25px;height: 25px;background-color: rgb(129 140 248)"
                                         class="rounded-circle">
                                     </span>
                                 </button>
+
                                 <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#475569','#334155')">
-                                    <span style="width: 25px;height: 25px;background-color: #475569"
+                                    onclick="changePrimaryColor('rgb(248 113 113)','rgb(239 68 68)')">
+                                    <span style="width: 25px;height: 25px;background-color: rgb(248 113 113)"
                                         class="rounded-circle">
                                     </span>
                                 </button>
-                                <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#14b8a6','#0d9488')">
-                                    <span style="width: 25px;height: 25px;background-color: #14b8a6"
-                                        class="rounded-circle">
-                                    </span>
-                                </button>
-                                <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#eab308','#c8b400')">
-                                    <span style="width: 25px;height: 25px;background-color: #eab308"
-                                        class="rounded-circle">
-                                    </span>
-                                </button>
-                                <button class="border-0 d-flex justify-content-center align-items-center"
-                                    onclick="changePrimaryColor('#4f46e5','#3730a3')">
-                                    <span style="width: 25px;height: 25px;background-color: #4f46e5"
-                                        class="rounded-circle">
-                                    </span>
-                                </button>
+
                             </li>
                         </ul>
                     </li>

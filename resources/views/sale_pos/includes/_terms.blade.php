@@ -1,6 +1,6 @@
-<div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif table_room_hide">
+<div class="d-flex col-4 px-1 @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif table_room_hide">
 
-    <div class="col-md-4">
+    <div class="col-md-5 px-1">
         <div class="form-group">
             {!! Form::label('terms_and_condition_id', __('lang.terms_and_conditions'), [
             'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
@@ -16,7 +16,7 @@
         </div>
         <div class="tac_description_div"><span></span></div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-5 px-1">
         <div class="form-group">
             {!! Form::label('commissioned_employees', __('lang.commissioned_employees'), ['class' =>
             app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'])
@@ -26,15 +26,15 @@
             'commissioned_employees']) !!}
         </div>
     </div>
-    <div class="col-md-2 d-flex justify-content-center align-items-center hide shared_commission_div">
+    <div class=" d-flex justify-content-center align-items-center hide shared_commission_div">
         <div class="i-checks toggle-pill-color d-flex flex-column align-items-center">
             <input id="shared_commission" name="shared_commission" type="checkbox" value="1"
                 class="form-control-custom">
             <label for="shared_commission"></label>
-            <span>
-                <strong>
-                    @lang('lang.shared_commission')
-                </strong>
+            <span class="text-center">
+
+                @lang('lang.shared_commission')
+
             </span>
         </div>
     </div>

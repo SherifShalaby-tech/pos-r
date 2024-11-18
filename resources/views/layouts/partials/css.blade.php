@@ -80,8 +80,8 @@
 
 <style>
     :root {
-        --primary-color: #4f46e5;
-        --primary-color-hover: #362ebd;
+        --primary-color: rgb(96 165 250);
+        --primary-color-hover: rgb(59 130 246);
     }
 
     /* HTML: <div class="loader"></div> */
@@ -90,7 +90,7 @@
         aspect-ratio: 1;
         border-radius: 50%;
         background: var(--primary-color);
-        box-shadow: 0 0 0 0 #4e46e549;
+        box-shadow: 0 0 0 0 rgb(219 234 254);
         animation: l2 1.5s infinite linear;
         position: fixed;
         top: 50%;
@@ -105,7 +105,7 @@
         position: absolute;
         inset: 0;
         border-radius: inherit;
-        box-shadow: 0 0 0 0 #4e46e549;
+        box-shadow: 0 0 0 0 rgb(219 234 254);
         animation: inherit;
         animation-delay: -0.5s;
     }
@@ -247,7 +247,7 @@
     .btn-partial {
         border-radius: 0 6px 6px 0px;
         border: 2px solid var(--primary-color);
-        box-shadow: 2px 2px 4px 0px #087e74;
+
         display: flex;
         justify-content: center;
         align-items: center;
