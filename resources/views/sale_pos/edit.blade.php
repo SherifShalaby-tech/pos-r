@@ -503,8 +503,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         <div class="col-md-3 px-1">
                             <div class="form-group">
                                 {!! Form::label('commissioned_employees',
-                                __('lang.commissioned_employees'),
-                                [app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'])
+                                __('lang.commissioned_employees'), ['class' => app()->isLocale('ar') ? 'mb-0 label-ar' :
+                                'mb-0 label-en'])
                                 !!}
                                 {!! Form::select('commissioned_employees[]', $employees,
                                 $transaction->commissioned_employees, ['class' => 'form-control
