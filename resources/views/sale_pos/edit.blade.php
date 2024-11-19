@@ -591,7 +591,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                 @lang('lang.pay_later')</button>
                         </div>
                         <div class="">
-                            <button data-method="cash" type="button" class="btn btn-custom btn-danger" id="cancel-btn"
+                            <button data-method="cash" type="button" class="btn btn-danger" id="cancel-btn"
                                 onclick="return confirmCancel()"><i class="fa fa-close"></i>
                                 @lang('lang.cancel')</button>
                         </div>
