@@ -470,4 +470,12 @@
         margin-bottom: 0.5rem !important;
         margin-top: 0.5rem !important;
     }
+
+    section.pos-section {
+        transition: 0.3s
+    }
+
+    .shrink_pos {
+        margin-left: 230px;
+    }
 </style>

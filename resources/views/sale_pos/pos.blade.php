@@ -152,8 +152,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
                         <div class="col-md-12 main_settings">
 
-                            <div class="d-flex">
-                                <div class="d-flex col-md-6 align-items-end px-0 table_room_hide" style="gap: 10px">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex col-md-8 align-items-end px-0 table_room_hide" style="gap: 10px">
                                     <div class="col-md-5 px-0">
                                         <div class="d-flex flex-column">
                                             <div class="text-primary border d-flex justify-content-between align-items-center rounded"
@@ -210,14 +210,14 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                         </div>
                                     </div>
 
-                                    <div class="px-0">
+                                    <div class="px-0 text-center">
                                         @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
                                         <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-1 w-100"
                                             data-toggle="modal"
                                             data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
                                         @endif
 
-                                        <button type="button" class="btn btn-primary w-100" data-toggle="modal"
+                                        <button type="button" class="btn btn-primary w-75" data-toggle="modal"
                                             data-target="#contact_details_modal">@lang('lang.details')</button>
                                     </div>
                                 </div>
