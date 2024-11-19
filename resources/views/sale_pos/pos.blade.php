@@ -16,6 +16,11 @@
         height: 140%;
         accent-color: #7e2dff;
     }
+
+    th,
+    td {
+        padding: 5px
+    }
 </style>
 
 @endsection
