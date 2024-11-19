@@ -49,16 +49,16 @@
         </div>
         <input type="hidden" name="discount_amount" id="discount_amount">
         <div class="modal-footer">
-            <button type="button" name="discount_btn" id="table_action_btn"
+            <button style="flex: 1" type="button" name="discount_btn" id="table_action_btn"
                 class="btn btn-primary hide">@lang('lang.save')</button>
 
-            <button type="button" name="discount_btn" id="table_edit_btn" class="btn btn-primary hide"
+            <button style="flex: 1" type="button" name="discount_btn" id="table_edit_btn" class="btn btn-primary hide"
                 data-table_id="{{$dining_table->dining_table_id}}"
                 data-reserve_id="{{ $dining_table->id }}">@lang('lang.update')</button>
 
-            <button type="button" name="discount_btn" id="table_reserve_btn"
+            <button style="flex: 1" type="button" name="discount_btn" id="table_reserve_btn"
                 class="btn btn-primary">@lang('lang.save')</button>
-            <button type="button" name="cancel" class="btn btn-default"
+            <button style="flex: 1" type="button" name="cancel" class="btn btn-default"
                 data-dismiss="modal">@lang('lang.cancel')</button>
         </div>
     </div>
