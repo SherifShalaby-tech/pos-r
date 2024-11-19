@@ -40,7 +40,7 @@
         position: relative;
         z-index: 1;
         transition: all 0.3s ease 0s;
-        border: 1px solid rgb(248, 200, 111);
+        border: 1px solid var(--primary-color);
         border-radius: 5px;
         width: 132px;
         display: inline-block;
@@ -51,13 +51,13 @@
     .vertical-tab .nav-tabs li.active a,
     .vertical-tab .nav-tabs li.active a:hover {
         color: rgb(51, 50, 50);
-        border: 1px solid rgb(248, 200, 111);
+        border: 1px solid var(--primary-color);
         border-radius: 5px;
     }
 
     .vertical-tab .nav-tabs li a.active {
-        background: #06bc61;
-        border: 1px solid rgb(248, 200, 111);
+        background: var(--primary-color);
+        border: 1px solid var(--primary-color);
         border-radius: 5px;
         color: #fff;
     }
