@@ -27,6 +27,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
     <div class="container-fluid">
 
         <div class="row">
+
             <audio id="mysoundclip1" preload="auto">
                 <source src="{{ asset('audio/beep-timber.mp3') }}">
                 </source>
@@ -39,7 +40,9 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                 <source src="{{ asset('audio/beep-long.mp3') }}">
                 </source>
             </audio>
-            <div class="@if (session('system_mode') == 'pos') col-md-7 @else col-md-6 @endif">
+
+
+            <div class="px-1  col-md-7">
                 {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class'
                 => 'pos-form', 'id' => 'add_pos_form']) !!}
                 <div class="card">
@@ -614,299 +617,25 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
             </div>
 
             <!-- product list -->
-            <div
-                class="@if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') col-md-5 @else col-md-6 @endif">
+            <div class="card m-0 px-1  col-md-5">
                 <!-- navbar-->
-                <header class="header">
-                    <nav class="navbar">
-                        <div class="container-fluid">
-                            <div class="navbar-holder d-flex align-items-center justify-content-between">
-                                <a id="toggle-btn" href="#" class="menu-btn"><i class="fa fa-bars">
-                                    </i></a>
-                                <div class="navbar-header">
 
-                                    <ul class="nav-menu list-unstyled d-flex flex-md-row align-items-md-center">
-                                        <li class="nav-item">
-                                            <a href="{{ action('SellController@create') }}" id="commercial_invoice_btn"
-                                                data-toggle="tooltip" data-title="@lang('lang.add_sale')"
-                                                class="btn no-print"><img
-                                                    src="{{ asset('images/396 Commercial Invoice Icon.png') }}" alt=""
-                                                    style="height: 40px; width: 35px;">
-                                            </a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a target="_blank"
-                                                href="https://api.whatsapp.com/send?phone={{$watsapp_numbers}}"
-                                                id="contact_us_btn" data-toggle="tooltip"
-                                                data-title="@lang('lang.contact_us')"
-                                                style="background-image:  url('{{asset('images/watsapp.jpg')}}');background-size: 40px;"
-                                                class="btn no-print">
-                                            </a>
-                                            {{-- <a target="_blank"
-                                                href="{{ action('ContactUsController@getUserContactUs') }}"
-                                                id="contact_us_btn" data-toggle="tooltip"
-                                                data-title="@lang('lang.contact_us')"
-                                                style="background-image: url('{{ asset('images/handshake.jpg') }}');"
-                                                class="btn no-print">
-                                            </a> --}}
-                                        </li>
-                                        <li class="nav-item"><button class="btn-danger btn-sm hide"
-                                                id="power_off_btn"><i class="fa fa-power-off"></i></button></li>
-                                        <li class="nav-item"><a id="btnFullscreen" title="Full Screen"><i
-                                                    class="dripicons-expand"></i></a></li>
-                                        @include('layouts.partials.notification_list')
-                                        @php
-                                        $config_languages = config('constants.langs');
-                                        $languages = [];
-                                        foreach ($config_languages as $key => $value) {
-                                        $languages[$key] = $value['full_name'];
-                                        }
-                                        @endphp
-                                        <li class="nav-item">
-                                            <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                class="nav-link dropdown-item"><i class="dripicons-web"></i>
-                                                <span>{{ __('lang.language') }}</span> <i
-                                                    class="fa fa-angle-down"></i></a>
-                                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
-                                                user="menu">
-                                                @foreach ($languages as $key => $lang)
-                                                <li>
-                                                    <a href="{{ action('GeneralController@switchLanguage', $key) }}"
-                                                        class="btn btn-link">
-                                                        {{ $lang }}</a>
-                                                </li>
-                                                @endforeach
+                @include('sale_pos.includes._header')
 
-                                            </ul>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a rel="nofollow" data-target="#" href="#" data-toggle="dropdown"
-                                                aria-haspopup="true" aria-expanded="false"
-                                                class="nav-link dropdown-item"><i class="dripicons-user"></i>
-                                                <span>{{ ucfirst(Auth::user()->name) }}</span> <i
-                                                    class="fa fa-angle-down"></i>
-                                            </a>
-                                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
-                                                user="menu">
-                                                @php
-                                                $employee = App\Models\Employee::where('user_id',
-                                                Auth::user()->id)->first();
-                                                @endphp
-                                                <li style="text-align: center">
-                                                    <img src="@if (!empty($employee->getFirstMediaUrl('employee_photo'))) {{ $employee->getFirstMediaUrl('employee_photo') }}@else{{ asset('images/default.jpg') }} @endif"
-                                                        style="width: 60px; border: 2px solid #fff; padding: 4px; border-radius: 50%;" />
-                                                </li>
-                                                <li>
-                                                    <a href="{{ action('UserController@getProfile') }}"><i
-                                                            class="dripicons-user"></i> @lang('lang.profile')</a>
-                                                </li>
-                                                @can('settings.general_settings.view')
-                                                <li>
-                                                    <a href="{{ action('SettingController@getGeneralSetting') }}"><i
-                                                            class="dripicons-gear"></i> @lang('lang.settings')</a>
-                                                </li>
-                                                @endcan
-                                                <li>
-                                                    <a
-                                                        href="{{ url('my-transactions/' . date('Y') . '/' . date('m')) }}"><i
-                                                            class="dripicons-swap"></i>
-                                                        @lang('lang.my_transactions')</a>
-                                                </li>
-                                                @if (Auth::user()->role_id != 5)
-                                                <li>
-                                                    <a href="{{ url('my-holidays/' . date('Y') . '/' . date('m')) }}"><i
-                                                            class="dripicons-vibrate"></i>
-                                                        @lang('lang.my_holidays')</a>
-                                                </li>
-                                                @endif
-
-                                                <li>
-                                                    <a href="#" id="logout-btn"><i class="dripicons-power"></i>
-                                                        @lang('lang.logout')
-                                                    </a>
-                                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                                        style="display: none;">
-                                                        @csrf
-                                                    </form>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                    </nav>
-                </header>
                 @include('sale_pos.partials.right_side')
             </div>
 
+
+
             <!-- recent transaction modal -->
-            <div id="recentTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                class="modal text-left">
+            @include('sale_pos.includes._recent-transaction')
 
-                <div class="modal-dialog modal-xl" role="document" style="max-width: 65%;">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">@lang('lang.recent_transactions')</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-md-12 modal-filter">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('start_date', __('lang.start_date'), []) !!}
-                                            {!! Form::text('start_date', null, ['class' => 'form-control
-                                            filter_transactions', 'id' => 'rt_start_date']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('end_date', __('lang.end_date'), []) !!}
-                                            {!! Form::text('end_date', null, ['class' => 'form-control
-                                            filter_transactions', 'id' => 'rt_end_date']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('rt_customer_id', __('lang.customer'), []) !!}
-                                            {!! Form::select('rt_customer_id', $customers, false, ['class' =>
-                                            'form-control filter_transactions selectpicker', 'id' => 'rt_customer_id',
-                                            'data-live-search' => 'true', 'placeholder' => __('lang.all')]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('rt_method', __('lang.payment_type'), []) !!}
-                                            {!! Form::select('rt_method', $payment_types, request()->method, ['class' =>
-                                            'form-control filter_transactions', 'placeholder' => __('lang.all'),
-                                            'data-live-search' => 'true', 'id' => 'rt_method']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('rt_created_by', __('lang.cashier'), []) !!}
-                                            {!! Form::select('rt_created_by', $cashiers, false, ['class' =>
-                                            'form-control selectpicker filter_transactions', 'id' => 'rt_created_by',
-                                            'data-live-search' => 'true', 'placeholder' => __('lang.all')]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('rt_deliveryman_id', __('lang.deliveryman'), []) !!}
-                                            {!! Form::select('rt_deliveryman_id', $delivery_men, null, ['class' =>
-                                            'form-control sale_filter filter_transactions', 'placeholder' =>
-                                            __('lang.all'), 'data-live-search' => 'true', 'id' => 'rt_deliveryman_id'])
-                                            !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                @include('sale_pos.partials.recent_transactions')
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                                data-dismiss="modal">@lang('lang.close')</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
             <!-- draft transaction modal -->
-            <div id="draftTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                class="modal text-left">
+            @include('sale_pos.includes._draft-transaction')
 
-                <div class="modal-dialog" role="document" style="width: 65%">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">@lang('lang.draft_transactions')</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-md-12 modal-filter">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('draft_start_date', __('lang.start_date'), []) !!}
-                                            {!! Form::text('start_date', null, ['class' => 'form-control', 'id' =>
-                                            'draft_start_date']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('draft_end_date', __('lang.end_date'), []) !!}
-                                            {!! Form::text('end_date', null, ['class' => 'form-control', 'id' =>
-                                            'draft_end_date']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('draft_deliveryman_id', __('lang.deliveryman'), []) !!}
-                                            {!! Form::select('draft_deliveryman_id', $delivery_men, null, ['class' =>
-                                            'form-control sale_filter', 'placeholder' => __('lang.all'),
-                                            'data-live-search' => 'true', 'id' => 'draft_deliveryman_id']) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                @include('sale_pos.partials.view_draft')
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                                data-dismiss="modal">@lang('lang.close')</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
             <!-- onlineOrder transaction modal -->
-            <div id="onlineOrderTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
-                class="modal text-left">
+            @include('sale_pos.includes._online-order-transaction')
 
-                <div class="modal-dialog" role="document" style="width: 65%">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">@lang('lang.online_order_transactions')</h4>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                    aria-hidden="true">&times;</span></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="col-md-12 modal-filter">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('online_order_start_date', __('lang.start_date'), []) !!}
-                                            {!! Form::text('start_date', null, ['class' => 'form-control', 'id' =>
-                                            'online_order_start_date']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            {!! Form::label('online_order_end_date', __('lang.end_date'), []) !!}
-                                            {!! Form::text('end_date', null, ['class' => 'form-control', 'id' =>
-                                            'online_order_end_date']) !!}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                @include('sale_pos.partials.view_online_order')
-                            </div>
-                        </div>
-
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-default"
-                                data-dismiss="modal">@lang('lang.close')</button>
-                        </div>
-                    </div><!-- /.modal-content -->
-                </div><!-- /.modal-dialog -->
-            </div>
             <div id="dining_model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                 class="modal text-left">
                 @include('sale_pos.partials.dining_modal')
@@ -920,38 +649,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
 
 </section>
-<div class="modal" id="product_extension" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">@lang('lang.product_extension')</h5>
-                <button type="button" class="close close_btn_product_extension" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table>
-                    <thead>
-                        <tr>
-                            <td>@lang('lang.product_extension')</td>
-                            <td>@lang('lang.qty')</td>
-                            <td>@lang('lang.sell_price')</td>
-                        </tr>
-                    </thead>
-                    <tbody id="product_extension_tbody">
 
-                    </tbody>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="save_btn_product_extension"
-                    class="btn btn-primary">@lang('lang.save')</button>
-                <button type="button" class="btn btn-secondary close_btn_product_extension"
-                    data-dismiss="modal">@lang('lang.cancel')</button>
-            </div>
-        </div>
-    </div>
-</div>
+@include('sale_pos.includes._product-extension')
 
 
 <!-- This will be printed -->
@@ -1106,4 +805,3 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
         });
 </script>
 @endsection
-{{-- --}}
