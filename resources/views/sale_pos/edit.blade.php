@@ -259,7 +259,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                 <div
                                     class="d-flex col-md-4 px-0 px-1 flex-column align-items-center justify-content-end">
                                     <div class="search-box input-group">
-                                        <button type="button" class="btn btn-primary btn-lg" id="search_button"><i
+                                        <button type="button" class="btn btn-secondary"
+                                            style="border-radius: .25rem 0 0 .25rem;" id="search_button"><i
                                                 class="fa fa-search"></i></button>
                                         <input type="text" name="search_product" id="search_product"
                                             placeholder="@lang('lang.enter_product_name_to_print_labels')"
@@ -271,7 +272,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                             data-target="#weighing_scale_modal" title="@lang('lang.weighing_scale')"><i
                                                 class="fa fa-balance-scale text-primary fa-lg"></i></button>
                                         @endif
-                                        <button type="button" class="btn btn-primary btn-lg btn-modal"
+                                        <button type="button" class="btn btn-primary btn-modal"
+                                            style="border-radius: 0 .25rem .25rem 0;"
                                             data-href="{{ action('ProductController@create') }}?quick_add=1"
                                             data-container=".view_modal"><i class="fa fa-plus"></i></button>
                                     </div>
