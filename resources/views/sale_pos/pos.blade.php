@@ -46,410 +46,419 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                 {!! Form::open(['url' => action('SellPosController@store'), 'method' => 'post', 'files' => true, 'class'
                 => 'pos-form', 'id' => 'add_pos_form']) !!}
                 <div class="card">
-                    <div class="card-body" style="padding: 0px 10px; !important">
-                        <input type="hidden" name="default_customer_id" id="default_customer_id"
-                            value="@if (!empty($walk_in_customer)) {{ $walk_in_customer->id }} @endif">
-                        <input type="hidden" name="row_count" id="row_count" value="0">
-                        <input type="hidden" name="customer_size_id_hidden" id="customer_size_id_hidden" value="">
-                        {{-- <input type="hidden" name="enable_the_table_reservation" id="enable_the_table_reservation"
-                            value="{{ App\Models\System::getProperty('enable_the_table_reservation') }}"> --}}
-                        <div class="row">
-                            <div class="col-md-12 main_settings">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            {!! Form::label('store_id', __('lang.store') . ':*', []) !!}
-                                            {!! Form::select('store_id', $stores, $store_pos->store_id, ['class' =>
-                                            'selectpicker form-control', 'data-live-search' => 'true', 'required',
-                                            'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            {!! Form::label('store_pos_id', __('lang.pos') . ':*', []) !!}
-                                            {!! Form::select('store_pos_id', $store_poses, $store_pos->id, ['class' =>
-                                            'selectpicker form-control', 'data-live-search' => 'true', 'required',
-                                            'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <input type="hidden" name="setting_invoice_lang" id="setting_invoice_lang"
-                                                value="{{ !empty(App\Models\System::getProperty('invoice_lang')) ? App\Models\System::getProperty('invoice_lang') : 'en' }}">
-                                            {!! Form::label('invoice_lang', __('lang.invoice_lang') . ':', []) !!}
-                                            {!! Form::select('invoice_lang', $languages + ['ar_and_en' => 'Arabic and
-                                            English'], !empty(App\Models\System::getProperty('invoice_lang')) ?
-                                            App\Models\System::getProperty('invoice_lang') : 'en', ['class' =>
-                                            'form-control selectpicker', 'data-live-search' => 'true']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <input type="hidden" name="exchange_rate" id="exchange_rate" value="1">
-                                            <input type="hidden" name="default_currency_id" id="default_currency_id"
-                                                value="{{ !empty(App\Models\System::getProperty('currency')) ? App\Models\System::getProperty('currency') : '' }}">
-                                            {!! Form::label('received_currency_id', __('lang.received_currency') . ':',
-                                            []) !!}
-                                            {!! Form::select('received_currency_id', $exchange_rate_currencies,
-                                            !empty(App\Models\System::getProperty('currency')) ?
-                                            App\Models\System::getProperty('currency') : null, ['class' => 'form-control
-                                            selectpicker', 'data-live-search' => 'true']) !!}
+
+                    <input type="hidden" name="default_customer_id" id="default_customer_id"
+                        value="@if (!empty($walk_in_customer)) {{ $walk_in_customer->id }} @endif">
+                    <input type="hidden" name="row_count" id="row_count" value="0">
+                    <input type="hidden" name="customer_size_id_hidden" id="customer_size_id_hidden" value="">
+                    {{-- <input type="hidden" name="enable_the_table_reservation" id="enable_the_table_reservation"
+                        value="{{ App\Models\System::getProperty('enable_the_table_reservation') }}"> --}}
+                    <div class="d-flex flex-wrap">
+                        <div class="col-md-12 main_settings">
+                            <div class="row">
+                                <div class="col-md-2">
+
+                                    {!! Form::label('store_id', __('lang.store') . '*', [
+                                    'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
+                                    ]) !!}
+                                    {!! Form::select('store_id', $stores, $store_pos->store_id, ['class' =>
+                                    'selectpicker form-control', 'data-live-search' => 'true', 'required',
+                                    'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+
+                                </div>
+                                <div class="col-md-2">
+                                    {!! Form::label('store_pos_id', __('lang.pos') . '*', [
+                                    'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
+                                    ]) !!}
+                                    {!! Form::select('store_pos_id', $store_poses, $store_pos->id, ['class' =>
+                                    'selectpicker form-control', 'data-live-search' => 'true', 'required',
+                                    'style' => 'width: 80%', 'placeholder' => __('lang.please_select')]) !!}
+
+                                </div>
+                                <div class="col-md-2">
+
+                                    <input type="hidden" name="setting_invoice_lang" id="setting_invoice_lang"
+                                        value="{{ !empty(App\Models\System::getProperty('invoice_lang')) ? App\Models\System::getProperty('invoice_lang') : 'en' }}">
+                                    {!! Form::label('invoice_lang', __('lang.invoice_lang') , [
+                                    'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
+                                    ]) !!}
+                                    {!! Form::select('invoice_lang', $languages + ['ar_and_en' => 'Arabic and
+                                    English'], !empty(App\Models\System::getProperty('invoice_lang')) ?
+                                    App\Models\System::getProperty('invoice_lang') : 'en', ['class' =>
+                                    'form-control selectpicker', 'data-live-search' => 'true']) !!}
+
+                                </div>
+                                <div class="col-md-2">
+
+                                    <input type="hidden" name="exchange_rate" id="exchange_rate" value="1">
+                                    <input type="hidden" name="default_currency_id" id="default_currency_id"
+                                        value="{{ !empty(App\Models\System::getProperty('currency')) ? App\Models\System::getProperty('currency') : '' }}">
+                                    {!! Form::label('received_currency_id', __('lang.received_currency') ,
+                                    ['class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en']) !!}
+                                    {!! Form::select('received_currency_id', $exchange_rate_currencies,
+                                    !empty(App\Models\System::getProperty('currency')) ?
+                                    App\Models\System::getProperty('currency') : null, ['class' => 'form-control
+                                    selectpicker', 'data-live-search' => 'true']) !!}
+
+                                </div>
+
+                                <div class="col-md-1 px-0">
+
+                                    {!! Form::label('', "tax" ,
+                                    ['class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en']) !!}
+                                    <select class="form-control" name="tax_id" id="tax_id">
+                                        @if(env('ISNoTax',true))
+                                        <option value="">No Tax</option>
+                                        @endif
+                                        @foreach ($taxes as $tax)
+                                        <option data-rate="{{ $tax['rate'] }}" @if ((!empty($transaction) &&
+                                            $transaction->tax_id ==
+                                            $tax['id'] ) ||
+                                            App\Models\System::getProperty('def_pos_tax_id') == $tax['id'] )
+                                            selected @endif
+                                            value="{{ $tax['id'] }}">{{ $tax['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    <input type="hidden" name="tax_id_hidden" id="tax_id_hidden" value="">
+                                    <input type="hidden" name="tax_method" id="tax_method" value="">
+                                    <input type="hidden" name="tax_rate" id="tax_rate" value="0">
+                                    <input type="hidden" name="tax_type" id="tax_type" value="">
+
+                                </div>
+
+
+                                <div class="col-md-3 d-flex justify-content-between align-items-end">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#delivery-cost-modal"><i class="fas fa-motorcycle"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#deposit_modal" data-toggle="tooltip"
+                                        title="@lang('lang.insurance_amount')">
+                                        <i class="fas fa-money-bill"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-danger" id="print_and_draft"><i
+                                            class="dripicons-print"></i></button>
+                                    <input type="hidden" id="print_and_draft_hidden" name="print_and_draft_hidden"
+                                        value="">
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 main_settings">
+
+                            <div class="d-flex">
+
+
+                                <div class="d-flex col-md-6 align-items-end px-0 table_room_hide" style="gap: 10px">
+                                    <div class="col-md-5 px-0">
+                                        <div class="d-flex flex-column">
+                                            <div class="text-primary border d-flex justify-content-between align-items-center rounded"
+                                                style="padding: 3px;min-width: 100px;">
+                                                <label class=" mb-0 text-primary p-1 bg-white rounded"
+                                                    style="font-weight:600" for="
+                                                customer_type_name">@lang('lang.customer_type'):</label>
+                                                <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                    class="customer_type_name"></span>
+                                            </div>
+
+
+                                            {!! Form::label('customer_id', __('lang.customer'), [
+                                            'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
+                                            ]) !!}
+                                            <div class="input-group my-group">
+                                                {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
+                                                $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
+                                                'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
+                                                'customer_id', 'required']) !!}
+                                                <span class="input-group-btn">
+                                                    @can('customer_module.customer.create_and_edit')
+                                                    <a class="btn-modal btn-primary btn btn-partial"
+                                                        data-href="{{ action('CustomerController@create') }}?quick_add=1"
+                                                        data-container=".view_modal"><i
+                                                            class="fa fa-plus-circle text-white fa-lg"></i></a>
+                                                    @endcan
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <div class="col-md-1" style="padding: 0 !important;">
-                                        <div class="form-group" style="margin-top: 31px;">
-                                            <select class="form-control" name="tax_id" id="tax_id">
-                                                @if(env('ISNoTax',true))
-                                                <option value="">No Tax</option>
-                                                @endif
-                                                @foreach ($taxes as $tax)
-                                                <option data-rate="{{ $tax['rate'] }}" @if ((!empty($transaction) &&
-                                                    $transaction->tax_id == $tax['id'] ) ||
-                                                    App\Models\System::getProperty('def_pos_tax_id') == $tax['id'] )
-                                                    selected @endif
-                                                    value="{{ $tax['id'] }}">{{ $tax['name'] }}</option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" name="tax_id_hidden" id="tax_id_hidden" value="">
-                                            <input type="hidden" name="tax_method" id="tax_method" value="">
-                                            <input type="hidden" name="tax_rate" id="tax_rate" value="0">
-                                            <input type="hidden" name="tax_type" id="tax_type" value="">
+                                    <div class=" d-flex justify-content-between align-items-center" style="gap: 10px">
+                                        <div class="d-flex flex-column" style="gap: 3px;margin-top:2px">
+                                            <div class="text-primary border d-flex flex-column justify-content-center align-items-center rounded"
+                                                style="padding: 3px;min-width: 70px;">
+                                                <label class="text-center text-primary w-100 mb-0 px-3 bg-white rounded"
+                                                    style="font-weight:600"
+                                                    for="customer_balance">@lang('lang.balance')</label>
+                                                <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                    class="customer_balance">{{
+                                                    @num_format(0) }}</span>
+                                            </div>
+                                            <div class="text-primary border d-flex flex-column justify-content-center align-items-center rounded"
+                                                style="padding: 3px;min-width: 70px;">
+                                                <label class="text-center text-primary w-100 mb-0 px-3 bg-white rounded"
+                                                    style="font-weight:600" for="points">@lang('lang.points')</label>
+
+                                                <span style="font-size: 12px !important;font-weight: 600 !important;"
+                                                    class="points"><span class="customer_points_span">{{ @num_format(0)
+                                                        }}</span></span>
+                                                <span class="staff_note small"></span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-link btn-sm"
-                                            style="margin-top: 30px; padding: 0px !important;" data-toggle="modal"
-                                            data-target="#delivery-cost-modal"><img
-                                                src="{{ asset('images/delivery.jpg') }}" alt="delivery"
-                                                style="height: 35px; width: 40px;"></button>
-                                    </div>
-                                    @if (session('system_mode') == 'restaurant')
-                                    <div class="col-md-1">
-                                        <button type="button" style="padding: 0px !important;" data-toggle="modal"
-                                            data-target="#dining_model" {{--
-                                            data-href="/dining-room/get-dining-modal/0/0/0/0"
-                                            data-container="#dining_model" --}}
-                                            class="btn btn-modal pull-right mt-4 dining-btn">
-                                            <span class="badge badge-danger table-badge">0</span>
-                                            <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
-                                                style="width: 40px; height: 33px; margin-top: 7px;"></button>
-                                    </div>
-                                    @endif
-                                </div>
-                            </div>
-                            <div class="col-md-12 main_settings">
-                                <div class="row table_room_hide">
-                                    <div class="col-md-3">
-                                        {!! Form::label('customer_id', __('lang.customer'), []) !!}
-                                        <div class="input-group my-group">
-                                            {!! Form::select('customer_id', $customers, !empty($walk_in_customer) ?
-                                            $walk_in_customer->id : null, ['class' => 'selectpicker form-control',
-                                            'data-live-search' => 'true', 'style' => 'width: 80%', 'id' =>
-                                            'customer_id', 'required']) !!}
-                                            <span class="input-group-btn">
-                                                @can('customer_module.customer.create_and_edit')
-                                                <a class="btn-modal btn btn-default bg-white btn-flat"
-                                                    data-href="{{ action('CustomerController@create') }}?quick_add=1"
-                                                    data-container=".view_modal"><i
-                                                        class="fa fa-plus-circle text-primary fa-lg"></i></a>
-                                                @endcan
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-primary" style="margin-top: 30px;"
+
+                                    <div class="px-0">
+                                        @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
+                                        <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-1 w-100"
                                             data-toggle="modal"
+                                            data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
+                                        @endif
+
+                                        <button type="button" class="btn btn-primary w-100" data-toggle="modal"
                                             data-target="#contact_details_modal">@lang('lang.details')</button>
                                     </div>
+                                </div>
 
-                                    <div class="col-md-2">
-                                        <label for="customer_type_name"
-                                            style="margin-top: 40px;">@lang('lang.customer_type'):
-                                            <span class="customer_type_name"></span></label>
+                                @include('sale_pos.includes._search-product')
+                            </div>
+                            <div class="row table_room_show hide">
+                                <div class="col-md-4">
+                                    <div class=""
+                                        style="padding: 5px 5px; background:#0082ce; color: #fff; font-size: 20px; font-weight: bold; text-align: center; border-radius: 5px;">
+                                        <span class="room_name"></span>
                                     </div>
-                                    <div class="col-md-2">
-                                        <label for="customer_balance"
-                                            style="margin-top: 30px; margin-bottom: 0px;">@lang('lang.balance'):
-                                            <span class="customer_balance">{{ @num_format(0) }}</span></label>
-                                        <label for="points" style="margin: 0px;">@lang('lang.points'):
-                                            <span class="points"><span class="customer_points_span">{{ @num_format(0)
-                                                    }}</span></span></label>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="hidden" id="room_id" name="dining_room_id" />
+                                    <label for=""
+                                        style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
+                                        <span class="table_name"></span></label>
+                                    <div class="form-check tables_status">
+                                        {{-- @if($status_array)
+                                        @foreach($status_array as $status)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input table_status" type="radio" name="order"
+                                                id="{{$status->order}}" value="{{$status->order}}" checked>
+                                            <label class="form-check-label"
+                                                for="{{$status->order}}">{{$status->order}}</label>
+                                        </div>
+                                        @endforeach
+                                        @endif --}}
+
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group my-group">
+                                        {!! Form::select('service_fee_id', $service_fees, null, ['class' =>
+                                        'form-control', 'placeholder' => __('lang.select_service'), 'id' =>
+                                        'service_fee_id']) !!}
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group my-group">
+                                        {!! Form::select('merge_table_id', $tables, null, ['class' =>
+                                        'form-control', 'placeholder' => __('lang.select_merge_table'), 'id' =>
+                                        'table_merge_id']) !!}
+                                    </div>
+                                </div>
+                                <input type="hidden" name="service_fee_id_hidden" id="service_fee_id_hidden" value="">
+                                <input type="hidden" name="service_fee_rate" id="service_fee_rate" value="0">
+                                <input type="hidden" name="service_fee_value" id="service_fee_value" value="0">
+                            </div>
+
+
+
+
+
+                            <div class="col-md-12" style="margin-top: 5px; padding: 0px; ">
+                                <div class="table-responsive transaction-list">
+                                    <table id="product_table" style="width: 100% "
+                                        class="table table-hover table-striped order-list table-fixed">
+                                        <thead>
+                                            <tr>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
+                                                    <label class=" checkboxes">
+                                                        <input class="" type="checkbox" checked id="pay-all" value=""
+                                                            aria-label="...">
+                                                    </label>
+                                                </th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
+                                                    @lang('lang.product')</th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
+                                                    @lang('lang.quantity')</th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 12% @else 12% @endif; font-size: 12px !important;">
+                                                    @lang('lang.price')</th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 9% @else 8% @endif; font-size: 12px !important;">
+                                                    @lang('lang.extension')</th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 11% @else 12% @endif; font-size: 12px !important;">
+                                                    @lang('lang.discount')</th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 11% @else 13% @endif; font-size: 12px !important;">
+                                                    @lang('lang.category_discount')</th>
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
+                                                    @lang('lang.sub_total')</th>
+                                                @if (session('system_mode') != 'restaurant')
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
+                                                    @lang('lang.current_stock')</th>
+                                                @endif
+                                                <th
+                                                    style="width: @if (session('system_mode') != 'restaurant') 8% @else 8% @endif; font-size: 12px !important;">
+                                                    @lang('lang.action')</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div class="row" style="">
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <input type="hidden" value="{{$show_the_window_printing_prompt}}"
+                                            class="show_the_window_printing_prompt"
+                                            name="show_the_window_printing_prompt" />
+                                        <input type="hidden" value="0" class="is_bank_transfer"
+                                            name="is_bank_transfer" />
+                                        <input type="hidden" value="0" class="is_quick_pay" name="is_quick_pay" />
+                                        <input type="hidden" value="0" class="SavedTransactionId"
+                                            name="SavedTransactionId" />
+                                        <input type="hidden" value="complete" class="isPayComplete"
+                                            name="isPayComplete" />
+                                        {{-- <input type="hidden" id="finaltotalCheckedProducts"
+                                            name="finaltotalCheckedProducts" /> --}}
+                                        <input type="hidden" id="final_total" name="final_total" />
+                                        <input type="hidden" id="grand_total" name="grand_total" />
+                                        <input type="hidden" id="gift_card_id" name="gift_card_id" />
+                                        <input type="hidden" id="coupon_id" name="coupon_id">
+                                        <input type="hidden" id="total_tax" name="total_tax" value="0.00">
+                                        <input type="hidden" id="total_item_tax" name="total_item_tax" value="0.00">
+                                        <input type="hidden" id="status" name="status" value="final" />
+                                        <input type="hidden" id="total_sp_discount" name="total_sp_discount"
+                                            value="0" />
+                                        <input type="hidden" id="total_pp_discount" name="total_pp_discount"
+                                            value="0" />
+                                        <input type="hidden" name="dining_table_id" id="dining_table_id" value="">
+                                        <input type="hidden" name="dining_action_type" id="dining_action_type" value="">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-12 totals table_room_hide"
+                                style="border-top: 2px solid #e4e6fc; padding-top: 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <span class="totals-title">{{ __('lang.items') }}</span><span id="item">0</span>
                                         <br>
-                                        <span class="staff_note small"></span>
+                                        <span class="totals-title  text-dark" style="font-weight:1000">{{
+                                            __('lang.quantity') }}</span><span id="item-quantity">0</span>
                                     </div>
-                                    @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-danger btn-xs pull-right"
-                                            style="margin-top: 38px;" data-toggle="modal"
-                                            data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
-                                    </div>
-                                    @endif
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-default" style="margin-top: 10px;"
-                                            data-toggle="modal" data-target="#deposit_modal">
-                                            <img style="width: 20px; height: 25px;"
-                                                src="{{ asset('images/Deposit.jpg') }}"
-                                                alt="@lang('lang.insurance_amount')" data-toggle="tooltip"
-                                                title="@lang('lang.insurance_amount')">
-                                        </button>
-                                        <button type="button" class="btn btn-danger btn-xs  pull-right"
-                                            style="margin-top: 38px;" id="print_and_draft"><i
-                                                class="dripicons-print"></i></button>
-                                        <input type="hidden" id="print_and_draft_hidden" name="print_and_draft_hidden"
-                                            value="">
-                                    </div>
-                                    <div class="col-md-2">
-
+                                    <div class="col-sm-4">
+                                        <span class="totals-title">{{ __('lang.total') }}</span><span
+                                            id="subtotal">0.00</span>
                                     </div>
 
-                                </div>
-                                <div class="row table_room_show hide">
-                                    <div class="col-md-4">
-                                        <div class=""
-                                            style="padding: 5px 5px; background:#0082ce; color: #fff; font-size: 20px; font-weight: bold; text-align: center; border-radius: 5px;">
-                                            <span class="room_name"></span>
+                                    <div class="col-sm-4">
+                                        <span class="totals-title">{{ __('lang.tax') }} </span><span
+                                            id="tax">0.00</span>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span class="totals-title">{{ __('lang.delivery') }}</span><span
+                                            id="delivery-cost">0.00</span>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <span class="totals-title">{{ __('lang.Insurance') }}</span><span
+                                            id="delivery-cost">0.00</span>
+                                        <div class=" red">
+                                            <span class="totals-title red">{{ __('lang.sales_promotion')
+                                                }}</span><span id="sales_promotion-cost_span">0.00</span>
+                                            <input type="hidden" id="sales_promotion-cost" value="0">
                                         </div>
                                     </div>
-                                    <div class="col-md-3">
-                                        <input type="hidden" id="room_id" name="dining_room_id" />
-                                        <label for=""
-                                            style="font-size: 20px !important; font-weight: bold; text-align: center; margin-top: 3px;">@lang('lang.table'):
-                                            <span class="table_name"></span></label>
-                                        <div class="form-check tables_status">
-                                            {{-- @if($status_array)
-                                            @foreach($status_array as $status)
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input table_status" type="radio" name="order"
-                                                    id="{{$status->order}}" value="{{$status->order}}" checked>
-                                                <label class="form-check-label"
-                                                    for="{{$status->order}}">{{$status->order}}</label>
-                                            </div>
-                                            @endforeach
-                                            @endif --}}
 
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="input-group my-group">
-                                            {!! Form::select('service_fee_id', $service_fees, null, ['class' =>
-                                            'form-control', 'placeholder' => __('lang.select_service'), 'id' =>
-                                            'service_fee_id']) !!}
-                                        </div>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <div class="input-group my-group">
-                                            {!! Form::select('merge_table_id', $tables, null, ['class' =>
-                                            'form-control', 'placeholder' => __('lang.select_merge_table'), 'id' =>
-                                            'table_merge_id']) !!}
-                                        </div>
-                                    </div>
-                                    <input type="hidden" name="service_fee_id_hidden" id="service_fee_id_hidden"
-                                        value="">
-                                    <input type="hidden" name="service_fee_rate" id="service_fee_rate" value="0">
-                                    <input type="hidden" name="service_fee_value" id="service_fee_value" value="0">
-                                </div>
-                                <div class="col-md-12" style="margin-top: 10px;">
-                                    <div class="search-box input-group">
-                                        <button type="button" class="btn btn-secondary btn-lg" id="search_button"><i
-                                                class="fa fa-search"></i></button>
-                                        <input type="text" name="search_product" id="search_product"
-                                            placeholder="@lang('lang.enter_product_name_to_print_labels')"
-                                            class="form-control ui-autocomplete-input" autocomplete="off">
-                                        @if (isset($weighing_scale_setting['enable']) &&
-                                        $weighing_scale_setting['enable'])
-                                        <button type="button" class="btn btn-default bg-white btn-flat"
-                                            id="weighing_scale_btn" data-toggle="modal"
-                                            data-target="#weighing_scale_modal" title="@lang('lang.weighing_scale')"><i
-                                                class="fa fa-balance-scale text-primary fa-lg"></i></button>
+                                    <div class="col-sm-4">
+                                        @if(auth()->user()->can('sp_module.sales_promotion.view')
+                                        || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
+                                        || auth()->user()->can('sp_module.sales_promotion.delete'))
+                                        <button style="background-color: #d63031" type="button"
+                                            class="btn btn-md payment-btn text-white" data-toggle="modal"
+                                            data-target="#discount_modal">@lang('lang.random_discount')</button>
                                         @endif
-                                        <button type="button" class="btn btn-success btn-lg btn-modal"
-                                            data-href="{{ action('ProductController@create') }}?quick_add=1"
-                                            data-container=".view_modal"><i class="fa fa-plus"></i></button>
+                                        {{-- <span id="discount">0.00</span> --}}
                                     </div>
                                 </div>
-                                <div class="col-md-12" style="margin-top: 5px; padding: 0px; ">
-                                    <div class="table-responsive transaction-list">
-                                        <table id="product_table" style="width: 100% "
-                                            class="table table-hover table-striped order-list table-fixed">
-                                            <thead>
-                                                <tr>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
-                                                        <label class=" checkboxes">
-                                                            <input class="" type="checkbox" checked id="pay-all"
-                                                                value="" aria-label="...">
-                                                        </label>
-                                                    </th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
-                                                        @lang('lang.product')</th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 12% @else 17% @endif; font-size: 12px !important;">
-                                                        @lang('lang.quantity')</th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 12% @else 12% @endif; font-size: 12px !important;">
-                                                        @lang('lang.price')</th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 9% @else 8% @endif; font-size: 12px !important;">
-                                                        @lang('lang.extension')</th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 11% @else 12% @endif; font-size: 12px !important;">
-                                                        @lang('lang.discount')</th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 11% @else 13% @endif; font-size: 12px !important;">
-                                                        @lang('lang.category_discount')</th>
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
-                                                        @lang('lang.sub_total')</th>
-                                                    @if (session('system_mode') != 'restaurant')
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 9% @else 10% @endif; font-size: 12px !important;">
-                                                        @lang('lang.current_stock')</th>
-                                                    @endif
-                                                    <th
-                                                        style="width: @if (session('system_mode') != 'restaurant') 8% @else 8% @endif; font-size: 12px !important;">
-                                                        @lang('lang.action')</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="row" style="">
-                                    <div class="col-md-2">
-                                        <div class="form-group">
-                                            <input type="hidden" value="{{$show_the_window_printing_prompt}}"
-                                                class="show_the_window_printing_prompt"
-                                                name="show_the_window_printing_prompt" />
-                                            <input type="hidden" value="0" class="is_bank_transfer"
-                                                name="is_bank_transfer" />
-                                            <input type="hidden" value="0" class="is_quick_pay" name="is_quick_pay" />
-                                            <input type="hidden" value="0" class="SavedTransactionId"
-                                                name="SavedTransactionId" />
-                                            <input type="hidden" value="complete" class="isPayComplete"
-                                                name="isPayComplete" />
-                                            {{-- <input type="hidden" id="finaltotalCheckedProducts"
-                                                name="finaltotalCheckedProducts" /> --}}
-                                            <input type="hidden" id="final_total" name="final_total" />
-                                            <input type="hidden" id="grand_total" name="grand_total" />
-                                            <input type="hidden" id="gift_card_id" name="gift_card_id" />
-                                            <input type="hidden" id="coupon_id" name="coupon_id">
-                                            <input type="hidden" id="total_tax" name="total_tax" value="0.00">
-                                            <input type="hidden" id="total_item_tax" name="total_item_tax" value="0.00">
-                                            <input type="hidden" id="status" name="status" value="final" />
-                                            <input type="hidden" id="total_sp_discount" name="total_sp_discount"
-                                                value="0" />
-                                            <input type="hidden" id="total_pp_discount" name="total_pp_discount"
-                                                value="0" />
-                                            <input type="hidden" name="dining_table_id" id="dining_table_id" value="">
-                                            <input type="hidden" name="dining_action_type" id="dining_action_type"
-                                                value="">
+                            </div>
+
+                            <div class="col-md-12 table_room_show hide"
+                                style="border-top: 2px solid #e4e6fc; margin-top: 10px;">
+                                <div class="row">
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-4">
+                                        <div class="row">
+                                            <b>@lang('lang.total'): <span class="subtotal">0.00</span></b>
+                                        </div>
+                                        <div class="row">
+                                            <b>@lang('lang.discount'): <span class="discount_span">0.00</span></b>
+                                        </div>
+                                        <div class="row">
+                                            <b>@lang('lang.service'): <span class="service_value_span">0.00</span></b>
+                                        </div>
+                                        <div class="row">
+                                            <b>@lang('lang.grand_total'): <span class="final_total_span">0.00</span></b>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 totals table_room_hide"
-                                    style="border-top: 2px solid #e4e6fc; padding-top: 10px;">
-                                    <div class="row">
-                                        <div class="col-sm-4">
-                                            <span class="totals-title">{{ __('lang.items') }}</span><span
-                                                id="item">0</span>
-                                            <br>
-                                            <span class="totals-title  text-dark" style="font-weight:1000">{{
-                                                __('lang.quantity') }}</span><span id="item-quantity">0</span>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <span class="totals-title">{{ __('lang.total') }}</span><span
-                                                id="subtotal">0.00</span>
-                                        </div>
-                                        <div class="col-sm-4">
+                                <div class="row pt-4">
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <button type="button" name="action" value="print" id="dining_table_print"
+                                                class="btn mr-2 text-white"
+                                                style="background: orange;">@lang('lang.print')</button>
+                                            <button type="button" name="action" value="save" id="dining_table_save"
+                                                class="btn mr-2 text-white btn-success">@lang('lang.save')</button>
+                                            <button data-method="cash" style="background: #0082ce" type="button"
+                                                class="btn mr-2 payment-btn text-white" data-toggle="modal"
+                                                data-target="#add-payment" data-backdrop="static" data-keyboard="false"
+                                                id="cash-btn">@lang('lang.pay_and_close')</button>
                                             @if(auth()->user()->can('sp_module.sales_promotion.view')
                                             || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
                                             || auth()->user()->can('sp_module.sales_promotion.delete'))
                                             <button style="background-color: #d63031" type="button"
-                                                class="btn btn-md payment-btn text-white" data-toggle="modal"
+                                                class="btn mr-2 btn-md payment-btn text-white" data-toggle="modal"
                                                 data-target="#discount_modal">@lang('lang.random_discount')</button>
                                             @endif
-                                            {{-- <span id="discount">0.00</span> --}}
-                                        </div>
-
-                                        <div class="col-sm-4">
-                                            <span class="totals-title">{{ __('lang.tax') }} </span><span
-                                                id="tax">0.00</span>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <span class="totals-title">{{ __('lang.delivery') }}</span><span
-                                                id="delivery-cost">0.00</span>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <span class="totals-title">{{ __('lang.Insurance') }}</span><span
-                                                id="delivery-cost">0.00</span>
-                                            <div class=" red">
-                                                <span class="totals-title red">{{ __('lang.sales_promotion')
-                                                    }}</span><span id="sales_promotion-cost_span">0.00</span>
-                                                <input type="hidden" id="sales_promotion-cost" value="0">
-                                            </div>
                                         </div>
                                     </div>
-                                </div>
-
-                                <div class="col-md-12 table_room_show hide"
-                                    style="border-top: 2px solid #e4e6fc; margin-top: 10px;">
-                                    <div class="row">
-                                        <div class="col-md-8"></div>
-                                        <div class="col-md-4">
-                                            <div class="row">
-                                                <b>@lang('lang.total'): <span class="subtotal">0.00</span></b>
-                                            </div>
-                                            <div class="row">
-                                                <b>@lang('lang.discount'): <span class="discount_span">0.00</span></b>
-                                            </div>
-                                            <div class="row">
-                                                <b>@lang('lang.service'): <span
-                                                        class="service_value_span">0.00</span></b>
-                                            </div>
-                                            <div class="row">
-                                                <b>@lang('lang.grand_total'): <span
-                                                        class="final_total_span">0.00</span></b>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row pt-4">
-                                        <div class="col-md-8">
-                                            <div class="row">
-                                                <button type="button" name="action" value="print"
-                                                    id="dining_table_print" class="btn mr-2 text-white"
-                                                    style="background: orange;">@lang('lang.print')</button>
-                                                <button type="button" name="action" value="save" id="dining_table_save"
-                                                    class="btn mr-2 text-white btn-success">@lang('lang.save')</button>
-                                                <button data-method="cash" style="background: #0082ce" type="button"
-                                                    class="btn mr-2 payment-btn text-white" data-toggle="modal"
-                                                    data-target="#add-payment" data-backdrop="static"
-                                                    data-keyboard="false"
-                                                    id="cash-btn">@lang('lang.pay_and_close')</button>
-                                                @if(auth()->user()->can('sp_module.sales_promotion.view')
-                                                || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
-                                                || auth()->user()->can('sp_module.sales_promotion.delete'))
-                                                <button style="background-color: #d63031" type="button"
-                                                    class="btn mr-2 btn-md payment-btn text-white" data-toggle="modal"
-                                                    data-target="#discount_modal">@lang('lang.random_discount')</button>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <button style="background-color: #ff0000;" type="button"
-                                                class="btn text-white" id="cancel-btn" onclick="return confirmCancel()">
-                                                @lang('lang.cancel')</button>
-                                        </div>
+                                    <div class="col-md-4">
+                                        <button style="background-color: #ff0000;" type="button" class="btn text-white"
+                                            id="cancel-btn" onclick="return confirmCancel()">
+                                            @lang('lang.cancel')</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
                     <div class="payment-amount table_room_hide">
                         <h2>{{ __('lang.grand_total') }} <span class="final_total_span">0.00</span></h2>
                     </div>
+
+
                     @php
                     $default_invoice_toc = App\Models\System::getProperty('invoice_terms_and_conditions');
                     if (!empty($default_invoice_toc)) {
@@ -458,6 +467,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     $toc_hidden = array_key_first($tac);
                     }
                     @endphp
+
+
                     <input type="hidden" name="terms_and_condition_hidden" id="terms_and_condition_hidden"
                         value="{{ $toc_hidden }}">
                     <div class="row table_room_hide">
@@ -465,7 +476,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        {!! Form::label('terms_and_condition_id', __('lang.terms_and_conditions'), [])
+                                        {!! Form::label('terms_and_condition_id', __('lang.terms_and_conditions'),
+                                        [])
                                         !!}
                                         <select name="terms_and_condition_id" id="terms_and_condition_id"
                                             class="form-control selectpicker" data-live-search="true">
@@ -479,10 +491,12 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                 </div>
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        {!! Form::label('commissioned_employees', __('lang.commissioned_employees'), [])
+                                        {!! Form::label('commissioned_employees', __('lang.commissioned_employees'),
+                                        [])
                                         !!}
                                         {!! Form::select('commissioned_employees[]', $employees, false, ['class' =>
-                                        'form-control selectpicker', 'data-live-search' => 'true', 'multiple', 'id' =>
+                                        'form-control selectpicker', 'data-live-search' => 'true', 'multiple', 'id'
+                                        =>
                                         'commissioned_employees']) !!}
                                     </div>
                                 </div>
