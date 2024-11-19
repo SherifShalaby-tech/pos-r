@@ -635,4 +635,12 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
             }
         });
 </script>
+
+<script>
+    $("#toggle-btn").on("click", function (e) {
+
+    e.preventDefault();
+    $("section.pos-section").toggleClass("shrink_pos");
+    })
+</script>
 @endsection

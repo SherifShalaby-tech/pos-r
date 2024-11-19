@@ -82,8 +82,6 @@ $(document).ready(function () {
     $("#toggle-btn").on("click", function (e) {
 
         e.preventDefault();
-        $("section.pos-section").toggleClass("shrink_pos");
-
         if ($(window).outerWidth() > 1199) {
             $("nav.side-navbar").toggleClass("shrink");
             $(".page").toggleClass("active");
