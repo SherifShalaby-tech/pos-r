@@ -203,11 +203,11 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 
                                     <div class="px-0 text-center">
                                         @if (session('system_mode') == 'pos' || session('system_mode') == 'restaurant')
-                                        <div class="col-md-2">
-                                            <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-1 w-100"
-                                                data-toggle="modal"
-                                                data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
-                                        </div>
+
+                                        <button type="button" class="btn btn-danger mb-1 mt-1 mb-xl-1 w-100"
+                                            data-toggle="modal"
+                                            data-target="#non_identifiable_item_modal">@lang('lang.non_identifiable_item')</button>
+
                                         @endif
                                         <button type="button" class="btn btn-primary w-75" data-toggle="modal"
                                             data-target="#contact_details_modal">@lang('lang.details')</button>
@@ -400,18 +400,25 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                         </span>
                                     </div>
 
+                                    <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
+                                        style="padding: 5px;min-width: 60px;">
+                                        <span class="totals-title text-center text-primary w-100 px-1 bg-white rounded"
+                                            style="font-weight:600;font-size: 14px">{{ __('lang.random_discount')
+                                            }}</span>
+                                        <span id="discount">0.00</span>
+                                    </div>
+
                                     <div class="col-sm-4">
-                                        <span class="totals-title">{{ __('lang.random_discount') }} <button
-                                                style="background-color: #d63031" type="button"
-                                                class="btn btn-link btn-md text-white" data-toggle="modal"
-                                                data-target="#discount_modal"
-                                                @if(!auth()->user()->can('sp_module.sales_promotion.view')
-                                                ||
-                                                !auth()->user()->can('sp_module.sales_promotion.create_and_edit')
-                                                || !auth()->user()->can('sp_module.sales_promotion.delete'))
-                                                disabled
-                                                @endif> <i class="dripicons-document-edit"></i></button></span><span
-                                            id="discount">0.00</span>
+
+                                        <button style="background-color: #d63031" type="button"
+                                            class="btn btn-link btn-md text-white" data-toggle="modal"
+                                            data-target="#discount_modal"
+                                            @if(!auth()->user()->can('sp_module.sales_promotion.view')
+                                            ||
+                                            !auth()->user()->can('sp_module.sales_promotion.create_and_edit')
+                                            || !auth()->user()->can('sp_module.sales_promotion.delete'))
+                                            disabled
+                                            @endif> {{ __('lang.random_discount') }}</button>
                                     </div>
                                 </div>
                             </div>
@@ -510,7 +517,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         <div
                             class="d-flex justify-content-center align-items-center @if ($transaction->shared_commission != 1) hide @endif shared_commission_div">
                             <div class="i-checks toggle-pill-color d-flex flex-column align-items-center">
-                                <input @if ($transaction->shared_commission == 1) checked @endif id="shared_commission"
+                                <input @if ($transaction->shared_commission == 1) checked @endif
+                                id="shared_commission"
                                 name="shared_commission" type="checkbox" value="1"
                                 class="form-control-custom">
                                 <label for="shared_commission">
