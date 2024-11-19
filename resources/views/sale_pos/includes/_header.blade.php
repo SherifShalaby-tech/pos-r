@@ -15,8 +15,8 @@
 
                         <li class="nav-item ml-1 ">
                             <a href="{{ action('SellController@create') }}" id="commercial_invoice_btn"
-                                data-toggle="tooltip" data-title="@lang('lang.add_sale')" class="btn no-print"><img
-                                    src="{{ asset('images/396 Commercial Invoice Icon.png') }}" alt=""
+                                data-toggle="tooltip" data-title="@lang('lang.add_sale')" class="btn no-print">
+                                <img src="{{ asset('images/396 Commercial Invoice Icon.png') }}" alt=""
                                     style="height: 20px;">
                             </a>
                         </li>

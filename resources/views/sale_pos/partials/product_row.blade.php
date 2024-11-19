@@ -3,7 +3,7 @@
     @if(!empty($is_direct_sale))
     <td class="row_number"></td>
     @endif
-    <td style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
+    <td style="width: @if (session('system_mode') != 'restaurant') 3% @else 3% @endif; font-size: 12px !important;">
         <label class="checkboxes">
 
             @if($check_pay!=null && ($check_pay==="0"||$check_pay=="1"))
@@ -163,7 +163,7 @@
         @endisset
 
     </td>
-    <td style="width: @if(session('system_mode')  != 'restaurant') 12% @else 17% @endif">
+    <td style="padding:0 !important; width: @if(session('system_mode')  != 'restaurant') 14% @else 17% @endif">
         <div class="input-group"><span class="input-group-btn">
                 <button type="button" class="btn btn-danger btn-xs minus">
                     <span class="dripicons-minus"></span>
@@ -261,13 +261,14 @@
             name="transaction_sell_line[{{$loop->index + $index}}][sub_total]" value="">
     </td>
     @if(session('system_mode') != 'restaurant')
-    <td style="width: @if(session('system_mode')  != 'restaurant') 10% @else 10% @endif">
+    <td style="width: @if(session('system_mode')  != 'restaurant') 7% @else 7% @endif">
         @if($product->is_service) {{'-'}} @else
         @if(isset($product->qty_available)){{preg_match('/\.\d*[1-9]+/', (string)$product->qty_available) ?
         $product->qty_available : @num_format($product->qty_available)}}@else{{0}}@endif @endif
     </td>
     @endif
-    <td style="width: @if(session('system_mode')  != 'restaurant') 5%; @else 5%; @endif padding: 0px;">
+    <td
+        style="padding:0 !important ;width: @if(session('system_mode')  != 'restaurant') 8%; @else 8%; @endif padding: 0px;">
         @if(!empty($dining_table_id))
         @if(auth()->user()->can('superadmin') || auth()->user()->is_admin == 1)
         <button type="button" class="btn btn-danger btn-xs remove_row" style="margin-top: 15px;"><i

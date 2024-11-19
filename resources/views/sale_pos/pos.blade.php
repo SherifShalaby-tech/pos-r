@@ -19,7 +19,7 @@
 
     th,
     td {
-        padding: 5px
+        padding: 5px !important
     }
 </style>
 
@@ -29,7 +29,7 @@
 $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
 @endphp
 <section class="forms pos-section no-print">
-    <div class="container-fluid">
+    <div class="container-fluid px-2">
 
         <div class="row">
 
@@ -287,7 +287,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                         <thead>
                                             <tr>
                                                 <th
-                                                    style="width: @if (session('system_mode') != 'restaurant') 1% @else 2% @endif; font-size: 12px !important;">
+                                                    style=" width: @if (session('system_mode') != 'restaurant') 3% @else 3% @endif; font-size: 12px !important;">
                                                     <label class=" checkboxes">
                                                         <input class="" type="checkbox" checked id="pay-all" value=""
                                                             aria-label="...">

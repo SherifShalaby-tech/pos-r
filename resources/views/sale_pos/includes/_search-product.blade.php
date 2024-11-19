@@ -1,14 +1,14 @@
 <div class="d-flex col-md-4 px-1 flex-column align-items-center justify-content-end">
 
 
-    {{-- @if (session('system_mode') == 'restaurant') --}}
+    @if (session('system_mode') == 'restaurant')
     <button type=" button" style="padding: 0px !important;" data-toggle="modal" data-target="#dining_model" {{--
         data-href="/dining-room/get-dining-modal/0/0/0/0" data-container="#dining_model" --}}
         class="btn btn-modal pull-right mb-1 w-25 dining-btn">
         <span class="badge badge-danger table-badge">0</span>
         <img src="{{ asset('images/black-table.jpg') }}" alt="black-table"
             style="width: 40px; height: 33px; margin-top: 7px;"></button>
-    {{-- @endif --}}
+    @endif
 
     <div class="px-0">
         <div class="search-box input-group">

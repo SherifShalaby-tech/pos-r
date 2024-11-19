@@ -35,7 +35,8 @@
             style="padding: 5px;min-width: 60px;">
             <span class="totals-title text-center text-primary w-100 px-1 bg-white rounded"
                 style="font-weight:600;font-size: 14px">{{
-                __('lang.tax') }} </span><span style="font-weight: 600;font-size: 14px" id=" tax">0.00</span>
+                __('lang.tax') }} </span>
+            <span style="font-weight: 600;font-size: 14px" id=" tax">0.00</span>
         </div>
         <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
             style="padding: 5px;min-width: 60px;">
