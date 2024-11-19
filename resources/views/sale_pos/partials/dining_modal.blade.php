@@ -35,7 +35,7 @@
         margin: 0 0 10px 0;
         border: none;
         border-radius: 0;
-        box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) inset;
+        /* box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) inset; */
         overflow: hidden;
         position: relative;
         z-index: 1;
@@ -65,7 +65,7 @@
     .vertical-tab .nav-tabs li a:before,
     .vertical-tab .nav-tabs li a:after {
         content: "";
-        background-color: #06bc61;
+        background-color: var(--primary-color);
         width: 50.5%;
         height: 100%;
         opacity: 0;
@@ -85,7 +85,8 @@
         letter-spacing: 1px;
         line-height: 25px;
         padding: 15px 20px 10px;
-        box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) inset;
+        border: 1px solid #eee;
+        /* box-shadow: 0 0 7px rgba(0, 0, 0, 0.1) inset; */
         display: table-cell;
     }
 
