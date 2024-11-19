@@ -215,7 +215,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                                 </div>
 
 
-                                <div class="row table_room_show hide">
+                                <div
+                                    class="row table_room_show col-md-8 align-items-center justify-content-center hide">
                                     <div class="col-md-3 d-flex justify-content-center align-items-center">
                                         <div class="w-100"
                                             style="padding: 5px 5px; background:#0082ce; color: #fff; font-size: 20px; font-weight: bold; text-align: center; border-radius: 5px;">
