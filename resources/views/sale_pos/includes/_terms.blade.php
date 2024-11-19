@@ -1,6 +1,7 @@
-<div class="d-flex col-4 px-1 @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif table_room_hide">
+<div
+    class="d-flex col-12 px-1 mt-1 justify-content-between align-items-start @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif table_room_hide">
 
-    <div class="col-md-5 px-1">
+    <div class="col-md-3 px-1">
         <div class="form-group">
             {!! Form::label('terms_and_condition_id', __('lang.terms_and_conditions'), [
             'class' => app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'
@@ -16,7 +17,7 @@
         </div>
         <div class="tac_description_div"><span></span></div>
     </div>
-    <div class="col-md-5 px-1">
+    <div class="col-md-3 px-1">
         <div class="form-group">
             {!! Form::label('commissioned_employees', __('lang.commissioned_employees'), ['class' =>
             app()->isLocale('ar') ? 'mb-0 label-ar' : 'mb-0 label-en'])
@@ -38,5 +39,16 @@
             </span>
         </div>
     </div>
-
+    <div class="payment-amount col-md-3 table_room_hide bg-primary text-white " style="
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-weight: 700;
+    font-size: 18px;
+    border-radius: 5px;
+    padding: 0 10px;">
+        <span class="">{{ __('lang.grand_total') }}
+        </span>
+        <span class="final_total_span">0.00</span>
+    </div>
 </div>

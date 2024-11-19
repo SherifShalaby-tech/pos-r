@@ -91,19 +91,5 @@
             @lang('lang.bank_transfer')</button>
     </div>
 
-    <div class="payment-amount table_room_hide bg-primary text-white " style="position: absolute;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-weight: 700;
-    font-size: 18px;
-    border-radius: 5px;
-    padding: 0 10px;
-    width: 200px">
-        <span class="">{{ __('lang.grand_total') }}
-        </span>
-        <span class="final_total_span">0.00</span>
-    </div>
+
 </div>

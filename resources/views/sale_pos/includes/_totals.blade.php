@@ -1,4 +1,4 @@
-<div class="col-8 px-1 totals table_room_hide" style=" padding-top: 10px;">
+<div class="col-12 px-1 totals table_room_hide" style=" padding-top: 10px;">
     <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif justify-content-center align-items-center"
         style="gap: 2px">
 
@@ -51,7 +51,6 @@
                 __('lang.Insurance') }}</span>
             <span style="font-weight: 600;font-size: 14px" id=" delivery-cost">0.00</span>
         </div>
-
 
         <div class="bg-primary text-white d-flex flex-column justify-content-center align-items-center rounded"
             style="padding: 5px;min-width: 60px;">
