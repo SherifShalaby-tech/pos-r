@@ -765,7 +765,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
             <div id="recentTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                 class="modal fade text-left">
 
-                <div class="modal-dialog modal-xl" role="document" style="max-width: 65%;">
+                <div class="modal-dialog modal-xl" role="document" style="max-width: 95%;">
                     <div class="modal-content">
                         <x-modal-header>
 
@@ -828,7 +828,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
             <div id="draftTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                 class="modal fade text-left">
 
-                <div class="modal-dialog" role="document" style="width: 65%">
+                <div class="modal-dialog" role="document" style="width: 95%">
                     <div class="modal-content">
                         <x-modal-header>
 
@@ -872,7 +872,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
             <div id="onlineOrderTransaction" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true"
                 class="modal text-left">
 
-                <div class="modal-dialog" role="document" style="width: 65%">
+                <div class="modal-dialog" role="document" style="width: 95%">
                     <div class="modal-content">
                         <x-modal-header>
 
