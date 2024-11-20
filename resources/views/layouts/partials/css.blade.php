@@ -8,7 +8,6 @@
     type="text/css">
 
 
-
 <link rel="stylesheet" href="{{asset('vendor/jquery-timepicker/jquery.timepicker.min.css')}}" type="text/css">
 <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/awesome-bootstrap-checkbox.css')}}" type="text/css">
 <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap-select.min.css')}}" type="text/css">
@@ -75,8 +74,6 @@
         display: none !important;
     }
 </style>
-
-
 
 <style>
     :root {

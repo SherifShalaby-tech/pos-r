@@ -1,5 +1,5 @@
 <div
-    class="d-flex col-12 px-1 mt-1 justify-content-between align-items-start @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif table_room_hide">
+    class="d-flex col-12 px-1 mt-1 justify-content-between align-items-start @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif table_room_hide dev_not_room">
 
     <div class="col-md-3 px-1">
         <div class="form-group">
@@ -39,7 +39,7 @@
             </span>
         </div>
     </div>
-    <div class="payment-amount col-md-3 table_room_hide bg-primary text-white " style="
+    <div class="payment-amount col-md-3 table_room_hide dev_not_room bg-primary text-white " style="
     display: flex;
     flex-direction: column;
     align-items: center;

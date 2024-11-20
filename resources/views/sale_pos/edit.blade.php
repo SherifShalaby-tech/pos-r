@@ -548,7 +548,7 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         </div>
                     </div>
 
-                    <div class="payment-options d-flex flex-wrap justify-content-start flex-row-reverse pb-2 table_room_hide"
+                    <div class="payment-options d-flex flex-wrap justify-content-start flex-row-reverse pb-2 table_room_hide dev_not_room"
                         style="gap:10px;">
                         <div class="">
                             <button data-method="cash" style="background: var(--primary-color)" type="button"

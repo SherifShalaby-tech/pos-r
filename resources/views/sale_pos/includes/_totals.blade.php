@@ -1,4 +1,4 @@
-<div class="col-12 px-1 totals table_room_hide" style=" padding-top: 10px;">
+<div class="col-12 px-1 totals table_room_hide dev_not_room" style=" padding-top: 10px;">
     <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif justify-content-center align-items-center"
         style="gap: 2px">
 

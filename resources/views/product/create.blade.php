@@ -144,6 +144,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 {{-- <script src="{{ asset('js/sweetalert2.min.js') }}"></script> --}}
 
+
 <script>
     const fileInput = document.querySelector('#file-input');
         const previewContainer = document.querySelector('.preview-container');

@@ -1749,37 +1749,139 @@ class TransactionUtil extends Util
      *
      * @return int
      */
-    public function getTicketNumber($number = 1)
+     public function getTicketNumber($number = 1)
     {
-         $sticketـnumberـstart = System::where('key','ticketـnumberـstart')->first();
-        if($sticketـnumberـstart && $number == 1){
-            $number=$sticketـnumberـstart->value > 0?$sticketـnumberـstart->value:1;
-            $ticket_count = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))
-            ->where('type', 'sell')
-            ->where('ticket_number','>=', $number)
-            ->orderBy('created_at', 'desc')
-            ->count();
+        $ticketـnumberـstart = System::where('key','ticketـnumberـstart')->first();
+        $ticket_time_start = System::where('key','ticketـtimeـstart')->first();
+       $specified_time= $ticket_time_start?->value;
+        if($specified_time){
+            if (Carbon::now()->greaterThanOrEqualTo(Carbon::today()->setTimeFrom($specified_time))) {
+                $start_time = Carbon::today()->setTimeFrom($specified_time);
+                $end_time = Carbon::tomorrow()->setTimeFrom($specified_time); 
+            } else {
+                $start_time = Carbon::yesterday()->setTimeFrom($specified_time);
+                $end_time = Carbon::today()->setTimeFrom($specified_time);
+            }
+                
+        }
+        if($ticketـnumberـstart && $number == 1){
+            $number=$ticketـnumberـstart->value > 0?$ticketـnumberـstart->value:1;
+            $ticket_count = Transaction::where('type', 'sell')
+            ->where('ticket_number','>=', $number);
+           if($specified_time){
+               $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+                // $ticket_count= $ticket_count->whereTime('transaction_date' , '>=' , $ticket_time_start?->value);
+            }else{
+                $ticket_count= $ticket_count->whereDate('transaction_date', Carbon::today());
+            }
+            
+          $ticket_count= $ticket_count->count();
+           
             
         }else{
-            $ticket_count = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))
-            ->where('type', 'sell')
-            ->where('ticket_number','>=', $number)
-            ->orderBy('created_at', 'desc')
-            ->count();
+            $ticket_count = Transaction::where('type', 'sell')
+                ->where('ticket_number', '>=', $number);
+            
+            if($specified_time){
+               $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+                // $ticket_count= $ticket_count->whereTime('transaction_date' , '>=' , $ticket_time_start?->value);
+            }else{
+                $ticket_count= $ticket_count->whereDate('transaction_date', Carbon::today());
+            }
+            
+          $ticket_count= $ticket_count->count();
+
         }
+        
+
         $ticket_number = $ticket_count + $number;
 
-        $ticket_exist = Transaction::whereDate('transaction_date', Carbon::now()->format('Y-m-d'))
+        $ticket_exist = Transaction::whereDate('transaction_date', Carbon::today())
             ->where('type', 'sell')
-            ->where('ticket_number', $ticket_number)
-            ->exists();
-
+            ->where('ticket_number', $ticket_number);
+            if($specified_time){
+               $ticket_exist = $ticket_exist->whereBetween('transaction_date', [$start_time, $end_time]);
+            }else{
+                $ticket_exist= $ticket_exist->whereDate('transaction_date', Carbon::today());
+            }
+                // if ($ticket_time_start?->value <= Carbon::now()->format('H:i')) {
+                //  $ticket_exist=   $ticket_exist->whereTime('transaction_date', '>=', $ticket_time_start->value);
+                // }
+            $ticket_exist=   $ticket_exist->exists();
         if (!empty($ticket_exist)) {
             return $this->getTicketNumber($number + 1);
         } else {
             return $ticket_number;
         }
     }
+
+
+// /**
+//  * get ticket number for restaurants
+//  *
+//  * @return int
+//  */
+// public function getTicketNumber($number = 1)
+// {
+//     $ticketـnumberـstart = System::where('key', 'ticketـnumberـstart')->first();
+//     $ticket_time_start = System::where('key', 'ticketـtimeـstart')->first();
+
+//     if ($ticketـnumberـstart && $number == 1) {
+//         $number = $ticketـnumberـstart->value > 0 ? $ticketـnumberـstart->value : 1;
+
+//         $ticket_count = Transaction::where('type', 'sell')
+//             ->where('ticket_number', '>=', $number)
+//             ->orderBy('created_at', 'desc');
+
+//         if ($ticket_time_start?->value) {
+//             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
+//             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
+
+//             $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+//         }else{
+//             $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
+//         }
+
+//         $ticket_count = $ticket_count->count();
+
+//     } else {
+//         $ticket_count = Transaction::where('type', 'sell')
+//             ->where('ticket_number', '>=', $number)
+//             ->orderBy('created_at', 'desc');
+
+//         if ($ticket_time_start?->value) {
+            
+//             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
+//             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
+
+//             $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+//         }else{
+//             $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
+//         }
+
+//         $ticket_count = $ticket_count->count();
+//     }
+
+//     $ticket_number = $ticket_count + $number;
+
+//     $ticket_exist = Transaction::where('ticket_number', $ticket_number);
+        
+//         if ($ticket_time_start?->value) {
+//             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
+//             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
+//             $ticket_exist = $ticket_exist->whereBetween('transaction_date', [$start_time, $end_time]);
+//         }else{
+//           $ticket_exist = $ticket_exist->whereDate('transaction_date', Carbon::today());
+//         }
+//       $ticket_exist=  $ticket_exist->where('type', 'sell')
+//         ->exists();
+//     dd($start_time, $end_time,$ticket_number,$ticket_exist,$ticket_time_start->value);
+//     if (!empty($ticket_exist)) {
+//         return $this->getTicketNumber($number + 1);
+//     } else {
+//         return $ticket_number;
+//     }
+// }
 
     /**
      * calculate the cost of sold product for restaurants

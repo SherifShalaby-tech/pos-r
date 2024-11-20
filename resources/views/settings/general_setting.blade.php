@@ -254,18 +254,22 @@
                         </div>
 
                         <div class="col-md-3 ">
-                            {!! Form::label('ticketـnumberـstart', __('lang.ticketـnumberـstart'), []) !!}
+                            {!! Form::label('ticketـnumberـstart', __('lang.ticketـnumberـstart'), ['class' =>
+                            app()->isLocale('ar') ?
+                            'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::number('ticketـnumberـstart', !empty($settings['ticketـnumberـstart']) ?
                             $settings['ticketـnumberـstart']
                             : 1, ['class' => 'form-control']) !!}
                         </div>
-                        <div class="col-md-3 mb-2">
-                            {!! Form::label('time_format', __('lang.time_format'), ['class' => app()->isLocale('ar') ?
-                            'mb-1 label-ar' : 'mb-1 label-en'
-                            ]) !!}
-                            {!! Form::select('time_format', ['12' => '12 hours', '24' => '24 hours'],
-                            !empty($settings['time_format']) ? $settings['time_format'] : null, ['class' =>
-                            'form-control selectpicker', 'data-live-search' => 'true']) !!}
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                {!! Form::label('ticketـtimeـstart', __('lang.ticketـtimeـstart'), ['class' =>
+                                app()->isLocale('ar') ?
+                                'mb-1 label-ar' : 'mb-1 label-en']) !!}
+                                {!! Form::text('ticketـtimeـstart', !empty($settings['ticketـtimeـstart']) ?
+                                $settings['ticketـtimeـstart'] :
+                                null, ['class' => 'form-control time_picker sale_filter']) !!}
+                            </div>
                         </div>
                         <div class="col-md-3 mb-2">
                             {!! Form::label('timezone', __('lang.timezone'), ['class' => app()->isLocale('ar') ? 'mb-1

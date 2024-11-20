@@ -181,6 +181,8 @@
                 @if (!empty($transaction->dining_table))
                     @lang('lang.dining_table', [], 'en'): {{ $transaction->dining_table->name }}
                     {{ __('lang.dining_table', [], 'ar') }} <br>
+                    
+              
                 @endif
             @endif
             @if (!empty($transaction->deliveryman))

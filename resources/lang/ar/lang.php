@@ -1505,4 +1505,9 @@ return [
     'filter' => "فلتر",
     'ticketـnumberـstart' => 'بداية رقم التذكرة',
 
+    'ticketـtimeـstart' => 'وقت بداية التذكرة ',
+    'packet_service' => 'خارجي',
+
+    'dining_in' => 'داخلي',
+
 ];

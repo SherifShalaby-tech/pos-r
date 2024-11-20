@@ -158,7 +158,8 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                         <div class="col-md-12 main_settings">
 
                             <div class="d-flex justify-content-between">
-                                <div class="d-flex col-md-8 align-items-end px-0 table_room_hide" style="gap: 10px">
+                                <div class="d-flex col-md-8 align-items-end px-0 table_room_hide dev_not_room"
+                                    style="gap: 10px">
                                     <div class="col-md-5 px-0">
                                         <div class="d-flex flex-column">
                                             <div class="text-primary border d-flex justify-content-between align-items-center rounded"

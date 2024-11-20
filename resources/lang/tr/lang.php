@@ -25,7 +25,7 @@ return [
     'other_reward' => 'Diğer ödül',
 
 
-    'number_vs_base_unit'=>'Birim denklemi',
+    'number_vs_base_unit' => 'Birim denklemi',
 
     'dashboard' => 'Gösterge Paneli',
     'username' => 'Kullanıcı adı',
@@ -1284,11 +1284,14 @@ return [
     'sales_and_returns' => 'Satış iadeleri',
     'delivery_cost_given_to_deliveryman' => 'Teslimatçıya Verilen Teslimat Ücreti',
     'sale_payment_date' => 'Ödeme tarihi',
-    'another_reservation'=>'Başka bir rezervasyon',
+    'another_reservation' => 'Başka bir rezervasyon',
     'add_to_customer_balance' => 'Müşteri bakiyesine ekle',
     'products_count' => 'Ürün Sayısı',
     'quick_pay' => 'hızlı ödeme',
 
-    'not_allowed'=>"Elindeki parayı kendine nasıl vereceksin?🤪
+    'not_allowed' => "Elindeki parayı kendine nasıl vereceksin?🤪
     lütfen başka bir kişi seçin😎",
+    'ticket_time_start' => 'Bilet başlangıç saati',
+    'packet_service' => 'Paket Servisi',
+    'dining_in' => 'Yemek Yeme',
 ];
