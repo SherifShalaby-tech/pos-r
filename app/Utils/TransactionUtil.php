@@ -1793,6 +1793,7 @@ class TransactionUtil extends Util
 
         }
         
+
         $ticket_number = $ticket_count + $number;
 
         $ticket_exist = Transaction::whereDate('transaction_date', Carbon::today())

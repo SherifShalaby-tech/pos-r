@@ -142,6 +142,10 @@ class SettingController extends Controller
             ['value' => $request->site_title, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
         );
         System::updateOrCreate(
+            ['key' => 'ticketـnumberـstart'],
+            ['value' => $request->ticketـnumberـstart, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
             ['key' => 'developed_by'],
             ['value' => $request->developed_by, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
         );

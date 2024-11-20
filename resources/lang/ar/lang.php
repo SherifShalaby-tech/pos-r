@@ -1487,5 +1487,6 @@ return [
     'packet_service'=>'خارجي',
     
     'dining_in'=>'داخلي',
+
 ];
 
