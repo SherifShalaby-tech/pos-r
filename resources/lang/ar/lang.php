@@ -1480,7 +1480,13 @@ return [
 
     'date_of_purchase_of_the_expired_stock_removed' => 'تاريخ شراء المخزون التالف المحذوف',
     'deleted_by' => 'حذف بواسطة',
-    'ticketـnumberـstart'=>'بداية رقم التذكرة',
+    
+        'ticketـnumberـstart'=>'بداية رقم التذكرة',
+        'ticketـtimeـstart'=>'وقت بداية التذكرة ',
+
+    'packet_service'=>'خارجي',
+    
+    'dining_in'=>'داخلي',
 
 ];
 

@@ -178,6 +178,12 @@ $is_first_after_extra=0;
                 </p>
             @endif
             @if (session('system_mode') == 'restaurant')
+                @if( !empty($transaction->dining_room) || !empty($transaction->dining_table))
+                    @lang('lang.dining_in')<br>
+                    
+                @else
+                        @lang('lang.packet_service')<br>
+                @endif
                 @if (!empty($transaction->dining_room))
                     @lang('lang.dining_room'):
                     {{ $transaction->dining_room->name }} <br>

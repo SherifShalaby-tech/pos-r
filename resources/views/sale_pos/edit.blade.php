@@ -416,7 +416,7 @@
                             </div>
                         </div>
 
-                        <div class="payment-options row table_room_hide"
+                        <div class="payment-options row table_room_hide dev_not_room"
                             style=" width: @if (session('system_mode') == 'pos' || session('system_mode') == 'garments' || session('system_mode') == 'supermarket') 100%; @else 50%; @endif">
                             <div class="column-5">
                                 <button data-method="cash" style="background: #0094ce" type="button"

@@ -1291,4 +1291,7 @@ return [
 
     'not_allowed'=>"Elindeki parayı kendine nasıl vereceksin?🤪
     lütfen başka bir kişi seçin😎",
+    'ticket_time_start' => 'Bilet başlangıç saati',
+    'packet_service' => 'Paket Servisi',
+    'dining_in' => 'Yemek Yeme',
 ];

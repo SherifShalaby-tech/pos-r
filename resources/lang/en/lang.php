@@ -1455,7 +1455,7 @@ return [
     'amount_greater_than_balance'=>'Amount greater than balance',
     'not_allowed'=>'Not Allowed',
     'quick_pay' => 'Quick pay',
-    'not_allowed'=>"How could you give the money in your hand to yourself 🤪 please focus and select someone else😎",
+    'not_allowed'=>"How could you give the money in your hand to yourself ðŸ¤ª please focus and select someone elseðŸ˜Ž",
     'new_reserve'=>'New Reserve',
     'new_order'=>'New Order',
     'available' => 'Available',
@@ -1499,5 +1499,9 @@ return [
 
     'deleted_by' => 'Deleted By',
     'ticketـnumberـstart'=>'Ticket number start',
+    'ticket_time_start' => 'Ticket start time',
+    'packet_service'=>'Packet Service',
+    'dining_in'=>'Dining in',
+
 
 ];

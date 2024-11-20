@@ -491,6 +491,7 @@ class Util
             'bank_transfer' => __('lang.bank_transfer'),
             'deposit' => __('lang.use_the_balance'),
             'paypal' => __('lang.paypal'),
+             'money_transfer' => __('lang.Money Transfer'),
         ];
     }
 
