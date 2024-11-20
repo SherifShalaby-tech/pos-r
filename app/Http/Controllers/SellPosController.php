@@ -603,14 +603,14 @@ class SellPosController extends Controller
             //     'html_content' => $html_content,
             //     'msg' => __('lang.success')
             // ];
-
             if ($request->dining_action_type == 'save') {
                 $output = [
                     'success' => true,
                     'msg' => __('lang.success')
                 ];
+                return $output;
             }
-            return $output;
+            
         }
 
         if ($request->submit_type == 'send' && $transaction->is_quotation) {
@@ -618,10 +618,9 @@ class SellPosController extends Controller
         }
 
 
-// <<<<<<< HEAD
         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
-// =======
+
         $is_quick=0;
         $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt');
         if(($request->is_bank_transfer=="1" || $request->is_quick_pay=="1") && $show_the_window_printing_prompt=="0"){
@@ -867,7 +866,23 @@ class SellPosController extends Controller
             $dining_table = TableReservation::where('dining_table_id',$request->dining_table_id)->where('status','order')->first();
             $transaction_data['dining_room_id'] = $dining_table->dining_room_id;
         }
+    // if (!empty($transaction->dining_table_id)) {
+    //         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
+    //         // $output = [
+    //         //     'success' => true,
+    //         //     'html_content' => $html_content,
+    //         //     'msg' => __('lang.success')
+    //         // ];
+    //         if ($request->dining_action_type == 'save') {
+    //             $output = [
+    //                 'success' => true,
+    //                 'msg' => __('lang.success')
+    //             ];
+    //             return $output;
+    //         }
+            
+    //     }
         $this->transactionUtil->createOrUpdateRawMaterialConsumption($transaction);
         if (session('system_mode') == 'restaurant') {
             if (!empty($transaction->dining_table_id)) {

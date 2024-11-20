@@ -158,6 +158,15 @@ class SettingController extends Controller
             ['value' => $request->invoice_terms_and_conditions, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
         );
         System::updateOrCreate(
+            ['key' => 'ticketـnumberـstart'],
+            ['value' => $request->ticketـnumberـstart, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        System::updateOrCreate(
+            ['key' => 'ticketـtimeـstart'],
+            ['value' => $request->ticketـtimeـstart, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
+        );
+        
+        System::updateOrCreate(
             ['key' => 'language'],
             ['value' => $request->language, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
         );

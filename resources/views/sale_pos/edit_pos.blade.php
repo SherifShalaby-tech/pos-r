@@ -121,7 +121,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-12 main_settings">
-                                    <div class="row table_room_hide">
+                                    <div class="row table_room_hide dev_not_room">
                                         <div class="col-md-3">
                                             {!! Form::label('customer_id', __('lang.customer'), []) !!}
                                             <div class="input-group my-group">
@@ -313,7 +313,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-12 totals table_room_hide"
+                                    <div class="col-12 totals table_room_hide dev_not_room dev_not_room"
                                         style="border-top: 2px solid #e4e6fc; padding-top: 10px;">
                                         <div class="row">
                                             <div class="col-sm-4">
@@ -409,7 +409,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="payment-amount table_room_hide">
+                        <div class="payment-amount table_room_hide dev_not_room">
                             <h2>{{ __('lang.grand_total') }} <span class="final_total_span">0.00</span></h2>
                         </div>
                         @php
@@ -422,7 +422,7 @@
                         @endphp
                         <input type="hidden" name="terms_and_condition_hidden" id="terms_and_condition_hidden"
                             value="{{ $toc_hidden }}">
-                        <div class="row table_room_hide">
+                        <div class="row table_room_hide dev_not_room">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4">
