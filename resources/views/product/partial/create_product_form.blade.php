@@ -9,7 +9,7 @@ $clear_all_input_form = App\Models\System::getProperty('clear_all_input_form');
     <div class="card-body py-1 mb-1">
         <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
             <div class="col-md-3">
-                <div class="i-checks">
+                <div class="i-checks ">
                     <input id="is_service" name="is_service" type="checkbox" checked class="form-control-custom">
                     <label for="is_service"><strong>
                             @lang('lang.or_add_new_product')

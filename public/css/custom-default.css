@@ -82,8 +82,8 @@ input.input-material~label.active {
 }
 
 input.form-control-custom:checked+label::before {
-    /* background: var(--primary-color) !important; */
-    background: white;
+    background: var(--primary-color) !important;
+    /* background: white; */
 }
 
 .login-page .logo span,

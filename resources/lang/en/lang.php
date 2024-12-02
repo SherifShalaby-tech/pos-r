@@ -1521,4 +1521,5 @@ return [
     'ticket_time_start' => 'Ticket start time',
     'packet_service' => 'Packet Service',
     'dining_in' => 'Dining in',
+    'invoice' => 'Invoice',
 ];

@@ -218,7 +218,7 @@
 
 
         <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
-            <div class="col-md-4">
+            <div class="col-md-12">
 
                 <div class="form-group">
 
@@ -245,7 +245,7 @@
                 ])
                 <input type="hidden" name="quick_add" value="{{ $quick_add }}">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="form-group">
                     {!! Form::label('description', __('lang.description') ,[
                     'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
@@ -254,7 +254,7 @@
                     __('lang.description')]) !!}
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="form-group">
                     <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                         {!! Form::label('sort', __('lang.sort'),[
@@ -284,8 +284,6 @@
                     <div class="form-group">
                         <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
                             for="projectinput2"> {{ __('lang.image') }}</label>
-
-
 
                         <div class="row">
                             <div class="col-12">
@@ -461,7 +459,12 @@
         // When the user clicks the "Cancel" button, hide the modal
         croppieClassCancelBtn.addEventListener('click', () => {
             croppieClassModal.style.display = 'none';
+
+
+
             $('#exampleClassModal').modal('hide');
+            $('#exampleClassModal').hide();
+            $('.modal-backdrop').removeClass("show modal-backdrop fade");
             croppie.destroy();
         });
 
@@ -471,6 +474,10 @@
                 img.src = croppedImg;
                 croppieClassModal.style.display = 'none';
                 $('#exampleClassModal').modal('hide');
+                $('#exampleClassModal').hide();
+
+                $('.modal-backdrop').removeClass("show modal-backdrop fade");
+
                 croppie.destroy();
                 getClassImages()
             });

@@ -97,7 +97,8 @@
                             url: $("form#product-form").attr("action"),
                             data: $("#product-form").serialize(),
                             success: function (response) {
-                                myFunction();
+                                // myFunction();
+                                showPage()
                                 if (response.success) {
                                     swal("Success", response.msg, "success");
                                     $("#name").val("").change();
@@ -108,7 +109,8 @@
                                 }
                             },
                             error: function (response) {
-                                myFunction();
+                                // myFunction();
+                                showPage()
                                 if (!response.success) {
                                     console.log( response.msg);
                                     swal("Error", response.msg, "error");
@@ -125,7 +127,8 @@
                     url: $("form#product-form").attr("action"),
                     data: $("#product-form").serialize(),
                     success: function (response) {
-                        myFunction();
+                        // myFunction();
+                        showPage()
                         if (response.success) {
                             swal("Success", response.msg, "success");
                             window.location.replace('/recipe_uesd/send/'+response.recipe_id);
@@ -136,7 +139,8 @@
                         }
                     },
                     error: function (response) {
-                        myFunction();
+                        // myFunction();
+showPage()
                         if (!response.success) {
                             console.log( response.msg);
                             swal("Error", response.msg, "error");

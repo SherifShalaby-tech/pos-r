@@ -149,6 +149,7 @@
     const fileInput = document.querySelector('#file-input');
         const previewContainer = document.querySelector('.preview-container');
         const croppieModal = document.querySelector('#croppie-modal');
+        const exampleModal = document.querySelector('#exampleModal');
         const croppieContainer = document.querySelector('#croppie-container');
         const croppieCancelBtn = document.querySelector('#croppie-cancel-btn');
         const croppieSubmitBtn = document.querySelector('#croppie-submit-btn');
@@ -261,6 +262,10 @@
             croppieCancelBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 croppieModal.style.display = 'none';
+                exampleModal.style.display = 'none';
+
+                $('.modal-backdrop').removeClass("show modal-backdrop fade");
+                $('body').removeClass("modal-open");
                 $('#exampleModal').modal('hide');
                 croppie.destroy();
             });
@@ -271,6 +276,9 @@
                 croppie.result('base64').then((croppedImg) => {
                     img.src = croppedImg;
                     croppieModal.style.display = 'none';
+                    exampleModal.style.display = 'none';
+                    $('.modal-backdrop').removeClass("show modal-backdrop fade");
+                    $('body').removeClass("modal-open");
                     $('#exampleModal').modal('hide');
                     croppie.destroy();
                     getImages()

@@ -132,45 +132,45 @@ $("#submit-btn").on("click", function (e) {
     let sku = $('#sku').val();
     let system_mode = $("#system_mode").val();
     if (sku.trim() !== "") {
-      $.ajax({
-        method: "get",
-        url: "/product/check-sku/" + sku,
-        data: {},
-        success: function (result) {
-          console.log(result.success);
-          if (!result.success) {
-            swal("Error", result.msg, "error");
-          } else {
-            submitForm();
-          }
-        },
-      });
-    }else if(system_mode != "garments"){
+        $.ajax({
+            method: "get",
+            url: "/product/check-sku/" + sku,
+            data: {},
+            success: function (result) {
+                console.log(result.success);
+                if (!result.success) {
+                    swal("Error", result.msg, "error");
+                } else {
+                    submitForm();
+                }
+            },
+        });
+    } else if (system_mode != "garments") {
         let name = $("#name").val();
         let product_class_id = $("#product_class_id").val();
         let category_id = $("#category_id").val();
-            $.ajax({
-                method: "get",
-                url: "/product/check-name",
-                data: {
-                    name: name,
-                    product_class_id: product_class_id,
-                    category_id: category_id,
-                },
-                success: function (result) {
-                    if (!result.success) {
-                        swal("Error", result.msg, "error");
-                        $("#name").val("");
-                    }else {
-                        submitForm();
-                    }
-                },
-            });
-    }  else {
-      submitForm();
+        $.ajax({
+            method: "get",
+            url: "/product/check-name",
+            data: {
+                name: name,
+                product_class_id: product_class_id,
+                category_id: category_id,
+            },
+            success: function (result) {
+                if (!result.success) {
+                    swal("Error", result.msg, "error");
+                    $("#name").val("");
+                } else {
+                    submitForm();
+                }
+            },
+        });
+    } else {
+        submitForm();
     }
-  });
-  
+});
+
 function submitForm() {
     if ($("#product-form").valid()) {
         tinyMCE.triggerSave();
@@ -181,7 +181,8 @@ function submitForm() {
             url: $("form#product-form").attr("action"),
             data: $("#product-form").serialize(),
             success: function (response) {
-                myFunction();
+                // myFunction();
+                showPage()
                 if (response.success) {
                     swal("Success", response.msg, "success");
                     $("#sku").val("").change();
@@ -189,8 +190,8 @@ function submitForm() {
                     $(".translations").val("").change();
 
                     if (!$('#clear_all_input_form').is(':checked')) {
-                    $('.clear_input_form').val('');
-                    $('.clear_input_form').selectpicker('refresh');
+                        $('.clear_input_form').val('');
+                        $('.clear_input_form').selectpicker('refresh');
                     }
                     const previewContainer = document.querySelector('.preview-container');
                     previewContainer.innerHTML = '';
@@ -199,7 +200,8 @@ function submitForm() {
                 }
             },
             error: function (response) {
-                myFunction();
+                // myFunction();
+                showPage()
                 if (!response.success) {
                     swal("Error", response.msg, "error");
                 }
@@ -828,10 +830,10 @@ $(document).on("change", "#discount", function () {
     }
 });
 $(document).on("change", ".depends_on", function () {
-    if ($(this).val() == 1){
+    if ($(this).val() == 1) {
         $(".selling_price_depends_div").removeClass("hide");
         $(".purchase_price_depends_div").addClass('hide');
-    }else{
+    } else {
         $(".selling_price_depends_div").addClass("hide");
         $(".purchase_price_depends_div").removeClass('hide');
     }
@@ -910,7 +912,7 @@ $(document).on("click", ".add_discount_row", function () {
             $("#consumption_table_discount > tbody").prepend(result);
             $(".selectpicker").selectpicker("refresh");
             // $(".datepicker").datepicker("refresh");
-            $(".datepicker").datepicker({refresh:"refresh",todayHighlight: true});
+            $(".datepicker").datepicker({ refresh: "refresh", todayHighlight: true });
             // $(".raw_material_unit_id").selectpicker("refresh");
         },
     });
@@ -932,7 +934,7 @@ $(document).on("change", "select.extension_id", function () {
 });
 
 
-$(document).on("change","#is_discount_permenant",function () {
+$(document).on("change", "#is_discount_permenant", function () {
     $(this).closest("tr").find(".discount_start_date").prop('disabled', (i, v) => !v);
     $(this).closest("tr").find(".discount_start_date").val(null);
     $(this).closest("tr").find(".discount_end_date").prop('disabled', (i, v) => !v);

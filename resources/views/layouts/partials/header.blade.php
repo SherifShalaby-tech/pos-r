@@ -96,8 +96,6 @@ $colors = [
                                     @endif
                                     @endforeach
                                 </div>
-
-
                             </li>
                         </ul>
                     </li>
