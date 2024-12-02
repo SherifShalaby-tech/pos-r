@@ -4,7 +4,6 @@
 @section('content')
 <section class="forms py-2">
 
-
     <div class="container-fluid px-2">
         <div class="row">
             <div class="col-md-12">
@@ -223,16 +222,12 @@
 
                             <x-collapse collapse-id="user_rights" button-class="d-flex mx-4 btn-primary"
                                 group-class="mb-1" body-class="py-1">
-
                                 <x-slot name="button">
                                     {{-- @lang('lang.filter') --}}
                                     @lang('lang.user_rights')
                                 </x-slot>
-
-
                                 <div class="row">
                                     <div class="col-md-12 text-center">
-
                                     </div>
                                     <div class="col-md-12">
                                         @include('employee.partial.permission')
@@ -368,5 +363,8 @@
         $(document).on('focusout', '.check_out', function() {
             $('.check_out').val($(this).val())
         })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 @endsection

@@ -15,49 +15,46 @@
 
                     <h4>@lang('lang.edit_employee')</h4>
 
-                    <x-slot name="buttons">
 
-                    </x-slot>
                 </x-page-title>
-                <div class="card">
 
-                    <div class="card-body">
-                        {!! Form::open(['url' => action('EmployeeController@update', $employee->id), 'method' => 'put',
-                        'id'
-                        => 'edit_employee_form', 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::open(['url' => action('EmployeeController@update', $employee->id), 'method' => 'put',
+                'id'
+                => 'edit_employee_form', 'enctype' => 'multipart/form-data']) !!}
 
-                        <div class="row">
+                <div class="card mb-1">
 
-                            <div class="col-sm-6">
+                    <div class="card-body pb-0">
+                        <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
+
+                            <div class="col-sm-4">
                                 <label for="fname">@lang('lang.name'):*</label>
                                 <input type="text" class="form-control" name="name" value="{{ $employee->name }}"
                                     @if($employee->name == 'Admin') readonly @endif
                                 id="name" required placeholder="Name">
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label for="store_id">@lang('lang.store')</label>
                                 {!! Form::select('store_id[]', $stores, !empty($employee->store_id) ?
                                 $employee->store_id :
                                 [], ['class' => 'form-control selectpicker', 'multiple', 'placeholder' =>
                                 __('lang.please_select'), 'data-live-search' => 'true', 'id' => 'store_id']) !!}
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label
                                     for="email">@lang('lang.email'):*<small>(@lang('lang.it_will_be_used_for_login'))</small></label>
                                 <input type="email" class="form-control" name="email" value="{{ $employee->email }}"
                                     id="email" required placeholder="Email">
                             </div>
 
-                        </div>
 
-                        <div class="row mt-4">
 
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label for="password">@lang('lang.password')</label>
                                 <input type="password" class="form-control" name="password" id="password"
                                     placeholder="Create New Password">
                             </div>
-                            <div class="col-sm-5">
+                            <div class="col-sm-4">
                                 <label for="pass">@lang('lang.confirm_password')</label>
                                 <input type="password" class="form-control" id="password_confirmation"
                                     name="password_confirmation" placeholder="Conform Password">
@@ -67,58 +64,52 @@
                                     data-href="{{ route('print_employee_barcode', $employee->id) }}"><i
                                         class="dripicons-print"></i></a>
                             </div>
-                        </div>
-                        <div class="row mt-4">
 
-                            <div class="col-sm-6">
+
+                            <div class="col-sm-4">
                                 <label for="date_of_start_working">@lang('lang.date_of_start_working')</label>
                                 <input type="date_of_start_working" class="form-control" name="date_of_start_working"
                                     value="@if (!empty($employee->date_of_start_working)) {{ @format_date($employee->date_of_start_working) }} @endif"
                                     id="date_of_start_working" placeholder="@lang('lang.date_of_start_working')">
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label for="date_of_birth">@lang('lang.date_of_birth')</label>
                                 <input type="date_of_birth" class="form-control" name="date_of_birth" id="date_of_birth"
                                     value="@if (!empty($employee->date_of_birth)) {{ @format_date($employee->date_of_birth) }} @endif"
                                     placeholder="@lang('lang.date_of_birth')">
                             </div>
 
-                        </div>
-                        <div class="row mt-4">
 
-                            <div class="col-sm-6">
+
+                            <div class="col-sm-4">
                                 <label for="job_type">@lang('lang.job_type')</label>
                                 {!! Form::select('job_type_id', $jobs, $employee->job_type_id, ['class' =>
                                 'form-control',
                                 'placeholder' => __('lang.select_job_type')]) !!}
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label for="mobile">@lang('lang.mobile'):*</label>
                                 <input type="mobile" class="form-control" name="mobile" id="mobile" required
                                     value="{{ $employee->mobile }}" placeholder="@lang('lang.mobile')">
                             </div>
 
-                        </div>
-                        <div class="row mt-4">
 
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <label for="upload_files">@lang('lang.upload_files')</label>
                                 {!! Form::file('upload_files[]', ['class' => 'form-control', 'multiple']) !!}
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-4">
                                 <label for="photo">@lang('lang.profile_photo')</label>
                                 <input type="file" name="photo" id="photo" class="form-control" />
                             </div>
-                        </div>
 
-                        <div class="row mt-4">
+
                             @foreach ($number_of_leaves as $number_of_leave)
-                            <div class="col-sm-6">
+                            <div class="col-sm-4">
                                 <div class="i-checks">
-                                    <input id="number_of_leaves{{ $number_of_leave->id }}"
-                                        name="number_of_leaves[{{ $number_of_leave->id }}][enabled]" @if
-                                        ($number_of_leave->enabled == 1) checked @endif type="checkbox" value="1"
-                                    class="form-control-custom">
+                                    <input @if ($number_of_leave->enabled == 1) checked @endif type="checkbox" value="1"
+                                    class="form-control-custom" id="number_of_leaves{{ $number_of_leave->id }}"
+                                    name="number_of_leaves[{{ $number_of_leave->id }}][enabled]">
                                     <label for="number_of_leaves{{ $number_of_leave->id }}"><strong>{{
                                             $number_of_leave->name }}</strong></label>
                                     <input type="number" class="form-control"
@@ -130,19 +121,31 @@
                             @endforeach
                         </div>
 
-                        <div class="row mt-4">
+
+                        <div class="row ">
                             <!-- Button trigger modal -->
-                            <button type="button" style="margin-left: 15px;" class="btn btn-primary" data-toggle="modal"
+                            <button type="button" class="btn mx-3 mb-1 btn-primary" data-toggle="modal"
                                 data-target="#salary_details">
                                 @lang('lang.salary_details')
                             </button>
 
                             @include('employee.partial.salary_details')
                         </div>
+                    </div>
+                </div>
 
-                        <div class="row mt-4">
+                <x-collapse collapse-id="working_day_per_week" button-class="d-flex mx-4
+                                             btn-primary" group-class="mb-1" body-class="py-1">
+
+                    <x-slot name="button">
+                        {{-- @lang('lang.filter') --}}
+
+                        @lang('lang.select_working_day_per_week')
+                    </x-slot>
+                    <div class="col-md-12">
+
+                        <div class="row">
                             <div class="col-md-12">
-                                <label for="working_day_per_week">@lang('lang.select_working_day_per_week')</label>
                                 <table>
                                     <thead>
                                         <tr>
@@ -157,9 +160,9 @@
                                             <td>
                                                 <div class="form-group">
                                                     <div class="i-checks">
-                                                        <input id="working_day_per_week{{ $key }}" @if
-                                                            (!empty($employee->working_day_per_week[$key])) checked
-                                                        @endif
+                                                        <input @if (!empty($employee->working_day_per_week[$key]))
+                                                        checked
+                                                        @endif id="working_day_per_week{{ $key }}"
                                                         name="working_day_per_week[{{ $key }}]"
                                                         type="checkbox" value="1" class="form-control-custom">
                                                         <label for="working_day_per_week{{ $key }}"><strong>{{ $week_day
@@ -187,32 +190,34 @@
                                 </table>
                             </div>
                         </div>
-
-
-                        <br>
-                        <br>
-
-                        <div class="row">
-                            <div class="col-md-12 text-center">
-                                <h3>@lang('lang.user_rights')</h3>
-                            </div>
-                            <div class="col-md-12">
-                                @include('employee.partial.permission')
-                            </div>
-                        </div>
-
-                        <div class="row mt-4">
-
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-primary"
-                                    id="submit-btn">@lang('lang.update_employee')</button>
-                            </div>
-
-                        </div>
-                        {!! Form::close() !!}
-
                     </div>
+                </x-collapse>
+
+
+                <x-collapse collapse-id="user_rights" button-class="d-flex mx-4 btn-primary" group-class="mb-1"
+                    body-class="py-1">
+                    <x-slot name="button">
+                        {{-- @lang('lang.filter') --}}
+                        @lang('lang.user_rights')
+                    </x-slot>
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                        </div>
+                        <div class="col-md-12">
+                            @include('employee.partial.permission')
+                        </div>
+                    </div>
+                </x-collapse>
+
+                <div class="row ">
+                    <div class="col-sm-12 mx-4">
+                        <button type="submit" class="btn btn-primary"
+                            id="submit-btn">@lang('lang.update_employee')</button>
+                    </div>
+
                 </div>
+                {!! Form::close() !!}
+
             </div>
         </div>
     </div>
@@ -385,5 +390,9 @@
                 }
             });
         });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 @endsection
