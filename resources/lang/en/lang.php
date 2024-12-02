@@ -1523,6 +1523,6 @@ return [
     'dining_in' => 'Dining in',
     'invoice' => 'Invoice',
     'add_raw_material' => "Add Raw Material",
-    'discount_info' => "Discount Info",
+    'discount_info' => "Price and Discount",
     'more_info' => "More Info",
 ];

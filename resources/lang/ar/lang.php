@@ -1500,7 +1500,7 @@ return [
     'products_filter' => "فلاتر المنتجات",
     'products_other_filter' => "فلاتر اخرى للمنتجات",
     'add_raw_material' => "اضافه مادة اولية",
-    'discount_info' => "معلومات الخصم",
+    'discount_info' => "السعر والتخفيضات",
     'more_info' => "معلومات اخرى",
     'filter' => "فلتر",
     'ticketـnumberـstart' => 'بداية رقم التذكرة',
