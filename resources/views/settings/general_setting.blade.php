@@ -407,7 +407,7 @@
                                     <div class="preview-header-container">
                                         @if (!empty($settings['letter_header']))
                                         <div class="preview">
-                                            <img src="{{ asset(" uploads/". $settings['letter_header']) }}"
+                                            <img src="{{ asset('uploads/'. $settings['letter_header']) }}"
                                                 id="img_header_footer" alt="">
                                             <button class="btn btn-xs btn-danger delete-btn remove_image"
                                                 data-type="letter_header"><i style="font-size: 25px;"
@@ -440,7 +440,7 @@
                                     <div class="preview-footer-container">
                                         @if (!empty($settings['letter_footer']))
                                         <div class="preview">
-                                            <img src="{{ asset(" uploads/". $settings['letter_footer']) }}"
+                                            <img src="{{ asset('uploads/'. $settings['letter_footer']) }}"
                                                 id="img_letter_footer" alt="">
                                             <button class="btn btn-xs btn-danger delete-btn remove_image"
                                                 data-type="letter_footer"><i style="font-size: 25px;"
@@ -472,7 +472,7 @@
                                     <div class="preview-logo-container">
                                         @if (!empty($settings['logo']))
                                         <div class="preview">
-                                            <img src="{{ asset(" uploads/". $settings['logo']) }}" id="img_logo_footer"
+                                            <img src="{{ asset('uploads/'. $settings['logo']) }}" id="img_logo_footer"
                                                 alt="">
                                             <button class="btn btn-xs btn-danger delete-btn remove_image"
                                                 data-type="logo"><i style="font-size: 25px;"

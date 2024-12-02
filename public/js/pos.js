@@ -2031,9 +2031,7 @@ function pos_print(receipt) {
 function quick_print(receipt) {
     console.log(2)
     if (
-        ($(".is_quick_pay").val() == "1" ||
-            $(".is_bank_transfer").val() == "1") &&
-        $(".show_the_window_printing_prompt").val() == "0"
+        ($(".is_bank_transfer").val() == "1") && $(".show_the_window_printing_prompt").val() == "0"
     ) {
         var pdfOptions = {
             margin: 0,
