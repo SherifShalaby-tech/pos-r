@@ -280,8 +280,8 @@
 
                                 <div class="col-md-12 hide">
                                     <div class="i-checks">
-                                        <input id="print_the_transaction" name="print_the_transaction" type="checkbox"
-                                            checked value="1" class="form-control-custom">
+                                        <input id="print_the_transaction" checked name="print_the_transaction"
+                                            type="checkbox" checked value="1" class="form-control-custom">
                                         <label
                                             class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
                                             for="print_the_transaction"><strong>@lang('lang.print_the_transaction')</strong></label>

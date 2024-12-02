@@ -74,7 +74,7 @@
                                                 <input @if (!empty($show_the_window_printing_prompt) &&
                                                     $show_the_window_printing_prompt=='1' ) checked @endif
                                                     id="print_the_transaction" name="print_the_transaction"
-                                                    type="checkbox" value="1" class="form-control-custom">
+                                                    type="checkbox" checked class="form-control-custom">
                                                 <label for="print_the_transaction">
                                                 </label>
                                                 <span>
