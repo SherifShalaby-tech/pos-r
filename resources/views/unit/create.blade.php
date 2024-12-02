@@ -18,7 +18,7 @@
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
 
 
-            <div class="col-md-4">
+            <div class="col-md-12">
 
                 <div class="form-group">
                     <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
@@ -37,7 +37,7 @@
 
 
             @if(session('system_mode') != 'garments')
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="form-group">
                     {!! Form::label('base_unit_multiplier', __( 'lang.times_of' ),[
                     'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
@@ -48,7 +48,7 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="form-group">
                     {!! Form::label('base_unit_id', __( 'lang.base_unit' ),[
                     'class' => app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'

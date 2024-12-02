@@ -10,7 +10,7 @@
 
 
         <div class="modal-body row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
-            <div class="col-md-6 px-4">
+            <div class="col-md-12 px-4">
                 <div class="form-group">
                     <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                         {!! Form::label('name', __( 'lang.name' ) ,[
@@ -25,7 +25,7 @@
                 </div>
             </div>
             <input type="hidden" name="quick_add" value="{{$quick_add }}">
-            <div class="col-md-6 px-4">
+            <div class="col-md-12 px-4">
                 <div class="form-group">
                     <div class="d-flex @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                         {!! Form::label('size_code', __( 'lang.size_code' ),[
