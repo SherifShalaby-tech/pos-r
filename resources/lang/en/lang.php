@@ -1522,4 +1522,7 @@ return [
     'packet_service' => 'Packet Service',
     'dining_in' => 'Dining in',
     'invoice' => 'Invoice',
+    'add_raw_material' => "Add Raw Material",
+    'discount_info' => "Discount Info",
+    'more_info' => "More Info",
 ];
