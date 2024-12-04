@@ -9,16 +9,15 @@
 
             <x-page-title>
                 <h4 class="print-title">@lang('lang.suppliers')</h4>
-            </x-page-title>
 
-            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-                <x-slot name="button">
-                    {{-- @lang('lang.filter') --}}
+                <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
                     <div style="width: 20px">
                         <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
                     </div>
-                </x-slot>
+                </x-collapse-button>
+            </x-page-title>
+
+            <x-collapse-body collapse-id="Filter">
                 <div class="col-md-12">
                     <form action="">
                         <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
@@ -45,7 +44,7 @@
                         </div>
                     </form>
                 </div>
-            </x-collapse>
+            </x-collapse-body>
 
             <div
                 class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
@@ -97,7 +96,8 @@
                                         @endif
                                     </td>
                                     <td>{{ @num_format($supplier->total_invoice - $supplier->total_paid +
-                                        $supplier->total_supplier_service - $supplier->total_supplier_service_paid) }}
+                                        $supplier->total_supplier_service - $supplier->total_supplier_service_paid)
+                                        }}
                                     </td>
                                     <td>{{ $supplier->created_by_user->name ?? '' }}</td>
                                     <td>

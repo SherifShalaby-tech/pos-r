@@ -16,19 +16,18 @@
                         class="dripicons-plus"></i>
                     @lang('lang.add_new_raw_material')</a>
                 @endcan
+
+                <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
+                    <div style="width: 20px">
+                        <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                    </div>
+                </x-collapse-button>
             </x-slot>
         </x-page-title>
 
 
 
-        <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-            <x-slot name="button">
-                {{-- @lang('lang.filter') --}}
-                <div style="width: 20px">
-                    <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
-                </div>
-            </x-slot>
+        <x-collapse-body collapse-id="Filter">
             <div class="col-md-12">
                 <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                     <div class="col-md-2">
@@ -93,7 +92,7 @@
                 </div>
             </div>
 
-        </x-collapse>
+        </x-collapse-body>
         {{-- <div class="row">
             <div class="col-md-12">
                 <button type="button" value="0"

@@ -9,18 +9,15 @@
             <x-page-title>
 
                 <h4 class="print-title">@lang('lang.all_transfers')</h4>
-
-            </x-page-title>
-
-
-            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-                <x-slot name="button">
-                    {{-- @lang('lang.filter') --}}
+                <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
                     <div style="width: 20px">
                         <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
                     </div>
-                </x-slot>
+                </x-collapse-button>
+            </x-page-title>
+
+
+            <x-collapse-body collapse-id="Filter">
 
                 <div class="col-md-12">
 
@@ -93,7 +90,7 @@
                         </div>
                     </form>
                 </div>
-            </x-collapse>
+            </x-collapse-body>
 
 
         </div>

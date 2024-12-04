@@ -9,18 +9,14 @@
             <x-page-title>
 
                 <h4 class="print-title">@lang('lang.cash_in')</h4>
-
-            </x-page-title>
-
-
-            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-                <x-slot name="button">
-                    {{-- @lang('lang.filter') --}}
+                <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
                     <div style="width: 20px">
                         <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
                     </div>
-                </x-slot>
+                </x-collapse-button>
+            </x-page-title>
+
+            <x-collapse-body collapse-id="Filter">
                 <div class="col-md-12 ">
                     <form action="">
                         <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
@@ -90,7 +86,7 @@
                         </div>
                     </form>
                 </div>
-            </x-collapse>
+            </x-collapse-body>
 
             <div
                 class="top-controls py-1 d-flex justify-content-center justify-content-lg-start align-items-center flex-wrap">
@@ -126,7 +122,8 @@
                                     <td>{{ucfirst($employee->store_pos ?? '')}}</td>
                                     <td>{{ucfirst($cash_register->job_title ?? '')}}</td>
                                     <td>{{ucfirst($cash_register->source->name ?? '')}}</td>
-                                    <td>{{ucfirst($cash_register->source->employee->job_type->job_title ?? '')}}</td>
+                                    <td>{{ucfirst($cash_register->source->employee->job_type->job_title ?? '')}}
+                                    </td>
                                     <td>{{@num_format($cash_register->amount)}}</td>
                                     <td>{{$cash_register->notes}}</td>
 
@@ -144,7 +141,8 @@
                                                 <li>
                                                     <a data-href="{{action('CashInController@edit', $cash_register->id)}}"
                                                         data-container=".view_modal" class="btn btn-modal"><i
-                                                            class="dripicons-document-edit"></i> @lang('lang.edit')</a>
+                                                            class="dripicons-document-edit"></i>
+                                                        @lang('lang.edit')</a>
                                                 </li>
                                                 <li class="divider"></li>
                                                 @endcan
@@ -190,5 +188,7 @@
 @endsection
 
 @section('javascript')
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+</script>
 @endsection

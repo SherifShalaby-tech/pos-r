@@ -9,16 +9,15 @@
 
         <x-page-title>
             <h4 class="print-title">@lang('lang.list_of_employees_in_forfeit_leave')</h4>
-        </x-page-title>
 
-        <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-            <x-slot name="button">
-                {{-- @lang('lang.filter') --}}
+            <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
                 <div style="width: 20px">
                     <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
                 </div>
-            </x-slot>
+            </x-collapse-button>
+        </x-page-title>
+
+        <x-collapse-body collapse-id="Filter">
             <div class="row" id="sales">
                 <form action="" class="col-md-12 px-4">
                     <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
@@ -50,7 +49,7 @@
                     </div>
                 </form>
             </div>
-        </x-collapse>
+        </x-collapse-body>
 
 
 
@@ -118,7 +117,7 @@
 @endsection
 
 @section('javascript')
-<script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 @endsection

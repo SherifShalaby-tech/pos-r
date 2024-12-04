@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Cache;
             @endif
 
             <x-slot name="buttons">
-                <div>
+                <div class="d-flex" style="gap: 5px">
                     @if (empty($page))
                     @can('product_module.product.create_and_edit')
                     <a href="{{ action('ProductController@create') }}" class="btn btn-primary py-2"><i
@@ -34,19 +34,20 @@ use Illuminate\Support\Facades\Cache;
                             class="fa fa-arrow-down"></i>
                         @lang('lang.import')</a>
                     @endif
+
+                    <x-collapse-button collapse-id="Filter" button-class="d-flex btn-secondary">
+                        <div style="width: 20px">
+                            <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                        </div>
+                    </x-collapse-button>
                 </div>
             </x-slot>
         </x-page-title>
 
-        <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
 
-            <x-slot name="button">
-                {{-- @lang('lang.filter') --}}
-                <div style="width: 20px">
-                    <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
-                </div>
-            </x-slot>
 
+
+        <x-collapse-body collapse-id="Filter">
             <div class="col-md-12">
                 <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
                     <div class="col-md-2 px-2">
@@ -180,7 +181,8 @@ use Illuminate\Support\Facades\Cache;
                     </div>
                     <div class="col-md-2 px-2">
                         <div class="form-group">
-                            {!! Form::label('created_by', __('lang.created_by') , ['class' => app()->isLocale('ar') ?
+                            {!! Form::label('created_by', __('lang.created_by') , ['class' => app()->isLocale('ar')
+                            ?
                             'mb-1 label-ar' : 'mb-1 label-en']) !!}
                             {!! Form::select('created_by', $users, request()->created_by, [
                             'class' => 'form-control filter_product
@@ -194,7 +196,8 @@ use Illuminate\Support\Facades\Cache;
                         <div class="form-group">
                             {!! Form::label('active', __('lang.active') , ['class' => app()->isLocale('ar') ?
                             'mb-1 label-ar' : 'mb-1 label-en']) !!}
-                            {!! Form::select('active', [0 => __('lang.no'), 1 => __('lang.yes')], request()->active, [
+                            {!! Form::select('active', [0 => __('lang.no'), 1 => __('lang.yes')], request()->active,
+                            [
                             'class' => 'form-control filter_product
                             selectpicker',
                             'data-live-search' => 'true',
@@ -236,74 +239,8 @@ use Illuminate\Support\Facades\Cache;
                     </div>
                 </div>
             </div>
+        </x-collapse-body>
 
-        </x-collapse>
-
-        {{-- <div class="row">
-            <div class="col-md-12">
-                <button type="button" value="1"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.image')</button>
-                <button type="button" value="4" class="badge badge-pill badge-primary column-toggle">
-                    @if (session('system_mode') == 'restaurant')
-                    @lang('lang.category')
-                    @else
-                    @lang('lang.class')
-                    @endif
-                </button>
-                @if (session('system_mode') != 'restaurant')
-                <button type="button" value="5"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.category')</button>
-                <button type="button" value="6"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.sub_category')</button>
-                @endif
-                <button type="button" value="5"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_history')</button>
-                <button type="button" value="6"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.batch_number')</button>
-                <button type="button" value="7"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.selling_price')</button>
-                <button type="button" value="8"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.tax')</button>
-                @if (session('system_mode') != 'restaurant')
-                <button type="button" value="9"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.brand')</button>
-                @endif
-                <button type="button" value="9"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.unit')</button>
-
-                <button type="button" value="10"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.size')</button>
-
-                @if (empty($page))
-                <button type="button" value="11"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock')</button>
-                @endif
-                @if (!empty($page))
-                <button type="button" value="12"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.current_stock_value')</button>
-                @endif
-                <button type="button" value="13"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.customer_type')</button>
-                <button type="button" value="14"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.expiry_date')</button>
-                <button type="button" value="15"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.manufacturing_date')</button>
-                <button type="button" value="16"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.discount')</button>
-                @can('product_module.purchase_price.view')
-                <button type="button" value="17"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.purchase_price')</button>
-                @endcan
-                <button type="button" value="18"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.supplier')</button>
-                <button type="button" value="19"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.active')</button>
-                <button type="button" value="20"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.created_by')</button>
-                <button type="button" value="22"
-                    class="badge badge-pill badge-primary column-toggle">@lang('lang.edited_by')</button>
-            </div>
-        </div> --}}
 
 
 

@@ -10,17 +10,14 @@
             <x-page-title>
 
                 <h4 class="print-title">@lang('lang.cash_out')</h4>
-            </x-page-title>
-
-
-            <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-                <x-slot name="button">
-                    {{-- @lang('lang.filter') --}}
+                <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
                     <div style="width: 20px">
                         <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
                     </div>
-                </x-slot>
+                </x-collapse-button>
+            </x-page-title>
+
+            <x-collapse-body collapse-id="Filter">
                 <div class="col-md-12 ">
                     <form action="">
                         <div class="row @if (app()->isLocale('ar')) flex-row-reverse @else flex-row @endif">
@@ -91,7 +88,7 @@
                         </div>
                     </form>
                 </div>
-            </x-collapse>
+            </x-collapse-body>
 
 
             <div
@@ -133,13 +130,15 @@
                                     <td>{{ ucfirst($supplier_name ?? '') }}</td>
                                     @elseif ($cash_register->transaction_type == 'expense')
                                     @php
-                                    $beneficiary_name = $cash_register->transaction->expense_beneficiary->name ?? '';
+                                    $beneficiary_name = $cash_register->transaction->expense_beneficiary->name ??
+                                    '';
                                     @endphp
                                     <td>{{ ucfirst($beneficiary_name ?? '') }}</td>
                                     @elseif ($cash_register->transaction_type == 'wages_and_compensation')
                                     @php
                                     $employee_name =
-                                    $cash_register->transaction->wages_and_compensation->employee->employee_name ?? '';
+                                    $cash_register->transaction->wages_and_compensation->employee->employee_name ??
+                                    '';
                                     @endphp
                                     <td>{{ ucfirst($employee_name ?? '') }}</td>
                                     @else
@@ -150,7 +149,8 @@
                                     @elseif ($cash_register->transaction_type == 'expense')
                                     <td>@lang('lang.beneficiary')</td>
                                     @elseif ($cash_register->transaction_type == 'expense')
-                                    <td>{{ $cash_register->transaction->wages_and_compensation->employee->employee_name
+                                    <td>{{
+                                        $cash_register->transaction->wages_and_compensation->employee->employee_name
                                         ?? '' }}
                                     </td>
                                     @else
@@ -174,7 +174,8 @@
                                                 <li>
                                                     <a data-href="{{ action('CashOutController@edit', $cash_register->id) }}"
                                                         data-container=".view_modal" class="btn btn-modal"><i
-                                                            class="dripicons-document-edit"></i> @lang('lang.edit')</a>
+                                                            class="dripicons-document-edit"></i>
+                                                        @lang('lang.edit')</a>
                                                 </li>
                                                 <li class="divider"></li>
                                                 @endcan
@@ -220,5 +221,7 @@
 @endsection
 
 @section('javascript')
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+</script>
 @endsection

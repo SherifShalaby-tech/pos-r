@@ -2031,7 +2031,7 @@ function pos_print(receipt) {
 function quick_print(receipt) {
     console.log(2)
     if (
-        ($(".is_bank_transfer").val() == "1") && $(".show_the_window_printing_prompt").val() == "0"
+        ($(".is_quick_pay").val() == "1" || $(".is_bank_transfer").val() == "1") && $(".show_the_window_printing_prompt").val() == "0"
     ) {
         var pdfOptions = {
             margin: 0,
@@ -2044,7 +2044,13 @@ function quick_print(receipt) {
             jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
         };
         console.log(receipt);
-        html2pdf(receipt, pdfOptions);
+        // html2pdf(receipt, pdfOptions);
+
+
+        // Generate the PDF, but directly send it to print instead of saving
+        html2pdf().from(receipt).set(pdfOptions).output('dataurlnewwindow').then(() => {
+            window.print(); // Trigger the browser's print dialog
+        });
     }
 }
 

@@ -16,19 +16,16 @@
             @endif
 
             <x-slot name="buttons">
-
+                <x-collapse-button collapse-id="Filter" button-class="d-inline btn-secondary">
+                    <div style="width: 20px">
+                        <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
+                    </div>
+                </x-collapse-button>
             </x-slot>
         </x-page-title>
 
 
-        <x-collapse collapse-id="Filter" button-class="d-flex btn-secondary" group-class="mb-1" body-class="py-1">
-
-            <x-slot name="button">
-                {{-- @lang('lang.filter') --}}
-                <div style="width: 20px">
-                    <img class="w-100" src="{{ asset('front/white-filter.png') }}" alt="">
-                </div>
-            </x-slot>
+        <x-collapse-body collapse-id="Filter">
 
             <div class="col-md-12">
 
@@ -82,7 +79,7 @@
                     </div>
                 </form>
             </div>
-        </x-collapse>
+        </x-collapse-body>
 
 
         <div
@@ -202,5 +199,9 @@
 @section('javascript')
 <script type="text/javascript">
 
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
 </script>
 @endsection
