@@ -9,6 +9,7 @@
             </x-modal-header>
 
             <div class="modal-body py-1">
+
                 <div class="row">
 
                     <div class="col-md-12 customer_name_div hide">
@@ -21,17 +22,20 @@
                             {{-- <input type="text" value="" class="isPayComplete" /> --}}
                             <div id="payment_rows" class="col-md-12">
                                 <div class="payment_row row pl-3  pr-3">
-                                    <div class="col-md-4 mt-1">
+                                    <div class="col-md-2 mt-1">
                                         <label>@lang('lang.received_amount'): *</label>
                                         <input type="text" name="payments[0][amount]"
                                             class="form-control numkey received_amount" required id="amount" step="any">
                                     </div>
-                                    <div class="col-md-4 mt-1">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-2 mt-1">
                                         <label>@lang('lang.paying_amount'): *</label>
                                         <input type="text" name="payments[0][paying_amount]" class="form-control numkey"
                                             id="paying_amount" step="any">
                                     </div>
-                                    <div class="col-md-4 mt-1 text-red d-flex justify-content-between align-items-end">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-4 mt-1 text-red d-flex justify-content-center align-items-end"
+                                        style="gap: 25px">
                                         <div>
 
                                             <label class="discount_lable">@lang('lang.discount'):</label>
@@ -57,11 +61,12 @@
                                                 id="add_to_customer_balance" value="0">
                                         </div>
                                     </div>
-                                    <div class="col-md-4 mt-1">
+                                    <div class="col-md-3 mt-1">
                                         <label>@lang('lang.payment_method'): *</label>
                                         {!! Form::select('payments[0][method]', $payment_types, null, ['class' =>
                                         'form-control method payment_way', 'required']) !!}
                                     </div>
+                                    <div class="col-md-1"></div>
                                     <div class="col-md-4 mt-1 d-flex align-items-end">
                                         @php
                                         $show_the_window_printing_prompt =
@@ -226,22 +231,24 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2 qc" data-initial="1">
+                    <div class="col-md-2 d-flex justify-content-start align-items-end flex-column">
                         <h4><strong>@lang('lang.quick_cash')</strong></h4>
-                        <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="10"
-                            type="button">10</button>
-                        <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="20"
-                            type="button">20</button>
-                        <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="50"
-                            type="button">50</button>
-                        <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="100"
-                            type="button">100</button>
-                        <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="500"
-                            type="button">500</button>
-                        <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="1000"
-                            type="button">1000</button>
-                        <button class="btn btn-block btn-danger qc-btn sound-btn" data-amount="0"
-                            type="button">@lang('lang.clear')</button>
+                        <div class="col-md-8 qc" data-initial="1">
+                            <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="10"
+                                type="button">10</button>
+                            <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="20"
+                                type="button">20</button>
+                            <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="50"
+                                type="button">50</button>
+                            <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="100"
+                                type="button">100</button>
+                            <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="500"
+                                type="button">500</button>
+                            <button class="btn btn-block btn-primary qc-btn sound-btn" data-amount="1000"
+                                type="button">1000</button>
+                            <button class="btn btn-block btn-danger qc-btn sound-btn" data-amount="0"
+                                type="button">@lang('lang.clear')</button>
+                        </div>
                     </div>
                 </div>
             </div>

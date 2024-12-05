@@ -1,4 +1,4 @@
-<div class="modal-dialog add_closing_cash" role="document">
+<div class="modal-dialog add_closing_cash" role="document" style="max-width: 80%">
     <div class="modal-content">
 
         {!! Form::open(['url' => action('CashController@saveAddClosingCash'), 'method' => 'post', 'id' =>

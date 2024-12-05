@@ -90,6 +90,4 @@
             id="bank-transfer-btn">
             @lang('lang.bank_transfer')</button>
     </div>
-
-
 </div>
