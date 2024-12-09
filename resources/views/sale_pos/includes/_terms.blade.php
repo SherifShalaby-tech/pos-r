@@ -39,16 +39,5 @@
             </span>
         </div>
     </div>
-    <div class="payment-amount col-md-3 table_room_hide dev_not_room bg-primary text-white " style="
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-weight: 700;
-    font-size: 18px;
-    border-radius: 5px;
-    padding: 0 10px;">
-        <span class="">{{ __('lang.grand_total') }}
-        </span>
-        <span class="final_total_span">0.00</span>
-    </div>
+
 </div>

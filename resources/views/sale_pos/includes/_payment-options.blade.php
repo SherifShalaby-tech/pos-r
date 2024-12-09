@@ -137,7 +137,12 @@ $payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
     </div>
     @endforeach
 
-
+    @if(auth()->user()->can('sp_module.sales_promotion.view')
+    || auth()->user()->can('sp_module.sales_promotion.create_and_edit')
+    || auth()->user()->can('sp_module.sales_promotion.delete'))
+    <button type="button" class="btn py-2 col-md-2 mr-2 btn-md btn-primary payment-btn text-white" data-toggle="modal"
+        data-target="#discount_modal">@lang('lang.random_discount')</button>
+    @endif
 
     <div class="">
         <button type="button" class="btn w-100 btn-danger" id="cancel-btn" onclick="return confirmCancel()"><i
