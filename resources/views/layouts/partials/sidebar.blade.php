@@ -1360,6 +1360,12 @@ $module_settings = !empty($module_settings) ? json_decode($module_settings, true
                                 href="{{action('SettingController@getGeneralSetting')}}">{{__('lang.general_settings')}}</a>
                         </li>
                         @endcan
+                        {{-- @can('settings.general_settings.view') --}}
+                        <li
+                            class="@if(request()->segment(1) == 'settings' && request()->segment(2) == 'get-general-setting') active @endif">
+                            <a href="{{ route('payment-methods.index') }}">{{__('lang.payment_methods')}}</a>
+                        </li>
+                        {{-- @endcan --}}
                     </ul>
                 </li>
                 <li class="@if(request()->segment(1) == 'tutorials' && empty(request()->segment(2))) active @endif">

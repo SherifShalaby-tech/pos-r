@@ -430,12 +430,12 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
                     }
                     @endphp
 
+                    @include('sale_pos.includes._payment-options')
                     <input type="hidden" name="terms_and_condition_hidden" id="terms_and_condition_hidden"
                         value="{{ $toc_hidden }}">
 
                     @include('sale_pos.includes._terms')
 
-                    @include('sale_pos.includes._payment-options')
                 </div>
 
                 @include('sale_pos.partials.payment_modal')
