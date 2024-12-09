@@ -129,12 +129,15 @@ $payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
     @endif
 
     @foreach ($payment_methods as $method)
+    @if ($method->is_active)
+
     <div class="">
         <button data-method="cash" style="background: var(--primary-color)" type="button"
             class="btn btn-custom payment-btn" data-toggle="modal" data-target="#{{ $method->name }}"
             data-backdrop="static" data-keyboard="false"><i class="fa fa-money"></i>
             {{ $method->name }}</button>
     </div>
+    @endif
     @endforeach
 
     @if(auth()->user()->can('sp_module.sales_promotion.view')
