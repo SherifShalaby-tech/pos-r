@@ -50,8 +50,7 @@
                                                 class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
                                                 for="is_active{{ $paymentMethod->id }}"></label>
                                             <span>
-                                                <strong>{{
-                                                    'lang.is_active' }}</strong>
+
                                             </span>
                                         </div>
                                     </td>

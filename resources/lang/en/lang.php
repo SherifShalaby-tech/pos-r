@@ -1525,4 +1525,8 @@ return [
     'add_raw_material' => "Add Raw Material",
     'discount_info' => "Price and Discount",
     'more_info' => "More Info",
+    'add_types' => 'Add Types',
+    'view_types' => 'View Types',
+    'add_payment_method' => 'Add Payment Method',
+    'is_active' => 'Is Active',
 ];

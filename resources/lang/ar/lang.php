@@ -1509,5 +1509,10 @@ return [
     'packet_service' => 'خارجي',
 
     'dining_in' => 'داخلي',
+    'add_types' => 'أضف أنواع',
+    'view_types' => 'عرض الأنواع',
+    'add_payment_method' => 'اضافة وسيلة دفع جديدة',
+    'payment_methods' => 'وسائل الدفع في الكاشير',
+    'is_active' => 'الحالة',
 
 ];
