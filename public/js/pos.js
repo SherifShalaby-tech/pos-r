@@ -2570,6 +2570,7 @@ function get_recent_transactions() {
             ajax: {
                 url: "/pos/get-recent-transactions",
                 data: function (d) {
+                    console.log(d);
                     d.start_date = $("#rt_start_date").val();
                     d.end_date = $("#rt_end_date").val();
                     d.method = $("#rt_method").val();
@@ -2584,8 +2585,6 @@ function get_recent_transactions() {
                     data.data = data.data.filter(function (row) {
                         return row.invoice_no && row.invoice_no.trim() !== "";
                     });
-                    console.log(JSON.stringify(data)); // Log the filtered data
-
                     return JSON.stringify(data); // Return the filtered data
                 }
             },
@@ -2608,6 +2607,19 @@ function get_recent_transactions() {
                 { data: "customer_type_name", name: "customer_types.name" },
                 { data: "customer_name", name: "customers.name" },
                 { data: "mobile_number", name: "customers.mobile_number" },
+
+                {
+                    data: "transaction_payments",
+                    name: "transaction_payments.method",
+                    render: function (data, type, row) {
+                        // Check if transaction_payments exists and has entries
+                        if (data && data.length > 0) {
+                            // Return the first payment method
+                            return data[0].method;
+                        }
+                        return "N/A"; // Fallback if no payments are available
+                    }
+                },
 
                 // { data: "method", name: "transaction_payments.method" },
                 // { data: "ref_number", name: "transaction_payments.ref_number" },

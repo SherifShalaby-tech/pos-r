@@ -14,8 +14,8 @@
                 <th>@lang('lang.customer_name')</th>
                 <th>@lang('lang.phone')</th>
 
-                {{-- <th>@lang('lang.payment_type')</th>
-                <th>@lang('lang.ref_number')</th> --}}
+                <th>@lang('lang.payment_type')</th>
+                {{-- <th>@lang('lang.ref_number')</th> --}}
 
 
                 <th>@lang('lang.status')</th>
