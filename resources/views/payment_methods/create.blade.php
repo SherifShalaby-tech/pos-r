@@ -33,8 +33,7 @@
                     <label class="@if (app()->isLocale('ar')) mb-1 label-ar @else mb-1 label-en @endif"
                         for="is_active"></label>
                     <span>
-                        <strong>{{
-                            'lang.is_active' }}</strong>
+                        <strong>@lang( 'lang.is_active' )</strong>
                     </span>
                 </div>
             </div>

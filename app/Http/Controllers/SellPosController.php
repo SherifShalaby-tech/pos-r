@@ -112,20 +112,20 @@ class SellPosController extends Controller
      */
     public function create()
     {
-         // Get the current date
-         $currentDate = Carbon::today();
+        // Get the current date
+        $currentDate = Carbon::today();
 
-         // Retrieve the last execution date from the cache or database
-         $lastExecutionDate = Cache::get('last_execution_date');
+        // Retrieve the last execution date from the cache or database
+        $lastExecutionDate = Cache::get('last_execution_date');
 
-         // Check if the last execution date is not today
-         if (!$lastExecutionDate || $lastExecutionDate < $currentDate) {
-             // Call the function or perform the desired task
-             $this->notificationUtil->checkExpiary();
+        // Check if the last execution date is not today
+        if (!$lastExecutionDate || $lastExecutionDate < $currentDate) {
+            // Call the function or perform the desired task
+            $this->notificationUtil->checkExpiary();
 
-             // Store the current date as the last execution date
-             Cache::put('last_execution_date', $currentDate, 1440); // 1440 minutes = 1 day
-         }
+            // Store the current date as the last execution date
+            Cache::put('last_execution_date', $currentDate, 1440); // 1440 minutes = 1 day
+        }
         //Check if there is a open register, if no then redirect to Create Register screen.
         if ($this->cashRegisterUtil->countOpenedRegister() == 0) {
             return redirect()->to('/cash-register/create?is_pos=1');
@@ -136,8 +136,8 @@ class SellPosController extends Controller
         $brands = Brand::all();
         $store_pos = StorePos::where('user_id', Auth::user()->id)->first();
         $customers = Customer::getCustomerArrayWithMobile();
-        $clients = Customer::get(['id','name','mobile_number']);
-        $products = Product::get(['id','name']);
+        $clients = Customer::get(['id', 'name', 'mobile_number']);
+        $products = Product::get(['id', 'name']);
         $taxes = Tax::getDropdown();
         $payment_types = $this->commonUtil->getPaymentTypeArrayForPos();
         $cashiers = Employee::getDropdownByJobType('Cashier', true, true);
@@ -154,7 +154,7 @@ class SellPosController extends Controller
         $exchange_rate_currencies = $this->commonUtil->getCurrenciesExchangeRateArray(true);
         $employees = Employee::getCommissionEmployeeDropdown();
         $delivery_men = Employee::getDropdownByJobType('Deliveryman');
-        $tables=DiningTable::pluck('name', 'id');
+        $tables = DiningTable::pluck('name', 'id');
         if (empty($store_pos)) {
             $output = [
                 'success' => false,
@@ -165,7 +165,7 @@ class SellPosController extends Controller
         }
         $dining_rooms = DiningRoom::all();
         $active_tab_id = null;
-        $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt')??0;
+        $show_the_window_printing_prompt = System::getProperty('show_the_window_printing_prompt') ?? 0;
         return view('sale_pos.pos')->with(compact(
             'show_the_window_printing_prompt',
             'dining_rooms',
@@ -223,7 +223,7 @@ class SellPosController extends Controller
         $transactions = Transaction::where('customer_id', $customer_id)->where('type', 'sell')->whereIn('payment_status', ['pending', 'partial'])->orderBy('transaction_date', 'asc')->get();
 
         $remaining_due_amount = 0;
-        $new_balance =0;
+        $new_balance = 0;
         foreach ($transactions as $transaction) {
             $due_for_transaction = $this->getDueForTransaction($transaction->id);
             $paid_amount = 0;
@@ -231,7 +231,7 @@ class SellPosController extends Controller
                 if ($balance >= $due_for_transaction) {
                     $paid_amount = $due_for_transaction;
                     $balance -= $due_for_transaction;
-                    $transaction->payment_status="paid";
+                    $transaction->payment_status = "paid";
                     $transaction->save();
                 } else if ($balance < $due_for_transaction) {
                     $paid_amount = $balance;
@@ -241,7 +241,7 @@ class SellPosController extends Controller
                 $remaining_due_amount += $paid_amount;
                 $customer->added_balance = $customer->added_balance - $paid_amount;
                 $customer->save();
-                $new_balance +=$paid_amount;
+                $new_balance += $paid_amount;
                 $payment_data = [
                     'transaction_payment_id' => null,
                     'transaction_id' =>  $transaction->id,
@@ -274,18 +274,18 @@ class SellPosController extends Controller
         //   return $request->all();
         // try {
         DB::beginTransaction();
-        $new_table=[];
-        $table_reserve=[];
-        if(isset($request->merge_table_id)){
-            $table_status=TableReservation::where('dining_table_id',$request->dining_table_id)->first();
-            $mergeDiningTable=DiningTable::create([
-                'dining_room_id'=>$request->dining_room_id,
-                'name'=>DiningTable::find($table_status->dining_table_id)->name .' & '.DiningTable::find($request->merge_table_id)->name,
+        $new_table = [];
+        $table_reserve = [];
+        if (isset($request->merge_table_id)) {
+            $table_status = TableReservation::where('dining_table_id', $request->dining_table_id)->first();
+            $mergeDiningTable = DiningTable::create([
+                'dining_room_id' => $request->dining_room_id,
+                'name' => DiningTable::find($table_status->dining_table_id)->name . ' & ' . DiningTable::find($request->merge_table_id)->name,
             ]);
-            $new_table=TableReservation::create([
-                'dining_table_id'=>$mergeDiningTable->id,
-                'status'=>'order',
-                'merge_table_id'=>[$request->merge_table_id,$table_status->dining_table_id]
+            $new_table = TableReservation::create([
+                'dining_table_id' => $mergeDiningTable->id,
+                'status' => 'order',
+                'merge_table_id' => [$request->merge_table_id, $table_status->dining_table_id]
             ]);
         }
 
@@ -335,7 +335,7 @@ class SellPosController extends Controller
             'delivery_address' => $request->delivery_address,
             'delivery_cost_paid_by_customer' => !empty($request->delivery_cost_paid_by_customer) ? 1 : 0,
             'delivery_cost_given_to_deliveryman' => !empty($request->delivery_cost_given_to_deliveryman) ? 1 : 0,
-            'dining_table_id' =>  !empty($new_table)?$new_table->dining_table_id:(!empty($request->dining_table_id) ? $request->dining_table_id : null),
+            'dining_table_id' =>  !empty($new_table) ? $new_table->dining_table_id : (!empty($request->dining_table_id) ? $request->dining_table_id : null),
             'dining_room_id' => !empty($request->dining_room_id) ? $request->dining_room_id : null,
             'service_fee_id' => !empty($request->service_fee_id_hidden) ? $request->service_fee_id_hidden : null,
             'service_fee_rate' => !empty($request->service_fee_rate) ? $this->commonUtil->num_uf($request->service_fee_rate) : null,
@@ -344,9 +344,11 @@ class SellPosController extends Controller
             'shared_commission' => !empty($request->shared_commission) ? 1 : 0,
             'created_by' => Auth::user()->id,
         ];
+
+        dd($transaction_data);
         $transaction_data['dining_room_id'] = null;
         if (!empty($request->dining_table_id)) {
-            $table_reserve=TableReservation::where('dining_table_id',$request->dining_table_id)->first();
+            $table_reserve = TableReservation::where('dining_table_id', $request->dining_table_id)->first();
             $dining_table = DiningTable::find($table_reserve->dining_table_id);
             $transaction_data['dining_room_id'] = $dining_table->dining_room_id;
         }
@@ -358,27 +360,27 @@ class SellPosController extends Controller
             $transaction_data['block_for_days'] = !empty($request->block_for_days) ? $request->block_for_days : 0; //reverse the block qty handle by command using cron job
             $transaction_data['validity_days'] = !empty($request->validity_days) ? $request->validity_days : 0;
         }
-        $transaction='';
-        if((!isset($request->SavedTransactionId)) || (isset($request->SavedTransactionId) && $request->SavedTransactionId=="0")){
+        $transaction = '';
+        if ((!isset($request->SavedTransactionId)) || (isset($request->SavedTransactionId) && $request->SavedTransactionId == "0")) {
             $transaction = Transaction::create($transaction_data);
-        }else{
+        } else {
             // return $request->SavedTransactionId;
             $transaction = Transaction::find($request->SavedTransactionId);
         }
 
         $this->transactionUtil->createOrUpdateTransactionSellLine($transaction, $request->transaction_sell_line);
-        $current_products=[];
+        $current_products = [];
         if ($transaction->status == 'final') {
             foreach ($request->transaction_sell_line as $sell_line) {
                 if (empty($sell_line['transaction_sell_line_id'])) {
                     if ($transaction->status == 'final') {
                         // if(!isset($line['dining_table_id'] )){
-                            if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
-                                $product = Product::find($sell_line['product_id']);
-                                if (!$product->is_service) {
-                                    $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
-                                }
+                        if (isset($sell_line['is_product_checked']) && $sell_line['is_product_checked'] == "1") {
+                            $product = Product::find($sell_line['product_id']);
+                            if (!$product->is_service) {
+                                $this->productUtil->decreaseProductQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity']);
                             }
+                        }
                         // }
                     }
                 }
@@ -386,21 +388,21 @@ class SellPosController extends Controller
         }
         foreach ($request->transaction_sell_line as $sell_line) {
             // if (empty($sell_line['transaction_sell_line_id'])) {
-                if(isset($sell_line['is_product_checked'] ) && $sell_line['is_product_checked']=="1"){
-                    $current_products[]= $sell_line['variation_id'];
-                }
+            if (isset($sell_line['is_product_checked']) && $sell_line['is_product_checked'] == "1") {
+                $current_products[] = $sell_line['variation_id'];
+            }
             // }
         }
         // if quotation and qty is blocked(reserved) for sale
         if ($transaction->is_quotation && $transaction->block_qty) {
             foreach ($request->transaction_sell_line as $sell_line) {
                 // if(!isset($line['dining_table_id'] )){
-                    if(isset($line['is_product_checked'] ) && $line['is_product_checked']=="1"){
-                        $product = Product::find($sell_line['product_id']);
-                        if (!$product->is_service) {
-                            $this->productUtil->updateBlockQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity'], 'add');
-                        }
+                if (isset($line['is_product_checked']) && $line['is_product_checked'] == "1") {
+                    $product = Product::find($sell_line['product_id']);
+                    if (!$product->is_service) {
+                        $this->productUtil->updateBlockQuantity($sell_line['product_id'], $sell_line['variation_id'], $transaction->store_id, $sell_line['quantity'], 'add');
                     }
+                }
                 // }
             }
         }
@@ -427,7 +429,7 @@ class SellPosController extends Controller
 
             //update customer deposit balance if any
             $customer = Customer::find($transaction->customer_id);
-            $customer->staff_note=isset($request->staff_note)?$request->staff_note:'';
+            $customer->staff_note = isset($request->staff_note) ? $request->staff_note : '';
             if ($request->used_deposit_balance > 0) {
                 $customer->deposit_balance = $customer->deposit_balance - $request->used_deposit_balance;
             }
@@ -442,18 +444,18 @@ class SellPosController extends Controller
             foreach ($request->payments as $payment) {
 
                 $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
-                if(isset($payment['method']) && $payment['method']=='deposit'){
+                if (isset($payment['method']) && $payment['method'] == 'deposit') {
                     $customer->added_balance = $customer->added_balance - $amount;
                     $customer->save();
                 }
                 if ($amount > 0) {
-                    if($request->is_bank_transfer=="1"){
-                        $payment['method']='bank_transfer';
+                    if ($request->is_bank_transfer == "1") {
+                        $payment['method'] = 'bank_transfer';
                     }
                     // return $payment['method'];
-                    $IsTransactionPayment=TransactionPayment::where('transaction_id',$transaction->id)->where('method',$payment['method'])->first();
+                    $IsTransactionPayment = TransactionPayment::where('transaction_id', $transaction->id)->where('method', $payment['method'])->first();
                     $payment_data = [
-                        'transaction_payment_id'=>!empty($IsTransactionPayment)?$IsTransactionPayment->id:null,
+                        'transaction_payment_id' => !empty($IsTransactionPayment) ? $IsTransactionPayment->id : null,
                         'transaction_id' => $transaction->id,
                         'amount' => $amount,
                         'cashes_amount' => $amount,
@@ -475,7 +477,7 @@ class SellPosController extends Controller
                     ];
 
                     $transaction_payment = $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data);
-                    $transaction = $this->transactionUtil->updateTransactionPaymentStatus($transaction->id,$request->isPayComplete);
+                    $transaction = $this->transactionUtil->updateTransactionPaymentStatus($transaction->id, $request->isPayComplete);
                     $this->cashRegisterUtil->addPayments($transaction, $payment_data, 'credit', null, $transaction_payment->id);
                     if ($payment_data['method'] == 'bank_transfer' || $payment_data['method'] == 'card') {
                         $this->moneysafeUtil->addPayment($transaction, $payment_data, 'credit', $transaction_payment->id);
@@ -518,8 +520,8 @@ class SellPosController extends Controller
 
         $this->transactionUtil->createOrUpdateRawMaterialConsumption($transaction);
         if (session('system_mode') == 'restaurant') {
-            if (!empty($transaction->dining_table_id) ) {
-                if(!empty($new_table)){
+            if (!empty($transaction->dining_table_id)) {
+                if (!empty($new_table)) {
                     $new_table->current_transaction_id = $transaction->id;
                     $new_table->save();
                 }
@@ -533,11 +535,11 @@ class SellPosController extends Controller
                 $table_reserve->save();
                 if ($old_status == 'reserve') {
                     if (Carbon::now()->gt(Carbon::parse($table_reserve->date_and_time))) {
-                        $new_table_order=TableReservation::create([
+                        $new_table_order = TableReservation::create([
                             'dining_table_id' => $table_reserve->dining_table_id,
                             'status' => 'order',
                         ]);
-                        $new_table_order->current_transaction_id=$transaction->id;
+                        $new_table_order->current_transaction_id = $transaction->id;
                         $new_table_order->save();
                     }
                 }
@@ -553,15 +555,14 @@ class SellPosController extends Controller
             }
         }
         DB::commit();
-        if(isset($payment['method']) && $request->payments[0]['method']=='cash'){
-            $new_balance=$this->payCustomerDue($transaction->customer_id);
+        if (isset($payment['method']) && $request->payments[0]['method'] == 'cash') {
+            $new_balance = $this->payCustomerDue($transaction->customer_id);
             if ($new_balance < $request->add_to_customer_balance) {
                 // return [$this->commonUtil->num_uf($request->add_to_customer_balance),$new_balance];
                 $register = CashRegister::where('store_id', $request->store_id)->where('store_pos_id', $request->store_pos_id)->where('user_id', Auth::user()->id)->where('closed_at', null)->where('status', 'open')->first();
-                $this->cashRegisterUtil->createCashRegisterTransaction($register,$this->commonUtil->num_uf($request->add_to_customer_balance)-$new_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
+                $this->cashRegisterUtil->createCashRegisterTransaction($register, $this->commonUtil->num_uf($request->add_to_customer_balance) - $new_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
             }
-
-        }else{
+        } else {
             if ($request->add_to_customer_balance > 0) {
                 $register = CashRegister::where('store_id', $request->store_id)->where('store_pos_id', $request->store_pos_id)->where('user_id', Auth::user()->id)->where('closed_at', null)->where('status', 'open')->first();
                 $this->cashRegisterUtil->createCashRegisterTransaction($register, $request->add_to_customer_balance, 'cash_in', 'debit', $request->customer_id, $request->notes, null, 'customer_balance');
@@ -581,7 +582,7 @@ class SellPosController extends Controller
             }
             if ($request->action == 'print') {
 
-                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types,null,$current_products);
+                $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, null, $current_products);
 
                 $output = [
                     'success' => true,
@@ -610,7 +611,6 @@ class SellPosController extends Controller
                 ];
                 return $output;
             }
-            
         }
 
         if ($request->submit_type == 'send' && $transaction->is_quotation) {
@@ -621,17 +621,17 @@ class SellPosController extends Controller
         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
 
-        $is_quick=0;
-        $show_the_window_printing_prompt=System::getProperty('show_the_window_printing_prompt');
-        if(($request->is_bank_transfer=="1" || $request->is_quick_pay=="1") && $show_the_window_printing_prompt=="0"){
-            $is_quick=2;
+        $is_quick = 0;
+        $show_the_window_printing_prompt = System::getProperty('show_the_window_printing_prompt');
+        if (($request->is_bank_transfer == "1" || $request->is_quick_pay == "1") && $show_the_window_printing_prompt == "0") {
+            $is_quick = 2;
         }
-        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products,$is_quick);
+        $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang, $current_products, $is_quick);
         $partialPrint = $this->partialPrint($transaction, $payment_types, $request->invoice_lang);
-//return $partialPrint;
+        //return $partialPrint;
         $output = [
             'success' => true,
-            'saveLastTransactionId'=>isset($transaction->id)?$transaction->id:0,
+            'saveLastTransactionId' => isset($transaction->id) ? $transaction->id : 0,
             'html_content' => $html_content,
             'partialPrint' => $partialPrint,
             'msg' => __('lang.success')
@@ -646,9 +646,9 @@ class SellPosController extends Controller
         if ($request->action == 'send' && $transaction->is_direct_sale == 1) {
             return redirect()->back()->with('status', $output);
         }
-        if($is_quick==2){
-            $quick_print = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products, 1);
-            $pdf= $this->generateAndPrint($quick_print);
+        if ($is_quick == 2) {
+            $quick_print = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang, $current_products, 1);
+            $pdf = $this->generateAndPrint($quick_print);
         }
         return $output;
     }
@@ -770,8 +770,8 @@ class SellPosController extends Controller
             if (!empty($request->payments)) {
                 $payment_formated = [];
                 $transaction_payment_ids = array_column($request->payments, 'transaction_payment_id');
-                TransactionPayment::where('transaction_id',$transaction->id)
-                    ->whereNotIn('id',$transaction_payment_ids)->delete();
+                TransactionPayment::where('transaction_id', $transaction->id)
+                    ->whereNotIn('id', $transaction_payment_ids)->delete();
                 foreach ($request->payments as $payment) {
                     // $amount = $this->commonUtil->num_uf($payment['amount']);
                     $amount = $this->commonUtil->num_uf($payment['amount']) - $this->commonUtil->num_uf($payment['change_amount']);
@@ -785,7 +785,7 @@ class SellPosController extends Controller
                         'transaction_payment_id' => !empty($payment['transaction_payment_id']) ? $payment['transaction_payment_id'] : null,
                         'transaction_id' => $transaction->id,
                         'amount' => $amount,
-                        'cashes_amount'=>$amount,
+                        'cashes_amount' => $amount,
                         'method' => $payment['method'],
                         'paid_on' => !empty($payment['paid_on']) ? Carbon::createFromTimestamp(strtotime($payment['paid_on']))->format('Y-m-d H:i:s') : Carbon::now(),
                         'bank_deposit_date' => !empty($data['bank_deposit_date']) ? $this->commonUtil->uf_date($data['bank_deposit_date']) : null,
@@ -803,7 +803,7 @@ class SellPosController extends Controller
                         'cash_register_id' => $payment['cash_register_id'] ?? null,
                     ];
                     if ($amount > 0) {
-                        $transaction_payment =  $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data,$isEditPayment=true);
+                        $transaction_payment =  $this->transactionUtil->createOrUpdateTransactionPayment($transaction, $payment_data, $isEditPayment = true);
                     }
                     $this->transactionUtil->updateTransactionPaymentStatus($transaction->id);
 
@@ -816,7 +816,6 @@ class SellPosController extends Controller
                         $payment_formated[] = $payment_data;
                         $this->cashRegisterUtil->updatePayments($transaction, $payment_data, 'credit', null, $transaction_payment->id);
                     }
-
                 }
                 $this->cashRegisterUtil->updateSellPaymentsBasedOnPaymentDate($transaction, $payment_formated);
             }
@@ -863,26 +862,26 @@ class SellPosController extends Controller
 
         if (!empty($request->dining_table_id)) {
             $old_dining_table = DiningTable::find($request->dining_table_id);
-            $dining_table = TableReservation::where('dining_table_id',$request->dining_table_id)->where('status','order')->first();
+            $dining_table = TableReservation::where('dining_table_id', $request->dining_table_id)->where('status', 'order')->first();
             $transaction_data['dining_room_id'] = $dining_table->dining_room_id;
         }
-    // if (!empty($transaction->dining_table_id)) {
-    //         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
+        // if (!empty($transaction->dining_table_id)) {
+        //         // $html_content = $this->transactionUtil->getInvoicePrint($transaction, $payment_types, $request->invoice_lang,$current_products);
 
-    //         // $output = [
-    //         //     'success' => true,
-    //         //     'html_content' => $html_content,
-    //         //     'msg' => __('lang.success')
-    //         // ];
-    //         if ($request->dining_action_type == 'save') {
-    //             $output = [
-    //                 'success' => true,
-    //                 'msg' => __('lang.success')
-    //             ];
-    //             return $output;
-    //         }
-            
-    //     }
+        //         // $output = [
+        //         //     'success' => true,
+        //         //     'html_content' => $html_content,
+        //         //     'msg' => __('lang.success')
+        //         // ];
+        //         if ($request->dining_action_type == 'save') {
+        //             $output = [
+        //                 'success' => true,
+        //                 'msg' => __('lang.success')
+        //             ];
+        //             return $output;
+        //         }
+
+        //     }
         $this->transactionUtil->createOrUpdateRawMaterialConsumption($transaction);
         if (session('system_mode') == 'restaurant') {
             if (!empty($transaction->dining_table_id)) {
@@ -901,7 +900,7 @@ class SellPosController extends Controller
                         $dining_table->customer_name = null;
                         $dining_table->customer_mobile_number = null;
                         $dining_table->date_and_time = null;
-                        $dining_table->current_transaction_id =null;
+                        $dining_table->current_transaction_id = null;
                         $dining_table->save();
                     }
                 }
@@ -917,7 +916,6 @@ class SellPosController extends Controller
                         $dining_table->save();
                     }
                 }
-
             }
         }
 
@@ -1024,33 +1022,31 @@ class SellPosController extends Controller
         if (!empty($request->sale_promo_filter)) {
             if ($request->sale_promo_filter == 'items_in_sale_promotion') {
                 $sales_promotions = SalesPromotion::where('type', 'item_discount')
-                ->where(function ($query) {
-                    $query->whereDate('start_date', '<=', now())
-                        ->whereDate('end_date', '>=', now())
-                        ->orWhere('is_discount_permenant', '1');
-                })
-                ->get();
+                    ->where(function ($query) {
+                        $query->whereDate('start_date', '<=', now())
+                            ->whereDate('end_date', '>=', now())
+                            ->orWhere('is_discount_permenant', '1');
+                    })
+                    ->get();
 
                 $sp_product_ids = [];
                 foreach ($sales_promotions as $sales_promotion) {
                     $sp_product_ids = array_merge($sp_product_ids, $sales_promotion->product_ids);
                 }
                 $query->whereIn('products.id',  $sp_product_ids);
-
-
             }
         }
         if (!empty($request->package_sale_promo_filter)) {
 
 
-            if($request->package_sale_promo_filter == 'package_in_sale_promotion'){
+            if ($request->package_sale_promo_filter == 'package_in_sale_promotion') {
                 $sales_promotions = SalesPromotion::where('type', 'package_promotion')
-                ->where(function ($query) {
-                    $query->whereDate('start_date', '<=', now())
-                        ->whereDate('end_date', '>=', now())
-                        ->orWhere('is_discount_permenant', '1');
-                })
-                ->get();
+                    ->where(function ($query) {
+                        $query->whereDate('start_date', '<=', now())
+                            ->whereDate('end_date', '>=', now())
+                            ->orWhere('is_discount_permenant', '1');
+                    })
+                    ->get();
                 foreach ($sales_promotions as $sales_promotion) {
                     if ($sales_promotion->type != 'item_discount') {
                         return view('sale_pos.partials.promotions')->with(compact('sales_promotions'));
@@ -1109,22 +1105,22 @@ class SellPosController extends Controller
                 '=',
                 'variations.product_id'
             )->leftjoin('product_stores', 'variations.id', 'product_stores.variation_id')
-            ->where(function ($query) use ($term) {
-                $query->where('products.name', 'like', '%' . $term . '%');
-                $query->orWhere('variations.name', 'like', '%' . $term . '%');
-                $query->orWhere('sku', 'like', '%' . $term . '%');
-                $query->orWhere('sub_sku', 'like', '%' . $term . '%');
-            })
-            ->where('is_raw_material', 0)
-            ->whereNull('variations.deleted_at');
-            $produc=$query->select('variations.id')->get();
-            $p_store=$query->select('product_stores.variation_id')->get();
-            if($produc == $p_store){
-                if (!empty(request()->store_id)  ) {
+                ->where(function ($query) use ($term) {
+                    $query->where('products.name', 'like', '%' . $term . '%');
+                    $query->orWhere('variations.name', 'like', '%' . $term . '%');
+                    $query->orWhere('sku', 'like', '%' . $term . '%');
+                    $query->orWhere('sub_sku', 'like', '%' . $term . '%');
+                })
+                ->where('is_raw_material', 0)
+                ->whereNull('variations.deleted_at');
+            $produc = $query->select('variations.id')->get();
+            $p_store = $query->select('product_stores.variation_id')->get();
+            if ($produc == $p_store) {
+                if (!empty(request()->store_id)) {
                     $query->where('product_stores.store_id', request()->store_id);
                 }
             }
-            $selectRaws=[
+            $selectRaws = [
                 'products.id as product_id',
                 'products.name',
                 'products.type',
@@ -1137,8 +1133,8 @@ class SellPosController extends Controller
                 'add_stock_lines.batch_number',
                 'add_stock_lines.id'
             ];
-            $products=$query->leftjoin('add_stock_lines', 'variations.id','=','add_stock_lines.variation_id')
-            ->select($selectRaws)->groupBy('variation_id','add_stock_lines.batch_number')->get();
+            $products = $query->leftjoin('add_stock_lines', 'variations.id', '=', 'add_stock_lines.variation_id')
+                ->select($selectRaws)->groupBy('variation_id', 'add_stock_lines.batch_number')->get();
 
             $products_array = [];
             foreach ($products as $product) {
@@ -1157,7 +1153,6 @@ class SellPosController extends Controller
                         'add_stock_lines.id' => $product->id,
                         'quantity' => $product->quantity,
                     ];
-
             }
             $result = [];
             $i = 1;
@@ -1180,8 +1175,8 @@ class SellPosController extends Controller
                             'text' => $text . ' - ' . $variation['sub_sku'],
                             'product_id' => $key,
                             'variation_id' => $variation['variation_id'],
-                            'batch_number'=>$variation['batch_number'],
-                            'add_stock_lines_id'=>$variation['add_stock_lines.id'],
+                            'batch_number' => $variation['batch_number'],
+                            'add_stock_lines_id' => $variation['add_stock_lines.id'],
                             'qty_available' => $variation['qty'],
                             'is_service' => $value['is_service']
                         ];
@@ -1222,7 +1217,7 @@ class SellPosController extends Controller
      */
     public function addProductRow(Request $request)
     {
-//        dd($request);
+        //        dd($request);
         if ($request->ajax()) {
             $weighing_scale_barcode = $request->input('weighing_scale_barcode');
             $batch_number_id = $request->input('batch_number_id');
@@ -1230,7 +1225,7 @@ class SellPosController extends Controller
             $extensions_ids = $request->input('extensions_ids');
             $extensions_quantity = $request->input('extensions_quantity');
             $extensions_sell_prices = $request->input('extensions_sell_prices');
-            $qty = $request->qty?$request->qty:0;
+            $qty = $request->qty ? $request->qty : 0;
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
             $store_id = $request->input('store_id');
@@ -1242,14 +1237,14 @@ class SellPosController extends Controller
             $table_id = $request->input('table_id');
             $is_edit = $request->input('is_edit');
             $transaction_id = $request->input('transaction_id');
-            $dining_table=[];
-            if(isset($table_id)){
-                $dining_table=DiningTable::find($table_id);
+            $dining_table = [];
+            if (isset($table_id)) {
+                $dining_table = DiningTable::find($table_id);
             }
             $edit_quantity = !empty($request->input('edit_quantity')) ? $request->input('edit_quantity') : 1;
-            if($request->enable_checkbox=='enable_checkbox' && !empty($request->enable_checkbox)&& $request->input('check_pay')!=null && ($request->input('check_pay')=="1" ||$request->input('check_pay')==="0")){
+            if ($request->enable_checkbox == 'enable_checkbox' && !empty($request->enable_checkbox) && $request->input('check_pay') != null && ($request->input('check_pay') == "1" || $request->input('check_pay') === "0")) {
                 $check_pay = $request->input('check_pay');
-            }else{
+            } else {
                 $check_pay = 'no val';
             }
 
@@ -1259,8 +1254,8 @@ class SellPosController extends Controller
             $currency = Currency::find($currency_id);
             $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id, $request->store_id);
             $store_pos = StorePos::where('user_id', auth()->id())->first();
-            if($store_pos && $store_pos_id == null ){
-               $store_pos_id = $store_pos->id;
+            if ($store_pos && $store_pos_id == null) {
+                $store_pos_id = $store_pos->id;
             }
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
@@ -1279,34 +1274,34 @@ class SellPosController extends Controller
                 }
             }
 
-            if(!empty($extensions_quantity)){
+            if (!empty($extensions_quantity)) {
                 $sum_extensions_sell_prices = array_sum($extensions_sell_prices);
-            }else{
+            } else {
                 $sum_extensions_sell_prices = 0;
             }
-            $extensions=[];
-            if($extensions_ids != null || $extensions_ids!= [] ){
-                foreach ($extensions_ids as $key=> $extensions_id){
-                    $extensions[$key]['name']=Extension::where('id',$extensions_id)->first()->name;
-                    $extensions[$key]['extensions_quantity']=$extensions_quantity[$key];
-                    $extensions[$key]['extensions_id']=$extensions_ids[$key];
+            $extensions = [];
+            if ($extensions_ids != null || $extensions_ids != []) {
+                foreach ($extensions_ids as $key => $extensions_id) {
+                    $extensions[$key]['name'] = Extension::where('id', $extensions_id)->first()->name;
+                    $extensions[$key]['extensions_quantity'] = $extensions_quantity[$key];
+                    $extensions[$key]['extensions_id'] = $extensions_ids[$key];
                 }
             }
 
             if (!empty($product_id)) {
                 $index = $request->input('row_count');
                 $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id, $batch_number_id);
-                $System=System::where('key','weight_product'.$store_pos_id)->first();
-                if(!$System){
+                $System = System::where('key', 'weight_product' . $store_pos_id)->first();
+                if (!$System) {
                     System::Create([
-                        'key' => 'weight_product'.$store_pos_id,
+                        'key' => 'weight_product' . $store_pos_id,
                         'value' => 0,
                         'date_and_time' => Carbon::now(),
                         'created_by' => Auth::id()
                     ]);
                 }
 
-                $have_weight = System::getProperty('weight_product'.$store_pos_id);
+                $have_weight = System::getProperty('weight_product' . $store_pos_id);
                 if (empty($edit_quantity)) {
                     $quantity = $have_weight ? (float)$have_weight : 1;
                     $edit_quantity = !$products->first()->have_weight ? $request->input('edit_quantity') : $quantity;
@@ -1318,16 +1313,30 @@ class SellPosController extends Controller
                 // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
                 $sale_promotion_details = null; //changed, now in pos.js check_for_sale_promotion method
                 $html_content =  view('sale_pos.partials.product_row')
-                    ->with(compact('products', 'index', 'sale_promotion_details'
-                        , 'product_discount_details','product_all_discounts_categories','extensions', 'edit_quantity',
-                        "sum_extensions_sell_prices",'transaction_id','is_edit',
-                        "extensions_ids","extensions_quantity",
-                        "extensions_sell_prices", 'is_direct_sale', 'dining_table_id',
-                        'exchange_rate','qty','dining_table','check_pay'))->render();
+                    ->with(compact(
+                        'products',
+                        'index',
+                        'sale_promotion_details',
+                        'product_discount_details',
+                        'product_all_discounts_categories',
+                        'extensions',
+                        'edit_quantity',
+                        "sum_extensions_sell_prices",
+                        'transaction_id',
+                        'is_edit',
+                        "extensions_ids",
+                        "extensions_quantity",
+                        "extensions_sell_prices",
+                        'is_direct_sale',
+                        'dining_table_id',
+                        'exchange_rate',
+                        'qty',
+                        'dining_table',
+                        'check_pay'
+                    ))->render();
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
-            }
-            else {
+            } else {
                 $output['success'] = false;
                 $output['msg'] = __('lang.sku_no_match');
             }
@@ -1336,23 +1345,24 @@ class SellPosController extends Controller
         }
     }
 
-    public function addDiscounts(Request $request){
-        if($request->ajax()){
+    public function addDiscounts(Request $request)
+    {
+        if ($request->ajax()) {
             $customer_id = $request->input('customer_id');
             $product_id = $request->input('product_id');
             $result = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
-            return response()->json(['result'=>$result]);
+            return response()->json(['result' => $result]);
         }
     }
     public function getProductDiscount(Request $request)
     {
-        if($request->ajax()){
+        if ($request->ajax()) {
             $product_discount_id = $request->input('product_discount_id');
-            $result=ProductDiscount::find($product_discount_id);
-            if($result==null){
-                return response()->json(['result'=>0]);
-            }else{
-                return response()->json(['result'=>$result]);
+            $result = ProductDiscount::find($product_discount_id);
+            if ($result == null) {
+                return response()->json(['result' => 0]);
+            } else {
+                return response()->json(['result' => $result]);
             }
         }
     }
@@ -1368,15 +1378,17 @@ class SellPosController extends Controller
             $product_id = $request->input('product_id');
             $variation_id = $request->input('variation_id');
             $store_id = $request->input('store_id');
-            $currency_id =$request->input('currency_id');
-            $row_count =$request->input('row_count');
-            $edit_quantity =$request->input('edit_quantity');
-            $weighing_scale_barcode =$request->input('weighing_scale_barcode');
+            $currency_id = $request->input('currency_id');
+            $row_count = $request->input('row_count');
+            $edit_quantity = $request->input('edit_quantity');
+            $weighing_scale_barcode = $request->input('weighing_scale_barcode');
 
-            $currency_id =$request->currency_id;
+            $currency_id = $request->currency_id;
             $currency = Currency::find($currency_id);
-            $exchange_rate = $this->commonUtil->getExchangeRateByCurrency($currency_id,
-                $request->store_id);
+            $exchange_rate = $this->commonUtil->getExchangeRateByCurrency(
+                $currency_id,
+                $request->store_id
+            );
             //Check for weighing scale barcode
             $weighing_barcode = request()->get('weighing_scale_barcode');
             if (empty($variation_id) && !empty($weighing_barcode)) {
@@ -1391,24 +1403,31 @@ class SellPosController extends Controller
                 }
             }
             if (!empty($product_id)) {
-                if(!empty($variation_id)){
-                    $extensions=  ProductExtension::with('extension:id,name,translations')
-                        ->where('variation_id',$variation_id)->get();
-                }else{
-                    $variation_id= Variation::where('product_id',$product_id)->first()->id;
-                    $extensions=  ProductExtension::with('extension:id,name,translations')
-                        ->where('variation_id',$variation_id)->get();
+                if (!empty($variation_id)) {
+                    $extensions =  ProductExtension::with('extension:id,name,translations')
+                        ->where('variation_id', $variation_id)->get();
+                } else {
+                    $variation_id = Variation::where('product_id', $product_id)->first()->id;
+                    $extensions =  ProductExtension::with('extension:id,name,translations')
+                        ->where('variation_id', $variation_id)->get();
                 }
-                if($extensions->count() <= 0 ){
+                if ($extensions->count() <= 0) {
                     $output['success'] = true;
                     $output['html_content'] = 0;
                     return  $output;
                 }
 
                 $html_content =  view('sale_pos.partials.extension_row')
-                    ->with(compact('extensions','product_id', 'edit_quantity',
-                        'variation_id','row_count','weighing_scale_barcode','store_id',
-                        'exchange_rate'))->render();
+                    ->with(compact(
+                        'extensions',
+                        'product_id',
+                        'edit_quantity',
+                        'variation_id',
+                        'row_count',
+                        'weighing_scale_barcode',
+                        'store_id',
+                        'exchange_rate'
+                    ))->render();
                 $output['success'] = true;
                 $output['html_content'] = $html_content;
             } else {
@@ -1425,12 +1444,11 @@ class SellPosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function CountProductRowExtension( $variation_id)
+    public function CountProductRowExtension($variation_id)
     {
-        $count=  ProductExtension::where('variation_id',$variation_id)->count();
+        $count =  ProductExtension::where('variation_id', $variation_id)->count();
         $output['count'] = $count;
-        return  response()->json(['output'=>$output]);
-
+        return  response()->json(['output' => $output]);
     }
 
 
@@ -1469,7 +1487,7 @@ class SellPosController extends Controller
 
         if (!empty($product_id)) {
             $index = $request->input('row_count');
-            $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id,null);
+            $products = $this->productUtil->getDetailsFromProductByStore($product_id, $variation_id, $store_id, null);
 
             $product_discount_details = $this->productUtil->getProductDiscountDetails($product_id, $customer_id);
             // $sale_promotion_details = $this->productUtil->getSalesPromotionDetail($product_id, $store_id, $customer_id, $added_products);
@@ -1548,7 +1566,7 @@ class SellPosController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-   public function getSalePromotionDetailsIfValid(Request $request)
+    public function getSalePromotionDetailsIfValid(Request $request)
     {
         $result = ['valid' => false, 'sale_promotion_details' => null];
         if ($request->ajax()) {
@@ -1564,8 +1582,7 @@ class SellPosController extends Controller
             $sale_promotion_details = $this->productUtil->getSalePromotionDetailsIfValidForThisSale($store_id, $customer_id, $added_products, $qty_array);
 
             if (!empty($sale_promotion_details)) {
-                    $result = ['valid' => true, 'sale_promotion_details' => $sale_promotion_details];
-
+                $result = ['valid' => true, 'sale_promotion_details' => $sale_promotion_details];
             }
         }
         return $result;
@@ -1584,14 +1601,13 @@ class SellPosController extends Controller
 
             $store_id = $this->transactionUtil->getFilterOptionValues($request)['store_id'];
             $pos_id = $this->transactionUtil->getFilterOptionValues($request)['pos_id'];
-            $query = Transaction::
-            leftjoin('customers', 'transactions.customer_id', 'customers.id')
+            $query = Transaction::leftjoin('customers', 'transactions.customer_id', 'customers.id')
                 ->leftjoin('customer_types', 'customers.customer_type_id', 'customer_types.id')
                 ->leftjoin('users', 'transactions.created_by', 'users.id')
                 ->leftjoin('currencies as received_currency', 'transactions.received_currency_id', 'received_currency.id')
                 ->where('type', 'sell')->where('status', '!=', 'draft');
-            if(strtolower(session('user.job_title')) == 'cashier'){
-                $query->where('transactions.created_by',Auth::user()->id);
+            if (strtolower(session('user.job_title')) == 'cashier') {
+                $query->where('transactions.created_by', Auth::user()->id);
             }
             if (!empty($store_id)) {
                 $query->where('transactions.store_id', $store_id);
@@ -1714,6 +1730,8 @@ class SellPosController extends Controller
                 ->editColumn('status', function ($row) {
                     if ($row->status == 'canceled') {
                         return '<span class="badge badge-danger">' . __('lang.cancel') . '</span>';
+                    } elseif ($row->status == 'final' && $row->payment_status == 'pending') {
+                        return '<span class="badge badge-warning">' . __('lang.pay_later') . '</span>';
                     } else {
                         return '<span class="badge badge-success">' . ucfirst($row->status) . '</span>';
                     }
@@ -1838,8 +1856,10 @@ class SellPosController extends Controller
                 'customers.name as customer_name',
                 'customers.mobile_number',
                 'users.name as created_by_name',
-            )->with(['deliveryman',
-                'return_parent']);
+            )->with([
+                'deliveryman',
+                'return_parent'
+            ]);
 
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
@@ -1850,11 +1870,11 @@ class SellPosController extends Controller
                     } else {
                         return '';
                     }
-                })->editColumn('invoice_no',function ($row) {
+                })->editColumn('invoice_no', function ($row) {
                     $string = $row->invoice_no . ' ';
                     $string .= '<a
                         data-href="#"
-                        class="btn btn-modal" style="color: #007bff;">'. __('lang.draft').'</a>';
+                        class="btn btn-modal" style="color: #007bff;">' . __('lang.draft') . '</a>';
 
 
                     return $string;
@@ -1981,8 +2001,9 @@ class SellPosController extends Controller
                 'customers.name as customer_name',
                 'customers.mobile_number',
             )->with([
-                'return_parent'])->get();
-                // dd($transactions );
+                'return_parent'
+            ])->get();
+            // dd($transactions );
             return DataTables::of($transactions)
                 ->editColumn('transaction_date', '{{@format_datetime($transaction_date)}}')
                 ->editColumn('final_total', '{{@num_format($final_total)}}')
@@ -2103,7 +2124,7 @@ class SellPosController extends Controller
         $balance = $this->transactionUtil->getCustomerBalance($customer_id)['balance'];
         $staff_note = $this->transactionUtil->getCustomerBalance($customer_id)['staff_note'];
 
-        return ['balance' => $balance,'staff_note'=>$staff_note];
+        return ['balance' => $balance, 'staff_note' => $staff_note];
     }
 
     /**
@@ -2129,12 +2150,12 @@ class SellPosController extends Controller
             $transaction->status = 'canceled';
             $transaction->canceled_by = Auth::user()->id;
             $transaction->save();
-            $table_status=TableReservation::where('dining_table_id',$transaction->dining_table_id)->where('status','order')->first();
-            $table_status_reserve=TableReservation::where('dining_table_id',$transaction->dining_table_id)->where('status','reserve')->first();
+            $table_status = TableReservation::where('dining_table_id', $transaction->dining_table_id)->where('status', 'order')->first();
+            $table_status_reserve = TableReservation::where('dining_table_id', $transaction->dining_table_id)->where('status', 'reserve')->first();
             // $dining_table = DiningTable::find($table_status->dining_table_id);
-            if(!empty($table_status_reserve)){
+            if (!empty($table_status_reserve)) {
                 $table_status->delete();
-            }else{
+            } else {
                 $table_status->status = 'available';
                 $table_status->customer_name = null;
                 $table_status->customer_mobile_number = null;
@@ -2179,128 +2200,129 @@ class SellPosController extends Controller
     }
     public function addNewOrdersToTransactionSellline(Request $request)
     {
-        $order=DB::table('orders')->where('id',$request->order_id)->first();
+        $order = DB::table('orders')->where('id', $request->order_id)->first();
         // return $order;
-        $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
-        $dining_table_reservation=TableReservation::where('dining_table_id',$order->table_no)->get();
-        if(empty($dining_table_reservation)){
+        $orderDetails = DB::table('order_details')->where('order_id', $request->order_id)->get();
+        $dining_table_reservation = TableReservation::where('dining_table_id', $order->table_no)->get();
+        if (empty($dining_table_reservation)) {
 
-            $dining_table_reservation=TableReservation::create([
-                'dining_table_id'=>$order->table_no,
-                'status'=>'available',
+            $dining_table_reservation = TableReservation::create([
+                'dining_table_id' => $order->table_no,
+                'status' => 'available',
             ]);
         }
-        $table=TableReservation::where('dining_table_id',$order->table_no)->where('status','order')->orWhere('status','available')->first();
-        $transaction=Transaction::where('dining_table_id',$order->table_no)->where('status','!=','canceled')->first();
+        $table = TableReservation::where('dining_table_id', $order->table_no)->where('status', 'order')->orWhere('status', 'available')->first();
+        $transaction = Transaction::where('dining_table_id', $order->table_no)->where('status', '!=', 'canceled')->first();
 
-        if(empty($transaction)){
+        if (empty($transaction)) {
             $transaction_data = [
-                'store_id' => !empty($order->store_id)?$order->store_id:1,
+                'store_id' => !empty($order->store_id) ? $order->store_id : 1,
                 'type' => 'sell',
                 'final_total' => $this->commonUtil->num_uf($order->final_total),
                 // 'grand_total' => $this->commonUtil->num_uf($request->grand_total),
                 'transaction_date' => !empty($order->created_at) ? $order->created_at : Carbon::now(),
-                'payment_status' => !empty($order->status)?$order->status:'pending',
+                'payment_status' => !empty($order->status) ? $order->status : 'pending',
                 'invoice_no' => $this->productUtil->getNumberByType('sell'),
                 'status' => $order->status,
                 'sale_note' => $order->sales_note,
                 'deliveryman_id' => !empty($request->deliveryman_id_hidden) ? $request->deliveryman_id_hidden : null,
-                'delivery_status' => !empty($order->delivery_status)?$order->delivery_status:'pending',
+                'delivery_status' => !empty($order->delivery_status) ? $order->delivery_status : 'pending',
                 // 'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
-                'delivery_address' => !empty($order->address)?$order->address:'',
+                'delivery_address' => !empty($order->address) ? $order->address : '',
                 'dining_table_id' =>  $order->table_no,
                 'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
                 'created_by' => Auth::user()->id,
-                'restaurant_order_id'=>$order->id
+                'restaurant_order_id' => $order->id
             ];
-            $transaction=Transaction::create($transaction_data);
+            $transaction = Transaction::create($transaction_data);
         }
         $this->transactionUtil->createTransactionSellLineForOrder($transaction, $orderDetails);
-        if(empty($table)){
-            $table_reserve=new TableReservation();
-            $table_reserve->dining_table_id=$order->table_no;
-            $table_reserve->status="order";
-            $table_reserve->current_transaction_id=$transaction->id;
+        if (empty($table)) {
+            $table_reserve = new TableReservation();
+            $table_reserve->dining_table_id = $order->table_no;
+            $table_reserve->status = "order";
+            $table_reserve->current_transaction_id = $transaction->id;
             $table_reserve->save();
         }
-        if(!empty($table)&& $table->status=='available'){
-            $table->status="order";
-            $table->current_transaction_id=$transaction->id;
+        if (!empty($table) && $table->status == 'available') {
+            $table->status = "order";
+            $table->current_transaction_id = $transaction->id;
             $table->save();
         }
 
-        return ['result'=>1,'transaction_id'=>$transaction->id];
+        return ['result' => 1, 'transaction_id' => $transaction->id];
     }
     public function addNewonlineOrdersToTransactionSellline(Request $request)
     {
-        $order=DB::table('orders')->where('id',$request->order_id)->first();
+        $order = DB::table('orders')->where('id', $request->order_id)->first();
         // return $order;
-        $orderDetails=DB::table('order_details')->where('order_id',$request->order_id)->get();
-            $transaction_data = [
-                'store_id' => !empty($order->store_id)?$order->store_id:1,
-                'type' => 'sell',
-                'final_total' => $this->commonUtil->num_uf($order->final_total),
-                // 'grand_total' => $this->commonUtil->num_uf($request->grand_total),
-                'transaction_date' => !empty($order->created_at) ? $order->created_at : Carbon::now(),
-                'payment_status' => !empty($order->status)?$order->status:'pending',
-                'invoice_no' => $this->productUtil->getNumberByType('sell'),
-                'status' => 'draft',
-                'sale_note' => $order->sales_note,
-                'deliveryman_id' => !empty($request->deliveryman_id_hidden) ? $request->deliveryman_id_hidden : null,
-                'delivery_status' => !empty($order->delivery_status)?$order->delivery_status:'pending',
-                // 'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
-                'delivery_address' => !empty($order->address)?$order->address:'',
-                // 'dining_table_id' =>  $order->table_no,
-                // 'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
-                'created_by' => Auth::user()->id,
-                'restaurant_order_id'=>$order->id
-            ];
-            $transaction=Transaction::create($transaction_data);
+        $orderDetails = DB::table('order_details')->where('order_id', $request->order_id)->get();
+        $transaction_data = [
+            'store_id' => !empty($order->store_id) ? $order->store_id : 1,
+            'type' => 'sell',
+            'final_total' => $this->commonUtil->num_uf($order->final_total),
+            // 'grand_total' => $this->commonUtil->num_uf($request->grand_total),
+            'transaction_date' => !empty($order->created_at) ? $order->created_at : Carbon::now(),
+            'payment_status' => !empty($order->status) ? $order->status : 'pending',
+            'invoice_no' => $this->productUtil->getNumberByType('sell'),
+            'status' => 'draft',
+            'sale_note' => $order->sales_note,
+            'deliveryman_id' => !empty($request->deliveryman_id_hidden) ? $request->deliveryman_id_hidden : null,
+            'delivery_status' => !empty($order->delivery_status) ? $order->delivery_status : 'pending',
+            // 'delivery_cost' => $this->commonUtil->num_uf($request->delivery_cost),
+            'delivery_address' => !empty($order->address) ? $order->address : '',
+            // 'dining_table_id' =>  $order->table_no,
+            // 'dining_room_id' => DiningTable::find($order->table_no)->dining_room_id,
+            'created_by' => Auth::user()->id,
+            'restaurant_order_id' => $order->id
+        ];
+        $transaction = Transaction::create($transaction_data);
         $this->transactionUtil->createTransactionSellLineForOrder($transaction, $orderDetails);
 
-        return ['result'=>1,'transaction_id'=>$transaction->id];
+        return ['result' => 1, 'transaction_id' => $transaction->id];
     }
-    public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null){
+    public function partialPrint($transaction, $payment_types, $transaction_invoice_lang = null)
+    {
         // return $transaction;
         // return $transaction->transaction_sell_lines ;
         // // foreach ($transaction->transaction_sell_lines as $line){
         //     return $printers = Printer::with('products')
         //     ->get();
 
-            $productIds = [];
-            $data[]= null;
+        $productIds = [];
+        $data[] = null;
+        foreach ($transaction->transaction_sell_lines as $sellLine) {
+            $productIds[] = $sellLine['product_id'];
+        }
+
+        // $printerIds = PrinterProduct::whereIn('product_id', $productIds)->pluck('id');
+        $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
+        $printers = Printer::where('store_id', $transaction->store_id)->whereIn('id', $printer_ids)->get();
+        foreach ($printers as $printer) {
+            // dd($printer);
+            $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id')->toArray();
+            // dd($printer_products);
+            $transactionSellLines = [];
             foreach ($transaction->transaction_sell_lines as $sellLine) {
-                $productIds[] = $sellLine['product_id'];
+                // dd($sellLine);
+                if (in_array($sellLine['product_id'], $printer_products)) {
+                    $transactionSellLines[] = $sellLine;
+                }
             }
+            $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
+                'transaction',
+                'payment_types',
+                'transaction_invoice_lang',
+                'transactionSellLines',
+            ))->render();
+            // $data[$printer->name]= $html_content;
+            ConnectedPrinter::create([
+                'printer_name' => $printer->name,
+                'html' => $html_content,
+            ]);
+        }
 
-                // $printerIds = PrinterProduct::whereIn('product_id', $productIds)->pluck('id');
-            $printer_ids = PrinterProduct::whereIn('product_id', $productIds)->groupBy('printer_id')->pluck('printer_id');
-            $printers = Printer::where('store_id',$transaction->store_id)->whereIn('id', $printer_ids)->get();
-            foreach($printers as $printer){
-                    // dd($printer);
-                    $printer_products = PrinterProduct::whereIn('product_id', $productIds)->where('printer_id', $printer->id)->pluck('product_id') ->toArray();
-                    // dd($printer_products);
-                    $transactionSellLines = [];
-                    foreach ($transaction->transaction_sell_lines as $sellLine) {
-                        // dd($sellLine);
-                        if (in_array($sellLine['product_id'], $printer_products)) {
-                            $transactionSellLines[] = $sellLine;
-                        }
-                    }
-                    $html_content = view('sale_pos.partials.partial_printers_invoice')->with(compact(
-                        'transaction',
-                        'payment_types',
-                        'transaction_invoice_lang',
-                        'transactionSellLines',
-                    ))->render();
-                    // $data[$printer->name]= $html_content;
-                ConnectedPrinter::create([
-                    'printer_name' => $printer->name,
-                    'html' => $html_content,
-                ]);
-            }
-
-            //  Add cashier printer
+        //  Add cashier printer
 
         // $cashier_printer = Printer::where('is_cashier','=',1)->get()->first();
         //     if(!empty($cashier_printer)){
@@ -2346,36 +2368,37 @@ class SellPosController extends Controller
 
 
         $options = array(
-                'cluster' =>  env('PUSHER_APP_CLUSTER'),
-                'useTLS' => true
-            );
+            'cluster' =>  env('PUSHER_APP_CLUSTER'),
+            'useTLS' => true
+        );
 
 
-            $pusher = new Pusher(
-                env('PUSHER_APP_KEY'),
-                env('PUSHER_APP_SECRET'),
-                env('PUSHER_APP_ID'),
-                $options
-            );
-            $print = 1;
-            $pusher->trigger('printer-app-development', 'new-printed-order',['print' => $print]);
+        $pusher = new Pusher(
+            env('PUSHER_APP_KEY'),
+            env('PUSHER_APP_SECRET'),
+            env('PUSHER_APP_ID'),
+            $options
+        );
+        $print = 1;
+        $pusher->trigger('printer-app-development', 'new-printed-order', ['print' => $print]);
 
         // }
 
     }
 
-    public function changeSellingPrice($variation_id){
+    public function changeSellingPrice($variation_id)
+    {
         try {
-            $stockLines=AddStockLine::where('variation_id',$variation_id)
-            ->get();
-            if(count($stockLines) > 0){
-                foreach($stockLines as $stockLine){
-                    $stockLine->sell_price =request()->sell_price;
+            $stockLines = AddStockLine::where('variation_id', $variation_id)
+                ->get();
+            if (count($stockLines) > 0) {
+                foreach ($stockLines as $stockLine) {
+                    $stockLine->sell_price = request()->sell_price;
                     $stockLine->save();
                 }
-            }else{
-                $variation=Variation::find($variation_id);
-                $variation->default_sell_price=request()->sell_price;
+            } else {
+                $variation = Variation::find($variation_id);
+                $variation->default_sell_price = request()->sell_price;
                 $variation->save();
             }
             $output = [
@@ -2411,10 +2434,8 @@ class SellPosController extends Controller
             proc_close($process);
 
             return response()->json(['success' => true, 'message' => 'success generating or printing PDF.']);
-
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Error generating or printing PDF.']);
         }
     }
 }
-

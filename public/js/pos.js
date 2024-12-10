@@ -2534,7 +2534,7 @@ $(document).on("change", ".filter_transactions", function () {
 function get_recent_transactions() {
     // recent_transaction_table.ajax.reload();
     if ($(".table_room_hide").length <= 0) {
-        // console.log($("#recent_transaction_table").length ,$("#recent_transaction_table"));
+
         $("#recent_transaction_table").DataTable().clear().destroy();
 
         recent_transaction_table = $("#recent_transaction_table").DataTable({
