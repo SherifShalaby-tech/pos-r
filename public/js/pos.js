@@ -2582,6 +2582,8 @@ function get_recent_transactions() {
                     data.data = data.data.filter(function (row) {
                         return row.invoice_no && row.invoice_no !== "";
                     });
+                    console.log(JSON.stringify(data));
+
                     return JSON.stringify(data); // Return the filtered data
                 }
             },
