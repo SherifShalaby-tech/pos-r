@@ -39,6 +39,12 @@
     #recent_transaction_table_paginate {
         position: fixed;
         bottom: 50px;
+        background: white;
+        width: 97%
+    }
+
+    #recent_transaction_table_paginate .pagination {
+        justify-content: center
     }
 </style>
 

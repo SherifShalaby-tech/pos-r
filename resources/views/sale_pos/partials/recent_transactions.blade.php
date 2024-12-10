@@ -1,6 +1,6 @@
 <div class="table-responsive" style="position: relative;
     overflow: auto;
-    max-height: 60vh;">
+    max-height: 63vh;">
     <h3 class="print-title-hint" style="display:none;">recent_transactions</h3>
     <table id="recent_transaction_table" class="table">
         <thead style="position: sticky; top: 31px; background: #555;
