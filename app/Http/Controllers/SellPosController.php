@@ -58,6 +58,7 @@ use Pusher\Pusher;
 use Spatie\Browsershot\Browsershot;
 use Str;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Lang;
 
 class SellPosController extends Controller
 {
@@ -1697,7 +1698,10 @@ class SellPosController extends Controller
                     }
                     foreach ($payments as $payment) {
                         if (!empty($payment->method)) {
-                            $methods .= trans('lang.' . $payment->method, [], null, $payment->method) . '<br>';
+                            $translationKey = 'lang.' . $payment->method;
+                            $methods .= Lang::has($translationKey)
+                                ? __($translationKey)
+                                : $payment->method . '<br>';
                         }
                     }
                     return $methods;
