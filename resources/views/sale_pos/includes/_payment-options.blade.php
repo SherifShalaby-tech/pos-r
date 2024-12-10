@@ -133,8 +133,8 @@ $payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
 
     <div class="">
         <button data-method="cash" style="background: var(--primary-color)" type="button"
-            class="btn btn-custom payment-btn" data-toggle="modal" data-target="#{{ $method->name }}"
-            data-backdrop="static" data-keyboard="false"><i class="fa fa-money"></i>
+            class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" data-backdrop="static"
+            data-keyboard="false"><i class="fa fa-money"></i>
             {{ $method->name }}</button>
     </div>
     @endif
@@ -155,4 +155,4 @@ $payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
 </div>
 
 
-@include('sale_pos.includes._payment-methods-modals')
+{{-- @include('sale_pos.includes._payment-methods-modals') --}}

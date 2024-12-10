@@ -1584,7 +1584,6 @@ function changeMethodFields(method, row) {
         $(".gift_card_field").addClass("hide");
     }
 }
-
 $(document).on("click", ".qc-btn", function (e) {
     let first_amount_input = $("#payment_rows .payment_row")
         .first()
@@ -1606,29 +1605,6 @@ $(document).on("click", ".qc-btn", function (e) {
     }
     $(first_amount_input).change();
     $("#paying_amount").change();
-});
-
-$(document).on("click", ".qc-btn", function (e) {
-    let first_amount_input = $(".payment_rows .payment_row")
-        .first()
-        .find(".received_amount");
-    if ($(this).data("amount")) {
-        if ($(".qc").data("initial")) {
-            $(first_amount_input).val($(this).data("amount").toFixed(2));
-            $(".qc").data("initial", 0);
-        } else {
-            $(first_amount_input).val(
-                (
-                    parseFloat($(first_amount_input).val()) +
-                    $(this).data("amount")
-                ).toFixed(2)
-            );
-        }
-    } else {
-        $(first_amount_input).val("0.00");
-    }
-    $(first_amount_input).change();
-    $(".paying_amount").change();
 });
 
 $(document).on("change", ".received_amount", function () {
@@ -1674,57 +1650,14 @@ $(document).on("change", ".received_amount", function () {
         $(this_row).find(".change_text").text("Pending Amount :");
     }
 });
-$(document).on("change", ".received_amount", function () {
-    let this_row = $(this).parents(".payment_row");
-
-    //$(this_row).nextAll().remove(); //remove all the next row if exist and recalculate the next row total
-    let received_amount = 0;
-    $(".payment_rows .payment_row").each((ele, row) => {
-        let row_received_amount = parseFloat(
-            $(row).find(".received_amount").val()
-        );
-        received_amount += row_received_amount;
-    });
-
-    let paying_amount = __read_number($(".paying_amount"));
-    let change = Math.abs(received_amount - paying_amount);
-
-    if (received_amount >= paying_amount) {
-        $(this_row).find(".change_text").text("Change :");
-        $(this_row)
-            .find(".change")
-            .text(__currency_trans_from_en(change, false));
-        $(this_row).find(".change_amount").val(change);
-        $(".add_to_customer_balance").removeClass("hide");
-        $(document).on("click", ".add_to_customer_balance", function () {
-            if ($(".payment_way").val() != "deposit") {
-                // or this.value == 'volvo'
-                $(this_row).find("#add_to_customer_balance").val(change);
-                $(this_row).find(".change_amount").val(0);
-                $(this_row).find(".change").text(0);
-                $(this).attr("disabled", true);
-                let new_amount = received_amount - change;
-                $(this_row).find(".received_amount").val(new_amount);
-            } else {
-                $(".add_to_customer_balance").addClass("hide");
-            }
-        });
-    } else {
-        $(this_row)
-            .find(".change")
-            .text(__currency_trans_from_en(change, false));
-        $(this_row).find(".pending_amount").val(change);
-        $(this_row).find(".change_text").text("Pending Amount :");
-    }
-});
 $(document).on("click", ".close-payment-madal", function () {
     __write_number($("#add_to_customer_balance"), 0);
     $(".add_to_customer_balance").attr("disabled", false);
     $(".add_to_customer_balance").addClass("hide");
 });
 $(document).on("click", "#add_payment_row", function () {
-    var row_count = $(".payment_rows .payment_row").length;
-    let pending_amount = $(".payment_rows .payment_row")
+    var row_count = $("#payment_rows .payment_row").length;
+    let pending_amount = $("#payment_rows .payment_row")
         .last()
         .find(".pending_amount")
         .val();
@@ -1736,26 +1669,6 @@ $(document).on("click", "#add_payment_row", function () {
         success: function (result) {
             $("#payment_rows").append(result);
             $("#payment_rows .payment_row")
-                .last()
-                .find(".received_amount")
-                .val(pending_amount);
-        },
-    });
-});
-$(document).on("click", "#add_payment_row", function () {
-    var row_count = $(".payment_rows .payment_row").length;
-    let pending_amount = $(".payment_rows .payment_row")
-        .last()
-        .find(".pending_amount")
-        .val();
-    $.ajax({
-        method: "get",
-        url: "/pos/get-payment-row",
-        data: { index: row_count },
-        dataType: "html",
-        success: function (result) {
-            $(".payment_rows").append(result);
-            $(".payment_rows .payment_row")
                 .last()
                 .find(".received_amount")
                 .val(pending_amount);
@@ -2196,11 +2109,6 @@ function reset_pos_form() {
     $(first_row).find(".change_text").text("Pending Amount :");
     $(first_row).find(".change_text").text("Change :");
     $(first_row).nextAll().remove();
-    let first_payment_row = $(".payment_rows .payment_row").first();
-    $(first_payment_row).find(".change").text(__currency_trans_from_en(0, false));
-    $(first_payment_row).find(".change_text").text("Pending Amount :");
-    $(first_payment_row).find(".change_text").text("Change :");
-    $(first_payment_row).nextAll().remove();
     $("#customer_size_detail_section").empty();
 
     let setting_invoice_lang = $("#setting_invoice_lang").val();
