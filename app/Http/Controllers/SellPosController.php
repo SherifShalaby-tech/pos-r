@@ -1625,9 +1625,9 @@ class SellPosController extends Controller
             if (!empty(request()->created_by)) {
                 $query->where('transactions.created_by', request()->created_by);
             }
-            if (!empty(request()->method)) {
-                $query->where('transaction_payments.method', request()->method);
-            }
+            // if (!empty(request()->method)) {
+            //     $query->where('transaction_payments.method', request()->method);
+            // }
             if (!empty($pos_id)) {
                 $query->where('store_pos_id', $pos_id);
             }
@@ -1646,7 +1646,7 @@ class SellPosController extends Controller
                 'transactions.service_fee_value',
                 'transactions.invoice_no',
                 'transactions.deliveryman_id',
-                'transaction_payments.paid_on',
+                // 'transaction_payments.paid_on',
                 'users.name as created_by_name',
                 'customers.name as customer_name',
                 'customer_types.name as customer_type_name',
@@ -1656,7 +1656,7 @@ class SellPosController extends Controller
             )->with([
                 'return_parent:id,return_parent_id,final_total',
                 'customer:id,name,mobile_number',
-                'transaction_payments',
+                // 'transaction_payments:id,method,ref_number',
                 'deliveryman:id,employee_name',
                 'canceled_by_user:id,name',
             ]);
@@ -1690,16 +1690,16 @@ class SellPosController extends Controller
                 })
                 ->addColumn('method', function ($row) use ($payment_types, $request) {
                     $methods = '';
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
-                    } else {
-                        $payments = $row->transaction_payments;
-                    }
-                    foreach ($payments as $payment) {
-                        if (!empty($payment->method)) {
-                            $methods .= $payment_types[$payment->method] . '<br>';
-                        }
-                    }
+                    // if (!empty($request->method)) {
+                    //     $payments = $row->transaction_payments->where('method', $request->method);
+                    // } else {
+                    //     $payments = $row->transaction_payments;
+                    // }
+                    // foreach ($payments as $payment) {
+                    //     if (!empty($payment->method)) {
+                    //         $methods .= $payment_types[$payment->method] . '<br>';
+                    //     }
+                    // }
                     return $methods;
                 })
                 ->addColumn('ref_number', function ($row) {
@@ -1734,14 +1734,14 @@ class SellPosController extends Controller
                 })
                 ->addColumn('paid', function ($row) use ($request) {
                     $amount_paid = 0;
-                    if (!empty($request->method)) {
-                        $payments = $row->transaction_payments->where('method', $request->method);
-                    } else {
-                        $payments = $row->transaction_payments;
-                    }
-                    foreach ($payments as $payment) {
-                        $amount_paid += $payment->amount;
-                    }
+                    // if (!empty($request->method)) {
+                    //     $payments = $row->transaction_payments->where('method', $request->method);
+                    // } else {
+                    //     $payments = $row->transaction_payments;
+                    // }
+                    // foreach ($payments as $payment) {
+                    //     $amount_paid += $payment->amount;
+                    // }
                     return $this->commonUtil->num_uf($amount_paid);
                 })
                 ->editColumn('created_by', '{{$created_by_name}}')
