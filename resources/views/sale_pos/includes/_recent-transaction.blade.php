@@ -10,7 +10,7 @@
 
             </x-modal-header>
 
-            <div class="modal-body">
+            <div class="modal-body overflow-y-auto">
                 <div class="col-md-12 modal-filter">
                     <div class="row">
                         <div class="col-md-3">

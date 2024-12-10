@@ -2547,6 +2547,7 @@ function get_recent_transactions() {
             language: {
                 url: dt_lang_url,
             },
+            pageLength: 50,
             lengthMenu: [
                 [10, 25, 50, 75, 100, 200, 500, -1],
                 [10, 25, 50, 75, 100, 200, 500, "All"],
