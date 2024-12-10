@@ -2578,11 +2578,11 @@ function get_recent_transactions() {
                 // Process the data after it's received
                 dataFilter: function (response) {
                     var data = JSON.parse(response); // Assuming your server returns JSON data
-                    // Filter out rows where invoice_no is empty or transaction_date is invalid
+                    // Filter out rows where invoice_no is empty, a space, or transaction_date is invalid
                     data.data = data.data.filter(function (row) {
-                        return row.invoice_no && row.invoice_no !== "";
+                        return row.invoice_no && row.invoice_no.trim() !== "";
                     });
-                    console.log(JSON.stringify(data));
+                    console.log(JSON.stringify(data)); // Log the filtered data
 
                     return JSON.stringify(data); // Return the filtered data
                 }
