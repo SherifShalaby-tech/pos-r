@@ -1625,9 +1625,9 @@ class SellPosController extends Controller
             if (!empty(request()->created_by)) {
                 $query->where('transactions.created_by', request()->created_by);
             }
-            // if (!empty(request()->method)) {
-            //     $query->where('transaction_payments.method', request()->method);
-            // }
+            if (!empty(request()->method)) {
+                $query->where('transaction_payments.method', request()->method);
+            }
             if (!empty($pos_id)) {
                 $query->where('store_pos_id', $pos_id);
             }
