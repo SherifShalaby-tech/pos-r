@@ -1656,7 +1656,7 @@ class SellPosController extends Controller
             )->with([
                 'return_parent:id,return_parent_id,final_total',
                 'customer:id,name,mobile_number',
-                // 'transaction_payments:id,method,ref_number',
+                'transaction_payments:id,method,ref_number',
                 'deliveryman:id,employee_name',
                 'canceled_by_user:id,name',
             ]);
