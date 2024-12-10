@@ -25,7 +25,7 @@ $types = App\Models\PaymentMethodType::where('payment_method_id' , '=' , $method
                     <div class="col-md-10">
                         <div class="row">
                             {{-- <input type="text" value="" class="isPayComplete" /> --}}
-                            <div id="payment_rows" class="col-md-12">
+                            <div id="payment_rows" class="payment_rows col-md-12">
                                 <div class="payment_row row pl-3  pr-3">
                                     <div class="col-md-2 mt-1">
                                         <label>@lang('lang.received_amount'): *</label>
@@ -35,8 +35,8 @@ $types = App\Models\PaymentMethodType::where('payment_method_id' , '=' , $method
                                     <div class="col-md-2"></div>
                                     <div class="col-md-2 mt-1">
                                         <label>@lang('lang.paying_amount'): *</label>
-                                        <input type="text" name="payments[0][paying_amount]" class="form-control numkey"
-                                            id="paying_amount" step="any">
+                                        <input type="text" name="payments[0][paying_amount]"
+                                            class="form-control paying_amount numkey" id="paying_amount" step="any">
                                     </div>
                                     <div class="col-md-2"></div>
                                     <div class="col-md-4 mt-1 text-red d-flex justify-content-center align-items-end"
