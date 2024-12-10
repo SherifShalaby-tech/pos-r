@@ -2668,6 +2668,7 @@ function get_recent_transactions() {
         //     },
         // });
 
+
         recent_transaction_table = $("#recent_transaction_table").DataTable({
             lengthChange: true,
             paging: true,
@@ -2705,10 +2706,6 @@ function get_recent_transactions() {
                     d.deliveryman_id = $("#rt_deliveryman_id").val();
                 },
                 dataSrc: function (json) {
-                    // Filter out rows where the transaction_date is "01/01/1970 04:00"
-                    json.data = json.data.filter(function (row) {
-                        return row.transaction_date !== "01/01/1970 04:00";
-                    });
                     return json.data;
                 }
             },
@@ -2735,11 +2732,7 @@ function get_recent_transactions() {
                 { data: "action", name: "action" },
             ],
             createdRow: function (row, data, dataIndex) {
-                // Check if the date is "01/01/1970 04:00" and remove the row if so
-                var dateColumnValue = data.transaction_date;
-                if (dateColumnValue === "01/01/1970 04:00") {
-                    $(row).remove();  // Remove the row if the date matches the target value
-                }
+                // We will remove unwanted rows in the 'draw' event instead.
             },
             footerCallback: function (row, data, start, end, display) {
                 var intVal = function (i) {
@@ -2808,8 +2801,8 @@ function get_recent_transactions() {
                     $(this).remove();  // Remove the row if the date matches the target value
                 }
             });
+            recent_transaction_table.draw(); // Redraw the table to fix layout after removal
         });
-
 
     }
 }
