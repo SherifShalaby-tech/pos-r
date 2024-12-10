@@ -1689,7 +1689,7 @@ class SellPosController extends Controller
                     return $row->received_currency_symbol ?? $default_currency->symbol;
                 })
                 ->addColumn('method', function ($row) use ($payment_types, $request) {
-                    $methods = '';
+                    $methods = 'test';
                     // if (!empty($request->method)) {
                     //     $payments = $row->transaction_payments->where('method', $request->method);
                     // } else {
