@@ -2568,7 +2568,6 @@ function get_recent_transactions() {
             ajax: {
                 url: "/pos/get-recent-transactions",
                 data: function (d) {
-
                     d.start_date = $("#rt_start_date").val();
                     d.end_date = $("#rt_end_date").val();
                     d.method = $("#rt_method").val();
@@ -2604,9 +2603,9 @@ function get_recent_transactions() {
                 { data: "action", name: "action" },
             ],
             createdRow: function (row, data, dataIndex) {
-                var dateColumnValue = data.transaction_date; // Adjust this key based on your data
-                if (dateColumnValue === "01/01/1970 04:00") {
-                    $(row).remove(); // Remove the row if the date matches the target value
+                // Check if 'invoice_no' is missing or empty
+                if (!data.invoice_no || data.invoice_no === "") {
+                    $(row).remove(); // Remove the row if 'invoice_no' is empty or missing
                 }
             },
             footerCallback: function (row, data, start, end, display) {
