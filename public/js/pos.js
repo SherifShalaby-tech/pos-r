@@ -2736,7 +2736,7 @@ function get_recent_transactions() {
             ],
             createdRow: function (row, data, dataIndex) {
                 // Check if the date is "01/01/1970 04:00" and remove the row if so
-                var dateColumnValue = data.transaction_date;  // Adjust based on your data structure
+                var dateColumnValue = data.transaction_date;
                 if (dateColumnValue === "01/01/1970 04:00") {
                     $(row).remove();  // Remove the row if the date matches the target value
                 }
@@ -2809,6 +2809,7 @@ function get_recent_transactions() {
                 }
             });
         });
+
 
     }
 }
