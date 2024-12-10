@@ -2549,8 +2549,8 @@ function get_recent_transactions() {
             },
             pageLength: 50,
             lengthMenu: [
-                [10, 25, 50, 75, 100, 200, 500, -1],
-                [10, 25, 50, 75, 100, 200, 500, "All"],
+                [50, 75, 100, 200, 500, -1],
+                [50, 75, 100, 200, 500, "All"],
             ],
             dom: "lBfrtip",
             stateSave: true,
