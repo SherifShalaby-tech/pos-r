@@ -2609,7 +2609,7 @@ function get_recent_transactions() {
                 { data: "mobile_number", name: "customers.mobile_number" },
 
 
-                { data: "method", name: "transaction_payments.method" },
+                // { data: "method", name: "transaction_payments.method" },
                 // { data: "ref_number", name: "transaction_payments.ref_number" },
 
                 { data: "status", name: "transactions.status" },
