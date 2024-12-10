@@ -2550,7 +2550,7 @@ function get_recent_transactions() {
                 [10, 25, 50, 75, 100, 200, 500, "All"],
             ],
             dom: "lBfrtip",
-            stateSave: true,
+            stateSave: false,
             buttons: buttons,
             processing: true,
             serverSide: true,
