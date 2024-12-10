@@ -344,8 +344,6 @@ class SellPosController extends Controller
             'shared_commission' => !empty($request->shared_commission) ? 1 : 0,
             'created_by' => Auth::user()->id,
         ];
-
-        dd($transaction_data);
         $transaction_data['dining_room_id'] = null;
         if (!empty($request->dining_table_id)) {
             $table_reserve = TableReservation::where('dining_table_id', $request->dining_table_id)->first();
@@ -1730,8 +1728,6 @@ class SellPosController extends Controller
                 ->editColumn('status', function ($row) {
                     if ($row->status == 'canceled') {
                         return '<span class="badge badge-danger">' . __('lang.cancel') . '</span>';
-                    } elseif ($row->status == 'final' && $row->payment_status == 'pending') {
-                        return '<span class="badge badge-warning">' . __('lang.pay_later') . '</span>';
                     } else {
                         return '<span class="badge badge-success">' . ucfirst($row->status) . '</span>';
                     }
