@@ -1697,7 +1697,7 @@ class SellPosController extends Controller
                     }
                     foreach ($payments as $payment) {
                         if (!empty($payment->method)) {
-                            $methods .= __('lang.' . $payment->method) . '<br>';
+                            $methods .= trans('lang.' . $payment->method, [], null, $payment->method) . '<br>';
                         }
                     }
                     return $methods;
