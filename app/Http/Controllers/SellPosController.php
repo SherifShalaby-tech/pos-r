@@ -1690,16 +1690,16 @@ class SellPosController extends Controller
                 })
                 ->addColumn('method', function ($row) use ($payment_types, $request) {
                     $methods = 'test';
-                    // if (!empty($request->method)) {
-                    //     $payments = $row->transaction_payments->where('method', $request->method);
-                    // } else {
-                    //     $payments = $row->transaction_payments;
-                    // }
-                    // foreach ($payments as $payment) {
-                    //     if (!empty($payment->method)) {
-                    //         $methods .= $payment_types[$payment->method] . '<br>';
-                    //     }
-                    // }
+                    if (!empty($request->method)) {
+                        $payments = $row->transaction_payments->where('method', $request->method);
+                    } else {
+                        $payments = $row->transaction_payments;
+                    }
+                    foreach ($payments as $payment) {
+                        if (!empty($payment->method)) {
+                            $methods .= $payment->method . '<br>';
+                        }
+                    }
                     return $methods;
                 })
                 ->addColumn('ref_number', function ($row) {
