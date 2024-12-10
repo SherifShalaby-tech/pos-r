@@ -2575,6 +2575,15 @@ function get_recent_transactions() {
                     d.customer_id = $("#rt_customer_id").val();
                     d.deliveryman_id = $("#rt_deliveryman_id").val();
                 },
+                // Process the data after it's received
+                dataFilter: function (response) {
+                    var data = JSON.parse(response); // Assuming your server returns JSON data
+                    // Filter out rows where invoice_no is empty or transaction_date is invalid
+                    data.data = data.data.filter(function (row) {
+                        return row.invoice_no && row.invoice_no !== "";
+                    });
+                    return JSON.stringify(data); // Return the filtered data
+                }
             },
             columnDefs: [
                 {
@@ -2603,10 +2612,6 @@ function get_recent_transactions() {
                 { data: "action", name: "action" },
             ],
             createdRow: function (row, data, dataIndex) {
-                // Check if 'invoice_no' is missing or empty
-                if (!data.invoice_no || data.invoice_no === "") {
-                    $(row).remove(); // Remove the row if 'invoice_no' is empty or missing
-                }
             },
             footerCallback: function (row, data, start, end, display) {
                 var intVal = function (i) {
