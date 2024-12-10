@@ -2535,9 +2535,9 @@ function get_recent_transactions() {
     // recent_transaction_table.ajax.reload();
     if ($(".table_room_hide").length <= 0) {
 
-        if ($.fn.dataTable.isDataTable('#recent_transaction_table')) {
-            $("#recent_transaction_table").DataTable().clear().destroy();
-        }
+
+        $("#recent_transaction_table").DataTable().clear().destroy();
+
 
         recent_transaction_table = $("#recent_transaction_table").DataTable({
             lengthChange: true,
@@ -2568,7 +2568,6 @@ function get_recent_transactions() {
             ajax: {
                 url: "/pos/get-recent-transactions",
                 data: function (d) {
-                    console.log(d);
 
                     d.start_date = $("#rt_start_date").val();
                     d.end_date = $("#rt_end_date").val();
@@ -2604,7 +2603,12 @@ function get_recent_transactions() {
                 { data: "canceled_by", name: "canceled_by_user.name" },
                 { data: "action", name: "action" },
             ],
-            createdRow: function (row, data, dataIndex) { },
+            createdRow: function (row, data, dataIndex) {
+                var dateColumnValue = data.transaction_date; // Adjust this key based on your data
+                if (dateColumnValue === "01/01/1970 04:00") {
+                    $(row).remove(); // Remove the row if the date matches the target value
+                }
+            },
             footerCallback: function (row, data, start, end, display) {
                 var intVal = function (i) {
                     return typeof i === "string"
