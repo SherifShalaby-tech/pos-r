@@ -650,4 +650,34 @@ $watsapp_numbers = App\Models\System::getProperty('watsapp_numbers');
     $("section.pos-section").toggleClass("shrink_pos");
     })
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.payment-modal-btn');
+
+    buttons.forEach(button => {
+    button.addEventListener('click', function () {
+ // Get the data attributes
+    const methodId = button.getAttribute('data-method-id');
+    const methodTypes = JSON.parse(button.getAttribute('data-method-types')); // Parse JSON data
+
+// Target the select element
+const paymentSelect = document.querySelector('#payment-method-select');
+
+if (methodId && methodTypes && paymentSelect) {
+// Clear existing options
+paymentSelect.innerHTML = '';
+
+// Add new options from methodTypes
+methodTypes.forEach(type => {
+const option = document.createElement('option');
+option.value = type; // Set value attribute
+option.textContent = type; // Set displayed text
+paymentSelect.appendChild(option);
+});
+}
+
+    });
+    });
+    });
+</script>
 @endsection

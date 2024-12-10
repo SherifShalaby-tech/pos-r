@@ -61,10 +61,17 @@
                                                 id="add_to_customer_balance" value="0">
                                         </div>
                                     </div>
+
+
+
+
                                     <div class="col-md-3 mt-1">
                                         <label>@lang('lang.payment_method'): *</label>
-                                        {!! Form::select('payments[0][method]', $payment_types, null, ['class' =>
-                                        'form-control method payment_way', 'required']) !!}
+                                        {!! Form::select('payments[0][method]',
+                                        $payment_types, null, ['class' =>
+                                        'form-control method payment_way',
+                                        'required',
+                                        'id' => 'payment-method-select']) !!}
                                     </div>
                                     <div class="col-md-1"></div>
                                     <div class="col-md-4 mt-1 d-flex align-items-end">

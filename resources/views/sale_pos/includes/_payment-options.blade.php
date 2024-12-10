@@ -25,8 +25,8 @@ $payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
     @if ($pay_button_show)
     <div class="">
         <button data-method="cash" style="background: var(--primary-color)" type="button"
-            class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" data-backdrop="static"
-            data-keyboard="false" id="cash-btn"><i class="fa fa-money"></i>
+            class="btn btn-custom payment-btn payment-modal-btn" data-toggle="modal" data-target="#add-payment"
+            data-backdrop="static" data-keyboard="false" id="cash-btn"><i class="fa fa-money"></i>
             @lang('lang.pay')</button>
     </div>
     @endif
@@ -133,8 +133,10 @@ $payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
 
     <div class="">
         <button data-method="cash" style="background: var(--primary-color)" type="button"
-            class="btn btn-custom payment-btn" data-toggle="modal" data-target="#add-payment" data-backdrop="static"
-            data-keyboard="false"><i class="fa fa-money"></i>
+            data-method-id="{{ $method->id }}"
+            data-method-types='@json(App\Models\PaymentMethodType::where("payment_method_id", $method->id)->pluck("name"))'
+            class="btn btn-custom payment-btn payment-modal-btn" data-toggle="modal" data-target="#add-payment"
+            data-backdrop="static" data-keyboard="false"><i class="fa fa-money"></i>
             {{ $method->name }}</button>
     </div>
     @endif
