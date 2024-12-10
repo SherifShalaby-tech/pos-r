@@ -2535,7 +2535,9 @@ function get_recent_transactions() {
     // recent_transaction_table.ajax.reload();
     if ($(".table_room_hide").length <= 0) {
 
-        $("#recent_transaction_table").DataTable().clear().destroy();
+        if ($.fn.dataTable.isDataTable('#recent_transaction_table')) {
+            $("#recent_transaction_table").DataTable().clear().destroy();
+        }
 
         recent_transaction_table = $("#recent_transaction_table").DataTable({
             lengthChange: true,
@@ -2550,7 +2552,7 @@ function get_recent_transactions() {
                 [10, 25, 50, 75, 100, 200, 500, "All"],
             ],
             dom: "lBfrtip",
-            stateSave: false,
+            stateSave: true,
             buttons: buttons,
             processing: true,
             serverSide: true,
@@ -2566,6 +2568,8 @@ function get_recent_transactions() {
             ajax: {
                 url: "/pos/get-recent-transactions",
                 data: function (d) {
+                    console.log(d);
+
                     d.start_date = $("#rt_start_date").val();
                     d.end_date = $("#rt_end_date").val();
                     d.method = $("#rt_method").val();
