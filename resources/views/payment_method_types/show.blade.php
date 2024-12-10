@@ -35,7 +35,7 @@
                                 type="checkbox" value="1" @if ($type->is_active) checked @endif
                             class="form-control-custom">
                             <label for="is_active_{{ $type->id }}"></label>
-                            <span><strong>{{ 'lang.is_active' }}</strong></span>
+                            <span><strong>@lang( 'lang.is_active' )</strong></span>
                         </div>
                     </div>
 

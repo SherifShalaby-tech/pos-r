@@ -91,7 +91,7 @@
                             <input id="is_active_0" name="is_active[]" type="checkbox" checked
                                 class="form-control-custom">
                             <label for="is_active_0"></label>
-                            <span><strong>{{ 'lang.is_active' }}</strong></span>
+                            <span><strong>@lang( 'lang.is_active' )</strong></span>
                         </div>
                     </div>
                     <div class="col-md-2 d-flex justify-content-center align-items-center">
@@ -139,7 +139,7 @@
                     <div class="i-checks toggle-pill-color d-flex justify-content-center align-items-center flex-column">
                         <input id="is_active_${count}" name="is_active[]" type="checkbox" checked class="form-control-custom">
                         <label for="is_active_${count}"></label>
-                        <span><strong>{{ 'lang.is_active' }}</strong></span>
+                        <span><strong>@lang( 'lang.is_active' )</strong></span>
                     </div>
                 </div>
                 <div class="col-md-2 d-flex justify-content-center align-items-center">
