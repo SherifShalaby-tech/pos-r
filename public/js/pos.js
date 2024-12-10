@@ -2608,20 +2608,8 @@ function get_recent_transactions() {
                 { data: "customer_name", name: "customers.name" },
                 { data: "mobile_number", name: "customers.mobile_number" },
 
-                {
-                    data: "transaction_payments",
-                    name: "transaction_payments.method",
-                    render: function (data, type, row) {
-                        // Check if transaction_payments exists and has entries
-                        if (data && data.length > 0) {
-                            // Return the first payment method
-                            return data[0].method;
-                        }
-                        return "N/A"; // Fallback if no payments are available
-                    }
-                },
 
-                // { data: "method", name: "transaction_payments.method" },
+                { data: "method", name: "transaction_payments.method" },
                 // { data: "ref_number", name: "transaction_payments.ref_number" },
 
                 { data: "status", name: "transactions.status" },
