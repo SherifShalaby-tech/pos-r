@@ -21,6 +21,25 @@
     td {
         padding: 5px !important
     }
+
+    #recent_transaction_table_wrapper {
+        position: relative;
+    }
+
+    #recent_transaction_table_wrapper .dt-buttons,
+    #recent_transaction_table_wrapper #recent_transaction_table_length,
+    #recent_transaction_table_wrapper #recent_transaction_table_filter {
+
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 1;
+    }
+
+    #recent_transaction_table_paginate {
+        position: fixed;
+        bottom: 50px;
+    }
 </style>
 
 @endsection
