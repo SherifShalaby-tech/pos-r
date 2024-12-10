@@ -2539,6 +2539,135 @@ function get_recent_transactions() {
         $("#recent_transaction_table").DataTable().clear().destroy();
 
 
+        // recent_transaction_table = $("#recent_transaction_table").DataTable({
+        //     lengthChange: true,
+        //     paging: true,
+        //     info: false,
+        //     bAutoWidth: false,
+        //     language: {
+        //         url: dt_lang_url,
+        //     },
+        //     lengthMenu: [
+        //         [10, 25, 50, 75, 100, 200, 500, -1],
+        //         [10, 25, 50, 75, 100, 200, 500, "All"],
+        //     ],
+        //     dom: "lBfrtip",
+        //     stateSave: true,
+        //     buttons: buttons,
+        //     processing: true,
+        //     serverSide: true,
+        //     aaSorting: [[0, "desc"]],
+        //     initComplete: function () {
+        //         $(this.api().table().container())
+        //             .find("input")
+        //             .parent()
+        //             .wrap("<form>")
+        //             .parent()
+        //             .attr("autocomplete", "off");
+        //     },
+        //     ajax: {
+        //         url: "/pos/get-recent-transactions",
+        //         data: function (d) {
+
+        //             d.start_date = $("#rt_start_date").val();
+        //             d.end_date = $("#rt_end_date").val();
+        //             d.method = $("#rt_method").val();
+        //             d.created_by = $("#rt_created_by").val();
+        //             d.customer_id = $("#rt_customer_id").val();
+        //             d.deliveryman_id = $("#rt_deliveryman_id").val();
+        //         },
+        //     },
+        //     columnDefs: [
+        //         {
+        //             targets: [10],
+        //             orderable: false,
+        //             searchable: false,
+        //         },
+        //     ],
+        //     columns: [
+        //         { data: "transaction_date", name: "transaction_date" },
+        //         { data: "invoice_no", name: "invoice_no" },
+        //         {
+        //             data: "received_currency_symbol",
+        //             name: "received_currency_symbol",
+        //             searchable: false,
+        //         },
+        //         { data: "final_total", name: "final_total" },
+        //         { data: "customer_type_name", name: "customer_types.name" },
+        //         { data: "customer_name", name: "customers.name" },
+        //         { data: "mobile_number", name: "customers.mobile_number" },
+        //         { data: "status", name: "transactions.status" },
+        //         { data: "payment_status", name: "transactions.payment_status" },
+        //         { data: "deliveryman_name", name: "deliveryman.employee_name" },
+        //         { data: "created_by", name: "users.name" },
+        //         { data: "canceled_by", name: "canceled_by_user.name" },
+        //         { data: "action", name: "action" },
+        //     ],
+        //     createdRow: function (row, data, dataIndex) {
+        //         var dateColumnValue = data.transaction_date; // Adjust this key based on your data
+        //         if (dateColumnValue === "01/01/1970 04:00") {
+        //             $(row).remove(); // Remove the row if the date matches the target value
+        //         }
+        //     },
+        //     footerCallback: function (row, data, start, end, display) {
+        //         var intVal = function (i) {
+        //             return typeof i === "string"
+        //                 ? i.replace(/[\$,]/g, "") * 1
+        //                 : typeof i === "number"
+        //                     ? i
+        //                     : 0;
+        //         };
+
+        //         this.api()
+        //             .columns(".currencies", {
+        //                 page: "current",
+        //             })
+        //             .every(function () {
+        //                 var column = this;
+        //                 let currencies_html = "";
+        //                 $.each(currency_obj, function (key, value) {
+        //                     currencies_html += `<h6 class="footer_currency" data-is_default="${value.is_default}"  data-currency_id="${value.currency_id}">${value.symbol}</h6>`;
+        //                     $(column.footer()).html(currencies_html);
+        //                 });
+        //             });
+
+        //         this.api()
+        //             .columns(".sum", { page: "current" })
+        //             .every(function () {
+        //                 var column = this;
+        //                 var currency_total = [];
+        //                 $.each(currency_obj, function (key, value) {
+        //                     currency_total[value.currency_id] = 0;
+        //                 });
+        //                 column.data().each(function (group, i) {
+        //                     b = $(group).text();
+        //                     currency_id = $(group).data("currency_id");
+
+        //                     $.each(currency_obj, function (key, value) {
+        //                         if (currency_id == value.currency_id) {
+        //                             currency_total[value.currency_id] += intVal(b);
+        //                         }
+        //                     });
+        //                 });
+        //                 var footer_html = "";
+        //                 $.each(currency_obj, function (key, value) {
+        //                     footer_html += `<h6 class="currency_total currency_total_${value.currency_id
+        //                         }" data-currency_id="${value.currency_id
+        //                         }" data-is_default="${value.is_default
+        //                         }" data-conversion_rate="${value.conversion_rate
+        //                         }" data-base_conversion="${currency_total[value.currency_id] *
+        //                         value.conversion_rate
+        //                         }" data-orig_value="${currency_total[value.currency_id]
+        //                         }">${__currency_trans_from_en(
+        //                             currency_total[value.currency_id],
+        //                             false
+        //                         )}</h6>`;
+        //                 });
+        //                 $(column.footer()).html(footer_html);
+        //             });
+        //     },
+        // });
+
         recent_transaction_table = $("#recent_transaction_table").DataTable({
             lengthChange: true,
             paging: true,
@@ -2568,7 +2697,6 @@ function get_recent_transactions() {
             ajax: {
                 url: "/pos/get-recent-transactions",
                 data: function (d) {
-
                     d.start_date = $("#rt_start_date").val();
                     d.end_date = $("#rt_end_date").val();
                     d.method = $("#rt_method").val();
@@ -2576,6 +2704,13 @@ function get_recent_transactions() {
                     d.customer_id = $("#rt_customer_id").val();
                     d.deliveryman_id = $("#rt_deliveryman_id").val();
                 },
+                dataSrc: function (json) {
+                    // Filter out rows where the transaction_date is "01/01/1970 04:00"
+                    json.data = json.data.filter(function (row) {
+                        return row.transaction_date !== "01/01/1970 04:00";
+                    });
+                    return json.data;
+                }
             },
             columnDefs: [
                 {
@@ -2587,11 +2722,7 @@ function get_recent_transactions() {
             columns: [
                 { data: "transaction_date", name: "transaction_date" },
                 { data: "invoice_no", name: "invoice_no" },
-                {
-                    data: "received_currency_symbol",
-                    name: "received_currency_symbol",
-                    searchable: false,
-                },
+                { data: "received_currency_symbol", name: "received_currency_symbol", searchable: false },
                 { data: "final_total", name: "final_total" },
                 { data: "customer_type_name", name: "customer_types.name" },
                 { data: "customer_name", name: "customers.name" },
@@ -2604,9 +2735,10 @@ function get_recent_transactions() {
                 { data: "action", name: "action" },
             ],
             createdRow: function (row, data, dataIndex) {
-                var dateColumnValue = data.transaction_date; // Adjust this key based on your data
+                // Check if the date is "01/01/1970 04:00" and remove the row if so
+                var dateColumnValue = data.transaction_date;  // Adjust based on your data structure
                 if (dateColumnValue === "01/01/1970 04:00") {
-                    $(row).remove(); // Remove the row if the date matches the target value
+                    $(row).remove();  // Remove the row if the date matches the target value
                 }
             },
             footerCallback: function (row, data, start, end, display) {
@@ -2667,6 +2799,17 @@ function get_recent_transactions() {
                     });
             },
         });
+
+        // After table draws, check and remove any rows with the unwanted date
+        recent_transaction_table.on('draw', function () {
+            $('#recent_transaction_table tbody tr').each(function () {
+                var dateColumnValue = $(this).find('td').eq(0).text(); // Assuming the date is in the first column
+                if (dateColumnValue === "01/01/1970 04:00") {
+                    $(this).remove();  // Remove the row if the date matches the target value
+                }
+            });
+        });
+
     }
 }
 
