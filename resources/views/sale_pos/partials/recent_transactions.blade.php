@@ -3,7 +3,8 @@
     max-height: 85vh;">
     <h3 class="print-title-hint" style="display:none;">recent_transactions</h3>
     <table id="recent_transaction_table" class="table">
-        <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+        <thead style="position: sticky; top: 0; background: #555;
+    color: white; z-index: 1;">
             <tr>
                 <th>@lang('lang.date_and_time')</th>
                 <th>@lang('lang.invoice_no')</th>
