@@ -235,8 +235,7 @@
                                 class="col-md-3 @if (!auth()->user()->can('superadmin') && auth()->user()->is_admin != 1) hide @endif">
                                 <label class="checkbox-inline">
                                     <input type="checkbox" class="delivery_cost_paid_by_customer"
-                                        name="delivery_cost_paid_by_customer" value="1" @if
-                                        ($sale->delivery_cost_paid_by_customer == 1) checked @endif
+                                        name="delivery_cost_paid_by_customer" value="1" @if($sale->delivery_cost_paid_by_customer == 1) checked @endif
                                     id="delivery_cost_paid_by_customer">
                                     @lang('lang.delivery_cost_paid_by_customer')
                                 </label>
@@ -245,8 +244,7 @@
                                 class="col-md-3 @if (!auth()->user()->can('superadmin') && auth()->user()->is_admin != 1) hide @endif">
                                 <label class="checkbox-inline">
                                     <input type="checkbox" class="delivery_cost_given_to_deliveryman"
-                                        name="delivery_cost_given_to_deliveryman" value="1" @if
-                                        ($sale->delivery_cost_given_to_deliveryman == 1) checked @endif
+                                        name="delivery_cost_given_to_deliveryman" value="1" @if($sale->delivery_cost_given_to_deliveryman == 1) checked @endif
                                     id="delivery_cost_given_to_deliveryman">
                                     @lang('lang.delivery_cost_given_to_deliveryman')
                                 </label>
