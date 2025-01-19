@@ -1749,7 +1749,7 @@ class TransactionUtil extends Util
      *
      * @return int
      */
-    public function getTicketNumber($store_id, $number = 1)
+    public function getTicketNumber($number = 1)
     {
         $ticketـnumberـstart = System::where('key', 'ticketـnumberـstart')->first();
         $ticket_time_start = System::where('key', 'ticketـtimeـstart')->first();
@@ -1766,7 +1766,7 @@ class TransactionUtil extends Util
         if ($ticketـnumberـstart && $number == 1) {
             $number = $ticketـnumberـstart->value > 0 ? $ticketـnumberـstart->value : 1;
             $ticket_count = Transaction::where('type', 'sell')
-                ->where("store_id", $store_id)
+
                 ->where('ticket_number', '>=', $number);
             if ($specified_time) {
                 $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
@@ -1778,7 +1778,7 @@ class TransactionUtil extends Util
             $ticket_count = $ticket_count->count();
         } else {
             $ticket_count = Transaction::where('type', 'sell')
-                ->where("store_id", $store_id)
+
                 ->where('ticket_number', '>=', $number);
 
             if ($specified_time) {
