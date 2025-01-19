@@ -124,7 +124,7 @@ class OrderController extends BaseController
                 'grand_total' => $input['final_total'],
                 'transaction_date' => $input['created_at'],
                 'invoice_no' => $this->productUtil->getNumberByType('sell'),
-                'ticket_number' => $this->transactionUtil->getTicketNumber(),
+                'ticket_number' => $this->transactionUtil->getTicketNumber($store->id),
                 'is_direct_sale' =>  0,
                 'status' => 'draft',
                 'sale_note' => $input['sales_note'],

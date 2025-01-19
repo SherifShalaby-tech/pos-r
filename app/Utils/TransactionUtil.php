@@ -167,7 +167,7 @@ class TransactionUtil extends Util
             // if(!isset($line['dining_table_id'] )){
             // return $line->is_product_checked;
             if (!empty($transaction_sell_lines['transaction_sell_line_id'])) {
-                                $transaction_sell_line = TransactionSellLine::find($transaction_sell_lines['transaction_sell_line_id']);
+                $transaction_sell_line = TransactionSellLine::find($transaction_sell_lines['transaction_sell_line_id']);
                 $transaction_sell_line->check_pay = isset($line['is_product_checked']) && $line['is_product_checked'] == "1" ? 1 : 0;
                 $transaction_sell_line->product_id = $line['product_id'];
                 $transaction_sell_line->variation_id = $line['variation_id'];
@@ -269,10 +269,10 @@ class TransactionUtil extends Util
                     }
                 }
             } else {
-                                $transaction_sell_line = [];
-                                $IsExisttransaction_sell_line = TransactionSellLine::where('transaction_id', $transaction->id)->where('product_id', $line['product_id'])->where('variation_id', $line['variation_id'])->first();
+                $transaction_sell_line = [];
+                $IsExisttransaction_sell_line = TransactionSellLine::where('transaction_id', $transaction->id)->where('product_id', $line['product_id'])->where('variation_id', $line['variation_id'])->first();
                 if (!empty($IsExisttransaction_sell_line) && $IsExisttransaction_sell_line->check_pay == "0") {
-                                        $transaction_sell_line = $IsExisttransaction_sell_line;
+                    $transaction_sell_line = $IsExisttransaction_sell_line;
 
                     // $transaction_sell_line->check_pay = isset($line['is_product_checked']) && $line['is_product_checked']=="1"?1:0;
                     // $transaction_sell_line->save();
@@ -310,7 +310,7 @@ class TransactionUtil extends Util
                     $transaction_sell_line->tax_rate = !empty($line['tax_rate']) ? $this->num_uf($line['tax_rate']) : 0;
                     $transaction_sell_line->item_tax = !empty($line['item_tax']) ? $this->num_uf($line['item_tax']) : 0;
                     $transaction_sell_line->cost_ratio_per_one = $this->num_uf($line['cost_ratio_per_one']);
-                                        $transaction_sell_line->save();
+                    $transaction_sell_line->save();
                     $keep_sell_lines[] = $transaction_sell_line->id;
                     if (!empty($line['extensions_ids'])) {
                         foreach ($line['extensions_ids'] as $key_index => $extensions_id) {
@@ -340,7 +340,7 @@ class TransactionUtil extends Util
                     }
                 }
             }
-                        if (!empty($transaction_sell_line)) {
+            if (!empty($transaction_sell_line)) {
                 $this->updateSoldQuantityInAddStockLine(
                     $transaction_sell_line->product_id,
                     $transaction_sell_line->variation_id,
@@ -1749,65 +1749,63 @@ class TransactionUtil extends Util
      *
      * @return int
      */
-     public function getTicketNumber($number = 1)
+    public function getTicketNumber($store_id, $number = 1)
     {
-        $ticketـnumberـstart = System::where('key','ticketـnumberـstart')->first();
-        $ticket_time_start = System::where('key','ticketـtimeـstart')->first();
-       $specified_time= $ticket_time_start?->value;
-        if($specified_time){
+        $ticketـnumberـstart = System::where('key', 'ticketـnumberـstart')->first();
+        $ticket_time_start = System::where('key', 'ticketـtimeـstart')->first();
+        $specified_time = $ticket_time_start?->value;
+        if ($specified_time) {
             if (Carbon::now()->greaterThanOrEqualTo(Carbon::today()->setTimeFrom($specified_time))) {
                 $start_time = Carbon::today()->setTimeFrom($specified_time);
-                $end_time = Carbon::tomorrow()->setTimeFrom($specified_time); 
+                $end_time = Carbon::tomorrow()->setTimeFrom($specified_time);
             } else {
                 $start_time = Carbon::yesterday()->setTimeFrom($specified_time);
                 $end_time = Carbon::today()->setTimeFrom($specified_time);
             }
-                
         }
-        if($ticketـnumberـstart && $number == 1){
-            $number=$ticketـnumberـstart->value > 0?$ticketـnumberـstart->value:1;
+        if ($ticketـnumberـstart && $number == 1) {
+            $number = $ticketـnumberـstart->value > 0 ? $ticketـnumberـstart->value : 1;
             $ticket_count = Transaction::where('type', 'sell')
-            ->where('ticket_number','>=', $number);
-           if($specified_time){
-               $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
-                // $ticket_count= $ticket_count->whereTime('transaction_date' , '>=' , $ticket_time_start?->value);
-            }else{
-                $ticket_count= $ticket_count->whereDate('transaction_date', Carbon::today());
-            }
-            
-          $ticket_count= $ticket_count->count();
-           
-            
-        }else{
-            $ticket_count = Transaction::where('type', 'sell')
+                ->where("store_id", $store_id)
                 ->where('ticket_number', '>=', $number);
-            
-            if($specified_time){
-               $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+            if ($specified_time) {
+                $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
                 // $ticket_count= $ticket_count->whereTime('transaction_date' , '>=' , $ticket_time_start?->value);
-            }else{
-                $ticket_count= $ticket_count->whereDate('transaction_date', Carbon::today());
+            } else {
+                $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
             }
-            
-          $ticket_count= $ticket_count->count();
 
+            $ticket_count = $ticket_count->count();
+        } else {
+            $ticket_count = Transaction::where('type', 'sell')
+                ->where("store_id", $store_id)
+                ->where('ticket_number', '>=', $number);
+
+            if ($specified_time) {
+                $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+                // $ticket_count= $ticket_count->whereTime('transaction_date' , '>=' , $ticket_time_start?->value);
+            } else {
+                $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
+            }
+
+            $ticket_count = $ticket_count->count();
         }
-        
+
 
         $ticket_number = $ticket_count + $number;
 
         $ticket_exist = Transaction::whereDate('transaction_date', Carbon::today())
             ->where('type', 'sell')
             ->where('ticket_number', $ticket_number);
-            if($specified_time){
-               $ticket_exist = $ticket_exist->whereBetween('transaction_date', [$start_time, $end_time]);
-            }else{
-                $ticket_exist= $ticket_exist->whereDate('transaction_date', Carbon::today());
-            }
-                // if ($ticket_time_start?->value <= Carbon::now()->format('H:i')) {
-                //  $ticket_exist=   $ticket_exist->whereTime('transaction_date', '>=', $ticket_time_start->value);
-                // }
-            $ticket_exist=   $ticket_exist->exists();
+        if ($specified_time) {
+            $ticket_exist = $ticket_exist->whereBetween('transaction_date', [$start_time, $end_time]);
+        } else {
+            $ticket_exist = $ticket_exist->whereDate('transaction_date', Carbon::today());
+        }
+        // if ($ticket_time_start?->value <= Carbon::now()->format('H:i')) {
+        //  $ticket_exist=   $ticket_exist->whereTime('transaction_date', '>=', $ticket_time_start->value);
+        // }
+        $ticket_exist =   $ticket_exist->exists();
         if (!empty($ticket_exist)) {
             return $this->getTicketNumber($number + 1);
         } else {
@@ -1816,72 +1814,72 @@ class TransactionUtil extends Util
     }
 
 
-// /**
-//  * get ticket number for restaurants
-//  *
-//  * @return int
-//  */
-// public function getTicketNumber($number = 1)
-// {
-//     $ticketـnumberـstart = System::where('key', 'ticketـnumberـstart')->first();
-//     $ticket_time_start = System::where('key', 'ticketـtimeـstart')->first();
+    // /**
+    //  * get ticket number for restaurants
+    //  *
+    //  * @return int
+    //  */
+    // public function getTicketNumber($number = 1)
+    // {
+    //     $ticketـnumberـstart = System::where('key', 'ticketـnumberـstart')->first();
+    //     $ticket_time_start = System::where('key', 'ticketـtimeـstart')->first();
 
-//     if ($ticketـnumberـstart && $number == 1) {
-//         $number = $ticketـnumberـstart->value > 0 ? $ticketـnumberـstart->value : 1;
+    //     if ($ticketـnumberـstart && $number == 1) {
+    //         $number = $ticketـnumberـstart->value > 0 ? $ticketـnumberـstart->value : 1;
 
-//         $ticket_count = Transaction::where('type', 'sell')
-//             ->where('ticket_number', '>=', $number)
-//             ->orderBy('created_at', 'desc');
+    //         $ticket_count = Transaction::where('type', 'sell')
+    //             ->where('ticket_number', '>=', $number)
+    //             ->orderBy('created_at', 'desc');
 
-//         if ($ticket_time_start?->value) {
-//             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
-//             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
+    //         if ($ticket_time_start?->value) {
+    //             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
+    //             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
 
-//             $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
-//         }else{
-//             $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
-//         }
+    //             $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+    //         }else{
+    //             $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
+    //         }
 
-//         $ticket_count = $ticket_count->count();
+    //         $ticket_count = $ticket_count->count();
 
-//     } else {
-//         $ticket_count = Transaction::where('type', 'sell')
-//             ->where('ticket_number', '>=', $number)
-//             ->orderBy('created_at', 'desc');
+    //     } else {
+    //         $ticket_count = Transaction::where('type', 'sell')
+    //             ->where('ticket_number', '>=', $number)
+    //             ->orderBy('created_at', 'desc');
 
-//         if ($ticket_time_start?->value) {
-            
-//             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
-//             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
+    //         if ($ticket_time_start?->value) {
 
-//             $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
-//         }else{
-//             $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
-//         }
+    //             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
+    //             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
 
-//         $ticket_count = $ticket_count->count();
-//     }
+    //             $ticket_count = $ticket_count->whereBetween('transaction_date', [$start_time, $end_time]);
+    //         }else{
+    //             $ticket_count = $ticket_count->whereDate('transaction_date', Carbon::today());
+    //         }
 
-//     $ticket_number = $ticket_count + $number;
+    //         $ticket_count = $ticket_count->count();
+    //     }
 
-//     $ticket_exist = Transaction::where('ticket_number', $ticket_number);
-        
-//         if ($ticket_time_start?->value) {
-//             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
-//             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
-//             $ticket_exist = $ticket_exist->whereBetween('transaction_date', [$start_time, $end_time]);
-//         }else{
-//           $ticket_exist = $ticket_exist->whereDate('transaction_date', Carbon::today());
-//         }
-//       $ticket_exist=  $ticket_exist->where('type', 'sell')
-//         ->exists();
-//     dd($start_time, $end_time,$ticket_number,$ticket_exist,$ticket_time_start->value);
-//     if (!empty($ticket_exist)) {
-//         return $this->getTicketNumber($number + 1);
-//     } else {
-//         return $ticket_number;
-//     }
-// }
+    //     $ticket_number = $ticket_count + $number;
+
+    //     $ticket_exist = Transaction::where('ticket_number', $ticket_number);
+
+    //         if ($ticket_time_start?->value) {
+    //             $start_time = Carbon::parse($ticket_time_start->value)->startOfDay();
+    //             $end_time = Carbon::parse($ticket_time_start->value)->endOfDay();
+    //             $ticket_exist = $ticket_exist->whereBetween('transaction_date', [$start_time, $end_time]);
+    //         }else{
+    //           $ticket_exist = $ticket_exist->whereDate('transaction_date', Carbon::today());
+    //         }
+    //       $ticket_exist=  $ticket_exist->where('type', 'sell')
+    //         ->exists();
+    //     dd($start_time, $end_time,$ticket_number,$ticket_exist,$ticket_time_start->value);
+    //     if (!empty($ticket_exist)) {
+    //         return $this->getTicketNumber($number + 1);
+    //     } else {
+    //         return $ticket_number;
+    //     }
+    // }
 
     /**
      * calculate the cost of sold product for restaurants
@@ -2030,8 +2028,17 @@ class TransactionUtil extends Util
     {
         $customer_id = $request->input('customer_id');
         $inputs = $request->only([
-            'amount', 'method', 'note', 'card_number', 'card_month', 'card_year',
-            'cheque_number', 'bank_name', 'bank_deposit_date', 'ref_number', 'paid_on'
+            'amount',
+            'method',
+            'note',
+            'card_number',
+            'card_month',
+            'card_year',
+            'cheque_number',
+            'bank_name',
+            'bank_deposit_date',
+            'ref_number',
+            'paid_on'
         ]);
 
         if ($format_data) {
