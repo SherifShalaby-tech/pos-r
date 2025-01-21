@@ -137,7 +137,7 @@ class Util
     }
 
 
-    public function createOrUpdateRawMaterialToProduction($production_id, $consumption_details,$is_update=false)
+    public function createOrUpdateRawMaterialToProduction($production_id, $consumption_details, $is_update = false)
     {
         $keep_consumption_product = [];
         if (!empty($consumption_details)) {
@@ -478,7 +478,7 @@ class Util
             'card' => __('lang.credit_card'),
             'bank_transfer' => __('lang.bank_transfer'),
             'cheque' => __('lang.cheque'),
-            'money_transfer' => 'Money Transfer',
+            // 'money_transfer' => 'Money Transfer',
         ];
     }
     public function getPaymentTypeArrayForPos()
@@ -491,7 +491,7 @@ class Util
             'bank_transfer' => __('lang.bank_transfer'),
             'deposit' => __('lang.use_the_balance'),
             'paypal' => __('lang.paypal'),
-             'money_transfer' => __('lang.Money Transfer'),
+            'money_transfer' => __('lang.Money Transfer'),
         ];
     }
 

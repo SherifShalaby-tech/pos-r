@@ -34,16 +34,19 @@
                                         <input type="hidden" name="payments[0][change_amount]" class="change_amount"
                                             id="change_amount">
                                         <input type="hidden" name="payments[0][pending_amount]" class="pending_amount">
-                                        <input type="hidden" name="payments[0][pending_amount]" class="pending_amount"> 
+                                        <input type="hidden" name="payments[0][pending_amount]" class="pending_amount">
                                         <div class="col-md-6">
-                                            <button type="button" 
+                                            <button type="button"
                                                 class="ml-1 btn btn-danger add_to_customer_balance hide">@lang('lang.add_to_customer_balance')</button>
-                                            <input type="hidden" name="add_to_customer_balance" id="add_to_customer_balance" value="0">
+                                            <input type="hidden" name="add_to_customer_balance"
+                                                id="add_to_customer_balance" value="0">
                                         </div>
                                     </div>
                                     <div class="col-md-6 mt-1">
                                         <label>@lang('lang.payment_method'): *</label>
-                                        {!! Form::select('payments[0][method]', $payment_types, null, ['class' => 'form-control method payment_way', 'required']) !!}
+                                        {!! Form::select('payments[0][method]', $payment_types, null, ['class' =>
+                                        'form-control method payment_way', 'required',
+                                        'id' => 'payment-method-select']) !!}
                                     </div>
                                     <div class="col-md-6 mt-1 text-red">
                                         <label class="discount_lable">@lang('lang.discount'):</label>
@@ -57,8 +60,7 @@
                                         <div class="row">
                                             <div class="col-md-4">
                                                 <label>@lang('lang.card_number') *</label>
-                                                <input type="text" name="payments[0][card_number]"
-                                                    class="form-control">
+                                                <input type="text" name="payments[0][card_number]" class="form-control">
                                             </div>
                                             {{-- <div class="col-md-3">
                                                 <label>@lang('lang.card_security')</label>
@@ -67,8 +69,7 @@
                                             </div> --}}
                                             <div class="col-md-2">
                                                 <label>@lang('lang.month')</label>
-                                                <input type="text" name="payments[0][card_month]"
-                                                    class="form-control">
+                                                <input type="text" name="payments[0][card_month]" class="form-control">
                                             </div>
                                             <div class="col-md-2">
                                                 <label>@lang('lang.year')</label>
@@ -132,13 +133,15 @@
                                 </div>
                             </div>
                             @php
-                                $show_the_window_printing_prompt = App\Models\System::getProperty('show_the_window_printing_prompt');
+                            $show_the_window_printing_prompt =
+                            App\Models\System::getProperty('show_the_window_printing_prompt');
                             @endphp
                             <div class="col-md-12">
                                 <div class="i-checks">
-                                    <input id="print_the_transaction" name="print_the_transaction" type="checkbox"
-                                        @if (!empty($show_the_window_printing_prompt) && $show_the_window_printing_prompt == '1') checked @endif value="1"
-                                        class="form-control-custom">
+                                    <input @if (!empty($show_the_window_printing_prompt) &&
+                                        $show_the_window_printing_prompt=='1' ) checked @endif
+                                        id="print_the_transaction" name="print_the_transaction" type="checkbox"
+                                        value="1" class="form-control-custom">
                                     <label
                                         for="print_the_transaction"><strong>@lang('lang.print_the_transaction')</strong></label>
                                 </div>
@@ -179,7 +182,8 @@
                             </div>
                             <div class="form-group col-md-12">
                                 <label>@lang('lang.payment_note')</label>
-                                <textarea id="payment_note" rows="2" class="form-control" name="payment_note"></textarea>
+                                <textarea id="payment_note" rows="2" class="form-control"
+                                    name="payment_note"></textarea>
                             </div>
                         </div>
                         <div class="row">

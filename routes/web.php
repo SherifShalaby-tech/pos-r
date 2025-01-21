@@ -71,8 +71,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('/update-column-visibility', 'ProductController@updateColumnVisibility');
 
     //item borrowed controller
-    Route::resource('item-borrowed',ItemBorrowedController::class);
-    Route::post('item-borrowed/give','ItemBorrowedController@give')->name('item-borrowed.give');
+    Route::resource('item-borrowed', ItemBorrowedController::class);
+    Route::post('item-borrowed/give', 'ItemBorrowedController@give')->name('item-borrowed.give');
     Route::get('raw-material/add-stock/create', 'AddStockController@create');
     Route::get('raw-material/add-stock', 'AddStockController@index');
     Route::get('raw-material/add-product-row', 'RawMaterialController@addProductRow');
@@ -87,7 +87,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::delete('productions/delete/{id}', 'RecipeController@destroyProduction')->name('productions.delete');
     Route::resource('recipe', RecipeController::class);
     // printer controller
-    Route::resource('printers',PrinterController::class);
+    Route::resource('printers', PrinterController::class);
     Route::get('/get-printers', 'PrinterController@getPrinters');
     Route::get('/print-partials', 'SellPosController@partialPrint');
     Route::get('add-to-cashier/{id}', 'PrinterController@addToCashier')->name('printers.addToCashier');
@@ -145,8 +145,8 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::get('customer-type/get-product-point-row', 'CustomerTypeController@getProductPointRow');
     Route::resource('customer-type', CustomerTypeController::class);
     // Customer insurances
-    Route::resource('customer-insurances',CustomerInsurancesController::class);
-    Route::post('customer-insurances/received','CustomerInsurancesController@received')->name('customer-insurances.received');
+    Route::resource('customer-insurances', CustomerInsurancesController::class);
+    Route::post('customer-insurances/received', 'CustomerInsurancesController@received')->name('customer-insurances.received');
     // end of Customer insurances
     Route::get('supplier/get-dropdown', 'SupplierController@getDropdown');
     Route::get('supplier/get-details/{id}', 'SupplierController@getDetails');
@@ -251,7 +251,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::post('pos/add-new-online-orders-to-transaction-sellline', 'SellPosController@addNewonlineOrdersToTransactionSellline');
     Route::post('pos/change-selling-price/{variation_id}', 'SellPosController@changeSellingPrice');
 
-    
+
     Route::resource('pos', SellPosController::class);
     Route::get('dining-room/get-dining-rooms', 'DiningRoomController@getDiningRooms');
     Route::get('dining-room/check-dining-room-name', 'DiningRoomController@checkDiningRoomName');
@@ -304,7 +304,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
 
     Route::group(['prefix' => 'hrm'], function () {
         Route::resource('job', JobController::class);
-        Route::get('print/employee-barcode/{id}','EmployeeController@printEmployeeBarcode')->name('print_employee_barcode');
+        Route::get('print/employee-barcode/{id}', 'EmployeeController@printEmployeeBarcode')->name('print_employee_barcode');
         Route::get('get-same-job-employee-details/{id}', 'EmployeeController@getSameJobEmployeeDetails');
         Route::get('get-balance-leave-details/{id}', 'EmployeeController@getBalanceLeaveDetails');
         Route::get('get-employee-details-by-id/{id}', 'EmployeeController@getDetails');
@@ -313,7 +313,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
         Route::get('employee/get-dropdown', 'EmployeeController@getDropdown');
         Route::resource('employee', EmployeeController::class);
         Route::resource('leave-type', LeaveTypeController::class);
-        Route::get('employee/trash','EmployeeController@getEmployeeTrash')->name('employee.trash');
+        Route::get('employee/trash', 'EmployeeController@getEmployeeTrash')->name('employee.trash');
 
         Route::get('leave/get-leave-details/{employee_id}', 'LeaveController@getLeaveDetails');
         Route::resource('leave', LeaveController::class);
@@ -398,7 +398,7 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::delete('report/delete-employee-commission/{id}', 'ReportController@deleteEmployeeCommission');
     Route::get('report/get-sales-per-employee-report', 'ReportController@getSalesPerEmployeeReport');
     Route::get('report/get-category-purchases', 'ReportController@getCategoryPurchases');
-    
+
     Route::post('sms/save-setting', 'SmsController@saveSetting');
     Route::get('sms/setting', 'SmsController@getSetting');
     Route::get('sms/resend/{id}', 'SmsController@resend');
@@ -420,6 +420,14 @@ Route::group(['middleware' => ['auth', 'SetSessionData', 'language', 'timezone']
     Route::resource('settings', SettingController::class);
 
 
+    Route::get('payment-method/add-type/{payment_method_id}', 'PaymentMethodTypeController@addType');
+    Route::post('payment-method/store-type', 'PaymentMethodTypeController@storeType');
+    Route::get('payment-method/get-types/{payment_method_id}', 'PaymentMethodTypeController@getTypes');
+    Route::put('payment-method/get-types/{payment_method_id}', 'PaymentMethodTypeController@updateTypes');
+
+
+    Route::get('payment-method-change-status/{dataId}/{status}', 'PaymentMethodController@changeStatus');
+    Route::resource('payment-methods', PaymentMethodController::class);
 
 
     Route::post('terms-and-conditions/update-invoice-tac-setting', 'TermsAndConditionsController@updateInvoiceTacSetting');
