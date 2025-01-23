@@ -73,3 +73,15 @@ $moment_time_format = App\Models\System::getProperty('time_format') == '12' ? 'h
 <script type="text/javascript" src="{{asset('js/cropper.js') }}"></script>
 <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 <script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+
+<script>
+    $(function(){
+    $(".wrapper1").scroll(function(){
+    $(".wrapper2").scrollLeft($(".wrapper1").scrollLeft());
+    });
+    $(".wrapper2").scroll(function(){
+    $(".wrapper1").scrollLeft($(".wrapper2").scrollLeft());
+    });
+    });
+</script>

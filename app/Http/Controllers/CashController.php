@@ -164,55 +164,56 @@ class CashController extends Controller
         $cash_register->total_card_sales =  $cash_register->total_card_sales - $cash_register->total_refund_card;
         $cash_register->total_bank_transfer_sales =  $cash_register->total_bank_transfer_sales - $cash_register->total_refund_bank_transfer;
         $cash_register->total_cheque_sales =  $cash_register->total_cheque_sales - $cash_register->total_refund_cheque;
-        $total_latest_payments= DB::table('cash_register_transactions')
-        ->where('cash_register_id', $cash_register->id)
-        ->where('transaction_type', 'sell')
-        ->whereIn('transaction_id', function ($query) use ($cash_register) {
-            $query->select('id')
-                ->from('transactions')
-                ->where(function ($query) use ($cash_register) {
-                    $query->whereRaw('created_at <> updated_at');
-                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
-                    $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
-                })->
-                OrWhere(function ($query) use ($cash_register) {
-                    $query->whereRaw('created_at <> updated_at');
-                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
-                    $query->where('created_by', '!=', $cash_register->user_id)
-                        ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
-                        ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
-                });
-        })
-        ->sum('amount');
+        $total_latest_payments = DB::table('cash_register_transactions')
+            ->where('cash_register_id', $cash_register->id)
+            ->where('transaction_type', 'sell')
+            ->whereIn('transaction_id', function ($query) use ($cash_register) {
+                $query->select('id')
+                    ->from('transactions')
+                    ->where(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                    })->OrWhere(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_by', '!=', $cash_register->user_id)
+                            ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                            ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                    });
+            })
+            ->sum('amount');
         return view('cash.show')->with(compact(
-            'cash_register','total_latest_payments'
+            'cash_register',
+            'total_latest_payments'
         ));
     }
-    public function showLatestPaymentDetails($id){
-        $cash_register=CashRegister::find($id);
-        $total_latest_payments= DB::table('cash_register_transactions')
-        ->where('cash_register_id', $id)
-        ->where('transaction_type', 'sell')
-        ->whereIn('transaction_id', function ($query) use ($cash_register) {
-            $query->select('id')
-                ->from('transactions')
-                ->where(function ($query) use ($cash_register) {
-                    $query->whereRaw('created_at <> updated_at');
-                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
-                    $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
-                })->
-                OrWhere(function ($query) use ($cash_register) {
-                    $query->whereRaw('created_at <> updated_at');
-                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
-                    $query->where('created_by', '!=', $cash_register->user_id)
-                        ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
-                        ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
-                });
-        })
-        ->pluck('transaction_id')->toArray();
-        $transactions=Transaction::whereIn('id',$total_latest_payments)->get();
+    public function showLatestPaymentDetails($id)
+    {
+        $cash_register = CashRegister::find($id);
+        $total_latest_payments = DB::table('cash_register_transactions')
+            ->where('cash_register_id', $id)
+            ->where('transaction_type', 'sell')
+            ->whereIn('transaction_id', function ($query) use ($cash_register) {
+                $query->select('id')
+                    ->from('transactions')
+                    ->where(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                    })->OrWhere(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_by', '!=', $cash_register->user_id)
+                            ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                            ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                    });
+            })
+            ->pluck('transaction_id')->toArray();
+        $transactions = Transaction::whereIn('id', $total_latest_payments)->get();
         return view('cash.latest-payments')->with(compact(
-            'transactions','id'
+            'transactions',
+            'id'
         ));
     }
     /**
@@ -462,26 +463,25 @@ class CashController extends Controller
             }
         }
 
-        $total_latest_payments= DB::table('cash_register_transactions')
-        ->where('cash_register_id', $cash_register_id)
-        ->where('transaction_type', 'sell')
-        ->whereIn('transaction_id', function ($query) use ($cash_register) {
-            $query->select('id')
-                ->from('transactions')
-                ->where(function ($query) use ($cash_register) {
-                    $query->whereRaw('created_at <> updated_at');
-                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
-                    $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
-                })->
-                OrWhere(function ($query) use ($cash_register) {
-                    $query->whereRaw('created_at <> updated_at');
-                    $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
-                    $query->where('created_by', '!=', $cash_register->user_id)
-                        ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
-                        ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
-                });
-        })
-        ->sum('amount');
+        $total_latest_payments = DB::table('cash_register_transactions')
+            ->where('cash_register_id', $cash_register_id)
+            ->where('transaction_type', 'sell')
+            ->whereIn('transaction_id', function ($query) use ($cash_register) {
+                $query->select('id')
+                    ->from('transactions')
+                    ->where(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        // $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                    })->OrWhere(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        // $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_by', '!=', $cash_register->user_id)
+                            ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                            ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                    });
+            })
+            ->sum('amount');
         $users = User::Notview()->orderBy('name', 'asc')->pluck('name', 'id');
         return view('cash.add_closing_cash')->with(compact(
             'total_latest_payments',
@@ -503,82 +503,81 @@ class CashController extends Controller
     public function saveAddClosingCash(Request $request)
     {
         try {
-            $cash_given_to=User::find($request->cash_given_to)->name;
-            if($request->source_type == 'user' && $cash_given_to=='Admin' && request()->user()->name=="Admin"){
+            $cash_given_to = User::find($request->cash_given_to)->name;
+            if ($request->source_type == 'user' && $cash_given_to == 'Admin' && request()->user()->name == "Admin") {
                 $output = [
                     'success' => false,
                     'msg' => __('lang.not_allowed')
                 ];
-            }else{
-                
-            DB::beginTransaction();
-            $data = $request->except('_token');
+            } else {
 
-            $amount = $this->cashRegisterUtil->num_uf($request->input('amount'));
-            $register = CashRegister::find($request->cash_register_id);
-            $register->source_type = $request->source_type;
-            $register->cash_given_to = $request->cash_given_to;
-            $register->closing_amount = $amount;
-            $register->closed_at = Carbon::now();
-            $register->status = 'close';
-            $register->notes = $request->notes;
-            $register->save();
-            if ($request->submit == 'adjustment') {
-                $data['store_id'] = $register->store_id;
-                $data['user_id'] = $register->user_id;
-                $data['cash_register_id'] = $register->id;
-                $data['amount'] = $amount;
-                $data['current_cash'] = $this->commonUtil->num_uf($data['current_cash']);
-                $data['discrepancy'] = $this->commonUtil->num_uf($data['discrepancy']);
-                $data['date_and_time'] = Carbon::now();
-                $data['created_by'] = Auth::user()->id;
+                DB::beginTransaction();
+                $data = $request->except('_token');
 
-                CashInAdjustment::create($data);
+                $amount = $this->cashRegisterUtil->num_uf($request->input('amount'));
+                $register = CashRegister::find($request->cash_register_id);
+                $register->source_type = $request->source_type;
+                $register->cash_given_to = $request->cash_given_to;
+                $register->closing_amount = $amount;
+                $register->closed_at = Carbon::now();
+                $register->status = 'close';
+                $register->notes = $request->notes;
+                $register->save();
+                if ($request->submit == 'adjustment') {
+                    $data['store_id'] = $register->store_id;
+                    $data['user_id'] = $register->user_id;
+                    $data['cash_register_id'] = $register->id;
+                    $data['amount'] = $amount;
+                    $data['current_cash'] = $this->commonUtil->num_uf($data['current_cash']);
+                    $data['discrepancy'] = $this->commonUtil->num_uf($data['discrepancy']);
+                    $data['date_and_time'] = Carbon::now();
+                    $data['created_by'] = Auth::user()->id;
+
+                    CashInAdjustment::create($data);
+                }
+
+                $cash_register_transaction = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'closing_cash', 'credit', $request->source_id, $request->notes);
+
+                $user_id = $register->user_id;
+
+                if (!empty($request->cash_given_to)) {
+                    if ($request->source_type == 'user') {
+                        $register = $this->cashRegisterUtil->getCurrentCashRegisterOrCreate($request->cash_given_to);
+                        $cash_register_transaction_in = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'cash_in', 'debit', $user_id, $request->notes, $cash_register_transaction->id);
+                        $cash_register_transaction->referenced_id = $cash_register_transaction_in->id;
+                        $cash_register_transaction->save();
+                    }
+                    if ($request->source_type == 'safe') {
+                        $default_currency_id = System::getProperty('currency');
+                        $money_safe = MoneySafe::find($request->cash_given_to);
+
+                        $money_safe_data['money_safe_id'] = $money_safe->id;
+                        $money_safe_data['transaction_date'] = Carbon::now();
+                        $money_safe_data['transaction_id'] = null;
+                        $money_safe_data['transaction_payment_id'] = null;
+                        $money_safe_data['currency_id'] = $default_currency_id;
+                        $money_safe_data['type'] = 'credit';
+                        $money_safe_data['store_id'] = $register->store_id ?? 0;
+                        $money_safe_data['amount'] = $amount;
+                        $money_safe_data['created_by'] = Auth::user()->id;
+                        $money_safe_data['comments'] = __('lang.closing_cash');
+                        MoneySafeTransaction::create($money_safe_data);
+                    }
+                    if ($request->source_type == 'pos') {
+                        // $user_id = StorePos::where('id', $request->cash_given_to)->first()->user_id;
+                        // $register = $this->cashRegisterUtil->getCurrentCashRegisterOrCreate($request->cash_given_to);
+                        $cash_register_transaction_in = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'closing_cash', 'credit', $user_id, $request->notes, $cash_register_transaction->id);
+                        $cash_register_transaction->referenced_id = $cash_register_transaction_in->id;
+                        $cash_register_transaction->save();
+                    }
+                }
+
+                DB::commit();
+                $output = [
+                    'success' => true,
+                    'msg' => __('lang.success')
+                ];
             }
-
-            $cash_register_transaction = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'closing_cash', 'credit', $request->source_id, $request->notes);
-
-            $user_id = $register->user_id;
-
-            if (!empty($request->cash_given_to)) {
-                if ($request->source_type == 'user') {
-                    $register = $this->cashRegisterUtil->getCurrentCashRegisterOrCreate($request->cash_given_to);
-                    $cash_register_transaction_in = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'cash_in', 'debit', $user_id, $request->notes, $cash_register_transaction->id);
-                    $cash_register_transaction->referenced_id = $cash_register_transaction_in->id;
-                    $cash_register_transaction->save();
-                }
-                if ($request->source_type == 'safe') {
-                    $default_currency_id = System::getProperty('currency');
-                    $money_safe = MoneySafe::find($request->cash_given_to);
-
-                    $money_safe_data['money_safe_id'] = $money_safe->id;
-                    $money_safe_data['transaction_date'] = Carbon::now();
-                    $money_safe_data['transaction_id'] = null;
-                    $money_safe_data['transaction_payment_id'] = null;
-                    $money_safe_data['currency_id'] = $default_currency_id;
-                    $money_safe_data['type'] = 'credit';
-                    $money_safe_data['store_id'] = $register->store_id ?? 0;
-                    $money_safe_data['amount'] = $amount;
-                    $money_safe_data['created_by'] = Auth::user()->id;
-                    $money_safe_data['comments'] = __('lang.closing_cash');
-                    MoneySafeTransaction::create($money_safe_data);
-                }
-                if ($request->source_type == 'pos') {
-                    // $user_id = StorePos::where('id', $request->cash_given_to)->first()->user_id;
-                    // $register = $this->cashRegisterUtil->getCurrentCashRegisterOrCreate($request->cash_given_to);
-                    $cash_register_transaction_in = $this->cashRegisterUtil->createCashRegisterTransaction($register, $amount, 'closing_cash', 'credit', $user_id, $request->notes, $cash_register_transaction->id);
-                    $cash_register_transaction->referenced_id = $cash_register_transaction_in->id;
-                    $cash_register_transaction->save();
-                }
-            }
-
-            DB::commit();
-            $output = [
-                'success' => true,
-                'msg' => __('lang.success')
-            ];
-        }
-            
         } catch (\Exception $e) {
             Log::emergency('File: ' . $e->getFile() . 'Line: ' . $e->getLine() . 'Message: ' . $e->getMessage());
             $output = [
@@ -622,9 +621,36 @@ class CashController extends Controller
             }
 
 
+            // $cash_register = $cr_query->select(
+            //     'cash_registers.*',
+            //     DB::raw("SUM(IF(transaction_type = 'sell', amount, 0)) as total_sale"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND cash_register_transactions.type = 'credit' AND dining_table_id IS NOT NULL, amount, 0)) as total_dining_in"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit' AND dining_table_id IS NOT NULL, amount, 0)) as total_dining_in_cash"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit', amount, 0)) as total_cash_sales"),
+            //     DB::raw("SUM(IF(transaction_type = 'refund' AND pay_method = 'cash' AND cash_register_transactions.type = 'debit', amount, 0)) as total_refund_cash"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'card' AND cash_register_transactions.type = 'credit', amount, 0)) as total_card_sales"),
+            //     DB::raw("SUM(IF(transaction_type = 'refund' AND pay_method = 'card' AND cash_register_transactions.type = 'debit', amount, 0)) as total_refund_card"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'bank_transfer' AND cash_register_transactions.type = 'credit', amount, 0)) as total_bank_transfer_sales"),
+            //     DB::raw("SUM(IF(transaction_type = 'refund' AND pay_method = 'bank_transfer' AND cash_register_transactions.type = 'debit', amount, 0)) as total_refund_bank_transfer"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'gift_card' AND cash_register_transactions.type = 'credit', amount, 0)) as total_gift_card_sales"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cheque' AND cash_register_transactions.type = 'credit', amount, 0)) as total_cheque_sales"),
+            //     DB::raw("SUM(IF(transaction_type = 'refund' AND pay_method = 'cheque' AND cash_register_transactions.type = 'debit', amount, 0)) as total_refund_cheque"),
+            //     DB::raw("SUM(IF(transaction_type = 'add_stock' AND pay_method = 'cash' AND cash_register_transactions.type = 'debit', amount, 0)) as total_purchases"),
+            //     DB::raw("SUM(IF(transaction_type = 'expense' AND pay_method = 'cash' AND cash_register_transactions.type = 'debit', amount, 0)) as total_expenses"),
+            //     DB::raw("SUM(IF(transaction_type = 'cash_in' AND pay_method = 'cash' AND cash_register_transactions.type = 'debit', amount, 0)) as total_cash_in"),
+            //     DB::raw("SUM(IF(transaction_type = 'cash_out' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit', amount, 0)) as total_cash_out"),
+            //     DB::raw("SUM(IF(transaction_type = 'sell_return' AND pay_method = 'cash' AND cash_register_transactions.type = 'debit', amount, 0)) as total_sell_return"),
+            //     DB::raw("SUM(IF(transaction_type = 'wages_and_compensation' AND pay_method = 'cash' AND cash_register_transactions.type = 'debit', amount, 0)) as total_wages_and_compensation"),
+            // )->first();
+
+
+
+
+
             $cash_register = $cr_query->select(
                 'cash_registers.*',
                 DB::raw("SUM(IF(transaction_type = 'sell', amount, 0)) as total_sale"),
+                DB::raw("SUM(IF(transaction_type = 'refund', amount, 0)) as total_refund"),
                 DB::raw("SUM(IF(transaction_type = 'sell' AND cash_register_transactions.type = 'credit' AND dining_table_id IS NOT NULL, amount, 0)) as total_dining_in"),
                 DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit' AND dining_table_id IS NOT NULL, amount, 0)) as total_dining_in_cash"),
                 DB::raw("SUM(IF(transaction_type = 'sell' AND pay_method = 'cash' AND cash_register_transactions.type = 'credit', amount, 0)) as total_cash_sales"),
@@ -656,7 +682,29 @@ class CashController extends Controller
             }
         }
 
+        $total_latest_payments = DB::table('cash_register_transactions')
+            ->where('cash_register_id', $cash_register_id)
+            ->where('transaction_type', 'sell')
+            ->whereIn('transaction_id', function ($query) use ($cash_register) {
+                $query->select('id')
+                    ->from('transactions')
+                    ->where(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        // $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_at', '<=',  Carbon::parse($cash_register->created_at));
+                    })->OrWhere(function ($query) use ($cash_register) {
+                        $query->whereRaw('created_at <> updated_at');
+                        // $query->WhereRaw('updated_at >= (created_at + INTERVAL 1 MINUTE)');
+                        $query->where('created_by', '!=', $cash_register->user_id)
+                            ->where('created_at', '<=', Carbon::parse($cash_register->closed_at))
+                            ->where('created_at', '>=',  Carbon::parse($cash_register->created_at));
+                    });
+            })
+            ->sum('amount');
+
         return view('cash.print_closing_cash')->with(compact(
+            'total_latest_payments',
+
             'cash_register',
             'cr_data',
             'cash_register_id',

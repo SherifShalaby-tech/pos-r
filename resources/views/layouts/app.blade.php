@@ -563,6 +563,71 @@
             });
         });
 
+        $(document).on('click', '.edit_item', function(e) {
+            e.preventDefault();
+            swal({
+                title: 'Are you sure?',
+                text: "Are you sure You Wanna Edit it?",
+                icon: 'warning',
+            }).then(willDelete => {
+                if (willDelete) {
+                    var check_password = $(this).data('check_password');
+                    var href = $(this).data('href');
+                    var data = $(this).serialize();
+
+                    swal({
+                        title: 'Please Enter Your Password',
+                        content: {
+                            element: "input",
+                            attributes: {
+                                placeholder: "Type your password",
+                                type: "password",
+                                autocomplete: "off",
+                                autofocus: true,
+                            },
+                        },
+                        inputAttributes: {
+                            autocapitalize: 'off',
+                            autoComplete: 'off',
+                        },
+                        focusConfirm: true
+                    }).then((result) => {
+                        if (result) {
+                            $.ajax({
+                                url: check_password,
+                                method: 'POST',
+                                data: {
+                                    value: result
+                                },
+                                dataType: 'json',
+                                success: (data) => {
+
+                                    if (data.success == true) {
+                                        swal(
+                                            'Success',
+                                            'Correct Password!',
+                                            'success'
+                                        ).then(() => {
+                                        // Open the URL in a new tab
+                                        window.open(href, '_blank');
+                                        });
+
+                                    } else {
+                                        swal(
+                                            'Failed!',
+                                            'Wrong Password!',
+                                            'error'
+                                        )
+
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        });
+
 
         $(".daterangepicker-field").daterangepicker({
             callback: function(startDate, endDate, period) {

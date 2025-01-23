@@ -475,11 +475,20 @@ class SellController extends Controller
                         }
                         $html .= '<li class="divider"></li>';
                         if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1) {
+                            // $html .=
+                            //     '<li>
+                            //     <a href="' . action('SellController@edit', $row->id) . '" class="btn"><i
+                            //             class="dripicons-document-edit"></i> ' . __('lang.edit') . '</a>
+                            // </li>';
+
+
                             $html .=
                                 '<li>
-                                <a href="' . action('SellController@edit', $row->id) . '" class="btn"><i
-                                        class="dripicons-document-edit"></i> ' . __('lang.edit') . '</a>
-                            </li>';
+                                <a data-href="' . action('SellController@edit', $row->id) . '"
+                                    data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
+                                    class="btn text-red edit_item"><i class="dripicons-document-edit"></i>
+                                    ' . __('lang.edit') . '</a>
+                                </li>';
                         }
                         $html .= '<li class="divider"></li>';
                         if (auth()->user()->can('return.sell_return.create_and_edit')) {

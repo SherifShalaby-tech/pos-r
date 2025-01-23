@@ -299,62 +299,68 @@
         </div>
         <div class="card mt-1 mb-0">
             <div class="card-body py-2 px-4">
-                <div class="table-responsive no-print">
-                    <table id="sales_table" class="table" style="min-height: 300px;">
-                        <thead>
-                            <tr>
-                                <th>@lang('lang.date_and_time')</th>
-                                <th>@lang('lang.reference')</th>
-                                <th>@lang('lang.store')</th>
-                                <th>@lang('lang.customer')</th>
-                                <th>@lang('lang.phone')</th>
-                                <th>@lang('lang.sale_status')</th>
-                                <th>@lang('lang.payment_status')</th>
-                                <th>@lang('lang.payment_type')</th>
-                                <th>@lang('lang.ref_number')</th>
-                                <th class="currencies">@lang('lang.received_currency')</th>
-                                <th class="sum">@lang('lang.grand_total')</th>
-                                <th class="sum">@lang('lang.paid')</th>
-                                <th class="sum">@lang('lang.due_sale_list')</th>
-                                <th>@lang('lang.payment_date')</th>
-                                <th>@lang('lang.cashier')</th>
-                                <th>@lang('lang.deliveryman')</th>
-                                @if (session('system_mode') == 'restaurant')
-                                <th>@lang('lang.service')</th>
-                                <th>@lang('lang.canceled_by')</th>
-                                @endif
-                                <th>@lang('lang.commission')</th>
-                                <th>@lang('lang.products')</th>
-                                <th>@lang('lang.sku')</th>
-                                <th>@lang('lang.sub_sku')</th>
-                                <th>@lang('lang.sale_note')</th>
-                                <th>@lang('lang.files')</th>
-                                <th class="notexport">@lang('lang.action')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th class="table_totals" style="text-align: right">@lang('lang.totals')</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div class="wrapper1">
+                    <div class="div1"></div>
+                </div>
+                <div class="wrapper2">
+                    <div class="div2 no-print">
+                        <table id="sales_table" class="table" style="min-height: 300px;">
+                            <thead>
+                                <tr>
+                                    <th>@lang('lang.date_and_time')</th>
+                                    <th>@lang('lang.reference')</th>
+                                    <th>@lang('lang.store')</th>
+                                    <th>@lang('lang.customer')</th>
+                                    <th>@lang('lang.phone')</th>
+                                    <th>@lang('lang.sale_status')</th>
+                                    <th>@lang('lang.payment_status')</th>
+                                    <th>@lang('lang.payment_type')</th>
+                                    <th>@lang('lang.ref_number')</th>
+                                    <th class="currencies">@lang('lang.received_currency')</th>
+                                    <th class="sum">@lang('lang.grand_total')</th>
+                                    <th class="sum">@lang('lang.paid')</th>
+                                    <th class="sum">@lang('lang.due_sale_list')</th>
+                                    <th>@lang('lang.payment_date')</th>
+                                    <th>@lang('lang.cashier')</th>
+                                    <th>@lang('lang.deliveryman')</th>
+                                    @if (session('system_mode') == 'restaurant')
+                                    <th>@lang('lang.service')</th>
+                                    <th>@lang('lang.canceled_by')</th>
+                                    @endif
+                                    <th>@lang('lang.commission')</th>
+                                    <th>@lang('lang.products')</th>
+                                    <th>@lang('lang.sku')</th>
+                                    <th>@lang('lang.sub_sku')</th>
+                                    <th>@lang('lang.sale_note')</th>
+                                    <th>@lang('lang.files')</th>
+                                    <th class="notexport">@lang('lang.action')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <th class="table_totals" style="text-align: right">@lang('lang.totals')</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
 
 
 
+
+                    </div>
                 </div>
             </div>
         </div>

@@ -475,4 +475,30 @@
     .shrink_pos {
         margin-left: 230px;
     }
+
+    .wrapper1,
+    .wrapper2 {
+        width: 100%;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+
+    .wrapper1 {
+        height: 20px;
+    }
+
+    /* .wrapper2 {
+        height: 200px;
+    } */
+
+    .div1 {
+        width: 1900px;
+
+    }
+
+    .div2 {
+        width: 1900px;
+
+        overflow: auto;
+    }
 </style>

@@ -1770,10 +1770,16 @@ class SellPosController extends Controller
                                 title="' . __('lang.view') . '" data-toggle="tooltip" class="fa fa-eye"></i></a>';
                         }
                         if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1) {
+                            // $html .=
+                            //     '<a target="_blank" href="' . action('SellController@edit', $row->id) . '" class="btn btn-success"><i
+                            // title="' . __('lang.edit') . '" data-toggle="tooltip"
+                            // class="dripicons-document-edit"></i></a>';
+
                             $html .=
-                                '<a target="_blank" href="' . action('SellController@edit', $row->id) . '" class="btn btn-success"><i
+                                '<a data-href="' . action('SellController@edit', $row->id) . '"
                             title="' . __('lang.edit') . '" data-toggle="tooltip"
-                            class="dripicons-document-edit"></i></a>';
+                            data-check_password="' . action('UserController@checkPassword', Auth::user()->id) . '"
+                            class="btn btn-success edit_item" style="color: white"><i class="dripicons-document-edit"></i></a>';
                         }
                         if (auth()->user()->can('superadmin') || auth()->user()->is_admin == 1) {
                             $html .=

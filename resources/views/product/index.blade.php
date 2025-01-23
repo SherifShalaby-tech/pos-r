@@ -252,76 +252,87 @@ use Illuminate\Support\Facades\Cache;
 
         <div class="card mt-1 mb-0">
             <div class="card-body py-2 px-4">
-
-                <div class="table-responsive">
-                    <table id="product_table" class="table" style="width: auto;margin-top: 5px !important;">
-                        <thead>
-                            <tr>
-                                @if(env('ENABLE_POS_Branch',false))
-                                <th>@lang('lang.select')</th>
-                                @endif
-                                <th>@lang('lang.select_to_delete')<br>
-                                    <input type="checkbox" name="product_delete_all" class="product_delete_all" />
-                                </th>
-
-                                <th>@lang('lang.image')</th>
-                                <th>@lang('lang.name')</th>
-                                <th>@lang('lang.product_code')</th>
-                                <th>
-                                    @lang('lang.category')
-
-                                </th>
-                                <th>@lang('lang.purchase_history')</th>
-                                <th>@lang('lang.batch_number')</th>
-                                <th>@lang('lang.selling_price')</th>
-                                <th>@lang('lang.tax')</th>
-                                <th>@lang('lang.unit')</th>
-                                <th>@lang('lang.size')</th>
-                                <th class="sum">@lang('lang.current_stock')</th>
-                                <th class="sum">@lang('lang.current_stock_value')</th>
-                                <th>@lang('lang.customer_type')</th>
-                                <th>@lang('lang.expiry_date')</th>
-                                <th>@lang('lang.manufacturing_date')</th>
-                                <th>@lang('lang.discount')</th>
-                                @can('product_module.purchase_price.view')
-                                <th>@lang('lang.purchase_price')</th>
-                                @endcan
-                                <th>@lang('lang.supplier')</th>
-                                <th>@lang('lang.active')</th>
-                                <th>@lang('lang.created_by')</th>
-                                <th>@lang('lang.date_of_creation')</th>
-                                <th>@lang('lang.edited_by')</th>
-                                <th>@lang('lang.edited_at')</th>
-                                <th class="notexport">@lang('lang.action')</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th style="text-align: right">@lang('lang.total')</th>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                <div class="wrapper1">
+                    <div class="div1"></div>
                 </div>
+                <div class="wrapper2">
+                    <div class="div2">
+
+                        <table id="product_table" class="table" style="width: auto;margin-top: 5px !important;">
+                            <thead>
+                                <tr>
+                                    @if(env('ENABLE_POS_Branch',false))
+                                    <th>@lang('lang.select')</th>
+                                    @endif
+                                    <th>@lang('lang.select_to_delete')<br>
+                                        <input type="checkbox" name="product_delete_all" class="product_delete_all" />
+                                    </th>
+
+                                    <th>@lang('lang.image')</th>
+                                    <th>@lang('lang.name')</th>
+                                    <th>@lang('lang.product_code')</th>
+                                    <th>
+                                        @lang('lang.category')
+
+                                    </th>
+                                    <th>@lang('lang.purchase_history')</th>
+                                    <th>@lang('lang.batch_number')</th>
+                                    <th>@lang('lang.selling_price')</th>
+                                    <th>@lang('lang.tax')</th>
+                                    <th>@lang('lang.unit')</th>
+                                    <th>@lang('lang.size')</th>
+                                    <th class="sum">@lang('lang.current_stock')</th>
+                                    <th class="sum">@lang('lang.current_stock_value')</th>
+                                    <th>@lang('lang.customer_type')</th>
+                                    <th>@lang('lang.expiry_date')</th>
+                                    <th>@lang('lang.manufacturing_date')</th>
+                                    <th>@lang('lang.discount')</th>
+                                    @can('product_module.purchase_price.view')
+                                    <th>@lang('lang.purchase_price')</th>
+                                    @endcan
+                                    <th>@lang('lang.supplier')</th>
+                                    <th>@lang('lang.active')</th>
+                                    <th>@lang('lang.created_by')</th>
+                                    <th>@lang('lang.date_of_creation')</th>
+                                    <th>@lang('lang.edited_by')</th>
+                                    <th>@lang('lang.edited_at')</th>
+                                    <th class="notexport">@lang('lang.action')</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <th style="text-align: right">@lang('lang.total')</th>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                    </div>
+                </div>
+
+
+
+
+
             </div>
         </div>
 
