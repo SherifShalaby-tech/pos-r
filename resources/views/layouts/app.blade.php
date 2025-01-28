@@ -603,14 +603,14 @@
                                 success: (data) => {
 
                                     if (data.success == true) {
-                                        swal(
-                                            'Success',
-                                            'Correct Password!',
-                                            'success'
-                                        ).then(() => {
-                                        // Open the URL in a new tab
-                                        window.open(href, '_blank');
-                                        });
+                                        // swal(
+                                        //     'Success',
+                                        //     'Correct Password!',
+                                        //     'success'
+                                        // ).then(() => {
+                                            // Open the URL in a new tab
+                                            window.open(href, '_blank');
+                                        // });
 
                                     } else {
                                         swal(
