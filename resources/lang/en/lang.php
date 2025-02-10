@@ -1529,4 +1529,5 @@ return [
     'view_types' => 'View Types',
     'add_payment_method' => 'Add Payment Method',
     'is_active' => 'Is Active',
+    'Enter_password' => 'Enter Password',
 ];

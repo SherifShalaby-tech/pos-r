@@ -4,6 +4,15 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css">
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap');
+
+    .barcode-128 {
+font-family: "Libre Barcode 128", serif;
+font-weight: 400;
+font-style: normal;
+font-size: 50px
+
+    }
     .preview-logo-container {
         /* display: flex;
             flex-wrap: wrap;
@@ -499,6 +508,37 @@
                         </div>
                     </div>
 
+                    <div class="row px-2 flex-column justify-content-center align-items-end">
+                        <div class="d-flex mb-2 align-items-end">
+                            <div>
+
+                                {!! Form::label('Enter password', __('lang.Enter_password'), ['class' =>
+                        app()->isLocale('ar') ? 'mb-1 label-ar' : 'mb-1 label-en'
+                        ]) !!}
+                            <input type="password" class="form-control" id="textInput" oninput="updateText()" placeholder="Type something...">
+                        </div>
+                        <div>
+                            <button class="d-inline btn btn-primary px-0 py-1" type="button" onclick="toggleInputType()">
+                                <i class="fa fa-eye btn"></i>
+                            </button>
+                        </div>
+                        </div>
+                        <div id="userCard" class="col-md-2 mb-2 border d-flex justify-content-center align-items-center flex flex-column ">
+                                <div class="">
+
+                                <img src="{{asset('images/default.jpg')}}"
+                                style="width: 60px; border: 2px solid #fff; padding: 4px; border-radius: 50%;" />
+                                {{ $user->name }}
+                            </div>
+                            <div>
+                            <p id="outputText" style="font-size: 60px;color:black" class="barcode-128 mb-0"></p>
+                            </div>
+                        </div>
+                        <div class="">
+                        <button class="btn btn-primary" type="button" onclick="printDiv('userCard')">Print</button>
+                        </div>
+                    </div>
+
                     <div class="col-md-12">
                         <button id="submit-btn" class="btn btn-primary">@lang('lang.save')</button>
                     </div>
@@ -584,6 +624,27 @@
 @endsection
 
 @section('javascript')
+<script>
+    function printDiv(divId) {
+        let content = document.getElementById(divId).innerHTML;
+        let originalContent = document.body.innerHTML;
+
+        document.body.innerHTML = content; // Replace page content with div content
+        window.print(); // Open print dialog
+        document.body.innerHTML = originalContent; // Restore original content
+        location.reload(); // Reload page to prevent issues
+    }
+</script>
+<script>
+    function updateText() {
+        document.getElementById('outputText').innerText = document.getElementById('textInput').value;
+    }
+function toggleInputType() {
+
+    let inputField = document.getElementById('textInput');
+    inputField.type = inputField.type === 'password' ? 'text' : 'password';
+    }
+</script>
 <script>
     $('.selectpicker').selectpicker();
         $(document).ready(function() {

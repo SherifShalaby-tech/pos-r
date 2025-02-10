@@ -113,6 +113,7 @@ class SettingController extends Controller
 
     public function getGeneralSetting()
     {
+        $user= Auth::user();
         $settings = System::pluck('value', 'key');
         $config_languages = config('constants.langs');
         $languages = [];
@@ -129,7 +130,8 @@ class SettingController extends Controller
             'currencies',
             'timezone_list',
             'terms_and_conditions',
-            'languages','fonts'
+            'languages','fonts',
+            'user'
         ));
     }
 
@@ -169,7 +171,7 @@ class SettingController extends Controller
             ['key' => 'ticketـtimeـstart'],
             ['value' => $request->ticketـtimeـstart, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]
         );
-        
+
         System::updateOrCreate(
             ['key' => 'language'],
             ['value' => $request->language, 'date_and_time' => Carbon::now(), 'created_by' => Auth::user()->id]

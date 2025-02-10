@@ -1514,5 +1514,6 @@ return [
     'add_payment_method' => 'اضافة وسيلة دفع جديدة',
     'payment_methods' => 'وسائل الدفع في الكاشير',
     'is_active' => 'الحالة',
+    'Enter_password' => 'ادخل كلمة المرور',
 
 ];

@@ -199,7 +199,7 @@
                                 <div class="form-group">
                                     <input type="button" value="{{trans('lang.received')}}" id="submit-btns"
                                         class="btn btn-primary mr-3">
-                                    <a href="{{ route(" manufacturing-s.index") }}"
+                                    <a href="{{ route("manufacturing-s.index") }}"
                                         class="btn btn-danger">{{trans('lang.cancel')}}</a>
                                 </div>
                             </div>
