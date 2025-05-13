@@ -1,17 +1,33 @@
 @php
-$pay_button_show = App\Models\PaymentMethod::where('name' , '=' ,"Pay")->first()['is_active'];
-$quick_pay_button_show = App\Models\PaymentMethod::where('name' , '=' ,"Quick Pay")->first()['is_active'];
-$other_online_payments_button_show =
-App\Models\PaymentMethod::where('name' , '=' ,"Other Online Payments")->first()['is_active'];
-$draft_button_show = App\Models\PaymentMethod::where('name' , '=' ,"Draft")->first()['is_active'];
-$view_draft_button_show = App\Models\PaymentMethod::where('name' , '=' ,"View Draft")->first()['is_active'];
-$online_orders_button_show = App\Models\PaymentMethod::where('name' , '=' ,"Online Orders")->first()['is_active'];
-$pay_later_button_show = App\Models\PaymentMethod::where('name' , '=' ,"Pay Later")->first()['is_active'];
-$recent_transaction_button_show =
-App\Models\PaymentMethod::where('name' , '=' ,"Recent Transactions")->first()['is_active'];
-$bank_transfer_button_show = App\Models\PaymentMethod::where('name' , '=' ,"Bank Transfer")->first()['is_active'];
 
-$payment_methods = App\Models\PaymentMethod::where('is_default',0)->get();
+use App\Models\PaymentMethod;
+
+function getOrCreatePaymentMethod($payment_method_name) {
+    $method = PaymentMethod::where('name', $payment_method_name)->first();
+
+    if (!$method) {
+        $method = PaymentMethod::create([
+            'name' => $payment_method_name,
+            'is_default' => 1,
+            'is_active' => 1
+        ]);
+    }
+
+    return $method->is_active;
+}
+
+$pay_button_show = getOrCreatePaymentMethod("Pay");
+$quick_pay_button_show = getOrCreatePaymentMethod("Quick Pay");
+$other_online_payments_button_show = getOrCreatePaymentMethod("Other Online Payments");
+$draft_button_show = getOrCreatePaymentMethod("Draft");
+$view_draft_button_show = getOrCreatePaymentMethod("View Draft");
+$online_orders_button_show = getOrCreatePaymentMethod("Online Orders");
+$pay_later_button_show = getOrCreatePaymentMethod("Pay Later");
+$recent_transaction_button_show = getOrCreatePaymentMethod("Recent Transactions");
+$bank_transfer_button_show = getOrCreatePaymentMethod("Bank Transfer");
+
+$payment_methods = PaymentMethod::where('is_default', 0)->get();
+
 @endphp
 
 <div class="payment-options mt-2 d-flex flex-wrap justify-content-start flex-row-reverse pb-2 table_room_hide dev_not_room"
