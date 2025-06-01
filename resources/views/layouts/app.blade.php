@@ -459,6 +459,14 @@
                 },
             });
         });
+        function myFunction() {
+            setTimeout(showPage, 150);
+        }
+
+        function showPage() {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("content").style.display = "block";
+        }
         @if (request()->segment(1) != 'pos')
             if ($(window).outerWidth() > 1199) {
                 $('nav.side-navbar').removeClass('shrink');
