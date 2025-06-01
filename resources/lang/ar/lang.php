@@ -1515,5 +1515,8 @@ return [
     'payment_methods' => 'وسائل الدفع في الكاشير',
     'is_active' => 'الحالة',
     'Enter_password' => 'ادخل كلمة المرور',
-
+  'more_info' => 'المزيد من البيانات',
+    'discount_info' => 'بيانات الخصم',
+    'add_raw_material' => 'إضافة مادة أولية ',
+    'add_product_image' => 'صور المنتج',
 ];
