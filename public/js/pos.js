@@ -16,7 +16,6 @@ $(document).ready(function () {
     setTimeout(() => {
         $("input#search_product").focus();
     }, 2000);
-    change_tax_id();
 });
 
 $(document).on("click", "#category-filter", function (e) {
@@ -83,6 +82,9 @@ function getFilterCheckboxValue(class_name) {
         }
     });
     return val;
+}
+function roundToNearestQuarter(number) {
+    return Math.round(number * 4) / 4;
 }
 $(document).on("click", ".filter-by", function () {
     let type = $(this).data("type");
@@ -247,8 +249,17 @@ $(document).ready(function () {
                             .data("ui-autocomplete")
                             ._trigger("select", "autocompleteselect", ui);
                         $(this).autocomplete("close");
-                    } else if (ui.content.length == 0) {
-                        swal("Product not found");
+                    }
+                    else if (ui.content.length == 0) {
+                        get_label_product_row(
+                            null,
+                            null,
+                            null,
+                            1,
+                            0,
+                            $("#search_product").val()
+                        );
+                        // swal("Product not found");
                     }
                 },
                 focus: function (event, ui) {
@@ -264,10 +275,18 @@ $(document).ready(function () {
                     if (!ui.item.is_service) {
                         if (ui.item.qty_available > 0) {
                             $(this).val(null);
-                            get_label_product_row(
-                                ui.item.product_id,
-                                ui.item.variation_id
-                            );
+                            if (ui.item.batch_number !== null) {
+                                get_label_product_row(
+                                    ui.item.product_id,
+                                    ui.item.variation_id,
+                                    ui.item.add_stock_lines_id
+                                );
+                            } else {
+                                get_label_product_row(
+                                    ui.item.product_id,
+                                    ui.item.variation_id,
+                                );
+                            }
                         } else {
                             out_of_stock_handle(
                                 ui.item.product_id,
@@ -277,37 +296,44 @@ $(document).ready(function () {
                     } else {
                         get_label_product_row(
                             ui.item.product_id,
-                            ui.item.variation_id
+                            ui.item.variation_id,
+                            ui.item.add_stock_lines_id
                         );
                     }
                 },
                 messages: {
                     noResults: "",
-                    results: function () {},
+                    results: function () { },
                 },
             })
             .autocomplete("instance")._renderItem = function (ul, item) {
-            var string = "";
-            if (item.is_service == 0 && item.qty_available <= 0) {
-                string +=
-                    '<li class="ui-state-disabled">' +
-                    item.text +
-                    " (" +
-                    LANG.out_of_stock +
-                    ") </li>";
-            } else {
-                string += item.text;
-            }
-            return $("<li>")
-                .append("<div>" + string + "</div>")
-                .appendTo(ul);
-        };
+                var string = "";
+                if (item.is_service == 0 && item.qty_available <= 0) {
+                    string +=
+                        '<li class="ui-state-disabled">'
+                        + item.text +
+                        " (" +
+                        LANG.out_of_stock +
+                        ") </li>";
+                } else {
+                    if (item.batch_number == null) {
+                        string += item.text;
+                    }
+                    else {
+                        string += item.text + "  " + item.batch_number;
+                    }
+                }
+                return $("<li>")
+                    .append("<div>" + string + "</div>")
+                    .appendTo(ul);
+            };
     }
 });
 
 function get_label_product_row(
     product_id = null,
     variation_id = null,
+    add_stock_lines_id = null,
     edit_quantity = 1,
     edit_row_count = 0,
     weighing_scale_barcode = null
@@ -316,42 +342,68 @@ function get_label_product_row(
     var add_via_ajax = true;
 
     var is_added = false;
+    var is_batch = false;
 
     //Search for variation id in each row of pos table
     $("#product_table tbody")
         .find("tr")
         .each(function () {
             var row_v_id = $(this).find(".variation_id").val();
+            var row_batch_number = $(this).find(".batch_number_id").val();
+            if (add_stock_lines_id != null) {
+                if (row_v_id == variation_id && row_batch_number == add_stock_lines_id && !is_added) {
+                    add_via_ajax = false;
+                    is_added = true;
+                    is_batch = true;
+                    //Increment product quantity
+                    qty_element = $(this).find(".quantity");
+                    var qty = __read_number(qty_element);
+                    var max = $('#quantity').attr('max');
+                    if (qty + 1 > max) {
+                        let row_p_id = $(this).find(".product_id").val();
+                        out_of_stock_handle(
+                            row_p_id,
+                            row_v_id
+                        );
+                    }
+                    else {
+                        __write_number(qty_element, qty + 1);
+                        qty_element.change;
+                        check_for_sale_promotion();
+                        calculate_sub_totals();
+                        $("input#search_product").val("");
+                        $("input#search_product").focus();
+                        $(this).insertBefore($("#product_table  tbody tr:first"));
+                    }
 
-            if (row_v_id == variation_id && !is_added) {
+                }
+            } else {
+                if (row_v_id == variation_id && row_batch_number == false && !is_added) {
+                    add_via_ajax = false;
+                    is_added = true;
+                    is_batch = false;
+                    //Increment product quantity
+                    qty_element = $(this).find(".quantity");
+                    var qty = __read_number(qty_element);
+                    var max = $('#quantity').attr('max');
+                    if (qty + 1 > max) {
+                        let row_p_id = $(this).find(".product_id").val();
+                        out_of_stock_handle(
+                            row_p_id,
+                            row_v_id
+                        );
+                    }
+                    else {
+                        __write_number(qty_element, qty + 1);
+                        qty_element.change;
+                        check_for_sale_promotion();
+                        calculate_sub_totals();
+                        $("input#search_product").val("");
+                        $("input#search_product").focus();
+                        $(this).insertBefore($("#product_table  tbody tr:first"));
+                    }
 
-
-                //Increment product quantity
-                qty_element = $(this).find(".quantity");
-                var qty = __read_number(qty_element);
-                $.ajax({
-                    method: "GET",
-                    url: "/pos/count-product-row-extension/"+variation_id,
-                    dataType: "json",
-                    async: false,
-                    success: function (result) {
-                        console.log('dd');
-
-                        if(result.count == 0){
-                            add_via_ajax = false;
-                            is_added = true;
-                            __write_number(qty_element, qty + 1);
-                            qty_element.change;
-                            check_for_sale_promotion();
-                            calculate_sub_totals();
-                            $("input#search_product").val("");
-                            $("input#search_product").focus();
-                            $(this).insertBefore($("#product_table  tbody tr:first"));
-
-                        }
-                    },
-                });
-
+                }
             }
         });
 
@@ -359,17 +411,17 @@ function get_label_product_row(
         var store_id = $("#store_id").val();
         var customer_id = $("#customer_id").val();
         let currency_id = $("#received_currency_id").val();
-
+        var store_pos_id = $("#store_pos_id").val();
         if (edit_row_count !== 0) {
             row_count = edit_row_count;
         } else {
             var row_count = parseInt($("#row_count").val());
             $("#row_count").val(row_count + 1);
         }
-        var extensions =null;
+
         $.ajax({
             method: "GET",
-            url: "/pos/get-product-row-extension",
+            url: "/pos/add-product-row",
             dataType: "json",
             async: false,
             data: {
@@ -377,144 +429,33 @@ function get_label_product_row(
                 row_count: row_count,
                 variation_id: variation_id,
                 store_id: store_id,
+                store_pos_id: store_pos_id,
                 customer_id: customer_id,
                 currency_id: currency_id,
                 edit_quantity: edit_quantity,
-                weighing_scale_barcode: weighing_scale_barcode,
+                weighing_scale_barcode: $("#search_product").val(),
                 dining_table_id: $("#dining_table_id").val(),
                 is_direct_sale: $("#is_direct_sale").val(),
+                batch_number_id: add_stock_lines_id
             },
             success: function (result) {
-                console.log(result);
+
                 if (!result.success) {
                     swal("Error", result.msg, "error");
                     return;
                 }
-                if(result.success&&(result.html_content==0||result.html_content == '')){
-                    get_ajax_add_row_product(product_id,row_count,variation_id,store_id
-                        ,customer_id,currency_id,edit_quantity,weighing_scale_barcode)
-                }else{
-                    $('#product_extension_tbody').html(result.html_content);
-                    $('#product_extension').addClass('view_modal no-print show');
-                    $('#product_extension').show();
-                }
+
+                $("table#product_table tbody").prepend(result.html_content);
+                $("input#search_product").val("");
+                $("input#search_product").focus();
+                check_for_sale_promotion();
+                calculate_sub_totals();
+                reset_row_numbering();
+                getCustomerPointDetails();
             },
         });
-       }
+    }
 }
-$('#save_btn_product_extension').click(function () {
-    // var extensions_ids = $('input[name^=extensions_checkboxs]').map(function(idx, elem) {
-    //     if($(elem).is(':checked')){
-    //         return $(elem).val();
-    //     }
-    // }).get();
-
-    var extensions_ids =$('input[name^=extensions_quantity]').map(function(idx, elem) {
-        if($(elem).val() >0){
-            return $(elem).attr('id-row');
-        }
-    }).get();
-    var extensions_quantity = $('input[name^=extensions_quantity]').map(function(idx, elem) {
-        // if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
-        //     return $(elem).val();
-        // }
-        if($(elem).val() >0){
-            return $(elem).val();
-        }
-    }).get();
-    console.log(extensions_quantity,extensions_ids);
-    var extensions_sell_prices = $('input[name^=extensions_sell_price]').map(function(idx, elem) {
-        if(jQuery.inArray($(elem).attr('id-row'), extensions_ids) !== -1){
-            return $(elem).val();
-        }
-    }).get();
-        let product_id= $('#extension_product_id').val();
-        let row_count= $('#extension_row_count').val();
-        let variation_id= $('#extension_variation_id').val();
-        let store_id = $("#store_id").val();
-        let customer_id = $("#customer_id").val();
-        let currency_id = $("#received_currency_id").val();
-        var edit_quantity= $('#extension_edit_quantity').val();
-        var weighing_scale_barcode= $('#extension_weighing_scale_barcode').val();
-        var ex='id'+variation_id;
-
-        for (i = 0; i < extensions_ids.length; ++i) {
-            ex +='q'+ extensions_quantity[i]+'e'+extensions_ids[i];
-        }
-        $('#product_extension').removeClass('view_modal no-print show');
-        $('#product_extension').hide();
-        if($('#'+ex).val() == 1){
-            add_via_ajax = false;
-            is_added = true;
-            qty_element =
-                $('#'+ex).parent().parent().parent().find(".quantity");
-
-            var qty = __read_number(qty_element);
-            console.log('ddddd='+qty)
-            __write_number(qty_element, qty + 1);
-            qty_element.change;
-            check_for_sale_promotion();
-            calculate_sub_totals();
-            $("input#search_product").val("");
-            $("input#search_product").focus();
-        }else{
-            get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
-                ,edit_quantity,weighing_scale_barcode,extensions_ids,extensions_quantity,
-                extensions_sell_prices);
-        }
-
-});
-function get_ajax_add_row_product(product_id,row_count,variation_id,store_id,customer_id,currency_id
-                                  ,edit_quantity,weighing_scale_barcode,extensions_ids=[]
-                                  ,extensions_quantity=[],extensions_sell_prices=[]) {
-
-    $.ajax({
-        method: "GET",
-        url: "/pos/add-product-row",
-        dataType: "json",
-        async: false,
-        data: {
-            product_id: product_id,
-            row_count: row_count,
-            variation_id: variation_id,
-            store_id: store_id,
-            customer_id: customer_id,
-            currency_id: currency_id,
-            edit_quantity: edit_quantity,
-            extensions_ids: extensions_ids,
-            extensions_quantity: extensions_quantity,
-            extensions_sell_prices: extensions_sell_prices,
-            weighing_scale_barcode: weighing_scale_barcode,
-            dining_table_id: $("#dining_table_id").val(),
-            is_direct_sale: $("#is_direct_sale").val(),
-        },
-        success: function (result) {
-            if (!result.success) {
-                swal("Error", result.msg, "error");
-                return;
-            }
-            $("table#product_table tbody").prepend(result.html_content);
-            $("input#search_product").val("");
-            $("input#search_product").focus();
-            check_for_sale_promotion();
-            calculate_sub_totals();
-            reset_row_numbering();
-            getCustomerPointDetails();
-        },
-});
-
-
-
-}
-$(document).on('change','.extensions_quantity',function () {
-    var quantity =$(this).val();
-    var row_id = $(this).attr('id-row');
-    var rice_per_one = $('#extensions_sell_price_per_one_'+row_id).val();
-    __write_number(
-        $('#extensions_sell_price_'+row_id),
-        rice_per_one * quantity
-    );
-});
 function reset_row_numbering() {
     $("#product_table > tbody  > tr").each((ele, tr) => {
         $(tr)
@@ -550,10 +491,10 @@ function check_for_sale_promotion() {
         },
         success: function (result) {
             if (result.valid) {
-                let  discount = 0;
-                let  sum_item_discount = 0;
-                console.log('sales_promotion-cost_span=>',result.sale_promotion_details)
+                let discount = 0;
+                let sum_item_discount = 0;
                 result.sale_promotion_details.forEach((data, index) => {
+
                     let sum_discount = 0;
                     if (
                         data.type === "package_promotion"
@@ -563,12 +504,9 @@ function check_for_sale_promotion() {
                             data.discount_type === "fixed"
                         ) {
                             sum_discount =
-                                ( parseFloat(
-                                        data.actual_sell_price
-                                    ) -
-                                    parseFloat(
-                                        data.discount_value
-                                    ) ) *  parseFloat(data.count_discount_number);
+                                (parseFloat(
+                                    data.discount_value
+                                )) * parseFloat(data.count_discount_number);
 
                         }
                         if (
@@ -577,16 +515,13 @@ function check_for_sale_promotion() {
                         ) {
                             let discount_value =
                                 (parseFloat(
-                                        data.actual_sell_price
-                                    ) *
-                                    parseFloat(
-                                        data.discount_value
-                                    )) /
+                                    data.discount_value
+                                )) /
                                 100;
                             sum_discount =
                                 (parseFloat(
                                     data.actual_sell_price
-                                ) - discount_value ) *  parseFloat(data.count_discount_number);;
+                                ) - discount_value) * parseFloat(data.count_discount_number);;
 
                         }
                         if (data.purchase_condition) {
@@ -598,7 +533,7 @@ function check_for_sale_promotion() {
                                 sum_discount = 0;
                             }
                         }
-                        discount+=sum_discount;
+                        discount += sum_discount;
                         var product_ids = data.product_ids;
                         $("#product_table > tbody > tr").each(function (ele, tr) {
                             let product_id = __read_number(
@@ -629,6 +564,7 @@ function check_for_sale_promotion() {
                             $("#product_table tbody")
                                 .find("tr")
                                 .each(function () {
+
                                     var row_product_id = $(this)
                                         .find(".variation_id")
                                         .val()
@@ -647,11 +583,12 @@ function check_for_sale_promotion() {
                                                 .find(".promotion_discount_type")
                                                 .val("percentage");
                                         }
+
                                         $(this)
                                             .find(".promotion_discount_value")
-                                            .val(discount_value*qty);
+                                            .val(discount_value * qty);
 
-                                        sum_item_discount +=(discount_value*qty);
+                                        sum_item_discount += (discount_value * qty);
                                         $(this)
                                             .find(
                                                 ".promotion_purchase_condition_amount"
@@ -666,14 +603,14 @@ function check_for_sale_promotion() {
                     }
 
                 });
-                console.log('sales_promotion-cost_span=>',sum_item_discount,discount)
                 $("span#sales_promotion-cost_span").text(
-                    __currency_trans_from_en(sum_item_discount+discount, false)
+                    __currency_trans_from_en(sum_item_discount + discount, false)
                 );
                 __write_number($("#total_pp_discount"), discount);
 
+
                 calculate_sub_totals();
-            }else{
+            } else {
                 $("span#sales_promotion-cost_span").text(
                     __currency_trans_from_en(0, false)
                 );
@@ -683,6 +620,7 @@ function check_for_sale_promotion() {
         },
     });
 }
+
 function calculate_sub_totals() {
     var grand_total = 0; //without any discounts
     var total = 0;
@@ -693,14 +631,17 @@ function calculate_sub_totals() {
     var total_tax_payable = 0;
     var total_coupon_discount = 0;
     var sales_promotion_cost = __read_number($("#sales_promotion-cost"));
-
+    let item_quantity = 0;
+    let total_before_discount = 0;
     var exchange_rate = __read_number($("#exchange_rate"));
     $("#product_table > tbody  > tr").each((ele, tr) => {
         let quantity = __read_number($(tr).find(".quantity"));
+        item_quantity += quantity;
         let sell_price = __read_number($(tr).find(".sell_price"));
         let price_hidden = __read_number($(tr).find(".price_hidden"));
         let sub_total = 0;
         if (sell_price > price_hidden) {
+
             let price_discount = (sell_price - price_hidden);
 
             $(tr).find(".product_discount_type").val("surplus");
@@ -716,6 +657,7 @@ function calculate_sub_totals() {
             sub_total = sell_price * quantity;
         } else if (sell_price < price_hidden) {
             let price_discount = (price_hidden - sell_price);
+
             $(tr).find(".product_discount_type").val("fixed");
             __write_number(
                 $(tr).find(".product_discount_value"),
@@ -730,11 +672,11 @@ function calculate_sub_totals() {
         } else {
             sub_total = price_hidden * quantity;
         }
-
         __write_number($(tr).find(".sub_total"), sub_total);
         let product_discount = calculate_product_discount(tr);
-
         product_discount_total += product_discount;
+
+        total_before_discount += sub_total;
         sub_total -= product_discount;
         grand_total += sub_total;
         $(".grand_total_span").text(
@@ -753,9 +695,7 @@ function calculate_sub_totals() {
         $(tr)
             .find(".sub_total_span")
             .text(__currency_trans_from_en(sub_total, false));
-
-        total += sub_total;
-
+        total += roundToNearestQuarter(sub_total);
         item_count++;
 
         calculate_promotion_discount(tr);
@@ -769,21 +709,23 @@ function calculate_sub_totals() {
 
         if (main_tax_type == "product_tax") {
             if (main_tax_id == tax_id) {
-
                 let item_tax = (sub_total * tax_rate) / 100;
                 item_tax = item_tax / exchange_rate;
                 __write_number($(tr).find(".item_tax"), item_tax);
                 total_item_tax += item_tax;
-
                 if (tax_method === "exclusive") {
                     total_tax_payable += item_tax;
                 }
             }
         }
     });
+    // $("#subtotal").text(total);
+    // $(".subtotal").text(total);
+    $('#total_before_discount').text(__currency_trans_from_en(total_before_discount, false));
     $("#subtotal").text(__currency_trans_from_en(total, false));
     $(".subtotal").text(__currency_trans_from_en(total, false));
     $("#item").text(item_count);
+    $("#item-quantity").text(item_quantity);
     $(".payment_modal_discount_text").text(
         __currency_trans_from_en(product_discount_total, false)
     );
@@ -795,9 +737,7 @@ function calculate_sub_totals() {
     total += total_tax_payable;
 
     __write_number($("#grand_total"), grand_total); // total without any discounts
-
     total -= total_coupon_discount;
-
     let discount_amount = get_discount_amount(total);
     $(".discount_span").text(__currency_trans_from_en(discount_amount, false));
     total -= discount_amount;
@@ -835,9 +775,12 @@ function calculate_sub_totals() {
     // if (promo_discount > 0) {
     //     __write_number($("#discount_amount"), promo_discount);
     // }
-    if(__currency_trans_from_en($("#subtotal").text(), false) > 0){
+
+    if (__currency_trans_from_en($("#subtotal").text(), false) > 0) {
         total -= promo_discount;
     }
+
+
 
     let delivery_cost = 0;
     if ($("#delivery_cost_paid_by_customer").prop("checked")) {
@@ -867,11 +810,23 @@ function calculate_sub_totals() {
         total += service_fee_value;
     }
 
+
     __write_number($("#final_total"), total);
     $("#final_total").change();
 
     $(".final_total_span").text(__currency_trans_from_en(total, false));
 }
+function hasManyDigits(num, digits) {
+    const str = num.toString();
+    const decimalIndex = str.indexOf('.');
+    if (decimalIndex !== -1) {
+        const numDigits = str.substr(decimalIndex + 1).length;
+        return numDigits >= digits;
+    }
+    return false;
+}
+
+
 
 function calculate_product_surplus(tr) {
     let surplus = 0;
@@ -895,13 +850,16 @@ function calculate_product_discount(tr) {
         discount = quantity * value;
     }
     if (type == "percentage") {
-        discount = __get_percent_value(sub_total, value);
+        discount = __get_percent_value(roundToNearestQuarter(sub_total), value);
+    }
+    if (exchange_rate == 0) {
+        exchange_rate = 1;
     }
     discount = discount / exchange_rate;
-    __write_number($(tr).find(".product_discount_amount"), discount);
     if (type == "surplus") {
         discount = 0;
     }
+    __write_number($(tr).find(".product_discount_amount"), discount);
     return discount;
 }
 function calculate_promotion_discount(tr) {
@@ -914,7 +872,7 @@ function calculate_promotion_discount(tr) {
         discount = value;
     }
     if (type == "percentage") {
-        discount = __get_percent_value(sub_total, value);
+        discount = __get_percent_value(roundToNearestQuarter(sub_total), value);
     }
     discount = discount / exchange_rate;
     $(tr).find(".promotion_discount_amount").val(discount);
@@ -961,7 +919,7 @@ function calculate_coupon_discount(tr) {
         discount = value;
     }
     if (type == "percentage") {
-        discount = __get_percent_value(sub_total, value);
+        discount = __get_percent_value(roundToNearestQuarter(sub_total), value);
     }
     discount = discount / exchange_rate;
     $(tr).find(".coupon_discount_amount").val(discount);
@@ -998,15 +956,11 @@ function get_tax_amount(total) {
         }
     }
 
-
-
-    // if (tax_method == "exclusive") {
-    //     console.log(tax_amount,'exclusive');
+    if (tax_method == "exclusive") {
         $("#tax").text(__currency_trans_from_en(tax_amount, false));
-    // } else {
-    //     console.log(tax_amount,'notexclusive');
-    //     $("#tax").text(__currency_trans_from_en(0, false));
-    // }
+    } else {
+        $("#tax").text(__currency_trans_from_en(0, false));
+    }
     tax_amount = tax_amount;
     __write_number($("#total_tax"), tax_amount);
 
@@ -1050,6 +1004,31 @@ $(document).on("change", ".sell_price", function () {
     if (sell_price < purchase_price) {
         swal(LANG.warning, LANG.sell_price_less_than_purchase_price, "warning");
         return;
+    } else {
+        //change price
+        swal({
+            title: "",
+            text: LANG.change_price_permenatly,
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+            showCancelButton: true,
+            confirmButtonText: 'Save',
+        })
+            .then((isConfirm) => {
+                if (isConfirm) {
+                    $.ajax({
+                        type: "post",
+                        url: "/pos/change-selling-price/" + $(this).data('variation_id'),
+                        data: { sell_price: sell_price },
+                        success: function (response) {
+                            swal("Success", response.msg, "success");
+                        }
+                    });
+                } else {
+                    swal("Success", LANG.price_changed_only_for_this_transaction, "success");
+                }
+            });
     }
 });
 $(document).on("change", ".quantity, .sell_price", function () {
@@ -1059,7 +1038,12 @@ $(document).on("change", ".quantity, .sell_price", function () {
 $(document).on("click", ".remove_row", function () {
     $(this).closest("tr").remove();
     calculate_sub_totals();
+    check_for_sale_promotion();
     reset_row_numbering();
+    $(this).find(".change").text(0);
+    __write_number($("#add_to_customer_balance"), 0);
+    $(".add_to_customer_balance").attr("disabled", false);
+    $(".add_to_customer_balance").addClass("hide");
 });
 $(document).on("click", ".minus", function () {
     let tr = $(this).closest("tr");
@@ -1077,7 +1061,6 @@ $(document).on("click", ".plus", function () {
     let qty = parseFloat($(tr).find(".quantity").val());
     let max = parseFloat($(tr).find(".quantity").attr("max"));
     let is_service = parseInt($(tr).find(".is_service").val());
-
     let new_qty = qty + 1;
     if (!is_service) {
         if (new_qty < 0.1 || new_qty > max) {
@@ -1289,7 +1272,7 @@ $(document).on("click", ".qc-btn", function (e) {
 $(document).on("change", ".received_amount", function () {
     let this_row = $(this).parents(".payment_row");
 
-    //$(this_row).nextAll().remove(); //remove all the next row if exist and recalculate the next row total
+    $(this_row).nextAll().remove(); //remove all the next row if exist and recalculate the next row total
     let received_amount = 0;
     $("#payment_rows .payment_row").each((ele, row) => {
         let row_received_amount = parseFloat(
@@ -1307,6 +1290,20 @@ $(document).on("change", ".received_amount", function () {
             .find(".change")
             .text(__currency_trans_from_en(change, false));
         $(this_row).find(".change_amount").val(change);
+        $(".add_to_customer_balance").removeClass("hide");
+        $(document).on("click", ".add_to_customer_balance", function () {
+            if ($(".payment_way").val() != 'deposit') { // or this.value == 'volvo'
+                $(this_row).find("#add_to_customer_balance").val(change);
+                $(this_row).find(".change_amount").val(0);
+                $(this_row).find(".change").text(0);
+                $(this).attr("disabled", true);
+                let new_amount = received_amount - change;
+                $(this_row).find(".received_amount").val(new_amount)
+            } else {
+                $(".add_to_customer_balance").addClass("hide");
+            }
+        });
+
     } else {
         $(this_row)
             .find(".change")
@@ -1315,6 +1312,17 @@ $(document).on("change", ".received_amount", function () {
         $(this_row).find(".change_text").text("Pending Amount :");
     }
 });
+
+$(document).on("click", ".close-payment-madal", function () {
+    __write_number($("#add_to_customer_balance"), 0);
+    $(".add_to_customer_balance").attr("disabled", false);
+    $(".add_to_customer_balance").addClass("hide");
+
+});
+
+
+
+
 
 $(document).on("click", "#add_payment_row", function () {
     var row_count = $("#payment_rows .payment_row").length;
@@ -1450,7 +1458,7 @@ $(document).on("click", "#draft-btn", function (e) {
         toastr.warning("No Product Added");
         return false;
     }
-
+    $("#pay_from_balance").val(3);
     pos_form_obj.submit();
 });
 $(document).on("click", "#pay-later-btn", function (e) {
@@ -1459,10 +1467,31 @@ $(document).on("click", "#pay-later-btn", function (e) {
         toastr.warning("No Product Added");
         return false;
     }
+    // Get the text content of the element with the class "customer_balance"
+    var balanceText = $(".customer_balance").text();
+
+    // Convert the text content to a number
+    var balance = parseFloat(balanceText);
+
+    // if(balance > 0){
+    //     $("#pay_from_balance").val(2);
+    //     pos_form_obj.submit();
+    // }else{
     $("#amount").val(0);
     pos_form_obj.submit();
-});
+    // }
 
+
+});
+$(document).on("click", "#quick-pay-btn", function (e) {
+    //Check if product is present or not.
+    if ($("table#product_table tbody").find(".product_row").length <= 0) {
+        toastr.warning("No Product Added");
+        return false;
+    }
+    $("#pay_from_balance").val("1")
+    pos_form_obj.submit();
+});
 $("button#submit-btn").click(function () {
     //Check if product is present or not.
     if ($("table#product_table tbody").find(".product_row").length <= 0) {
@@ -1471,15 +1500,28 @@ $("button#submit-btn").click(function () {
     }
 
     $(this).attr("disabled", true);
-    $("#add-payment").modal("hide");
+    document.querySelector('.modal-close-btn').click();
+    $("#pay_from_balance").val("1")
     pos_form_obj.submit();
     setTimeout(() => {
         $("#submit-btn").attr("disabled", false);
     }, 2000);
 });
+var updateBtnClicked = false;
 $("button#update-btn").click(function () {
-    $("#is_edit").val("");
-    pos_form_obj.submit();
+    // Check if the button has not been clicked yet
+    if (!updateBtnClicked) {
+        // Perform the desired action
+        $("#is_edit").val("");
+        pos_form_obj.submit();
+
+        // Set the flag to true to indicate the button has been clicked
+        updateBtnClicked = true;
+
+        // Disable the button after it has been clicked
+        $(this).prop('disabled', true);
+    }
+
 });
 
 $(document).ready(function () {
@@ -1487,10 +1529,23 @@ $(document).ready(function () {
         submitHandler: function (form) {
             $("#pos-save").attr("disabled", "true");
             var data = $(form).serialize();
-            data =
-                data +
-                "&terms_and_condition_id=" +
-                $("#terms_and_condition_id").val();
+            var balanceText = $(".customer_balance").text();
+
+            // Convert the text content to a number
+            var balance = parseFloat(balanceText);
+
+            if (balance > 0) {
+                data =
+                    data + "&pay_from_balance=" + $("#pay_from_balance").val() +
+                    "&terms_and_condition_id=" +
+                    $("#terms_and_condition_id").val();
+            } else {
+                data =
+                    data +
+                    "&terms_and_condition_id=" +
+                    $("#terms_and_condition_id").val();
+            }
+
             var url = $(form).attr("action");
             $.ajax({
                 method: "POST",
@@ -1561,7 +1616,7 @@ $(document).ready(function () {
 
                         reset_pos_form();
                         getFilterProductRightSide();
-                        //get_recent_transactions();
+                        // get_recent_transactions();
                     } else {
                         toastr.error(result.msg);
                     }
@@ -1630,10 +1685,10 @@ function reset_pos_form() {
     $("button#redeem_btn").attr("disabled", false);
     $("button.add_to_deposit").attr("disabled", false);
     set_default_customer();
-    // $("#tax_method").val("");
-    // $("#tax_rate").val("0");
-    // $("#tax_type").val("");
-   // $("#tax_id").val("");
+    $("#tax_method").val("");
+    $("#tax_rate").val("0");
+    $("#tax_type").val("");
+    $("#tax_id").val("");
     $("#tax_id").selectpicker("refresh");
     $("#payment_status").val("");
     $("#payment_status").selectpicker("refresh");
@@ -1673,7 +1728,10 @@ function reset_pos_form() {
     $("#received_currency_id").val(default_currency_id);
     $("#received_currency_id").change();
     $("#received_currency_id").selectpicker("refresh");
-    change_tax_id();
+
+    __write_number($("#add_to_customer_balance"), 0);
+    $(".add_to_customer_balance").attr("disabled", false);
+    $(".add_to_customer_balance").addClass("hide");
 }
 $(document).ready(function () {
     $("#terms_and_condition_id").val($("#terms_and_condition_hidden").val());
@@ -1734,402 +1792,311 @@ $(document).on("click", "td.filter_product_add", function () {
     }
 });
 
-$(document).on("click", "#recent-transaction-btn", function () {
+$(document).on("click", "#recent-transaction-btn", function (event) {
+    event.preventDefault();
     $("#recentTransaction").modal("show");
 });
-customer_sales_table = $("#customer_sales_table").DataTable({
-    lengthChange: true,
-    paging: true,
-    info: false,
-    bAutoWidth: false,
-    language: {
-        url: dt_lang_url,
-    },
-    lengthMenu: [
-        [10, 25, 50, 75, 100, 200, 500, -1],
-        [10, 25, 50, 75, 100, 200, 500, "All"],
-    ],
-    dom: "lBfrtip",
-    stateSave: true,
-    buttons: buttons,
-    processing: true,
-    serverSide: true,
-    aaSorting: [[0, "desc"]],
-    initComplete: function () {
-        $(this.api().table().container())
-            .find("input")
-            .parent()
-            .wrap("<form>")
-            .parent()
-            .attr("autocomplete", "off");
-    },
-    ajax: {
-        url: "/pos/get-recent-transactions",
-        data: function (d) {
-            d.customer_id = $("#customer_id").val();
-        },
-    },
-    columnDefs: [
-        {
-            targets: [7],
-            orderable: false,
-            searchable: false,
-        },
-    ],
-    columns: [
-        { data: "transaction_date", name: "transaction_date" },
-        { data: "invoice_no", name: "invoice_no" },
-        { data: "final_total", name: "final_total" },
-        { data: "status", name: "transactions.status" },
-        { data: "deliveryman_name", name: "deliveryman_name" },
-        { data: "created_by", name: "users.name" },
-        { data: "canceled_by", name: "canceled_by" },
-        { data: "action", name: "action" },
-    ],
-    createdRow: function (row, data, dataIndex) {},
-    footerCallback: function (row, data, start, end, display) {
-        var intVal = function (i) {
-            return typeof i === "string"
-                ? i.replace(/[\$,]/g, "") * 1
-                : typeof i === "number"
-                    ? i
-                    : 0;
-        };
 
-        this.api()
-            .columns(".sum", { page: "current" })
-            .every(function () {
-                var column = this;
-                if (column.data().count()) {
-                    var sum = column.data().reduce(function (a, b) {
-                        a = intVal(a);
-                        if (isNaN(a)) {
-                            a = 0;
-                        }
-
-                        b = intVal(b);
-                        if (isNaN(b)) {
-                            b = 0;
-                        }
-
-                        return a + b;
-                    });
-                    $(column.footer()).html(
-                        __currency_trans_from_en(sum, false)
-                    );
-                }
-            });
-    },
-});
-recent_transaction_table = $("#recent_transaction_table").DataTable({
-    lengthChange: true,
-    paging: true,
-    info: false,
-    bAutoWidth: false,
-    language: {
-        url: dt_lang_url,
-    },
-    lengthMenu: [
-        [10, 25, 50, 75, 100, 200, 500, -1],
-        [10, 25, 50, 75, 100, 200, 500, "All"],
-    ],
-    dom: "lBfrtip",
-    stateSave: true,
-    buttons: buttons,
-    processing: true,
-    serverSide: true,
-    aaSorting: [[0, "desc"]],
-    initComplete: function () {
-        $(this.api().table().container())
-            .find("input")
-            .parent()
-            .wrap("<form>")
-            .parent()
-            .attr("autocomplete", "off");
-    },
-    ajax: {
-        url: "/pos/get-recent-transactions",
-        data: function (d) {
-            d.start_date = $("#rt_start_date").val();
-            d.end_date = $("#rt_end_date").val();
-            d.method = $("#rt_method").val();
-            d.created_by = $("#rt_created_by").val();
-            d.customer_id = $("#rt_customer_id").val();
-            d.deliveryman_id = $("#rt_deliveryman_id").val();
+$(document).ready(function () {
+    customer_sales_table = $("#customer_sales_table").DataTable({
+        lengthChange: true,
+        paging: true,
+        info: false,
+        bAutoWidth: false,
+        language: {
+            url: dt_lang_url,
         },
-    },
-    columnDefs: [
-        {
-            targets: [10],
-            orderable: false,
-            searchable: false,
+        lengthMenu: [
+            [10, 25, 50, 75, 100, 200, 500, -1],
+            [10, 25, 50, 75, 100, 200, 500, "All"],
+        ],
+        dom: "lBfrtip",
+        stateSave: true,
+        buttons: buttons,
+        processing: true,
+        serverSide: true,
+        aaSorting: [[0, "desc"]],
+        initComplete: function () {
+            $(this.api().table().container())
+                .find("input")
+                .parent()
+                .wrap("<form>")
+                .parent()
+                .attr("autocomplete", "off");
         },
-    ],
-    columns: [
-        { data: "transaction_date", name: "transaction_date" },
-        { data: "invoice_no", name: "invoice_no" },
-        {
-            data: "received_currency_symbol",
-            name: "received_currency_symbol",
-            searchable: false,
+        ajax: {
+            url: "/pos/get-recent-transactions",
+            data: function (d) {
+                d.customer_id = $("#customer_id").val();
+            },
         },
-        { data: "final_total", name: "final_total" },
-        { data: "customer_type_name", name: "customer_types.name" },
-        { data: "customer_name", name: "customers.name" },
-        { data: "mobile_number", name: "customers.mobile_number" },
-        { data: "status", name: "transactions.status" },
-        { data: "payment_status", name: "transactions.payment_status" },
-        { data: "deliveryman_name", name: "deliveryman.employee_name" },
-        { data: "created_by", name: "users.name" },
-        { data: "canceled_by", name: "canceled_by_user.name" },
-        { data: "action", name: "action" },
-    ],
-    createdRow: function (row, data, dataIndex) {},
-    footerCallback: function (row, data, start, end, display) {
-        var intVal = function (i) {
-            return typeof i === "string"
-                ? i.replace(/[\$,]/g, "") * 1
-                : typeof i === "number"
-                    ? i
-                    : 0;
-        };
+        columnDefs: [
+            {
+                targets: [9],
+                orderable: false,
+                searchable: false,
+            },
+        ],
+        columns: [
+            { data: "transaction_date", name: "transaction_date" },
+            { data: "invoice_no", name: "invoice_no" },
+            { data: "final_total", name: "final_total" },
+            { data: "method", name: "transaction_payments.method" },
+            { data: "ref_number", name: "transaction_payments.ref_number" },
+            { data: "status", name: "transactions.status" },
+            { data: "deliveryman_name", name: "deliveryman_name" },
+            { data: "created_by", name: "users.name" },
+            { data: "canceled_by", name: "canceled_by" },
+            { data: "action", name: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) { },
+        footerCallback: function (row, data, start, end, display) {
+            var intVal = function (i) {
+                return typeof i === "string"
+                    ? i.replace(/[\$,]/g, "") * 1
+                    : typeof i === "number"
+                        ? i
+                        : 0;
+            };
 
-        this.api()
-            .columns(".currencies", {
-                page: "current",
-            })
-            .every(function () {
-                var column = this;
-                let currencies_html = "";
-                $.each(currency_obj, function (key, value) {
-                    currencies_html += `<h6 class="footer_currency" data-is_default="${value.is_default}"  data-currency_id="${value.currency_id}">${value.symbol}</h6>`;
-                    $(column.footer()).html(currencies_html);
+            this.api()
+                .columns(".sum", { page: "current" })
+                .every(function () {
+                    var column = this;
+                    if (column.data().count()) {
+                        var sum = column.data().reduce(function (a, b) {
+                            a = intVal(a);
+                            if (isNaN(a)) {
+                                a = 0;
+                            }
+
+                            b = intVal(b);
+                            if (isNaN(b)) {
+                                b = 0;
+                            }
+
+                            return a + b;
+                        });
+                        $(column.footer()).html(
+                            __currency_trans_from_en(sum, false)
+                        );
+                    }
                 });
-            });
+        },
 
-        this.api()
-            .columns(".sum", { page: "current" })
-            .every(function () {
-                var column = this;
-                var currency_total = [];
-                $.each(currency_obj, function (key, value) {
-                    currency_total[value.currency_id] = 0;
+        initComplete: function (settings, json) {
+            // Move elements into the .top-controls div after DataTable initializes
+            $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0  justify-content-center'));
+            $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap  justify-content-center'));
+            $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+            $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+            $('.bottom-controls').append($('.dataTables_info'));
+        }
+    });
+
+    draft_table = $("#draft_table").DataTable({
+        lengthChange: true,
+        paging: true,
+        info: false,
+        bAutoWidth: false,
+        language: {
+            url: dt_lang_url,
+        },
+        lengthMenu: [
+            [10, 25, 50, 75, 100, 200, 500, -1],
+            [10, 25, 50, 75, 100, 200, 500, "All"],
+        ],
+        dom: "lBfrtip",
+        stateSave: true,
+        buttons: buttons,
+        processing: true,
+        serverSide: true,
+        aaSorting: [[0, "desc"]],
+        initComplete: function () {
+            $(this.api().table().container())
+                .find("input")
+                .parent()
+                .wrap("<form>")
+                .parent()
+                .attr("autocomplete", "off");
+            // Move elements into the .top-controls div after DataTable initializes
+            $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0  justify-content-center'));
+            $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap  justify-content-center'));
+            $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+            $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+            $('.bottom-controls').append($('.dataTables_info'));
+
+        },
+        ajax: {
+            url: "/pos/get-draft-transactions",
+            data: function (d) {
+                d.start_date = $("#draft_start_date").val();
+                d.end_date = $("#draft_end_date").val();
+                d.deliveryman_id = $("#draft_deliveryman_id").val();
+            },
+        },
+        columnDefs: [
+            {
+                targets: [9],
+                orderable: false,
+                searchable: false,
+            },
+        ],
+        columns: [
+            { data: "transaction_date", name: "transaction_date" },
+            { data: "invoice_no", name: "invoice_no" },
+            { data: "final_total", name: "final_total" },
+            { data: "customer_type", name: "customer_types.name" },
+            { data: "customer_name", name: "customers.name" },
+            { data: "mobile_number", name: "customers.mobile_number" },
+            { data: "method", name: "transaction_payments.method" },
+            { data: "status", name: "transactions.status" },
+            { data: "deliveryman_name", name: "deliveryman.employee_name" },
+            { data: "action", name: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) { },
+        footerCallback: function (row, data, start, end, display) {
+            var intVal = function (i) {
+                return typeof i === "string"
+                    ? i.replace(/[\$,]/g, "") * 1
+                    : typeof i === "number"
+                        ? i
+                        : 0;
+            };
+
+            this.api()
+                .columns(".sum", { page: "current" })
+                .every(function () {
+                    var column = this;
+                    if (column.data().count()) {
+                        var sum = column.data().reduce(function (a, b) {
+                            a = intVal(a);
+                            if (isNaN(a)) {
+                                a = 0;
+                            }
+
+                            b = intVal(b);
+                            if (isNaN(b)) {
+                                b = 0;
+                            }
+
+                            return a + b;
+                        });
+                        $(column.footer()).html(
+                            __currency_trans_from_en(sum, false)
+                        );
+                    }
                 });
-                column.data().each(function (group, i) {
-                    b = $(group).text();
-                    currency_id = $(group).data("currency_id");
+        },
+    });
+    online_order_table = $("#online_order_table").DataTable({
+        lengthChange: true,
+        paging: true,
+        info: false,
+        bAutoWidth: false,
+        language: {
+            url: dt_lang_url,
+        },
+        lengthMenu: [
+            [10, 25, 50, 75, 100, 200, 500, -1],
+            [10, 25, 50, 75, 100, 200, 500, "All"],
+        ],
+        dom: "lBfrtip",
+        buttons: buttons,
+        processing: true,
+        serverSide: true,
+        aaSorting: [[0, "desc"]],
+        initComplete: function () {
+            $(this.api().table().container())
+                .find("input")
+                .parent()
+                .wrap("<form>")
+                .parent()
+                .attr("autocomplete", "off");
+        },
+        ajax: {
+            url: "/pos/get-online-order-transactions",
+            data: function (d) {
+                d.start_date = $("#online_order_start_date").val();
+                d.end_date = $("#online_order_end_date").val();
+            },
+        },
+        columnDefs: [
+            {
+                targets: [7],
+                orderable: false,
+                searchable: false,
+            },
+        ],
+        columns: [
+            { data: "transaction_date", name: "transaction_date" },
+            { data: "final_total", name: "final_total" },
+            { data: "customer_type", name: "customer_types.name" },
+            { data: "customer_name", name: "customers.name" },
+            { data: "mobile_number", name: "customers.mobile_number" },
+            { data: "method", name: "transaction_payments.method" },
+            { data: "status", name: "transactions.status" },
+            { data: "deliveryman_name", name: "deliveryman_name" },
+            { data: "action", name: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) { },
+        footerCallback: function (row, data, start, end, display) {
+            var intVal = function (i) {
+                return typeof i === "string"
+                    ? i.replace(/[\$,]/g, "") * 1
+                    : typeof i === "number"
+                        ? i
+                        : 0;
+            };
 
-                    $.each(currency_obj, function (key, value) {
-                        if (currency_id == value.currency_id) {
-                            currency_total[value.currency_id] += intVal(b);
-                        }
-                    });
+            this.api()
+                .columns(".sum", { page: "current" })
+                .every(function () {
+                    var column = this;
+                    if (column.data().count()) {
+                        var sum = column.data().reduce(function (a, b) {
+                            a = intVal(a);
+                            if (isNaN(a)) {
+                                a = 0;
+                            }
+
+                            b = intVal(b);
+                            if (isNaN(b)) {
+                                b = 0;
+                            }
+
+                            return a + b;
+                        });
+                        $(column.footer()).html(
+                            __currency_trans_from_en(sum, false)
+                        );
+                    }
                 });
-                var footer_html = "";
-                $.each(currency_obj, function (key, value) {
-                    footer_html += `<h6 class="currency_total currency_total_${
-                        value.currency_id
-                    }" data-currency_id="${
-                        value.currency_id
-                    }" data-is_default="${
-                        value.is_default
-                    }" data-conversion_rate="${
-                        value.conversion_rate
-                    }" data-base_conversion="${
-                        currency_total[value.currency_id] *
-                        value.conversion_rate
-                    }" data-orig_value="${
-                        currency_total[value.currency_id]
-                    }">${__currency_trans_from_en(
-                        currency_total[value.currency_id],
-                        false
-                    )}</h6>`;
-                });
-                $(column.footer()).html(footer_html);
-            });
-    },
-});
-
-draft_table = $("#draft_table").DataTable({
-    lengthChange: true,
-    paging: true,
-    info: false,
-    bAutoWidth: false,
-    language: {
-        url: dt_lang_url,
-    },
-    lengthMenu: [
-        [10, 25, 50, 75, 100, 200, 500, -1],
-        [10, 25, 50, 75, 100, 200, 500, "All"],
-    ],
-    dom: "lBfrtip",
-    stateSave: true,
-    buttons: buttons,
-    processing: true,
-    serverSide: true,
-    aaSorting: [[0, "desc"]],
-    initComplete: function () {
-        $(this.api().table().container())
-            .find("input")
-            .parent()
-            .wrap("<form>")
-            .parent()
-            .attr("autocomplete", "off");
-    },
-    ajax: {
-        url: "/pos/get-draft-transactions",
-        data: function (d) {
-            d.start_date = $("#draft_start_date").val();
-            d.end_date = $("#draft_end_date").val();
-            d.deliveryman_id = $("#draft_deliveryman_id").val();
         },
-    },
-    columnDefs: [
-        {
-            targets: [8],
-            orderable: false,
-            searchable: false,
-        },
-    ],
-    columns: [
-        { data: "transaction_date", name: "transaction_date" },
-        { data: "invoice_no", name: "invoice_no" },
-        { data: "final_total", name: "final_total" },
-        { data: "customer_type", name: "customer_types.name" },
-        { data: "customer_name", name: "customers.name" },
-        { data: "mobile_number", name: "customers.mobile_number" },
-        { data: "status", name: "transactions.status" },
-        { data: "created_by_name", name: "users.name" },
-        { data: "deliveryman_name", name: "deliveryman.employee_name" },
-        { data: "action", name: "action" },
-    ],
-    createdRow: function (row, data, dataIndex) {},
-    footerCallback: function (row, data, start, end, display) {
-        var intVal = function (i) {
-            return typeof i === "string"
-                ? i.replace(/[\$,]/g, "") * 1
-                : typeof i === "number"
-                    ? i
-                    : 0;
-        };
 
-        this.api()
-            .columns(".sum", { page: "current" })
-            .every(function () {
-                var column = this;
-                if (column.data().count()) {
-                    var sum = column.data().reduce(function (a, b) {
-                        a = intVal(a);
-                        if (isNaN(a)) {
-                            a = 0;
-                        }
+        initComplete: function (settings, json) {
+            // Move elements into the .top-controls div after DataTable initializes
+            $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0  justify-content-center'));
+            $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap  justify-content-center'));
+            $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
 
-                        b = intVal(b);
-                        if (isNaN(b)) {
-                            b = 0;
-                        }
 
-                        return a + b;
-                    });
-                    $(column.footer()).html(
-                        __currency_trans_from_en(sum, false)
-                    );
-                }
-            });
-    },
-});
-online_order_table = $("#online_order_table").DataTable({
-    lengthChange: true,
-    paging: true,
-    info: false,
-    bAutoWidth: false,
-    language: {
-        url: dt_lang_url,
-    },
-    lengthMenu: [
-        [10, 25, 50, 75, 100, 200, 500, -1],
-        [10, 25, 50, 75, 100, 200, 500, "All"],
-    ],
-    dom: "lBfrtip",
-    buttons: buttons,
-    processing: true,
-    serverSide: true,
-    aaSorting: [[0, "desc"]],
-    initComplete: function () {
-        $(this.api().table().container())
-            .find("input")
-            .parent()
-            .wrap("<form>")
-            .parent()
-            .attr("autocomplete", "off");
-    },
-    ajax: {
-        url: "/pos/get-online-order-transactions",
-        data: function (d) {
-            d.start_date = $("#online_order_start_date").val();
-            d.end_date = $("#online_order_end_date").val();
-        },
-    },
-    columnDefs: [
-        {
-            targets: [7],
-            orderable: false,
-            searchable: false,
-        },
-    ],
-    columns: [
-        { data: "transaction_date", name: "transaction_date" },
-        { data: "final_total", name: "final_total" },
-        { data: "customer_type", name: "customer_types.name" },
-        { data: "customer_name", name: "customers.name" },
-        { data: "mobile_number", name: "customers.mobile_number" },
-        { data: "method", name: "transaction_payments.method" },
-        { data: "status", name: "transactions.status" },
-        { data: "deliveryman_name", name: "deliveryman_name" },
-        { data: "action", name: "action" },
-    ],
-    createdRow: function (row, data, dataIndex) {},
-    footerCallback: function (row, data, start, end, display) {
-        var intVal = function (i) {
-            return typeof i === "string"
-                ? i.replace(/[\$,]/g, "") * 1
-                : typeof i === "number"
-                    ? i
-                    : 0;
-        };
-
-        this.api()
-            .columns(".sum", { page: "current" })
-            .every(function () {
-                var column = this;
-                if (column.data().count()) {
-                    var sum = column.data().reduce(function (a, b) {
-                        a = intVal(a);
-                        if (isNaN(a)) {
-                            a = 0;
-                        }
-
-                        b = intVal(b);
-                        if (isNaN(b)) {
-                            b = 0;
-                        }
-
-                        return a + b;
-                    });
-                    $(column.footer()).html(
-                        __currency_trans_from_en(sum, false)
-                    );
-                }
-            });
-    },
+            $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+            $('.bottom-controls').append($('.dataTables_info'));
+        }
+    });
 });
 $(document).on("shown.bs.modal", "#contact_details_modal", function () {
-    getCustomerPointDetails();
     customer_sales_table.ajax.reload();
-
+    getCustomerPointDetails();
 });
 $(document).on("shown.bs.modal", "#recentTransaction", function () {
-    recent_transaction_table.ajax.reload();
+    // recent_transaction_table.ajax.reload();
+    get_recent_transactions();
 });
 $(document).on("click", "#view-draft-btn", function () {
     $("#draftTransaction").modal("show");
@@ -2160,12 +2127,151 @@ $(document).ready(function () {
         "change",
         "#rt_start_date, #rt_end_date, #rt_customer_id, #rt_created_by, #rt_method, #rt_deliveryman_id",
         function () {
-            get_recent_transactions();
+            // get_recent_transactions();
         }
     );
 });
+// $(document).on('change', '.filter_transactions', function () {
+//     get_recent_transactions();
+// })
 function get_recent_transactions() {
-    recent_transaction_table.ajax.reload();
+    // recent_transaction_table.ajax.reload();
+    
+    $('#recent_transaction_table').DataTable().clear().destroy();
+    recent_transaction_table = $("#recent_transaction_table").DataTable({
+        lengthChange: true,
+        paging: true,
+        info: false,
+        bAutoWidth: false,
+        language: {
+            url: dt_lang_url,
+        },
+        lengthMenu: [
+            [10, 25, 50, 75, 100, 200, 500, -1],
+            [10, 25, 50, 75, 100, 200, 500, "All"],
+        ],
+        dom: "lBfrtip",
+        stateSave: true,
+        buttons: buttons,
+        processing: true,
+        serverSide: true,
+        aaSorting: [[0, "desc"]],
+        initComplete: function () {
+            $(this.api().table().container())
+                .find("input")
+                .parent()
+                .wrap("<form>")
+                .parent()
+                .attr("autocomplete", "off");
+        },
+        ajax: {
+            url: "/pos/get-recent-transactions",
+            data: function (d) {
+                d.start_date = $("#rt_start_date").val();
+                d.end_date = $("#rt_end_date").val();
+                d.method = $("#rt_method").val();
+                d.created_by = $("#rt_created_by").val();
+                d.customer_id = $("#rt_customer_id").val();
+                d.deliveryman_id = $("#rt_deliveryman_id").val();
+            },
+        },
+        columnDefs: [
+            {
+                targets: [13],
+                orderable: false,
+                searchable: false,
+            },
+        ],
+        columns: [
+            { data: "transaction_date", name: "transaction_date" },
+            { data: "invoice_no", name: "invoice_no" },
+            {
+                data: "received_currency_symbol",
+                name: "received_currency_symbol",
+                searchable: false,
+            },
+            { data: "final_total", name: "final_total" },
+            { data: "customer_type_name", name: "customer_types.name" },
+            { data: "customer_name", name: "customers.name" },
+            { data: "mobile_number", name: "customers.mobile_number" },
+            { data: "method", name: "transaction_payments.method" },
+            { data: "ref_number", name: "transaction_payments.ref_number" },
+            { data: "status", name: "transactions.status" },
+            { data: "payment_status", name: "transactions.payment_status" },
+            { data: "deliveryman_name", name: "deliveryman.employee_name" },
+            { data: "created_by", name: "users.name" },
+            { data: "canceled_by", name: "canceled_by" },
+            { data: "action", name: "action" },
+        ],
+        createdRow: function (row, data, dataIndex) { },
+        footerCallback: function (row, data, start, end, display) {
+            var intVal = function (i) {
+                return typeof i === "string"
+                    ? i.replace(/[\$,]/g, "") * 1
+                    : typeof i === "number"
+                        ? i
+                        : 0;
+            };
+
+            this.api()
+                .columns(".currencies", {
+                    page: "current",
+                })
+                .every(function () {
+                    var column = this;
+                    let currencies_html = "";
+                    $.each(currency_obj, function (key, value) {
+                        currencies_html += `<h6 class="footer_currency" data-is_default="${value.is_default}"  data-currency_id="${value.currency_id}">${value.symbol}</h6>`;
+                        $(column.footer()).html(currencies_html);
+                    });
+                });
+
+            this.api()
+                .columns(".sum", { page: "current" })
+                .every(function () {
+                    var column = this;
+                    var currency_total = [];
+                    $.each(currency_obj, function (key, value) {
+                        currency_total[value.currency_id] = 0;
+                    });
+                    column.data().each(function (group, i) {
+                        b = $(group).text();
+                        currency_id = $(group).data("currency_id");
+
+                        $.each(currency_obj, function (key, value) {
+                            if (currency_id == value.currency_id) {
+                                currency_total[value.currency_id] += intVal(b);
+                            }
+                        });
+                    });
+                    var footer_html = "";
+                    $.each(currency_obj, function (key, value) {
+                        footer_html += `<h6 class="currency_total currency_total_${value.currency_id
+                            }" data-currency_id="${value.currency_id
+                            }" data-is_default="${value.is_default
+                            }" data-conversion_rate="${value.conversion_rate
+                            }" data-base_conversion="${currency_total[value.currency_id] *
+                            value.conversion_rate
+                            }" data-orig_value="${currency_total[value.currency_id]
+                            }">${__currency_trans_from_en(
+                                currency_total[value.currency_id],
+                                false
+                            )}</h6>`;
+                    });
+                    $(column.footer()).html(footer_html);
+                });
+        },
+        initComplete: function (settings, json) {
+            // Move elements into the .top-controls div after DataTable initializes
+            $('.top-controls').append($('.dataTables_length').addClass('d-flex col-lg-3 col-9 mb-3 mb-lg-0  justify-content-center'));
+            $('.top-controls').append($('.dt-buttons').addClass('col-lg-6 col-12 mb-3 mb-lg-0 d-flex dt-gap  justify-content-center'));
+            $('.top-controls').append($('.dataTables_filter').addClass('col-lg-3 col-9'));
+
+
+            $('.bottom-controls').append($('.dataTables_paginate').addClass('col-lg-2 col-9 p-0'));
+            $('.bottom-controls').append($('.dataTables_info'));
+        }
+    });
 }
 
 $(document).on("change", "#customer_id", function () {
@@ -2179,7 +2285,9 @@ $(document).on("change", "#customer_id", function () {
         data: {},
         success: function (result) {
             $(".customer_name").text(result.name);
+            $(".customer_name_span").text(result.name);
             $(".customer_address").text(result.address);
+            $(".customer_address_span").text(result.address);
             $(".delivery_address").text(result.address);
 
             $(".customer_due_span").text(
@@ -2190,8 +2298,34 @@ $(document).on("change", "#customer_id", function () {
             );
         },
     });
+    getCustomerBalance();
+    getCustomerPointDetails();
+    getCustomerSizes(customer_id);
 });
 
+function getCustomerSizes(customer_id) {
+    $("#size_next").removeClass("hide");
+    $("#size_prev").removeClass("hide");
+    $.ajax({
+        method: "get",
+        url: "/customer-sizes/get-dropdown",
+        data: { customer_id },
+        success: function (result) {
+            $("#customer_size_id").html(result);
+            $("#customer_size_id").val("");
+            $("#customer_size_id").selectpicker("refresh");
+
+            // for edit page
+            if (
+                $("#customer_size_id_hidden").length > 0 &&
+                $("#customer_size_id_hidden").val() != ""
+            ) {
+                $("#customer_size_id").val($("#customer_size_id_hidden").val());
+                $("#customer_size_id").selectpicker("refresh");
+            }
+        },
+    });
+}
 $(document).on("change", "#customer_size_id", function () {
     $("#customer_size_id_hidden").val($(this).val());
 });
@@ -2219,6 +2353,7 @@ $(document).on("click", ".use_it_deposit_balance", function () {
 
     let used_deposit_balance = __read_number($("#used_deposit_balance"));
     __write_number($("#amount"), used_deposit_balance);
+    $(".received_amount").change();
 });
 
 $(document).on("click", ".add_to_deposit", function () {
@@ -2246,6 +2381,7 @@ function getCustomerBalance() {
             $(".customer_balance").text(
                 __currency_trans_from_en(result.balance, false)
             );
+            $(".staff_note").text(result.staff_note);
             $(".customer_balance").removeClass("text-red");
             if (result.balance < 0) {
                 $(".customer_balance").addClass("text-red");
@@ -2305,7 +2441,12 @@ function getCustomerPointDetails() {
                 $(".redeem_btn").attr("disabled", true);
                 $("#is_redeem_points").val(0);
             }
-            $(".customer_type_name").text(result.customer_type_name);
+            if (result.customer_type_name == "Walk in") {
+                $(".customer_type_name").text(LANG.walk_in_customer);
+            } else {
+                $(".customer_type_name").text(result.customer_type_name);
+            }
+
             $("#emails").val(result.customer.email);
             // $(".customer_balance").text(
             //     __currency_trans_from_en(result.balance, false)
@@ -2337,26 +2478,7 @@ function getCustomerPointDetails() {
         },
     });
 }
-$(document).on("submit", "form#pay_customer_due_form", function (e) {
-    e.preventDefault();
-    let url = $(this).attr("action");
-    let data = $(this).serialize();
-    $.ajax({
-        method: "POST",
-        url: url,
-        data: data,
-        dataType: "json",
-        success: function (result) {
-            if (result.success) {
-                swal("Success!", result.msg, "success");
-                $(".view_modal").modal("hide");
-                $("#customer_id").change();
-            } else {
-                swal("Error!", result.msg, "error");
-            }
-        },
-    });
-});
+
 $(document).on("click", ".redeem_btn", function () {
     $("#is_redeem_points").val(1);
     $(this).attr("disabled", true);
@@ -2364,16 +2486,13 @@ $(document).on("click", ".redeem_btn", function () {
     calculate_sub_totals();
 });
 
-
+$("#customer_id").change();
 
 $(document).on("change", "#tax_id", function () {
-    change_tax_id();
-});
-function change_tax_id() {
-    $("#tax_id_hidden").val($('#tax_id').val());
+    $("#tax_id_hidden").val($(this).val());
     $.ajax({
         method: "GET",
-        url: "/tax/get-details/" + $('#tax_id').val(),
+        url: "/tax/get-details/" + $(this).val(),
         data: {},
         success: function (result) {
             $("#tax_method").val(result.tax_method);
@@ -2382,30 +2501,41 @@ function change_tax_id() {
             calculate_sub_totals();
         },
     });
-
-}
+});
 $(document).on("change", "#deliveryman_id", function () {
     $("#deliveryman_id_hidden").val($(this).val());
 });
-
+$(document).on("click", "#delivery_cost_btn", function () {
+    $("#deliveryman_id_hidden").val($("#deliveryman_id").val());
+});
+var updateadd_payment_formClicked = false;
 $(document).on("submit", "form#add_payment_form", function (e) {
     e.preventDefault();
     let data = $(this).serialize();
+    let submitButton = $("#submit_form_button");
+    if (!updateadd_payment_formClicked) {
 
-    $.ajax({
-        method: "post",
-        url: $(this).attr("action"),
-        data: data,
-        success: function (result) {
-            if (result.success) {
-                swal("Success", result.msg, "success");
-            } else {
-                swal("Error", result.msg, "error");
-            }
-            $(".view_modal").modal("hide");
-            get_recent_transactions();
-        },
-    });
+        $.ajax({
+            method: "post",
+            url: $(this).attr("action"),
+            data: data,
+            success: function (result) {
+                if (result.success) {
+                    swal("Success", result.msg, "success");
+                } else {
+                    swal("Error", result.msg, "error");
+                }
+                $(".view_modal").modal("hide");
+                // get_recent_transactions();
+            },
+        });
+
+        // Set the flag to true to indicate the button has been clicked
+        updateadd_payment_formClicked = true;
+
+        // Disable the button after it has been clicked
+        submitButton.prop('disabled', true);
+    }
 });
 
 $(document).on("click", ".print-invoice", function () {
@@ -2687,6 +2817,7 @@ $(document).ready(function () {
             get_label_product_row(
                 null,
                 null,
+                null,
                 1,
                 0,
                 $("#weighing_scale_barcode").val()
@@ -2752,6 +2883,7 @@ $(document).on("click", "#non_identifiable_submit", function () {
             row_count: row_count,
             store_id: store_id,
             customer_id: customer_id,
+            is_unidentifable_product: 1
         },
         success: function (result) {
             if (!result.success) {
@@ -2895,6 +3027,7 @@ function get_sale_promotion_products(sale_promotion_id) {
                 get_label_product_row(
                     data.product_id,
                     data.variation_id,
+                    null,
                     data.qty,
                     index
                 );
@@ -3024,4 +3157,38 @@ $(document).on("change", "#upload_documents", function (event) {
         }
     } else {
     }
+});
+
+$(document).on("change", ".discount_category", function (e) {
+    product_discount_id = $(this).val();
+    product_id = $(this).parent('td').find('.p-id').val();
+    $.ajax({
+        method: "get",
+        url: "/pos/get-product-discount",
+        data: {
+            product_discount_id: product_discount_id,
+            // product_id,product_id
+        },
+        success: function (response) {
+            if (response.result) {
+                
+                qty = __read_number($(this).find('.quantity'))
+                $(".discount_type" + product_id).val(response.result.discount_type);
+                __write_number($(".discount_value" + product_id), response.result.discount);
+                $(".discount_category_name" + product_id).val(response.result.discount_category);
+
+                __write_number($(".discount_amount" + product_id), response.result.discount * qty);
+
+                __write_number($(".discount_amount" + product_id), response.result.discount * qty);
+
+            }
+            else {
+                $(".discount_type" + product_id).val('');
+                __write_number($(".discount_value" + product_id), 0);
+                __write_number($(".discount_amount" + product_id), 0);
+            }
+            check_for_sale_promotion();
+            calculate_sub_totals();
+        },
+    });
 });
